@@ -154,6 +154,7 @@ npm run check
 - `ADMIN_AUTH_PLAN.md`
 - `SUPABASE_SCHEMA.sql`
 - `WEBHOOK_PAYLOADS.md`
+- `forge-flex-capital-desk-outreach.md`
 - `docs/forge-capital-desk-readme.md`
 - `docs/forge-flex-capital-desk-outreach.md`
 - `netlify.toml`

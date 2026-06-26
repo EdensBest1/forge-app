@@ -3354,7 +3354,7 @@ function normalizeFlexLead(lead) {
   };
   next.status = flexLeadStatuses.includes(next.status) ? next.status : "new";
   next.interested_in_forge_job_leads = Boolean(lead.interested_in_forge_job_leads ?? lead.interested_in_forge_services ?? next.interested_in_forge_job_leads);
-  next.interested_in_forge_services = next.interested_in_forge_job_leads;
+  delete next.interested_in_forge_services;
   next.interested_in_north_star_marketing = Boolean(next.interested_in_north_star_marketing);
   next.interested_in_payment_processing = Boolean(next.interested_in_payment_processing);
   next.interested_in_website_crm_automation = Boolean(next.interested_in_website_crm_automation);
@@ -3374,7 +3374,7 @@ function calculateFlexLeadScore(lead) {
   if (/1-2|3-5|5\+|10\+/.test(years)) score += 10;
   if (/2-5|6-20|21-50|51\+/.test(employees)) score += 10;
   if (flexPrimaryNeedKeywords.some((keyword) => primaryNeed.includes(keyword))) score += 10;
-  if (lead.interested_in_forge_job_leads || lead.interested_in_forge_services) score += 10;
+  if (lead.interested_in_forge_job_leads) score += 10;
   if (lead.interested_in_north_star_marketing) score += 10;
   if (lead.interested_in_payment_processing) score += 10;
   if (lead.interested_in_website_crm_automation) score += 10;
@@ -10549,6 +10549,7 @@ document.addEventListener("change", (event) => {
 });
 
 document.querySelector("#backupImport").addEventListener("change", importBackup);
+document.querySelector("#manufacturingSupplierCsvInput").addEventListener("change", importManufacturingSupplierCsv);
 
 document.addEventListener("input", (event) => {
   if (event.target.closest("#workerTrade")) renderProviderServiceFields();
@@ -11472,6 +11473,125 @@ function exportCsv(filename, rows) {
 
 function csvCell(value) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+async function importManufacturingSupplierCsv(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  try {
+    const rows = parseCsv(await file.text());
+    const leads = rows.map((row) => normalizeManufacturingSupplierLead({
+      id: `supplier-lead-import-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      companyName: csvValue(row, ["company name", "company", "business", "supplier", "supplier name"]),
+      contactName: csvValue(row, ["contact name", "contact", "owner"]),
+      phone: csvValue(row, ["phone", "telephone", "mobile"]),
+      email: csvValue(row, ["email", "email address"]),
+      website: csvValue(row, ["website", "url", "company website"]),
+      city: csvValue(row, ["city"]),
+      state: csvValue(row, ["state", "province"]),
+      country: csvValue(row, ["country"]) || "USA",
+      supplierCategory: csvValue(row, ["supplier category", "category", "manufacturer type", "type"]) || "Supplement Manufacturer",
+      capabilities: csvValue(row, ["capabilities", "capability notes", "services"]),
+      certifications: csvValue(row, ["certifications", "certification"]),
+      productTypes: csvValue(row, ["product types", "products", "product categories"]),
+      moq: csvValue(row, ["moq", "minimum order quantity"]),
+      leadTime: csvValue(row, ["lead time", "turnaround", "estimated lead time"]),
+      notes: csvValue(row, ["notes", "source notes"]),
+      source: csvValue(row, ["source", "lead source"]) || "CSV import",
+      sourceUrl: csvValue(row, ["source url", "source link"]),
+      dateDiscovered: csvValue(row, ["date discovered", "date added"]) || "Today",
+      addedBy: csvValue(row, ["added by", "relationship owner"]) || "Andrew",
+      outreachStatus: csvValue(row, ["outreach status", "status"]) || "Not contacted",
+      lastContacted: csvValue(row, ["last contacted", "last contacted date"]),
+      nextFollowUpDate: csvValue(row, ["next follow-up date", "next follow up", "follow-up date"]),
+      followUpNotes: csvValue(row, ["follow-up notes", "follow up notes"]),
+      potentialOpportunityValue: csvValue(row, ["potential opportunity value", "opportunity value", "value"]),
+      relatedForgeVertical: csvValue(row, ["related forge vertical", "vertical"]) || "Manufacturing",
+      tags: csvValue(row, ["tags"])
+    })).filter((lead) => lead.companyName);
+    const skipped = rows.length - leads.length;
+    if (!leads.length) {
+      showToast("No valid supplier leads found. Company name is required.");
+      event.target.value = "";
+      return;
+    }
+    state.manufacturingSupplierLeads.unshift(...leads);
+    state.activeManufacturingSupplierLeadId = leads[0].id;
+    addActivity(`Imported ${leads.length} manufacturing supplier lead${leads.length === 1 ? "" : "s"} from CSV. ${MANUFACTURING_IMPORT_PERMISSION_COPY}`);
+    state.lastConfirmation = {
+      type: "manufacturing-supplier-csv",
+      title: "Supplier CSV imported.",
+      body: `${leads.length} supplier lead${leads.length === 1 ? "" : "s"} saved. ${skipped ? `${skipped} row${skipped === 1 ? "" : "s"} skipped because company name was missing.` : "No rows were skipped."}`,
+      details: [
+        "Source defaults to CSV import when no source column is provided",
+        MANUFACTURING_IMPORT_PERMISSION_COPY
+      ],
+      nextSteps: [
+        "Review each imported lead before outreach",
+        "Use source attribution and follow-up status fields",
+        "Convert only lawfully obtained or company-approved information into provider profiles"
+      ],
+      primary: { label: "Open Manufacturing CRM", screen: "manufacturing" },
+      secondary: { label: "Open Admin", screen: "admin" }
+    };
+    saveState();
+    render();
+    showToast(`${leads.length} supplier lead${leads.length === 1 ? "" : "s"} imported.`);
+  } catch (error) {
+    showToast("CSV import failed. Check the file format.");
+  } finally {
+    event.target.value = "";
+  }
+}
+
+function parseCsv(text) {
+  const rows = parseCsvRows(text).filter((row) => row.some((cell) => String(cell || "").trim()));
+  if (rows.length < 2) return [];
+  const headers = rows[0].map((header) => normalizeCsvHeader(header));
+  return rows.slice(1).map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ""])));
+}
+
+function parseCsvRows(text) {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+    if (quoted && char === '"' && next === '"') {
+      cell += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      row.push(cell.trim());
+      cell = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(cell.trim());
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+  row.push(cell.trim());
+  rows.push(row);
+  return rows;
+}
+
+function normalizeCsvHeader(value) {
+  return String(value || "").trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+}
+
+function csvValue(row, names) {
+  for (const name of names) {
+    const value = row[normalizeCsvHeader(name)];
+    if (String(value || "").trim()) return String(value).trim();
+  }
+  return "";
 }
 
 function addActivity(text) {
