@@ -3549,7 +3549,17 @@ function normalizeNorthStarLead(lead = {}) {
     ? normalized.leadClassification
     : classifyNorthStarLead(normalized);
   normalized.urgency = normalized.urgency || inferNorthStarUrgency(normalized);
-  normalized.status = northstarStatuses.includes(normalized.status) ? normalized.status : normalized.status === "Scoping" ? "Needs Review" : normalized.status === "Active" ? "Won" : "New";
+  normalized.status = northstarStatuses.includes(normalized.status)
+    ? normalized.status
+    : normalized.status === "Scoping"
+      ? "Needs Review"
+      : normalized.status === "Active"
+        ? "Won"
+        : normalized.status === "Paused"
+          ? "Nurture Later"
+          : normalized.status === "Closed"
+            ? "Lost"
+            : "New";
   return normalized;
 }
 
