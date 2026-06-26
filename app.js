@@ -3,7 +3,10 @@ const STORAGE_KEY = "forge.wireframe.mvp.v1";
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
 const CREATIVE_CATEGORY_LABEL = "Photography & Videography";
 const CREATIVE_CATEGORY_SLUG = "photography-videography";
-const categories = ["Handyman", "Landscaping", "Junk Removal", "Moving", "Painting", "Plumbing", "Electrical", "Cleaning", CREATIVE_CATEGORY_LABEL];
+const NORTHSTAR_CATEGORY_VALUE = "northstar_creative";
+const NORTHSTAR_OPERATIONS_CATEGORY_VALUE = "northstar_marketing_operations";
+const NORTHSTAR_CATEGORY_LABEL = "NorthStar Creative Co.";
+const categories = ["Handyman", "Landscaping", "Junk Removal", "Moving", "Painting", "Plumbing", "Electrical", "Cleaning", CREATIVE_CATEGORY_LABEL, NORTHSTAR_CATEGORY_LABEL];
 const jobStatuses = ["New", "Submitted", "Pending", "Contacted", "Matching", "Quoted", "Accepted", "Assigned", "In Progress", "Completed", "Canceled"];
 const workerStatuses = ["New", "Submitted", "Contacted", "Ready", "Approved", "Rejected", "Suspended", "Paused"];
 const referralStatuses = ["New", "Contacted", "Converted", "Later"];
@@ -190,6 +193,88 @@ const creativeNeedOptions = ["Not sure", "Yes", "No"];
 const creativeProviderDroneOptions = ["No", "Yes - FAA Part 107 / qualified", "Yes - pending approval", "Not sure"];
 const creativeProviderDisciplines = ["Photography", "Videography", "Both photography and videography"];
 const creativeProviderExperienceOptions = ["New provider", "1-2 years", "3-5 years", "5+ years", "10+ years"];
+const northstarMarketingServices = [
+  "Website design",
+  "Landing pages",
+  "Logo and brand refresh",
+  "Social media posts",
+  "Instagram/Facebook content",
+  "Short-form video content",
+  "Photography/video coordination",
+  "Google Business Profile setup",
+  "Local SEO",
+  "Paid ads",
+  "Lead generation campaigns",
+  "Email/SMS follow-up",
+  "Review generation",
+  "Before/after project showcases",
+  "Flyers and print materials",
+  "Business cards",
+  "Canva templates",
+  "Content calendar"
+];
+const northstarOperationsServices = [
+  "CRM setup",
+  "Klaviyo/email setup",
+  "Job tracking",
+  "Lead pipeline setup",
+  "Customer intake forms",
+  "Estimate/invoice workflow",
+  "Follow-up automations",
+  "SOP creation",
+  "Hiring/onboarding documents",
+  "Customer service scripts",
+  "Sales scripts",
+  "Admin dashboard planning",
+  "Provider onboarding",
+  "Appointment scheduling",
+  "Operations cleanup",
+  "Business system setup"
+];
+const northstarServiceOptions = [
+  "Website",
+  "Branding/logo",
+  "Social media",
+  "Ads",
+  "Google Business Profile",
+  "SEO",
+  "Photography/video",
+  "CRM",
+  "Klaviyo/email/SMS",
+  "Job tracking",
+  "SOPs",
+  "Business operations",
+  "Not sure / need help deciding"
+];
+const northstarBudgetOptions = ["Not sure yet", "Under $500/month", "$500 - $1,500/month", "$1,500 - $3,000/month", "$3,000 - $7,500/month", "$7,500+/month", "Project-based quote"];
+const northstarPackages = [
+  {
+    name: "Starter Presence",
+    fit: "For a business that needs to look real online.",
+    includes: ["Simple landing page", "Basic branding cleanup", "Google Business Profile checklist", "Lead form", "Basic social profile cleanup"]
+  },
+  {
+    name: "Lead Engine",
+    fit: "For a business that wants more jobs.",
+    includes: ["Landing page", "Ads/funnel setup", "Social content plan", "Lead form", "Follow-up automation", "CRM pipeline"]
+  },
+  {
+    name: "Authority Builder",
+    fit: "For a business that wants to become known locally.",
+    includes: ["Full website", "Brand kit", "Content calendar", "Before/after project content", "Review system", "Local SEO", "Email/SMS follow-up"]
+  },
+  {
+    name: "Operations OS",
+    fit: "For a business that needs systems.",
+    includes: ["CRM", "Job tracking", "Intake forms", "Estimate/invoice workflow", "SOPs", "Hiring/onboarding documents", "Admin dashboard planning", "Follow-up automations"]
+  },
+  {
+    name: "Full-Service Growth Partner",
+    fit: "For businesses that want NorthStar to help run marketing and operations together.",
+    includes: ["Website", "Ads", "Content", "CRM", "Follow-up", "Job tracking", "Reporting"]
+  }
+];
+const northstarStatuses = ["New", "Contacted", "Scoping", "Proposal Needed", "Proposal Sent", "Active", "Paused", "Closed"];
 const autoDealers = [
   {
     id: "s-and-a-auto",
@@ -263,6 +348,7 @@ const routeByScreen = {
   creative: "/photography",
   "creative-request": "/photography/request",
   "creative-apply": "/photography/apply",
+  northstar: "/northstar-creative",
   projects: "/projects",
   "admin-projects": "/admin/projects",
   homebuilding: "/homebuilding",
@@ -279,6 +365,8 @@ const screenByPath = {
   "/photography/apply/": "creative-apply",
   "/photography-videography": "creative",
   "/photography-videography/": "creative",
+  "/northstar-creative": "northstar",
+  "/northstar-creative/": "northstar",
   "/projects": "projects",
   "/projects/": "projects",
   "/admin/projects": "admin-projects",
@@ -529,6 +617,18 @@ const demoPaths = [
       ["Open Careers", "opportunities"],
       ["Application Plan", "opportunities"],
       ["Save Interest", "opportunities"]
+    ]
+  },
+  {
+    title: "NorthStar business growth proof",
+    role: "customer",
+    name: "Local Business Owner",
+    summary: "Show how a contractor or service business requests marketing, CRM, lead follow-up, job tracking, and business operations help.",
+    steps: ["Open NorthStar", "Pick services", "Save growth request", "Review in Admin"],
+    actions: [
+      ["Open NorthStar", "northstar"],
+      ["Marketing Help", "northstar"],
+      ["Admin Review", "admin"]
     ]
   }
 ];
@@ -803,6 +903,29 @@ const seedState = {
     }
   ],
   homebuildingLeads: [],
+  northstarLeads: [
+    {
+      id: "northstar-demo",
+      category: NORTHSTAR_CATEGORY_VALUE,
+      secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE,
+      name: "Sample Contractor",
+      businessName: "Rogue Valley Remodel Co.",
+      phone: "(541) 555-3344",
+      email: "owner@example.com",
+      city: "Medford, OR",
+      trade: "Remodeling contractor",
+      website: "",
+      social: "",
+      servicesNeeded: ["Website", "CRM", "Job tracking", "Review generation"],
+      budget: "$1,500 - $3,000/month",
+      problem: "Leads come from referrals but follow-up is inconsistent and there is no job pipeline.",
+      goal: "Look professional online, capture more remodel leads, and track estimates over the next 90 days.",
+      consent: true,
+      status: "New",
+      created: "Today",
+      adminNotes: ""
+    }
+  ],
   opportunityLeads: [
     {
       id: "opportunity-demo",
@@ -991,6 +1114,7 @@ function normalizeState(value) {
   next.partnerReferrals = value?.partnerReferrals || seedState.partnerReferrals;
   next.partnerDocuments = value?.partnerDocuments || seedState.partnerDocuments;
   next.homebuildingLeads = value?.homebuildingLeads || seedState.homebuildingLeads;
+  next.northstarLeads = value?.northstarLeads || seedState.northstarLeads;
   next.opportunityLeads = value?.opportunityLeads || seedState.opportunityLeads;
   next.worker = normalizeDemoWorker(value?.worker || seedState.worker);
   next.workers = value?.workers || [next.worker, ...seedState.workers.slice(1)];
@@ -1037,6 +1161,7 @@ function normalizeState(value) {
   next.partnerReferrals = next.partnerReferrals.map((referral) => ({ status: "PENDING", created: "Today", ...referral }));
   next.partnerDocuments = next.partnerDocuments.map((document) => ({ required: partnerDocumentTypes, received: [], status: "Pending", ...document }));
   next.homebuildingLeads = next.homebuildingLeads.map((lead) => normalizeHomebuildingLead({ status: "New", created: "Today", email: "", notes: "", uploads: "0 files selected", ...lead }));
+  next.northstarLeads = next.northstarLeads.map((lead) => ({ status: "New", created: "Today", email: "", adminNotes: "", servicesNeeded: [], category: NORTHSTAR_CATEGORY_VALUE, secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE, ...lead }));
   next.opportunityLeads = next.opportunityLeads.map((lead) => ({ status: "New", created: "Today", email: "", note: "", location: "Medford, OR", ...lead }));
   next.activity = value?.activity || seedState.activity;
   next.lastConfirmation = value?.lastConfirmation || seedState.lastConfirmation;
@@ -1340,6 +1465,7 @@ function render() {
   renderPostWizard();
   renderJobs();
   renderCreativePage();
+  renderNorthStarPage();
   renderAutos();
   renderOpportunities();
   renderProjectsPage();
@@ -1718,6 +1844,10 @@ function fieldChecked(selector) {
   return Boolean(document.querySelector(selector)?.checked);
 }
 
+function fieldSelectedValues(selector) {
+  return Array.from(document.querySelector(selector)?.selectedOptions || []).map((option) => option.value).filter(Boolean);
+}
+
 function renderSelects() {
   fillSelect("#jobCategory", ["", ...categories], "Select a category");
   fillSelect("#listingCategory", ["All Categories", ...categories]);
@@ -1734,6 +1864,8 @@ function renderSelects() {
   fillSelect("#creativeProviderDiscipline", creativeProviderDisciplines);
   fillSelect("#creativeProviderExperience", creativeProviderExperienceOptions);
   fillSelect("#creativeProviderDroneCapability", creativeProviderDroneOptions);
+  fillSelect("#northstarServices", northstarServiceOptions);
+  fillSelect("#northstarBudget", northstarBudgetOptions);
   fillSelect("#projectType", projectTypeOptions);
   fillSelect("#projectBudgetRange", budgetRangeOptions);
   fillSelect("#projectStage", projectStageOptions);
@@ -2015,6 +2147,34 @@ function renderCreativePage() {
       <button class="btn ghost small" type="button" data-action="copy-creative-provider" data-creative-provider-email="${escapeHtml(provider.email)}">Copy Provider</button>
     </article>
   `).join("") || `<article><p class="muted">No creative providers have applied yet.</p></article>`;
+}
+
+function renderNorthStarPage() {
+  const marketingGrid = document.querySelector("#northstarMarketingGrid");
+  const operationsGrid = document.querySelector("#northstarOperationsGrid");
+  const packageGrid = document.querySelector("#northstarPackageGrid");
+  const leadList = document.querySelector("#northstarLeadList");
+  if (!marketingGrid || !operationsGrid || !packageGrid || !leadList) return;
+
+  marketingGrid.innerHTML = northstarMarketingServices.map((service) => `<span>${escapeHtml(service)}</span>`).join("");
+  operationsGrid.innerHTML = northstarOperationsServices.map((service) => `<span>${escapeHtml(service)}</span>`).join("");
+  packageGrid.innerHTML = northstarPackages.map((item) => `
+    <article>
+      <span class="split-label">${escapeHtml(item.fit)}</span>
+      <h3>${escapeHtml(item.name)}</h3>
+      <ul>${item.includes.map((detail) => `<li>${escapeHtml(detail)}</li>`).join("")}</ul>
+    </article>
+  `).join("");
+  leadList.innerHTML = (state.northstarLeads || []).slice(0, 4).map((lead) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.budget || "Budget pending")}</span>
+        <strong>${escapeHtml(lead.businessName)} · ${escapeHtml(lead.trade)}</strong>
+        <p>${escapeHtml(lead.city)} · ${escapeHtml((lead.servicesNeeded || []).join(", ") || "Services pending")}</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-northstar-lead" data-northstar-id="${escapeHtml(lead.id)}">Copy Lead</button>
+    </article>
+  `).join("") || `<article><p class="muted">No NorthStar requests yet.</p></article>`;
 }
 
 function renderAutos() {
@@ -3177,6 +3337,14 @@ function getMessageThreads() {
       to: lead.contactName,
       draft: projectLeadFollowUpText(lead)
     })),
+    ...(state.northstarLeads || []).map((lead) => ({
+      id: `northstar-${lead.id}`,
+      title: lead.businessName,
+      subtitle: `${lead.status} · ${lead.trade}`,
+      kind: "Business growth lead",
+      to: lead.name,
+      draft: northstarLeadText(lead)
+    })),
     ...(state.opportunityLeads || []).map((lead) => ({
       id: `opportunity-${lead.id}`,
       title: lead.name,
@@ -3202,6 +3370,7 @@ function renderDashboards() {
   const projectLeads = (state.projectLeads || []).length;
   const creativeRequests = state.jobs.filter(isCreativeJob);
   const creativeProviders = state.workers.filter(isCreativeProvider);
+  const northstarLeads = state.northstarLeads || [];
   const hotLeads = state.referrals.filter((lead) => lead.priority === "Hot").length + state.jobs.filter((job) => job.status === "New").length;
 
   const workerTitle = document.querySelector("#workerDashboardTitle");
@@ -3218,6 +3387,7 @@ function renderDashboards() {
     ["Workers", workers],
     ["Creative Requests", creativeRequests.length],
     ["Creative Providers", creativeProviders.length],
+    ["NorthStar", northstarLeads.length],
     ["Referrals", referrals],
     ["Career Leads", careerLeads],
     ["Homebuilding", homebuildingLeads],
@@ -3269,6 +3439,15 @@ function renderDashboards() {
     area: provider.area || provider.service_area,
     portfolio: provider.portfolioLink || "",
     status: creativeStatusText(provider.providerStatus || provider.status)
+  })));
+
+  renderTable("#adminNorthstarTable", northstarLeads.map((lead) => ({
+    business: lead.businessName,
+    owner: lead.name,
+    trade: lead.trade,
+    services: (lead.servicesNeeded || []).join(", "),
+    budget: lead.budget,
+    status: lead.status
   })));
 
   renderTable("#adminReferralsTable", state.referrals.map((lead) => ({
@@ -3328,6 +3507,8 @@ function renderConfirmation() {
                       ? "Creative request saved"
                       : confirmation.type === "creative-provider"
                         ? "Creative provider saved"
+                        : confirmation.type === "northstar"
+                          ? "NorthStar request saved"
                   : "Forge is ready";
   document.querySelector("#confirmTitle").textContent = confirmation.title;
   document.querySelector("#confirmBody").textContent = confirmation.body;
@@ -3361,6 +3542,7 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "homebuilding") return ["Forge saves and pre-screens this project lead", "Accepted major leads can be sent to Seneca for accept or decline review", "All contracts remain between the client and Seneca or the licensed contractor"];
   if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can match it with approved local creatives", "Customer contact info stays for booking and provider matching"];
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
+  if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
 }
 
@@ -3377,6 +3559,7 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "homebuilding") return "Tell the project owner how Forge pre-screens and refers major leads.";
   if (confirmation.type === "creative") return "Tell the customer how Forge creative matching works.";
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
+  if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
   return "Use this as the next message.";
 }
 
@@ -3418,6 +3601,9 @@ function confirmationHandoffText(confirmation) {
   }
   if (confirmation.type === "creative-provider") {
     return `Forge saved this creative provider application${detail}. The operator can review portfolio, availability, insurance or licensing notes, and provider terms before matching the provider with customers.`;
+  }
+  if (confirmation.type === "northstar") {
+    return `Forge saved this NorthStar Creative Co. request${detail}. Admin can review the business, services needed, budget, biggest problem, and 30-90 day goal, then NorthStar can scope the right marketing and operations support.`;
   }
   return `Forge is ready for controlled first-user signups. Next: ${steps.join(" ")}`;
 }
@@ -4226,6 +4412,32 @@ function renderLeadPipelines() {
     }).join("") || `<article class="lead-card"><p class="muted">No creative provider applications yet.</p></article>`;
   }
 
+  const northstarTarget = document.querySelector("#adminNorthstarPipeline");
+  if (northstarTarget) {
+    northstarTarget.innerHTML = (state.northstarLeads || []).map((lead) => `
+      <article class="lead-card">
+        <div>
+          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(NORTHSTAR_OPERATIONS_CATEGORY_VALUE)}</span>
+          <h3>${escapeHtml(lead.businessName)}</h3>
+          <p>${escapeHtml(lead.name)} · ${escapeHtml(lead.trade)} · ${escapeHtml(lead.phone || "No phone yet")}</p>
+        </div>
+        <label>Status
+          <select data-northstar-status="${escapeHtml(lead.id)}">
+            ${northstarStatuses.map((status) => `<option ${status === lead.status ? "selected" : ""}>${status}</option>`).join("")}
+          </select>
+        </label>
+        <label>Admin notes
+          <textarea data-northstar-notes="${escapeHtml(lead.id)}" rows="2" placeholder="Scope, package, proposal, CRM, or follow-up notes">${escapeHtml(lead.adminNotes || "")}</textarea>
+        </label>
+        <div class="lead-actions">
+          ${contactLinks(lead.phone, lead.email, northstarLeadText(lead))}
+          <button class="btn ghost small" type="button" data-action="copy-northstar-lead" data-northstar-id="${escapeHtml(lead.id)}">Copy Lead</button>
+          <button class="btn blue small" type="button" data-action="mark-northstar-contacted" data-northstar-id="${escapeHtml(lead.id)}">Mark Contacted</button>
+        </div>
+      </article>
+    `).join("") || `<article class="lead-card"><p class="muted">No NorthStar leads yet.</p></article>`;
+  }
+
   document.querySelector("#adminReferralPipeline").innerHTML = state.referrals.map((lead) => `
     <article class="lead-card">
       <div>
@@ -4913,6 +5125,55 @@ function submitCreativeProvider() {
   navigate("confirm");
 }
 
+function submitNorthStarLead() {
+  const lead = {
+    id: `northstar-${Date.now()}`,
+    category: NORTHSTAR_CATEGORY_VALUE,
+    secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE,
+    name: fieldValue("#northstarName"),
+    businessName: fieldValue("#northstarBusinessName"),
+    phone: fieldValue("#northstarPhone"),
+    email: fieldValue("#northstarEmail"),
+    city: fieldValue("#northstarCity"),
+    trade: fieldValue("#northstarTrade"),
+    website: fieldValue("#northstarWebsite"),
+    social: fieldValue("#northstarSocial"),
+    servicesNeeded: fieldSelectedValues("#northstarServices"),
+    budget: fieldValue("#northstarBudget"),
+    problem: fieldValue("#northstarProblem"),
+    goal: fieldValue("#northstarGoal"),
+    consent: fieldChecked("#northstarConsent"),
+    status: "New",
+    created: "Today",
+    adminNotes: ""
+  };
+  state.northstarLeads.unshift(lead);
+  addActivity(`NorthStar lead saved: ${lead.businessName} needs ${lead.servicesNeeded.join(", ") || "business growth help"}.`);
+  state.lastConfirmation = {
+    type: "northstar",
+    title: "NorthStar request saved.",
+    body: "Forge saved this marketing and business-operations request for NorthStar review.",
+    details: [
+      `${lead.businessName} · ${lead.trade}`,
+      `${lead.city} · ${lead.budget}`,
+      (lead.servicesNeeded || []).join(", ") || "Services to scope"
+    ],
+    nextSteps: [
+      "Forge routes this as a northstar_marketing_operations lead",
+      "Admin reviews the business, current bottleneck, budget, and 30-90 day goal",
+      "NorthStar can scope the right website, marketing, CRM, lead follow-up, job tracking, or operations package"
+    ],
+    primary: { label: "Open Admin Leads", screen: "admin" },
+    secondary: { label: "Back to NorthStar", screen: "northstar" }
+  };
+  saveState();
+  sendLead("northstar", lead);
+  showToast("NorthStar request saved.");
+  document.querySelector("#northstarLeadForm").reset();
+  setFieldValue("#northstarCity", "Medford, OR");
+  navigate("confirm");
+}
+
 function currentStepValid() {
   const panel = document.querySelector(`.step-panel[data-step="${postStep}"]`);
   const fields = Array.from(panel.querySelectorAll("input, select, textarea"));
@@ -5065,6 +5326,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-workers") exportCsv("forge-worker-leads.csv", state.workers);
   if (action?.dataset.action === "export-creative-requests") exportCsv("forge-creative-requests.csv", state.jobs.filter(isCreativeJob));
   if (action?.dataset.action === "export-creative-providers") exportCsv("forge-creative-providers.csv", state.workers.filter(isCreativeProvider));
+  if (action?.dataset.action === "export-northstar") exportCsv("forge-northstar-leads.csv", state.northstarLeads || []);
   if (action?.dataset.action === "export-referrals") exportCsv("forge-referral-leads.csv", state.referrals);
   if (action?.dataset.action === "export-homebuilding") exportCsv("forge-homebuilding-leads.csv", state.homebuildingLeads || []);
   if (action?.dataset.action === "export-projects") exportCsv("forge-project-leads.csv", state.projectLeads || []);
@@ -5112,6 +5374,11 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-creative-provider") copyCreativeProvider(action.dataset.creativeProviderEmail);
   if (action?.dataset.action === "focus-creative-lead") focusAutoPanel("#creativeLeadSection", "#creativeName");
   if (action?.dataset.action === "focus-creative-provider") focusAutoPanel("#creativeProviderSection", "#creativeProviderFirstName");
+  if (action?.dataset.action === "focus-northstar-intake") focusAutoPanel("#northstarIntakeSection", "#northstarName");
+  if (action?.dataset.action === "focus-northstar-packages") focusAutoPanel("#northstarPackages", null);
+  if (action?.dataset.action === "copy-northstar-brief") copyNorthStarBrief();
+  if (action?.dataset.action === "copy-northstar-queue") copyNorthStarQueue();
+  if (action?.dataset.action === "copy-northstar-lead") copyNorthStarLead(action.dataset.northstarId);
   if (action?.dataset.action === "copy-auto-market-brief") copyAutoMarketBrief();
   if (action?.dataset.action === "copy-auto-dealer-plan") copyAutoDealerPlan();
   if (action?.dataset.action === "copy-auto-dealer-setup") copyAutoDealerSetup();
@@ -5154,6 +5421,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "mark-referral-contacted") markReferralContacted(action.dataset.referralId);
   if (action?.dataset.action === "mark-homebuilding-contacted") markHomebuildingContacted(action.dataset.homebuildingId);
   if (action?.dataset.action === "mark-opportunity-contacted") markOpportunityContacted(action.dataset.opportunityId);
+  if (action?.dataset.action === "mark-northstar-contacted") markNorthStarContacted(action.dataset.northstarId);
   if (action?.dataset.action === "move-job-forward") moveJobForward(action.dataset.jobId);
   if (action?.dataset.action === "move-worker-forward") moveWorkerForward(action.dataset.workerEmail);
   if (action?.dataset.action === "move-referral-forward") moveReferralForward(action.dataset.referralId);
@@ -5391,6 +5659,11 @@ document.querySelector("#creativeLeadForm").addEventListener("submit", (event) =
 document.querySelector("#creativeProviderForm").addEventListener("submit", (event) => {
   event.preventDefault();
   submitCreativeProvider();
+});
+
+document.querySelector("#northstarLeadForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitNorthStarLead();
 });
 
 document.querySelector("#projectIntakeForm").addEventListener("submit", (event) => {

@@ -11,7 +11,10 @@ This registry lists existing and planned features, business sections, and operat
 
 ## Photography & Videography
 
-- Planned section for weddings, events, business content, social media content, real estate shoots, family photos, church/community events, music videos, and creative projects.
+- Implemented / Live in UI for weddings, events, business content, social media content, real estate shoots, family photos, church/community events, music videos, and creative projects.
+- Dedicated route/page exists through `/photography`, `/photography/request`, `/photography/apply`, and the `/photography-videography` alias.
+- Customer creative request form exists and saves customer leads with category value `photography_videography`.
+- Creative provider application form exists and saves provider leads with provider/category metadata value `photography_videography`.
 - Dennis may be referenced only as an example trusted local creative, not as the only provider.
 - Do not include private contact information.
 
@@ -26,7 +29,7 @@ This registry lists existing and planned features, business sections, and operat
 
 ## NorthStar Creative Co.
 
-- Planned section for creative services, brand work, content, media, and related business operations.
+- Planned/active section for creative services, brand work, marketing, websites, CRM, lead generation, job tracking, content, media, and business operations for blue-collar providers and local businesses.
 
 ## Stitch
 

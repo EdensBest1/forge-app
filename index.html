@@ -24,6 +24,7 @@
             <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
             <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
             <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
+            <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
             <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
@@ -90,6 +91,12 @@
             <h2>Book photography or videography.</h2>
             <p>Hire local creatives for weddings, events, business content, real estate, social media, family shoots, and community projects.</p>
             <button class="btn ghost" type="button" data-nav="creative">Hire a Photographer</button>
+          </article>
+          <article>
+            <span class="split-label">I need business growth</span>
+            <h2>NorthStar Creative Co.</h2>
+            <p>Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations for blue-collar businesses.</p>
+            <button class="btn ghost" type="button" data-nav="northstar">Grow My Business</button>
           </article>
           <article>
             <span class="split-label">I want a path up</span>
@@ -206,6 +213,7 @@
             <button type="button" data-nav="jobs">Moving</button>
             <button type="button" data-nav="jobs">Painting</button>
             <button type="button" data-nav="creative">Photography & Videography</button>
+            <button type="button" data-nav="northstar">NorthStar Creative Co.</button>
           </div>
           <div class="service-category-cards">
             <article class="service-category-card">
@@ -213,6 +221,12 @@
               <h3>Photography & Videography</h3>
               <p>Weddings, events, business content, social media shoots, real estate, product photos, and video production.</p>
               <button class="btn ghost small" type="button" data-nav="creative">Hire a Photographer</button>
+            </article>
+            <article class="service-category-card">
+              <span class="split-label">Business growth</span>
+              <h3>NorthStar Creative Co.</h3>
+              <p>Marketing, websites, CRM, lead generation, job tracking, and business operations for blue-collar businesses.</p>
+              <button class="btn ghost small" type="button" data-nav="northstar">Grow My Business</button>
             </article>
           </div>
         </section>
@@ -677,6 +691,96 @@
         <footer class="creative-disclaimer">
           Forge connects customers with independent local photographers, videographers, and creative providers. Customers should review portfolios, pricing, delivery timelines, and service terms before booking.
         </footer>
+      </section>
+
+      <section class="screen northstar-screen" id="northstar-screen" data-screen="northstar">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-action="focus-northstar-intake">Help</button><button type="button" data-action="copy-northstar-queue">Queue</button></div>
+        </header>
+        <section class="northstar-hero">
+          <div class="northstar-hero-copy">
+            <span class="split-label">NorthStar Creative Co.</span>
+            <h1>Grow Your Blue-Collar Business With NorthStar Creative Co.</h1>
+            <p>Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and business operations built for local service businesses.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-northstar-intake">Get Marketing Help</button>
+              <button class="btn blue" type="button" data-action="focus-northstar-packages">Build My Business System</button>
+              <button class="btn ghost light" type="button" data-action="copy-northstar-brief">Copy Brief</button>
+            </div>
+          </div>
+        </section>
+        <section class="northstar-layout">
+          <div class="northstar-main">
+            <section class="northstar-intro">
+              <div>
+                <span class="split-label">Forge business growth arm</span>
+                <h2>Turn attention into real jobs.</h2>
+                <p>NorthStar Creative Co. is the full-service digital agency and business-operations arm connected to Forge. Forge can send leads, and NorthStar can help businesses capture those leads, follow up, book the work, collect reviews, and build a professional brand.</p>
+              </div>
+              <button class="btn ghost small" type="button" data-action="copy-northstar-queue">Copy NorthStar Queue</button>
+            </section>
+
+            <section class="northstar-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Marketing services</span>
+                  <h2>Make the business look professional and bring in more leads.</h2>
+                </div>
+              </div>
+              <div class="northstar-chip-grid" id="northstarMarketingGrid"></div>
+            </section>
+
+            <section class="northstar-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Business operations services</span>
+                  <h2>Build the system behind the work.</h2>
+                </div>
+              </div>
+              <div class="northstar-chip-grid" id="northstarOperationsGrid"></div>
+            </section>
+
+            <section class="northstar-packages" id="northstarPackages">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Recommended packages</span>
+                  <h2>Pick the level of help the business actually needs.</h2>
+                </div>
+              </div>
+              <div class="northstar-package-grid" id="northstarPackageGrid"></div>
+            </section>
+          </div>
+
+          <aside class="northstar-intake-panel" id="northstarIntakeSection">
+            <form class="northstar-form" id="northstarLeadForm">
+              <span class="split-label">Business growth request</span>
+              <h2>Request help from NorthStar.</h2>
+              <div class="field-row">
+                <label>Name<input id="northstarName" required placeholder="Full name" /></label>
+                <label>Business name<input id="northstarBusinessName" required placeholder="Business name" /></label>
+              </div>
+              <div class="field-row">
+                <label>Phone<input id="northstarPhone" required placeholder="(541) 555-0000" /></label>
+                <label>Email<input id="northstarEmail" required type="email" placeholder="owner@example.com" /></label>
+              </div>
+              <div class="field-row">
+                <label>City<input id="northstarCity" required value="Medford, OR" /></label>
+                <label>Type of business/trade<input id="northstarTrade" required placeholder="Roofing, remodeling, detailing, landscaping..." /></label>
+              </div>
+              <label>Current website optional<input id="northstarWebsite" type="url" placeholder="https://example.com" /></label>
+              <label>Current social media link optional<input id="northstarSocial" type="url" placeholder="https://instagram.com/business" /></label>
+              <label>Services needed<select id="northstarServices" multiple required></select></label>
+              <label>Monthly budget range<select id="northstarBudget" required></select></label>
+              <label>Biggest problem right now<textarea id="northstarProblem" rows="4" required placeholder="What is costing the business leads, time, reputation, or follow-up?"></textarea></label>
+              <label>Goal for next 30-90 days<textarea id="northstarGoal" rows="4" required placeholder="More calls, booked jobs, review generation, CRM setup, ads, better website, cleaner operations..."></textarea></label>
+              <p class="trust-note"><strong>Forge integration:</strong> Forge captures customer demand. NorthStar helps businesses convert that demand into booked jobs and cleaner operations.</p>
+              <label class="check-row"><input id="northstarConsent" required type="checkbox" /> I agree to be contacted by NorthStar/Forge about this request.</label>
+              <button class="btn orange" type="submit">Get Marketing Help</button>
+            </form>
+            <div class="northstar-lead-list" id="northstarLeadList"></div>
+          </aside>
+        </section>
       </section>
 
       <section class="screen auto-screen" id="autos-screen" data-screen="autos">
@@ -1760,6 +1864,12 @@
             </div>
             <div class="table-card"><table id="adminCreativeProvidersTable"></table></div>
             <div class="lead-board" id="adminCreativeProvidersPipeline"></div>
+            <div class="admin-heading">
+              <h2>NorthStar Creative Co. Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-northstar">Export NorthStar CSV</button>
+            </div>
+            <div class="table-card"><table id="adminNorthstarTable"></table></div>
+            <div class="lead-board" id="adminNorthstarPipeline"></div>
             <div class="admin-heading">
               <h2>Referral / Friend Leads</h2>
               <button class="btn ghost small" type="button" data-action="export-referrals">Export Referrals CSV</button>
