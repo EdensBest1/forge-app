@@ -10143,6 +10143,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-flex-leads") exportCsv("forge-flex-leads.csv", state.flexLeads || []);
   if (action?.dataset.action === "export-manufacturing-rfqs") exportCsv("forge-manufacturing-rfqs.csv", state.manufacturingRfqs || []);
   if (action?.dataset.action === "export-manufacturing-suppliers") exportCsv("forge-manufacturing-suppliers.csv", state.manufacturingSuppliers || []);
+  if (action?.dataset.action === "export-manufacturing-supplier-leads") exportCsv("forge-manufacturing-supplier-leads.csv", state.manufacturingSupplierLeads || []);
   if (action?.dataset.action === "export-referrals") exportCsv("forge-referral-leads.csv", state.referrals);
   if (action?.dataset.action === "export-homebuilding") exportCsv("forge-homebuilding-leads.csv", state.homebuildingLeads || []);
   if (action?.dataset.action === "export-building-leads") exportCsv("forge-building-leads.csv", state.buildingLeads || []);
@@ -10210,10 +10211,18 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "mark-flex-status") markFlexStatus(action.dataset.flexId, action.dataset.flexStatusValue);
   if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
   if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");
+  if (action?.dataset.action === "focus-manufacturing-lead") focusAutoPanel("#manufacturingSupplierLeadForm", "#manufacturingLeadCompany");
   if (action?.dataset.action === "copy-manufacturing-brief") copyManufacturingBrief();
   if (action?.dataset.action === "copy-manufacturing-queue") copyManufacturingQueue();
   if (action?.dataset.action === "copy-manufacturing-rfq") copyManufacturingRfq(action.dataset.manufacturingRfqId);
   if (action?.dataset.action === "copy-manufacturing-supplier") copyManufacturingSupplier(action.dataset.manufacturingSupplierId);
+  if (action?.dataset.action === "copy-manufacturing-outreach-template") copyManufacturingOutreachTemplate();
+  if (action?.dataset.action === "copy-manufacturing-supplier-lead") copyManufacturingSupplierLead(action.dataset.manufacturingSupplierLeadId);
+  if (action?.dataset.action === "view-manufacturing-supplier-lead") viewManufacturingSupplierLead(action.dataset.manufacturingSupplierLeadId);
+  if (action?.dataset.action === "invite-manufacturing-supplier-lead") inviteManufacturingSupplierLead(action.dataset.manufacturingSupplierLeadId);
+  if (action?.dataset.action === "convert-manufacturing-supplier-lead") convertManufacturingSupplierLead(action.dataset.manufacturingSupplierLeadId);
+  if (action?.dataset.action === "create-manufacturing-opportunity") createManufacturingOpportunityFromLead(action.dataset.manufacturingSupplierLeadId);
+  if (action?.dataset.action === "create-manufacturing-follow-up") createManufacturingFollowUpTask(action.dataset.manufacturingSupplierLeadId);
   if (action?.dataset.action === "mark-manufacturing-contacted") markManufacturingContacted(action.dataset.manufacturingRfqId);
   if (action?.dataset.action === "move-manufacturing-forward") moveManufacturingForward(action.dataset.manufacturingRfqId);
   if (action?.dataset.action === "copy-auto-market-brief") copyAutoMarketBrief();
@@ -10483,6 +10492,19 @@ document.addEventListener("change", (event) => {
     showToast("Manufacturing RFQ status updated.");
   }
 
+  const manufacturingSupplierLeadStatus = event.target.closest("[data-manufacturing-supplier-lead-status]");
+  if (manufacturingSupplierLeadStatus) {
+    const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === manufacturingSupplierLeadStatus.dataset.manufacturingSupplierLeadStatus);
+    if (lead) {
+      lead.outreachStatus = manufacturingSupplierLeadStatus.value;
+      if (manufacturingSupplierLeadStatus.value === "Contacted") lead.lastContacted = lead.lastContacted || "Today";
+    }
+    addActivity(`Supplier lead status changed: ${lead?.companyName || "supplier lead"} -> ${manufacturingSupplierLeadStatus.value}.`);
+    saveState();
+    render();
+    showToast("Supplier lead status updated.");
+  }
+
   const referralStatus = event.target.closest("[data-referral-status]");
   if (referralStatus) {
     const referral = state.referrals.find((item) => item.id === referralStatus.dataset.referralStatus);
@@ -10572,6 +10594,7 @@ document.addEventListener("input", (event) => {
   const roadRescueNotes = event.target.closest("[data-road-rescue-notes]");
   const flexNotes = event.target.closest("[data-flex-notes]");
   const manufacturingNotes = event.target.closest("[data-manufacturing-notes]");
+  const manufacturingSupplierLeadNotes = event.target.closest("[data-manufacturing-supplier-lead-notes]");
   const referralNotes = event.target.closest("[data-referral-notes]");
   const homebuildingNotes = event.target.closest("[data-homebuilding-notes]");
   const buildingNotes = event.target.closest("[data-building-notes]");
@@ -10619,6 +10642,12 @@ document.addEventListener("input", (event) => {
     const lead = (state.manufacturingRfqs || []).find((item) => item.id === manufacturingNotes.dataset.manufacturingNotes);
     if (!lead) return;
     lead.notes = manufacturingNotes.value;
+    saveState();
+  }
+  if (manufacturingSupplierLeadNotes) {
+    const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === manufacturingSupplierLeadNotes.dataset.manufacturingSupplierLeadNotes);
+    if (!lead) return;
+    lead.followUpNotes = manufacturingSupplierLeadNotes.value;
     saveState();
   }
   if (referralNotes) {
