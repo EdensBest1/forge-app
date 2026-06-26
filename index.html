@@ -110,8 +110,8 @@
           </article>
           <article>
             <span class="split-label">I need business growth</span>
-            <h2>NorthStar Creative Co.</h2>
-            <p>Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations for blue-collar businesses.</p>
+            <h2>Grow Your Business with North Star Creative Co.</h2>
+            <p>Forge helps you find work. North Star Creative Co. helps your business win more of it.</p>
             <button class="btn ghost" type="button" data-nav="northstar">Grow My Business</button>
           </article>
           <article>
@@ -294,9 +294,12 @@
             </article>
             <article class="service-category-card">
               <span class="split-label">Business growth</span>
-              <h3>NorthStar Creative Co.</h3>
-              <p>Marketing, websites, CRM, lead generation, job tracking, and business operations for blue-collar businesses.</p>
-              <button class="btn ghost small" type="button" data-nav="northstar">Grow My Business</button>
+              <h3>North Star Creative Co.</h3>
+              <p>Marketing, websites, Google Business, ads, CRM, lead generation, job tracking, and follow-up systems for blue-collar businesses.</p>
+              <div class="hero-actions">
+                <button class="btn ghost small" type="button" data-nav="northstar">Grow My Business</button>
+                <button class="btn ghost small" type="button" data-nav="northstar">Request a Free Marketing Audit</button>
+              </div>
             </article>
             <article class="service-category-card">
               <span class="split-label">Manufacturing network</span>
@@ -609,6 +612,18 @@
               <span class="split-label">Forge purpose</span>
               <h2>Forge helps the community get real work done.</h2>
               <p>Forge connects customers with local workers, crews, and businesses who can show experience, service areas, availability, portfolio photos, and licensing or insurance notes before bidding on real jobs.</p>
+            </div>
+          </section>
+          <section class="forge-positioning-panel compact">
+            <div>
+              <span class="split-label">Grow Your Business with North Star Creative Co.</span>
+              <h2>Forge helps you find work. North Star Creative Co. helps your business win more of it.</h2>
+              <p>For roofing, construction, HVAC, plumbing, electrical, concrete, asphalt, masonry, auto, hauling, cleaning, photography/videography, manufacturing, and other blue-collar companies that need more leads, better follow-up, or a larger growth plan.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-nav="northstar">Grow My Business</button>
+              <button class="btn blue" type="button" data-nav="northstar">Request a Free Marketing Audit</button>
+              <button class="btn ghost" type="button" data-nav="northstar">Get Help with My Website, Google, Ads, and Follow-Up</button>
             </div>
           </section>
           <section class="service-verticals-panel compact">
@@ -3122,6 +3137,18 @@
             <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
             <label>Service vertical<select id="workerServiceVertical"></select></label>
             <label>Trade categories<select id="workerTradeCategories" multiple size="6"></select></label>
+            <label>Business size classification<select id="workerBusinessSize" required></select></label>
+            <section class="provider-growth-tools northstar-provider-question">
+              <span class="split-label">Grow Your Business with North Star Creative Co.</span>
+              <h2>Forge helps you find work. North Star Creative Co. helps your business win more of it.</h2>
+              <label>Do you want North Star Creative Co. to help you get more jobs and grow your business?
+                <select id="workerNorthStarMarketingNeed" required></select>
+              </label>
+              <div class="hero-actions">
+                <button class="btn ghost small" type="button" data-nav="northstar">Talk to North Star Creative Co.</button>
+                <button class="btn ghost small" type="button" data-nav="northstar">Get Help with My Website, Google, Ads, and Follow-Up</button>
+              </div>
+            </section>
             <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
             <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
             <div class="field-row">
@@ -3154,6 +3181,7 @@
             <h1 id="workerDashboardTitle">Dashboard</h1>
             <div class="profile-mini-card" id="workerProfileMini"></div>
             <div class="stat-row" id="workerStats"></div>
+            <section class="provider-northstar-panel" id="providerNorthstarPanel"></section>
             <h2>Recent Jobs</h2>
             <div class="table-card"><table id="workerJobsTable"></table></div>
             <button class="btn ghost full" type="button" data-nav="jobs">View All Jobs</button>
@@ -3572,7 +3600,7 @@
             <div class="table-card"><table id="adminCreativeProvidersTable"></table></div>
             <div class="lead-board" id="adminCreativeProvidersPipeline"></div>
             <div class="admin-heading">
-              <h2>NorthStar Creative Co. Leads</h2>
+              <h2>North Star Creative Co. Leads</h2>
               <button class="btn ghost small" type="button" data-action="export-northstar">Export NorthStar CSV</button>
             </div>
             <div class="table-card"><table id="adminNorthstarTable"></table></div>

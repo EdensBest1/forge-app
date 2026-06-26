@@ -3488,6 +3488,34 @@ textarea:focus {
   font-weight: 850;
 }
 
+.northstar-score-grid,
+.score-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.northstar-score-grid article,
+.score-chip-row span {
+  padding: 10px 12px;
+  border: 1px solid rgba(6, 72, 183, 0.14);
+  border-radius: 8px;
+  background: #f4f8ff;
+  color: #0b3573;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.northstar-score-grid article {
+  display: grid;
+  gap: 4px;
+}
+
+.northstar-score-grid article span {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
 .northstar-package-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3522,6 +3550,16 @@ textarea:focus {
   gap: 6px;
   margin: 0;
   padding-left: 18px;
+}
+
+.northstar-template-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .northstar-intake-panel {
@@ -3585,6 +3623,51 @@ textarea:focus {
   margin: 0;
   color: rgba(255, 255, 255, 0.78);
   font-size: 0.86rem;
+}
+
+.provider-northstar-panel {
+  display: grid;
+  gap: 16px;
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid rgba(13, 58, 48, 0.16);
+  border-radius: 8px;
+  background: #f6fbf7;
+}
+
+.provider-northstar-panel h2,
+.provider-northstar-panel p {
+  margin: 0;
+}
+
+.provider-growth-score {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid rgba(6, 72, 183, 0.14);
+  border-radius: 8px;
+  background: white;
+}
+
+.provider-growth-score strong {
+  color: var(--blue);
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.provider-growth-score div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.provider-growth-score div span {
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: #0b3573;
+  font-size: 0.76rem;
+  font-weight: 850;
 }
 
 .text-bar-icons button {
@@ -7216,6 +7299,7 @@ td {
   .creative-lead-list article,
   .creative-provider-list article,
   .northstar-package-grid,
+  .northstar-template-list,
   .northstar-lead-list article,
   .opportunity-stats,
   .opportunity-track-grid,
