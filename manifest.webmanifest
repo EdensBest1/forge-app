@@ -1,0 +1,17 @@
+{
+  "name": "Forge MVP",
+  "short_name": "Forge",
+  "description": "Post local jobs, capture workers, and manage early Forge leads.",
+  "start_url": "./index.html#home",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0648b7",
+  "icons": [
+    {
+      "src": "./assets/forge-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

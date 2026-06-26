@@ -1,0 +1,14 @@
+{
+  "name": "forge-mvp",
+  "version": "0.70.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 4174",
+    "check:syntax": "node --check app.js",
+    "check:smoke": "node smoke-test.mjs",
+    "check:security": "node security-check.mjs",
+    "check:release": "node release-check.mjs",
+    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release"
+  }
+}

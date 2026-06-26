@@ -1,0 +1,55 @@
+{
+  "name": "Forge Public Beta Release Candidate",
+  "version": "v70",
+  "status": "public-beta-prep",
+  "entrypoints": {
+    "home": "?v=70#home",
+    "admin": "?v=70&demo=admin#admin",
+    "legal": "?v=70#legal",
+    "postJob": "?v=70#post",
+    "autos": "/auto?v=70",
+    "photographyVideography": "/photography-videography?v=70",
+    "homebuilding": "/homebuilding?v=70",
+    "homebuildingTracker": "/homebuilding/tracker?v=70",
+    "opportunities": "?v=70#opportunities",
+    "workerSignup": "?v=70#signup",
+    "jobStatus": "?v=70#status"
+  },
+  "requiredChecks": [
+    "node --check app.js",
+    "node smoke-test.mjs",
+    "node security-check.mjs",
+    "node release-check.mjs"
+  ],
+  "requiredFiles": [
+    "index.html",
+    "auto/index.html",
+    "photography-videography/index.html",
+    "styles.css",
+    "app.js",
+    "route-loader.js",
+    "homebuilding/index.html",
+    "homebuilding/tracker/index.html",
+    "service-worker.js",
+    "manifest.webmanifest",
+    "netlify.toml",
+    "vercel.json",
+    "robots.txt",
+    "PUBLIC_BETA_DEPLOY_RUNBOOK.md",
+    "FINAL_PUBLIC_GATE.md",
+    "AUTO_DEALER_INTEGRATION.md",
+    "SECURITY_REVIEW_CHECKLIST.md",
+    "ADMIN_AUTH_PLAN.md",
+    "SUPABASE_SCHEMA.sql",
+    "WEBHOOK_PAYLOADS.md",
+    "package.json",
+    ".github/workflows/forge-checks.yml"
+  ],
+  "remainingHumanGates": [
+    "Connect and verify backend or Zapier lead delivery",
+    "Enable production-grade admin authentication",
+    "Export a fresh JSON backup before public beta",
+    "Complete final legal review",
+    "Run final security review"
+  ]
+}

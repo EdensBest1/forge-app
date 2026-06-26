@@ -1,0 +1,1849 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0648b7" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>Forge MVP</title>
+    <link rel="stylesheet" href="./styles.css?v=70" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/forge-icon.svg" />
+  </head>
+  <body>
+    <div class="user-banner hidden" id="userBanner"></div>
+
+    <main class="app">
+      <section class="screen active" id="home-screen" data-screen="home">
+        <header class="home-top">
+          <a class="brand" href="#home" data-nav="home">
+            <span class="flame">F</span>
+            <span>FORGE</span>
+          </a>
+          <div class="top-actions">
+            <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
+            <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
+            <button class="btn ghost small" type="button" data-nav="creative">Photo / Video</button>
+            <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
+            <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
+            <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
+            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In</button>
+            <button class="btn blue small" type="button" data-nav="capture" data-operator-only>Capture Lead</button>
+            <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
+          </div>
+        </header>
+
+        <section class="home-hero">
+          <div class="hero-copy">
+            <h1>Post the job.<span>Get the crew.</span></h1>
+            <p>Forge connects homeowners and businesses with local workers, handymen, crews, and contractors.</p>
+            <div class="hero-actions">
+            <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+            <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
+            <button class="btn ghost" type="button" data-nav="status">Check Job Status</button>
+          </div>
+          </div>
+          <figure class="hero-photo">
+            <img src="./assets/forge-hero.png" alt="Local worker preparing for a job" />
+          </figure>
+        </section>
+
+        <section class="feature-strip" aria-label="Forge benefits">
+          <article><span class="icon">Q</span><strong>Quick Posting</strong><small>Post in minutes</small></article>
+          <article><span class="icon">L</span><strong>Local Pros</strong><small>In Medford</small></article>
+          <article><span class="icon">S</span><strong>Safe & Secure</strong><small>Verified workers</small></article>
+        </section>
+
+        <section class="start-path-panel">
+          <div class="section-title start-path-heading">
+            <div>
+              <span class="split-label">Start here</span>
+              <h2>Choose the path that matches why you came to Forge.</h2>
+              <p>Each path saves the right info and shows what happens next, so early users do not have to guess where to begin.</p>
+            </div>
+            <button class="btn ghost small" type="button" data-action="copy-first-user-links">Copy First User Links</button>
+          </div>
+          <div class="start-path-grid" id="startPathGrid"></div>
+        </section>
+
+        <section class="audience-split">
+          <article>
+            <span class="split-label">I need workers</span>
+            <h2>Post a job and start collecting bids.</h2>
+            <p>Capture the scope, timeline, budget, and contact info so Forge can help match the work with local people.</p>
+            <button class="btn orange" type="button" data-nav="post">Start a Job Post</button>
+          </article>
+          <article>
+            <span class="split-label">I need work</span>
+            <h2>Create a worker profile for early access.</h2>
+            <p>Friends, crews, and local pros can join the first worker list before payments and accounts go live.</p>
+            <button class="btn blue" type="button" data-nav="signup">Join the Worker List</button>
+          </article>
+          <article>
+            <span class="split-label">I need auto help</span>
+            <h2>Buy, sell, repair, transport, or customize a vehicle.</h2>
+            <p>Forge Auto routes vehicle needs through trusted mechanics, detailers, transport providers, and dealer partners.</p>
+            <button class="btn ghost" type="button" data-nav="auto">Open Forge Auto</button>
+          </article>
+          <article>
+            <span class="split-label">I need creative work</span>
+            <h2>Book photography or videography.</h2>
+            <p>Hire local creatives for weddings, events, business content, real estate, social media, family shoots, and community projects.</p>
+            <button class="btn ghost" type="button" data-nav="creative">Book a Creative</button>
+          </article>
+          <article>
+            <span class="split-label">I want a path up</span>
+            <h2>Apply to schools, unions, and blue-collar AI jobs.</h2>
+            <p>Save your goal and build a next-step plan for trade school, apprenticeship, union, and field-tech career paths.</p>
+            <button class="btn ghost" type="button" data-nav="opportunities">Explore Career Paths</button>
+          </article>
+          <article>
+            <span class="split-label">I have a project</span>
+            <h2>Forge Projects</h2>
+            <p>Submit home projects, major renovations, multifamily opportunities, mixed-use projects, commercial work, and investment-backed builds across Oregon and Washington.</p>
+            <button class="btn ghost" type="button" data-nav="projects">Open Projects</button>
+          </article>
+          <article>
+            <span class="split-label">I am building a home</span>
+            <h2>Forge Homebuilding & Development</h2>
+            <p>Protecting What Matters Most. Forge connects homeowners, investors, and builders with trusted contractors, crews, designers, landscapers, logistics partners, and financing/support partners.</p>
+            <button class="btn ghost" type="button" data-nav="homebuilding">Open Homebuilding</button>
+          </article>
+        </section>
+
+        <section class="share-panel">
+          <div>
+            <span class="split-label">Ready for friends</span>
+            <h2>Send people one simple ask: post work or join the worker list.</h2>
+            <p>Forge now saves early job leads and worker leads locally, and can forward them to Zapier once your webhook is connected.</p>
+          </div>
+          <div class="share-actions">
+            <button class="btn orange" type="button" data-nav="capture" data-operator-only>Capture a Lead</button>
+            <button class="btn blue" type="button" data-action="copy-invite">Copy Launch Invite</button>
+            <button class="btn ghost" type="button" data-nav="admin" data-operator-only>Open Admin</button>
+          </div>
+        </section>
+
+        <section class="signup-readiness-panel">
+          <div>
+            <span class="split-label">Can people sign up?</span>
+            <h2>Yes: start with a controlled first-user group.</h2>
+            <p>Forge is ready for friends, workers, and job posters to try the MVP while you collect real interest. Keep payments outside the app for now, and use the admin exports or Zapier webhook before sending the link beyond people you can personally follow up with.</p>
+          </div>
+          <div class="readiness-grid" aria-label="First user signup readiness">
+            <article>
+              <strong>Safe to collect today</strong>
+              <p>Job details, worker profiles, referrals, bids, notes, and follow-up consent.</p>
+            </article>
+            <article>
+              <strong>Use for first wave</strong>
+              <p>Friends, local workers, homeowners, and business owners who understand this is early access.</p>
+            </article>
+            <article>
+              <strong>Before public launch</strong>
+              <p>Connect hosting, database, authentication, backups, and the final trust and safety workflow.</p>
+            </article>
+          </div>
+          <div class="hero-actions">
+            <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+            <button class="btn blue" type="button" data-nav="signup">Join Worker List</button>
+            <button class="btn ghost" type="button" data-action="copy-signup-checklist">Copy Signup Checklist</button>
+          </div>
+        </section>
+
+        <section class="founding-panel">
+          <div>
+            <span class="split-label">First 200 launch</span>
+            <h2>Build the first local network before the full marketplace goes live.</h2>
+            <p>Track job posters, workers, career leads, and referrals as one launch list so every conversation moves Forge closer to real activity.</p>
+          </div>
+          <div class="founding-grid" id="homeFoundingGrid"></div>
+          <div class="hero-actions">
+            <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+            <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+            <button class="btn ghost" type="button" data-action="copy-invite">Copy Launch Invite</button>
+            <button class="btn ghost" type="button" data-nav="capture" data-operator-only>Capture Referral</button>
+          </div>
+        </section>
+
+        <section class="next-steps-panel">
+          <div>
+            <span class="split-label">What happens next</span>
+            <h2>Every early signup turns into a clear follow-up.</h2>
+            <p>Forge is still early, so the first wave is handled carefully: save the lead, match the need, and keep the next message visible.</p>
+          </div>
+          <div class="next-step-grid">
+            <article>
+              <span>1</span>
+              <h3>Post work</h3>
+              <p>Forge saves the job, shows it in Admin, and starts collecting bids from local workers.</p>
+              <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
+            </article>
+            <article>
+              <span>2</span>
+              <h3>Join the worker list</h3>
+              <p>Forge saves the worker profile, readiness status, and follow-up message for available jobs.</p>
+              <button class="btn blue small" type="button" data-nav="signup">Join as Worker</button>
+            </article>
+            <article>
+              <span>3</span>
+              <h3>Send one referral</h3>
+              <p>Forge captures the contact, priority, and notes so the operator can follow up fast.</p>
+              <button class="btn ghost small" type="button" data-nav="capture" data-operator-only>Capture Referral</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-jobs">
+          <div class="section-title">
+            <h2>Popular jobs in Medford</h2>
+            <button class="link-button" type="button" data-nav="jobs">View all categories -></button>
+          </div>
+          <div class="chips">
+            <button type="button" data-nav="jobs">Handyman</button>
+            <button type="button" data-nav="jobs">Landscaping</button>
+            <button type="button" data-nav="jobs">Junk Removal</button>
+            <button type="button" data-nav="jobs">Moving</button>
+            <button type="button" data-nav="jobs">Painting</button>
+            <button type="button" data-nav="creative">Photography & Videography</button>
+          </div>
+          <div class="service-category-cards">
+            <article class="service-category-card">
+              <span class="split-label">Creative services</span>
+              <h3>Photography & Videography</h3>
+              <p>Weddings, events, business content, real estate, social media, and family shoots.</p>
+              <button class="btn ghost small" type="button" data-nav="creative">Book a Creative</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="timeline">
+          <div class="timeline-heading"><span>FORGE</span> MVP Launch Timeline</div>
+          <div class="timeline-grid" id="timelineGrid"></div>
+          <div class="go-live">
+            <div>
+              <strong>Realistic go-live: 4-5 weeks to launch MVP and start marketing</strong>
+              <span>Focus first: get jobs posted, get workers onboard, create activity.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-script">
+          <div>
+            <span class="split-label">Demo script</span>
+            <h2>Show Forge in under three minutes.</h2>
+          </div>
+          <div class="demo-steps" id="demoSteps"></div>
+        </section>
+
+        <footer class="home-footer">
+          <span>Local work. Real people. Done right.</span>
+          <button type="button" data-nav="legal">Terms & Privacy</button>
+        </footer>
+      </section>
+
+      <section class="screen" id="login-screen" data-screen="login">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Log in to Forge</strong>
+        </header>
+        <section class="login-layout">
+          <div class="login-copy">
+            <span class="split-label">Demo accounts</span>
+            <h1>Choose who you are testing as.</h1>
+            <p class="muted">Forge now opens the right tools for each person: workers see jobs and bids, customers see job status, and admins see the operator dashboard.</p>
+          </div>
+          <div class="login-options">
+            <article class="login-card">
+              <span class="split-label">Worker / Contractor</span>
+              <h2>Mike Jones</h2>
+              <div class="login-status"><strong>Profile Status</strong><span>Ready for bids</span></div>
+              <p>Browse available jobs, submit bids, and open the worker dashboard.</p>
+              <button class="btn blue" type="button" data-login-role="worker" data-login-name="Mike Jones" data-login-screen="worker">Continue as Mike</button>
+            </article>
+            <article class="login-card">
+              <span class="split-label">Job poster</span>
+              <h2>John Smith</h2>
+              <div class="login-status"><strong>Profile Status</strong><span>Job posted, bids available</span></div>
+              <p>Check the bathroom faucet job, review bids, and follow the customer flow.</p>
+              <button class="btn orange" type="button" data-login-role="customer" data-login-name="John Smith" data-login-screen="status">Continue as John</button>
+            </article>
+            <article class="login-card">
+              <span class="split-label">Operator</span>
+              <h2>Forge Admin</h2>
+              <div class="login-status"><strong>Profile Status</strong><span>Operator active</span></div>
+              <p>Manage leads, referrals, bids, exports, Zapier setup, and follow-up queues.</p>
+              <button class="btn ghost" type="button" data-login-role="admin" data-login-name="Forge Admin" data-login-screen="admin">Open Admin</button>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="perspective-screen" data-screen="perspective">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Perspective Demo</strong>
+        </header>
+        <section class="perspective-layout">
+          <div class="perspective-intro">
+            <span class="split-label">Show people their side</span>
+            <h1>Pick who you are sitting with.</h1>
+            <p class="muted">Open Forge as a homeowner, worker, or operator and walk through the screens they would actually use.</p>
+          </div>
+          <section class="demo-guide">
+            <div>
+              <span class="split-label">3-minute walkthrough</span>
+              <h2>Use this when someone asks what Forge would look like for them.</h2>
+            </div>
+            <div class="demo-guide-steps" id="demoGuideSteps"></div>
+            <button class="btn blue" type="button" data-action="copy-demo-script">Copy Demo Script</button>
+          </section>
+          <section class="demo-cues">
+            <div>
+              <span class="split-label">Live demo cue cards</span>
+              <h2>Say the right thing for the person in front of you.</h2>
+            </div>
+            <div class="demo-cue-grid" id="demoCueGrid"></div>
+          </section>
+          <section class="demo-path">
+            <div>
+              <span class="split-label">Best demo path</span>
+              <h2>Open the proof screen for whoever is sitting with you.</h2>
+            </div>
+            <div class="demo-path-grid" id="demoPathGrid"></div>
+          </section>
+          <section class="demo-links">
+            <div>
+              <span class="split-label">Shareable links</span>
+              <h2>Copy exactly the view someone should open first.</h2>
+            </div>
+            <div class="demo-link-grid" id="demoLinkGrid"></div>
+          </section>
+          <div class="perspective-grid" id="perspectiveGrid"></div>
+          <section class="demo-outcomes">
+            <div>
+              <span class="split-label">After the demo</span>
+              <h2>Turn interest into one clear next step.</h2>
+            </div>
+            <div class="demo-outcome-grid" id="demoOutcomeGrid"></div>
+          </section>
+          <section class="finish-today">
+            <div>
+              <span class="split-label">MVP ready today</span>
+              <h2>Final demo checklist</h2>
+              <p class="muted">Use this before showing Forge so the core story stays tight.</p>
+            </div>
+            <div class="finish-grid" id="finishChecklist"></div>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="copy-demo-pack">Copy Demo Pack</button>
+              <button class="btn ghost" type="button" data-action="copy-close-ask">Copy Close Ask</button>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="capture-screen" data-screen="capture">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Quick Capture</strong>
+        </header>
+        <section class="capture-layout">
+          <form class="capture-card" id="quickLeadForm">
+            <span class="split-label">Restaurant mode</span>
+            <h1>Save the lead before the moment passes.</h1>
+            <p class="muted">Use this when a friend, worker, contractor, homeowner, or business owner shows interest.</p>
+            <label>Name<input id="quickName" required placeholder="Friend or business name" /></label>
+            <label>Phone<input id="quickPhone" required placeholder="(541) 555-0000" /></label>
+            <label>Email<input id="quickEmail" type="email" placeholder="optional@email.com" /></label>
+            <div class="field-row">
+              <label>Lead Type
+                <select id="quickType">
+                  <option>Needs work</option>
+                  <option>Needs workers</option>
+                  <option>Knows someone</option>
+                  <option>Potential partner</option>
+                </select>
+              </label>
+              <label>Priority
+                <select id="quickPriority">
+                  <option>Hot</option>
+                  <option>Warm</option>
+                  <option>Later</option>
+                </select>
+              </label>
+            </div>
+            <label>What did they say?<textarea id="quickNote" rows="4" placeholder="Example: Has a deck repair job next week. Wants a text tomorrow."></textarea></label>
+            <p class="trust-note"><strong>Follow-up consent:</strong> Only save someone who agreed to hear from Forge. This info is used to text, call, or email about early access.</p>
+            <button class="btn orange" type="submit">Save Lead</button>
+          </form>
+          <aside class="capture-card capture-side">
+            <h2>Tonight's goal</h2>
+            <div class="goal-grid" id="launchGoals"></div>
+            <p class="muted">Early traction is simple: job posters, workers, and people willing to share Forge.</p>
+            <button class="btn blue" type="button" data-nav="admin">Open Admin Queue</button>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen" id="status-screen" data-screen="status">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>My Job Status</strong>
+        </header>
+        <nav class="customer-tabs" aria-label="Customer dashboard tabs">
+          <button class="btn ghost small" type="button" data-nav="status">Jobs</button>
+          <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
+        </nav>
+        <section class="capture-layout">
+          <form class="capture-card" id="statusLookupForm">
+            <span class="split-label">For job posters</span>
+            <h1>Check your posted jobs and bids.</h1>
+            <p class="muted">Enter the phone or email used when posting a job.</p>
+            <div class="profile-mini-card" id="customerProfileMini"></div>
+            <label>Phone or Email<input id="statusLookup" required placeholder="(541) 555-1234 or email@example.com" /></label>
+            <p class="trust-note"><strong>Status privacy:</strong> Forge only checks saved MVP job leads in this browser. No payment or account password is required.</p>
+            <button class="btn blue" type="submit">Find My Jobs</button>
+          </form>
+          <aside class="capture-card capture-side">
+            <h2>Results</h2>
+            <div class="status-results" id="statusResults"></div>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen" id="confirm-screen" data-screen="confirm">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Confirmation</strong>
+        </header>
+        <section class="confirm-card">
+          <span class="confirm-icon">✓</span>
+          <p class="split-label" id="confirmKicker">You're on the list</p>
+          <h1 id="confirmTitle">Forge saved this lead.</h1>
+          <p id="confirmBody">The next step is ready.</p>
+          <div class="confirm-details" id="confirmDetails"></div>
+          <div class="confirm-next" id="confirmNextSteps"></div>
+          <div class="confirm-handoff" id="confirmHandoff"></div>
+          <div class="hero-actions">
+            <button class="btn orange" id="confirmPrimary" type="button">View Lead</button>
+            <button class="btn ghost" id="confirmSecondary" type="button">Back Home</button>
+            <button class="btn ghost" type="button" data-action="copy-confirmation-handoff">Copy Handoff</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="post-screen" data-screen="post">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Post a Job</strong>
+        </header>
+        <section class="wizard-card">
+          <div class="progress" id="postProgress"></div>
+
+          <form id="postJobForm">
+            <fieldset class="step-panel active" data-step="1">
+              <h1>What type of work do you need?</h1>
+              <label>Job Category<select id="jobCategory" required></select></label>
+              <label>Job Title<input id="jobTitle" required placeholder="Ex: Bathroom faucet installation" /></label>
+              <label>Describe your job<textarea id="jobDescription" maxlength="500" placeholder="Tell us more about the work you need done..."></textarea></label>
+            </fieldset>
+
+            <fieldset class="step-panel" data-step="2">
+              <h1>Where is the job?</h1>
+              <label>Location<input id="jobLocation" required value="Medford, OR" /></label>
+              <label>When do you need this done?<select id="jobUrgency"><option>ASAP</option><option>This week</option><option>Flexible</option></select></label>
+              <label>Budget Range<select id="jobBudget"><option>$150 - $250</option><option>$250 - $500</option><option>$500 - $1,000</option><option>$1,000+</option></select></label>
+              <label>Upload photos (optional)<input id="jobPhotos" type="file" multiple /></label>
+            </fieldset>
+
+            <fieldset class="step-panel" data-step="3">
+              <h1>Your contact information</h1>
+              <label>Full Name<input id="customerName" required value="John Smith" /></label>
+              <label>Phone Number<input id="customerPhone" required value="(541) 555-1234" /></label>
+              <label>Email Address<input id="customerEmail" required type="email" value="john.smith@email.com" /></label>
+              <p class="trust-note"><strong>Early access note:</strong> Forge will use this contact info to follow up about this job by text, phone, or email. No payment is collected in this MVP.</p>
+              <label class="check-row"><input id="terms" required type="checkbox" /> I agree to Forge's early access terms and privacy policy.</label>
+              <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
+            </fieldset>
+
+            <div class="wizard-actions">
+              <button class="btn ghost" id="postBack" type="button">Back</button>
+              <button class="btn blue" id="postNext" type="button">Next</button>
+              <button class="btn orange hidden" id="postSubmit" type="submit">Submit Job</button>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" id="jobs-screen" data-screen="jobs">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+        </header>
+        <section class="content-wrap">
+          <h1>Available Jobs</h1>
+          <p class="muted">Find work and get paid.</p>
+          <div class="filter-row">
+            <select id="listingCategory"></select>
+            <select id="listingBudget"><option>All Budgets</option><option>$100 - $250</option><option>$250 - $500</option><option>$500+</option></select>
+            <select id="listingDate"><option>All Dates</option><option>ASAP</option><option>This week</option><option>Flexible</option></select>
+          </div>
+          <div class="job-feed" id="jobFeed"></div>
+        </section>
+      </section>
+
+      <section class="screen creative-screen" id="creative-screen" data-screen="creative">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-action="focus-creative-lead">Book</button><button type="button" data-action="focus-creative-provider">Apply</button></div>
+        </header>
+        <section class="creative-hero">
+          <figure>
+            <img src="./assets/forge-hero.png" alt="Local Forge professional preparing for a customer project" />
+          </figure>
+          <div class="creative-hero-copy">
+            <span class="split-label">Photography & Videography</span>
+            <h1>Hire Local Photographers & Videographers</h1>
+            <p>Book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, and more.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-creative-lead">Book a Creative</button>
+              <button class="btn blue" type="button" data-action="focus-creative-provider">Apply as a Provider</button>
+              <button class="btn ghost light" type="button" data-action="copy-creative-brief">Copy Brief</button>
+            </div>
+          </div>
+        </section>
+        <section class="creative-layout">
+          <div class="creative-main">
+            <section class="creative-intro">
+              <div>
+                <span class="split-label">Local creative marketplace</span>
+                <h2>Creative help for Medford and surrounding areas.</h2>
+                <p>Forge helps customers connect with trusted local creatives, including photographers and videographers like Dennis and other approved providers in the community.</p>
+              </div>
+              <button class="btn ghost small" type="button" data-action="copy-creative-queue">Copy Creative Queue</button>
+            </section>
+
+            <section class="creative-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Service types</span>
+                  <h2>One place to request the shoot, content, or coverage.</h2>
+                </div>
+              </div>
+              <div class="creative-service-grid" id="creativeServiceGrid"></div>
+            </section>
+
+            <section class="creative-form-section" id="creativeLeadSection">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Customer lead form</span>
+                  <h2>Tell Forge what needs to be photographed or filmed.</h2>
+                </div>
+              </div>
+              <form class="creative-form" id="creativeLeadForm">
+                <div class="field-row">
+                  <label>Name<input id="creativeName" required placeholder="Full name" /></label>
+                  <label>Phone<input id="creativePhone" required placeholder="(541) 555-0000" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Email<input id="creativeEmail" required type="email" placeholder="name@email.com" /></label>
+                  <label>City<input id="creativeCity" required value="Medford, OR" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Event/project type<select id="creativeProjectType" required></select></label>
+                  <label>Desired date<input id="creativeDesiredDate" type="date" /></label>
+                </div>
+                <label>Location of shoot<input id="creativeShootLocation" required placeholder="Venue, business, home, church, property, or city" /></label>
+                <div class="field-row">
+                  <label>Estimated budget<select id="creativeBudget" required></select></label>
+                  <label>Photo, video, or both<select id="creativeMediaType" required></select></label>
+                </div>
+                <label>Short description<textarea id="creativeDescription" rows="4" required placeholder="What do you need captured, how many people or locations, and what final content do you want?"></textarea></label>
+                <label>Upload or inspiration link optional<input id="creativeInspirationLink" type="url" placeholder="https://example.com/inspiration" /></label>
+                <label class="file-button btn ghost full">Upload inspiration files<input id="creativeInspirationFiles" type="file" multiple accept="image/*,video/*,.pdf" /></label>
+                <p class="trust-note"><strong>Privacy note:</strong> Customer contact information is used only for Forge booking and provider matching.</p>
+                <label class="check-row"><input id="creativeConsent" required type="checkbox" /> I agree to be contacted by Forge or an approved provider about this request.</label>
+                <button class="btn orange" type="submit">Request Creative Work</button>
+              </form>
+              <div class="creative-lead-list" id="creativeLeadList"></div>
+            </section>
+          </div>
+
+          <aside class="creative-provider-panel" id="creativeProviderSection">
+            <form class="creative-form provider" id="creativeProviderForm">
+              <span class="split-label">Provider signup</span>
+              <h2>Apply to offer photography or videography through Forge.</h2>
+              <label>Name / business name<input id="creativeProviderName" required placeholder="Name or business" /></label>
+              <div class="field-row">
+                <label>Phone<input id="creativeProviderPhone" required placeholder="(541) 555-0000" /></label>
+                <label>Email<input id="creativeProviderEmail" required type="email" placeholder="provider@email.com" /></label>
+              </div>
+              <label>City / service area<input id="creativeProviderArea" required value="Medford, OR" /></label>
+              <label>Photography, videography, or both<select id="creativeProviderDiscipline" required></select></label>
+              <label>Portfolio link<input id="creativeProviderPortfolio" required type="url" placeholder="https://portfolio.example.com" /></label>
+              <label>Instagram / social link<input id="creativeProviderSocial" type="url" placeholder="https://instagram.com/yourhandle" /></label>
+              <label>Years of experience<select id="creativeProviderExperience" required></select></label>
+              <label>Equipment notes optional<textarea id="creativeProviderEquipment" rows="3" placeholder="Camera bodies, lenses, audio, lighting, drone, editing setup, etc."></textarea></label>
+              <label>Types of shoots offered<textarea id="creativeProviderShoots" rows="3" required placeholder="Weddings, real estate, business branding, events, family, social content, etc."></textarea></label>
+              <label>Availability<input id="creativeProviderAvailability" required placeholder="Weekends, weekdays, evenings, rush work, seasonal notes" /></label>
+              <label>Insurance / licensing notes optional<textarea id="creativeProviderInsurance" rows="3" placeholder="Liability insurance, drone certification, business license, venue requirements, etc."></textarea></label>
+              <label class="check-row"><input id="creativeProviderTerms" required type="checkbox" /> I agree to Forge provider terms and approved-provider review.</label>
+              <button class="btn blue" type="submit">Apply as Creative Provider</button>
+            </form>
+            <div class="creative-provider-list" id="creativeProviderList"></div>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen auto-screen" id="autos-screen" data-screen="autos">
+        <header class="blue-bar auto-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+        </header>
+        <section class="auto-hero">
+          <img src="./assets/forge-auto-services-hero.png" alt="Forge Auto Services mechanic shop, diesel truck, trailer transport, detailing, and dealer inventory" />
+          <div class="auto-hero-copy">
+            <span class="split-label">Forge Auto Services</span>
+            <h1>Forge Auto Services</h1>
+            <p class="auto-hero-line">Buy. Sell. Repair. Transport.</p>
+            <p>Trusted auto services powered by the Forge Blue Collar Marketplace.</p>
+            <div class="hero-actions">
+              <button class="btn gold" type="button" data-action="focus-auto-request">Request Auto Service</button>
+              <button class="btn ghost light" type="button" data-action="focus-vehicle-listing">List a Vehicle</button>
+              <button class="btn ghost light" type="button" data-action="focus-auto-partners">Partner With Forge Auto</button>
+            </div>
+          </div>
+        </section>
+        <section class="auto-layout">
+          <div class="auto-main">
+            <div class="section-title auto-section-heading">
+              <div>
+                <span class="split-label">Forge Auto division</span>
+                <h1>Buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles.</h1>
+                <p class="muted">Forge Auto helps customers through trusted auto partners, mechanics, transport providers, and dealership partners while keeping licensing and compliance boundaries clear.</p>
+              </div>
+              <button class="btn orange small" type="button" data-action="copy-auto-market-brief">Copy Auto Brief</button>
+            </div>
+            <div class="auto-stats" id="autoStats"></div>
+            <section class="auto-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Auto services</span>
+                  <h2>One intake path for the vehicle work customers actually need.</h2>
+                </div>
+              </div>
+              <div class="auto-service-grid" id="autoServiceGrid"></div>
+            </section>
+            <section class="auto-request-section" id="autoRequestSection">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Forge Auto Request Form</span>
+                  <h2>Request auto service, inspection, transport, detailing, or customization.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-service-queue">Copy Service Queue</button>
+              </div>
+              <form class="auto-service-form" id="autoServiceForm">
+                <div class="field-row">
+                  <label>Full name<input id="autoFullName" required placeholder="Full name" /></label>
+                  <label>Phone<input id="autoPhone" required placeholder="(541) 555-0000" /></label>
+                </div>
+                <label>Email<input id="autoEmail" type="email" placeholder="optional@email.com" /></label>
+                <label>Vehicle year/make/model<input id="autoVehicle" required placeholder="2018 Ram 3500 Laramie" /></label>
+                <div class="field-row">
+                  <label>Current mileage<input id="autoMileage" required placeholder="86,000 miles" /></label>
+                  <label>Urgency<select id="autoUrgency"><option>ASAP</option><option>This week</option><option>Flexible</option><option>Quote first</option></select></label>
+                </div>
+                <label>Service needed<select id="autoServiceNeeded"></select></label>
+                <label>Location<input id="autoLocation" required value="Medford, OR" /></label>
+                <label class="file-button btn ghost full">Upload photos<input id="autoPhotos" type="file" multiple accept="image/*" /></label>
+                <label>Notes<textarea id="autoNotes" rows="4" placeholder="Tell us what is happening, what you want done, pickup/drop-off details, or partner preferences."></textarea></label>
+                <p class="trust-note"><strong>Compliance note:</strong> Vehicle sales, financing, repair, towing, transport, and insurance-related work must be performed by properly licensed or qualified partners where required.</p>
+                <button class="btn gold" type="submit">Request Auto Service</button>
+              </form>
+              <div class="auto-request-list" id="autoRequestList"></div>
+            </section>
+            <section class="auto-route">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Partner route</span>
+                  <h2>Move auto requests without pretending Forge is the licensed provider.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-market-brief">Copy Auto Brief</button>
+              </div>
+              <div class="auto-route-grid" id="autoLeadRoute"></div>
+            </section>
+            <section class="auto-setup">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Dealer setup checklist</span>
+                  <h2>What needs to be confirmed before real auto partner routing?</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-dealer-setup">Copy Setup Checklist</button>
+              </div>
+              <div class="auto-setup-grid" id="autoDealerSetup"></div>
+            </section>
+            <section class="auto-dealers">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Dealer network</span>
+                  <h2>Route sales and buyer requests through trusted dealer partners.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-dealer-plan">Copy Dealer Plan</button>
+              </div>
+              <div class="auto-dealer-grid" id="autoDealerGrid"></div>
+            </section>
+            <section class="auto-inquiries">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Buyer inquiries</span>
+                  <h2>Save buyer interest and route it to the right dealer.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-inquiry-queue">Copy Buyer Queue</button>
+              </div>
+              <form class="auto-inquiry-form" id="autoInquiryForm">
+                <label>Vehicle<select id="autoInquiryVehicle"></select></label>
+                <div class="field-row">
+                  <label>Buyer Name<input id="autoBuyerName" required placeholder="Buyer name" /></label>
+                  <label>Phone<input id="autoBuyerPhone" required placeholder="(541) 555-0000" /></label>
+                </div>
+                <label>Email<input id="autoBuyerEmail" type="email" placeholder="optional@email.com" /></label>
+                <label>What do they want to know?<textarea id="autoBuyerNote" rows="3" placeholder="Example: Wants to see it Saturday, asks about title and financing."></textarea></label>
+                <p class="trust-note"><strong>Buyer safety:</strong> Save only buyers who agreed to follow-up. Dealer/title/payment, financing, inspection, and insurance details must be verified outside Forge for this MVP.</p>
+                <button class="btn blue" type="submit">Save Buyer Inquiry</button>
+              </form>
+              <div class="auto-inquiry-list" id="autoInquiryList"></div>
+            </section>
+            <div class="auto-listings" id="autoListings"></div>
+            <section class="auto-compliance">
+              <span class="split-label">Compliance boundary</span>
+              <p>Vehicle sales, financing, repair, towing, transport, and insurance-related work must be performed by properly licensed or qualified partners where required.</p>
+            </section>
+          </div>
+          <form class="auto-sell-card" id="vehicleListingForm">
+            <span class="split-label">Sell a car</span>
+            <h2>Post a vehicle for local buyers.</h2>
+            <p class="muted">Save the year, make, model, price, mileage, seller contact, and dealer partner so a buyer can follow up.</p>
+            <div class="field-row">
+              <label>Year<input id="vehicleYear" required placeholder="2016" /></label>
+              <label>Make<input id="vehicleMake" required placeholder="Toyota" /></label>
+            </div>
+            <label>Model<input id="vehicleModel" required placeholder="Camry SE" /></label>
+            <div class="field-row">
+              <label>Price<input id="vehiclePrice" required placeholder="$8,900" /></label>
+              <label>Mileage<input id="vehicleMileage" required placeholder="104,000 miles" /></label>
+            </div>
+            <label>Location<input id="vehicleLocation" required value="Medford, OR" /></label>
+            <label>Dealer Partner<select id="vehicleDealer"></select></label>
+            <label>Description<textarea id="vehicleDescription" rows="4" placeholder="Clean title, condition, recent work, why selling."></textarea></label>
+            <div class="field-row">
+              <label>Seller Name<input id="vehicleSeller" required placeholder="Seller name" /></label>
+              <label>Phone<input id="vehiclePhone" required placeholder="(541) 555-0000" /></label>
+            </div>
+            <label>Email<input id="vehicleEmail" type="email" placeholder="optional@email.com" /></label>
+            <p class="trust-note"><strong>Auto safety:</strong> Forge does not verify title, financing, mechanical condition, insurance, or payment in this MVP. Meet safely, inspect the vehicle, verify ownership, and keep payment outside Forge.</p>
+            <button class="btn orange" type="submit">Post Vehicle</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" id="opportunities-screen" data-screen="opportunities">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+        </header>
+        <section class="opportunity-layout">
+          <div class="opportunity-main">
+            <div class="section-title">
+              <div>
+                <span class="split-label">Training & Careers</span>
+                <h1>Apply to trade schools, unions, and blue-collar AI jobs.</h1>
+                <p class="muted">Forge helps organize interest, requirements, and follow-up. Official applications still happen directly with the school, union, employer, apprenticeship, or program.</p>
+              </div>
+              <button class="btn orange small" type="button" data-action="copy-opportunity-plan">Copy Application Plan</button>
+            </div>
+            <div class="opportunity-stats" id="opportunityStats"></div>
+            <section class="opportunity-tracks">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Path finder</span>
+                  <h2>Help people choose the next move.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-opportunity-plan">Copy Plan</button>
+              </div>
+              <div class="opportunity-track-grid" id="opportunityTrackGrid"></div>
+            </section>
+            <section class="opportunity-steps">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Application route</span>
+                  <h2>Keep the MVP safe and useful.</h2>
+                </div>
+              </div>
+              <div class="opportunity-step-grid" id="opportunityStepGrid"></div>
+            </section>
+            <section class="opportunity-leads">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Career interest</span>
+                  <h2>Save applicants and follow up with a clean handoff.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-opportunity-leads">Copy Career Leads</button>
+              </div>
+              <div class="opportunity-lead-list" id="opportunityLeadList"></div>
+            </section>
+          </div>
+          <form class="opportunity-card" id="opportunityForm">
+            <span class="split-label">Career interest form</span>
+            <h2>Save a trade or AI career lead.</h2>
+            <p class="muted">Use this for people who want help applying to a blue-collar school, union, apprenticeship, or AI-enabled field job.</p>
+            <div class="field-row">
+              <label>Name<input id="opportunityName" required placeholder="Applicant name" /></label>
+              <label>Phone<input id="opportunityPhone" required placeholder="(541) 555-0000" /></label>
+            </div>
+            <label>Email<input id="opportunityEmail" type="email" placeholder="optional@email.com" /></label>
+            <label>Goal<select id="opportunityGoal"></select></label>
+            <label>Experience<select id="opportunityExperience">
+              <option>No experience yet</option>
+              <option>Some hands-on experience</option>
+              <option>Already working in a trade</option>
+              <option>Military / technical background</option>
+              <option>Career change</option>
+            </select></label>
+            <label>Location<input id="opportunityLocation" value="Medford, OR" /></label>
+            <label>Notes<textarea id="opportunityNote" rows="4" placeholder="Example: Interested in electrical apprenticeship, HVAC school, robotics technician, or drone inspection work."></textarea></label>
+            <p class="trust-note"><strong>Application boundary:</strong> Do not upload or enter IDs, transcripts, SSNs, payment info, passwords, or official documents into this MVP.</p>
+            <button class="btn orange" type="submit">Save Career Interest</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen projects-screen" id="projects-screen" data-screen="projects">
+        <header class="blue-bar projects-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons">
+            <button type="button" data-action="focus-project-intake">Start</button>
+            <button type="button" data-nav="admin-projects" data-admin-control>Admin</button>
+          </div>
+        </header>
+        <section class="projects-hero">
+          <div class="projects-hero-copy">
+            <span class="split-label">Forge Projects</span>
+            <h1>Big projects need more than a handyman. They need real operators.</h1>
+            <p>Forge connects homeowners, property owners, investors, and businesses across Oregon and Washington with trusted project partners for home projects, major renovations, multifamily opportunities, mixed-use projects, and ground-up construction.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-project-intake">Start a Home Project</button>
+              <button class="btn blue" type="button" data-action="focus-project-major">Submit a Major Build</button>
+              <button class="btn ghost light" type="button" data-action="focus-project-partner">Talk to a Project Partner</button>
+            </div>
+          </div>
+          <div class="projects-hero-panel">
+            <span>OR / WA</span>
+            <strong>Home projects, investment builds, and major development intake.</strong>
+            <p>Small repair work routes toward Forge Pros. Larger project opportunities move into Major Projects Review before any partner referral.</p>
+          </div>
+        </section>
+
+        <section class="projects-layout">
+          <div class="projects-main">
+            <section class="projects-overview">
+              <article>
+                <span>01</span>
+                <strong>Home projects</strong>
+                <p>Repairs, remodels, ADUs, shops, fencing, gates, and practical work that can route to normal Forge Pros when the budget and scope fit.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <strong>Major projects</strong>
+                <p>Multifamily, mixed-use, commercial tenant improvements, land development, and investment property opportunities route to Major Projects Review.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <strong>Partner review</strong>
+                <p>After Forge approval and user consent, qualified OR/WA leads can be prepared for third-party partner review.</p>
+              </article>
+            </section>
+
+            <section class="projects-partner-spotlight" id="projectsPartnerSpotlight">
+              <div class="partner-profile" id="senecaSpotlight"></div>
+            </section>
+
+            <section class="projects-timeline">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Project status timeline</span>
+                  <h2>Every project gets a clear route.</h2>
+                </div>
+              </div>
+              <div class="project-status-timeline" id="projectStatusTimeline"></div>
+            </section>
+
+            <section class="projects-lead-list">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Customer dashboard</span>
+                  <h2>Projects tab</h2>
+                  <p class="muted">Submitted projects appear here for the current customer demo and in the admin Projects queue.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-projects-queue">Copy Projects Queue</button>
+              </div>
+              <div class="project-lead-list" id="projectLeadList"></div>
+            </section>
+
+            <section class="projects-compliance">
+              <span class="split-label">Compliance boundary</span>
+              <p>Forge is a lead marketplace and project coordinator, not the contractor of record. Construction work must be accepted and performed only by properly licensed and insured contractors where required. Forge requires user consent before sharing project details with third-party partners and written permission before using partner names, logos, testimonials, or case studies.</p>
+            </section>
+          </div>
+
+          <form class="projects-intake-card" id="projectIntakeForm">
+            <span class="split-label">Project intake</span>
+            <h2>Submit a home or major project.</h2>
+            <p class="muted">Use this for homeowners, property owners, investors, landlords, and businesses in Oregon or Washington.</p>
+            <div class="field-row">
+              <label>Your name<input id="projectContactName" required placeholder="Full name" autocomplete="name" /></label>
+              <label>Phone<input id="projectContactPhone" required placeholder="(541) 555-0000" autocomplete="tel" /></label>
+            </div>
+            <label>Email<input id="projectContactEmail" type="email" required placeholder="name@email.com" autocomplete="email" /></label>
+            <label>projectType<select id="projectType" required></select></label>
+            <label>projectTitle<input id="projectTitle" required placeholder="Example: ADU build, 8-unit review, restaurant TI" /></label>
+            <label>projectDescription<textarea id="projectDescription" rows="4" required placeholder="Describe scope, current condition, desired outcome, and any known constraints."></textarea></label>
+            <label>propertyAddress<input id="propertyAddress" placeholder="Street address or parcel reference" /></label>
+            <div class="field-row">
+              <label>city<input id="projectCity" required placeholder="Medford" /></label>
+              <label>state
+                <select id="projectState" required>
+                  <option value="OR">OR</option>
+                  <option value="WA">WA</option>
+                  <option value="CA">CA</option>
+                  <option value="ID">ID</option>
+                </select>
+              </label>
+            </div>
+            <label>county<input id="projectCounty" placeholder="Jackson, Multnomah, Clark, etc." /></label>
+            <div class="field-row">
+              <label>budgetRange<select id="projectBudgetRange" required></select></label>
+              <label>timeline<input id="projectTimeline" required placeholder="ASAP, 1-3 months, 6-12 months" /></label>
+            </div>
+            <label>projectStage<select id="projectStage" required></select></label>
+            <div class="field-row">
+              <label>ownsProperty
+                <select id="ownsProperty" required>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="under_contract">Under contract</option>
+                  <option value="unknown">Not sure</option>
+                </select>
+              </label>
+              <label>hasPlans
+                <select id="hasPlans" required>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                  <option value="in_progress">In progress</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>hasPermits
+                <select id="hasPermits" required>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                  <option value="in_progress">In progress</option>
+                </select>
+              </label>
+              <label>needsFinancing
+                <select id="needsFinancing" required>
+                  <option value="unsure">Unsure</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+            </div>
+            <label class="file-button btn ghost full">uploadPhotos<input id="uploadPhotos" type="file" multiple accept="image/*" /></label>
+            <label class="file-button btn ghost full">uploadDocuments<input id="uploadDocuments" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,image/*" /></label>
+            <label>preferredContactMethod
+              <select id="preferredContactMethod" required>
+                <option>Phone</option>
+                <option>Text</option>
+                <option>Email</option>
+              </select>
+            </label>
+            <label class="check-row"><input id="consentToShareWithPartner" type="checkbox" /> consentToShareWithPartner: I consent to Forge sharing this project with third-party project partners after Forge review.</label>
+            <div class="project-route-preview" id="projectRoutePreview" aria-live="polite"></div>
+            <p class="trust-note"><strong>Project boundary:</strong> Forge coordinates leads and project intake. Contracts, licensed work, insurance, permits, warranties, pricing, and construction obligations stay between the client and the properly licensed contractor or development partner.</p>
+            <button class="btn orange full" type="submit">Submit Project Opportunity</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen homebuilding-screen" id="homebuilding-screen" data-screen="homebuilding">
+        <header class="homebuilding-top">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="top-actions">
+            <button class="btn ghost small dark" type="button" data-nav="home">Home</button>
+            <button class="btn ghost small dark" type="button" data-nav="homebuilding-tracker">Tracker</button>
+            <button class="btn ghost small dark" type="button" data-action="scroll-homebuilding-contractors">Contractors</button>
+            <button class="btn orange small" type="button" data-action="scroll-homebuilding-intake">Project Review</button>
+          </div>
+        </header>
+
+        <section class="homebuilding-hero-section">
+          <img src="./assets/forge-homebuilding-hero.png" alt="Custom home under construction with contractors reviewing plans" />
+          <div class="homebuilding-hero-overlay"></div>
+          <div class="homebuilding-hero-copy">
+            <span class="homebuilding-kicker">Forge Homebuilding & Development</span>
+            <h1>Forge Homebuilding & Development</h1>
+            <p class="homebuilding-tagline">Protecting What Matters Most.</p>
+            <h2>Build the home. Protect the future.</h2>
+            <p>From land prep to finished construction, Forge connects homeowners, investors, and builders with trusted blue-collar professionals.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="scroll-homebuilding-intake">Start a Home Build</button>
+              <button class="btn blue" type="button" data-action="scroll-homebuilding-contractors">Partner as a Contractor</button>
+              <button class="btn ghost dark" type="button" data-action="scroll-homebuilding-intake">Request Project Review</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-intro">
+          <div class="homebuilding-panel wide">
+            <span class="homebuilding-kicker">Customer-facing project platform</span>
+            <h2>Forge helps customers build, improve, and protect homes.</h2>
+            <p>Forge connects project owners with trusted contractors, builders, designers, tradespeople, roofing crews, landscapers, logistics partners, and financing/support partners so every phase has a clearer next step.</p>
+          </div>
+          <div class="homebuilding-metric-grid">
+            <article><strong>Build</strong><span>New homes, ADUs, investor builds, remodels, additions</span></article>
+            <article><strong>Improve</strong><span>Design planning, systems, exterior work, interiors, landscaping</span></article>
+            <article><strong>Protect</strong><span>Documentation, communication, scheduling, partner referrals</span></article>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-build">
+          <div class="homebuilding-section-heading">
+            <span class="homebuilding-kicker">Build With Forge</span>
+            <h2>Residential projects from raw land to move-in.</h2>
+          </div>
+          <div class="homebuilding-service-grid">
+            <article>New home construction</article>
+            <article>Custom homes</article>
+            <article>ADUs</article>
+            <article>Barndominiums</article>
+            <article>Tiny homes</article>
+            <article>Remodels</article>
+            <article>Additions</article>
+            <article>Investor builds</article>
+            <article>Multi-unit projects</article>
+            <article>Farm/ranch housing</article>
+            <article>Worker housing</article>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-visual-band" aria-label="Homebuilding project preview">
+          <div class="homebuilding-image-block before">
+            <span>Before</span>
+            <h2>Raw site, scattered decisions, unclear handoffs.</h2>
+          </div>
+          <div class="homebuilding-image-block after">
+            <span>After</span>
+            <h2>Documented build plan, trusted crews, protected next step.</h2>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-phases">
+          <div class="homebuilding-section-heading">
+            <span class="homebuilding-kicker">Project Phases</span>
+            <h2>Step-by-step build timeline.</h2>
+          </div>
+          <div class="homebuilding-timeline">
+            <article><strong>01</strong><span>Land review</span></article>
+            <article><strong>02</strong><span>Design planning</span></article>
+            <article><strong>03</strong><span>Permits and feasibility</span></article>
+            <article><strong>04</strong><span>Site work</span></article>
+            <article><strong>05</strong><span>Foundation</span></article>
+            <article><strong>06</strong><span>Framing</span></article>
+            <article><strong>07</strong><span>Roofing</span></article>
+            <article><strong>08</strong><span>Electrical</span></article>
+            <article><strong>09</strong><span>Plumbing</span></article>
+            <article><strong>10</strong><span>HVAC</span></article>
+            <article><strong>11</strong><span>Exterior systems</span></article>
+            <article><strong>12</strong><span>Interior finishes</span></article>
+            <article><strong>13</strong><span>Landscaping</span></article>
+            <article><strong>14</strong><span>Final walkthrough</span></article>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-contractors" id="homebuildingContractors">
+          <div class="homebuilding-section-heading">
+            <span class="homebuilding-kicker">Contractor Partner Network</span>
+            <h2>Trusted blue-collar professionals for every phase.</h2>
+          </div>
+          <div class="homebuilding-partner-grid">
+            <article>General contractors</article>
+            <article>Roofers</article>
+            <article>Framers</article>
+            <article>Electricians</article>
+            <article>Plumbers</article>
+            <article>HVAC technicians</article>
+            <article>Concrete crews</article>
+            <article>Excavation crews</article>
+            <article>Painters</article>
+            <article>Landscapers</article>
+            <article>Fence and gate contractors</article>
+            <article>Cleaning crews</article>
+            <article>Logistics and material delivery partners</article>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-role">
+          <div class="homebuilding-panel">
+            <span class="homebuilding-kicker">Forge Role</span>
+            <h2>Qualified lead intake and referral, not contractor of record.</h2>
+            <p>Forge collects qualified project leads, pre-screens scope and readiness, and can send accepted major leads to Seneca for review. Seneca may accept or decline the lead. If Seneca signs the client, Forge may receive an agreed referral or success fee. All construction and development contracts remain between the client and Seneca or the properly licensed contractor. Forge is not the contractor of record.</p>
+          </div>
+          <div class="homebuilding-role-grid">
+            <article><strong>Pre-screen</strong><span>Capture scope, budget, stage, location, timeline, property context, photos, and plans.</span></article>
+            <article><strong>Seneca Review</strong><span>Send accepted major project leads for Seneca to accept, decline, or request more information.</span></article>
+            <article><strong>Contract Boundary</strong><span>Construction and development agreements stay between the client and Seneca or the licensed contractor.</span></article>
+          </div>
+        </section>
+
+        <section class="homebuilding-section homebuilding-tracker-preview">
+          <div class="homebuilding-section-heading">
+            <span class="homebuilding-kicker">Build Tracker</span>
+            <h2>Track Your Home From Dirt to Done</h2>
+            <p>Forge gives homeowners a transparent project dashboard so they can see every phase of the build, who is working, what has been completed, what is coming next, and how the budget is tracking.</p>
+          </div>
+          <div class="tracker-feature-grid" id="homebuildingFeatureGrid"></div>
+          <button class="btn blue" type="button" data-nav="homebuilding-tracker">Open Forge Build Tracker</button>
+        </section>
+
+        <section class="homebuilding-section homebuilding-intake-section" id="homebuildingIntake">
+          <div class="homebuilding-section-heading">
+            <span class="homebuilding-kicker">Project Intake Form</span>
+            <h2>Request a homebuilding consultation.</h2>
+          </div>
+          <form class="homebuilding-form" id="homebuildingIntakeForm">
+            <div class="field-row">
+              <label>Full name<input id="homebuildingName" required autocomplete="name" /></label>
+              <label>Phone<input id="homebuildingPhone" required autocomplete="tel" /></label>
+            </div>
+            <div class="field-row">
+              <label>Email<input id="homebuildingEmail" type="email" required autocomplete="email" /></label>
+              <label>Project address or city<input id="homebuildingLocation" required placeholder="Medford, OR" /></label>
+              <label>Project state
+                <select id="homebuildingState" required>
+                  <option>OR</option>
+                  <option>WA</option>
+                  <option>CA</option>
+                  <option>ID</option>
+                  <option>Other</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>Project type
+                <select id="homebuildingType" required>
+                  <option>New home construction</option>
+                  <option>Custom home</option>
+                  <option>ADU</option>
+                  <option>Barndominium</option>
+                  <option>Tiny home</option>
+                  <option>Remodel</option>
+                  <option>Addition</option>
+                  <option>Investor build</option>
+                  <option>Multi-unit project</option>
+                  <option>Multifamily</option>
+                  <option>Mixed-use</option>
+                  <option>Commercial</option>
+                  <option>Land development</option>
+                  <option>Investment property</option>
+                  <option>Home repair / handyman</option>
+                  <option>Farm/ranch housing</option>
+                  <option>Worker housing</option>
+                  <option>Contractor partnership</option>
+                </select>
+              </label>
+              <label>Budget range
+                <select id="homebuildingBudget" required>
+                  <option>Under $100k</option>
+                  <option>$100k - $150k</option>
+                  <option>$150k - $250k</option>
+                  <option>$250k - $500k</option>
+                  <option>$500k - $1M</option>
+                  <option>$1M+</option>
+                  <option>Not sure yet</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>Timeline
+                <select id="homebuildingTimeline" required>
+                  <option>ASAP</option>
+                  <option>0-3 months</option>
+                  <option>3-6 months</option>
+                  <option>6-12 months</option>
+                  <option>12+ months</option>
+                  <option>Planning only</option>
+                </select>
+              </label>
+              <label>Project stage
+                <select id="homebuildingStage" required>
+                  <option>Exploring</option>
+                  <option>Looking for land</option>
+                  <option>Own property</option>
+                  <option>Under contract</option>
+                  <option>Have plans</option>
+                  <option>Have permits</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>Do you own the land?
+                <select id="homebuildingLand" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                  <option>Under contract</option>
+                  <option>Looking for land</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>Do you already have plans?
+                <select id="homebuildingPlans" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                  <option>In progress</option>
+                  <option>Need design help</option>
+                </select>
+              </label>
+              <label>Upload photos/plans<input id="homebuildingUploads" type="file" multiple accept="image/*,.pdf" /></label>
+            </div>
+            <label>Notes<textarea id="homebuildingNotes" placeholder="Tell Forge about the land, scope, build goals, constraints, partners already involved, or questions."></textarea></label>
+            <div class="homebuilding-route-preview" id="homebuildingRoutePreview" aria-live="polite"></div>
+            <p class="homebuilding-boundary">Forge pre-screens qualified project leads and may refer accepted major leads to Seneca. Seneca chooses whether to accept or decline. If Seneca signs the client, Forge may receive an agreed referral or success fee. All construction/development contracts remain between the client and Seneca or the licensed contractor. Forge is not the contractor of record. Do not upload IDs, payment information, passwords, or sensitive official documents into this MVP.</p>
+            <button class="btn orange full" type="submit">Request Homebuilding Consultation</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" id="homebuilding-tracker-screen" data-screen="homebuilding-tracker">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="homebuilding">← Homebuilding</button>
+          <strong>Forge Build Tracker</strong>
+        </header>
+        <section class="tracker-page">
+          <div class="tracker-page-heading">
+            <span class="split-label">Demo project dashboard</span>
+            <h1>Forge Build Tracker</h1>
+            <p>Know exactly what is happening with your home.</p>
+            <p class="demo-data-note"><strong>Sample data only:</strong> This dashboard uses clearly labeled demo project data. It does not represent a real customer, review, completed job, contract, expense, or approval.</p>
+          </div>
+          <div id="buildTrackerDashboard"></div>
+        </section>
+      </section>
+
+      <section class="screen" id="detail-screen" data-screen="detail">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="jobs">← Back to Jobs</button>
+          <strong>Job Detail & Bids</strong>
+        </header>
+        <section class="detail-grid">
+          <article class="detail-card" id="jobDetail"></article>
+          <aside class="bids-card">
+            <h2>Bids (<span id="detailBidCount">0</span>)</h2>
+            <div id="bidList"></div>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen" id="bid-screen" data-screen="bid">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="jobs">← Jobs</button>
+          <strong>Submit a Bid</strong>
+        </header>
+        <section class="bid-layout">
+          <form class="capture-card" id="bidForm">
+            <span class="split-label">Worker bid</span>
+            <h1>Send a price, timeline, and work note.</h1>
+            <p class="muted">This creates a bid the job poster can compare on the job detail screen.</p>
+            <label>Job<select id="bidJobSelect"></select></label>
+            <label>Worker / Crew Name<input id="bidWorkerName" required value="Medford Handyman" /></label>
+            <div class="field-row">
+              <label>Bid Amount<input id="bidAmount" required placeholder="$175" /></label>
+              <label>Timeline<input id="bidTimeline" required placeholder="Tomorrow morning" /></label>
+            </div>
+            <label>Message<textarea id="bidMessage" rows="4" placeholder="Tell the customer when you can arrive, what is included, and anything they need to know."></textarea></label>
+            <button class="btn orange" type="submit">Submit Bid</button>
+          </form>
+          <aside class="capture-card capture-side">
+            <h2>Bid checklist</h2>
+            <ul class="plain-list">
+              <li>Clear price</li>
+              <li>Arrival window</li>
+              <li>What materials are included</li>
+              <li>Friendly follow-up message</li>
+            </ul>
+            <button class="btn blue" type="button" data-nav="worker">Open Worker Dashboard</button>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen" id="messages-screen" data-screen="messages">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Messages</strong>
+        </header>
+        <section class="messages-layout">
+          <aside class="message-thread-list">
+            <div>
+              <span class="split-label">Active conversations</span>
+              <h1>Keep every follow-up moving.</h1>
+              <p class="muted">Use this as the MVP message center for job posters, workers, and admin follow-up.</p>
+            </div>
+            <div class="thread-list" id="messageThreadList"></div>
+          </aside>
+          <form class="message-composer" id="messageForm">
+            <span class="split-label">Composer</span>
+            <h2>Send or copy the next message.</h2>
+            <div class="message-summary" id="messageSummary"></div>
+            <label>Conversation<select id="messageThreadSelect"></select></label>
+            <label>Message<textarea id="messageBody" rows="8" required></textarea></label>
+            <div class="hero-actions">
+              <button class="btn blue" type="button" data-action="copy-message-draft">Copy Draft</button>
+              <button class="btn orange" type="submit">Save as Sent</button>
+            </div>
+            <div class="sent-message-list" id="sentMessageList"></div>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" id="profile-screen" data-screen="profile">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Profile Status</strong>
+        </header>
+        <section class="profile-layout">
+          <article class="profile-card">
+            <span class="split-label" id="profileRole">Forge profile</span>
+            <div class="profile-heading">
+              <h1 id="profileName">Profile</h1>
+              <span class="status-pill" id="profileStatusPill">Active</span>
+            </div>
+            <p class="muted" id="profileSummary"></p>
+            <div class="readiness-card" id="profileReadiness"></div>
+            <section class="profile-brief">
+              <div class="profile-brief-heading">
+                <h2>Status brief</h2>
+                <button class="btn ghost small" type="button" data-action="copy-profile-brief">Copy Status Brief</button>
+              </div>
+              <div class="profile-brief-grid" id="profileBrief"></div>
+            </section>
+            <div class="profile-meta" id="profileMeta"></div>
+            <div class="hero-actions" id="profileActions"></div>
+          </article>
+          <aside class="profile-card profile-side">
+            <h2>Status checklist</h2>
+            <div class="profile-checklist" id="profileChecklist"></div>
+            <h2>Recent activity</h2>
+            <div class="profile-activity" id="profileActivity"></div>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen" id="signup-screen" data-screen="signup">
+        <section class="signup-layout">
+          <figure class="signup-photo"><img src="./assets/forge-hero.png" alt="Worker ready for local jobs" /></figure>
+          <form class="signup-form" id="workerSignupForm">
+            <button class="back-link" type="button" data-nav="home">← Home</button>
+            <h1>Join Forge as a Worker</h1>
+            <p class="muted">Create your profile and start getting jobs.</p>
+            <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
+            <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
+            <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
+            <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
+            <div class="field-row">
+              <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
+              <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
+            </div>
+            <p class="trust-note"><strong>Worker follow-up:</strong> Forge will use this contact info to follow up about early worker opportunities by text, phone, or email.</p>
+            <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
+            <button class="btn orange" type="submit">Create My Profile</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen" id="worker-screen" data-screen="worker">
+        <section class="dashboard-shell">
+          <aside class="side-nav">
+            <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+            <button type="button" data-nav="worker">Dashboard</button>
+            <button type="button" data-nav="jobs">My Jobs</button>
+            <button type="button" data-nav="bid">Bids</button>
+            <button type="button" data-nav="messages">Messages</button>
+            <button type="button" data-nav="profile">Profile Status</button>
+          </aside>
+          <section class="dashboard-main">
+            <h1 id="workerDashboardTitle">Dashboard</h1>
+            <div class="profile-mini-card" id="workerProfileMini"></div>
+            <div class="stat-row" id="workerStats"></div>
+            <h2>Recent Jobs</h2>
+            <div class="table-card"><table id="workerJobsTable"></table></div>
+            <button class="btn ghost full" type="button" data-nav="jobs">View All Jobs</button>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="admin-screen" data-screen="admin">
+        <section class="dashboard-shell">
+          <aside class="side-nav">
+            <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+            <button type="button" data-nav="admin">Dashboard</button>
+            <button type="button" data-nav="jobs">Jobs</button>
+            <button type="button" data-nav="signup">Workers</button>
+            <button type="button" data-nav="admin-projects">Projects</button>
+            <button type="button" data-nav="bid">Bids</button>
+            <button type="button" data-nav="messages">Messages</button>
+            <button type="button" data-nav="profile">Profile Status</button>
+            <button type="button" data-nav="reports">Reports</button>
+          </aside>
+          <section class="dashboard-main">
+            <h1>Admin Dashboard</h1>
+            <div class="profile-mini-card" id="adminProfileMini"></div>
+            <div class="stat-row" id="adminStats"></div>
+            <section class="settings-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">First 200 launch</span>
+                  <h2>Early user pipeline</h2>
+                  <p class="muted">Keep the first wave balanced across job posters, workers, career leads, and referrals.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-first-200">Copy Plan</button>
+              </div>
+              <div class="founding-grid admin" id="adminFoundingGrid"></div>
+            </section>
+            <section class="settings-card">
+              <div>
+                <h2>Lead Capture Setup</h2>
+                <p class="muted">Paste a Zapier Catch Hook URL here when it is ready. Forge will still save leads locally if the webhook is empty.</p>
+              </div>
+              <label>Webhook URL<input id="webhookUrl" placeholder="https://hooks.zapier.com/hooks/catch/..." /></label>
+              <label class="check-row"><input id="webhookEnabled" type="checkbox" /> Send new job and worker leads to webhook</label>
+              <div class="hero-actions">
+                <button class="btn blue" type="button" data-action="save-webhook">Save Setup</button>
+                <button class="btn ghost" type="button" data-action="test-webhook">Send Test Lead</button>
+              </div>
+            </section>
+            <section class="settings-card delivery-status">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Lead Delivery Status</span>
+                  <h2>Where will the next signup go?</h2>
+                  <p class="muted">Use this before public beta outreach to confirm whether leads stay local or leave the browser through the webhook.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-delivery-status">Copy Status</button>
+              </div>
+              <div class="delivery-grid" id="deliveryStatus"></div>
+            </section>
+            <section class="settings-card soft-launch">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Soft Launch Tomorrow</span>
+                  <h2>Run a controlled first-user launch.</h2>
+                  <p class="muted">Use this before inviting friends, workers, job posters, and auto leads so tomorrow stays focused and recoverable.</p>
+                </div>
+                <button class="btn orange small" type="button" data-action="copy-soft-launch">Copy Soft Launch Plan</button>
+              </div>
+              <div class="soft-launch-grid" id="softLaunchPlan"></div>
+            </section>
+            <section class="settings-card soft-launch">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Invite Kit</span>
+                  <h2>Copy the right message for each person.</h2>
+                  <p class="muted">Use these when you are texting friends, workers, homeowners, auto buyers, sellers, or dealer contacts tomorrow.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-soft-launch-invite-kit">Copy Full Invite Kit</button>
+              </div>
+              <div class="soft-launch-grid" id="softLaunchInviteKit"></div>
+            </section>
+            <section class="settings-card soft-launch">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Launch Day Run Sheet</span>
+                  <h2>Know exactly what to do tomorrow.</h2>
+                  <p class="muted">Use this as the operating rhythm for the first soft-launch day so every conversation turns into a saved next action.</p>
+                </div>
+                <button class="btn blue small" type="button" data-action="copy-soft-launch-run-sheet">Copy Run Sheet</button>
+              </div>
+              <div class="soft-launch-grid" id="softLaunchRunSheet"></div>
+            </section>
+            <section class="settings-card backend-handoff">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Backend Handoff</span>
+                  <h2>What needs to be connected next?</h2>
+                  <p class="muted">Use this to hand the MVP to Zapier, Supabase, or a developer without losing the current launch logic.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-backend-handoff">Copy Backend Handoff</button>
+              </div>
+              <div class="backend-grid" id="backendHandoff"></div>
+            </section>
+            <section class="settings-card auth-handoff">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Admin Auth Handoff</span>
+                  <h2>How should operator access be protected?</h2>
+                  <p class="muted">Use this before public deployment so admin tools do not rely on browser-only demo state.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auth-handoff">Copy Auth Handoff</button>
+              </div>
+              <div class="auth-grid" id="authHandoff"></div>
+            </section>
+            <section class="admin-tools">
+              <article>
+                <span class="split-label">Backup</span>
+                <h2>Keep a copy of every early lead.</h2>
+                <p class="muted">Export the complete Forge MVP state as JSON before demos, feedback calls, or data cleanup.</p>
+              </article>
+              <div class="share-actions">
+                <button class="btn orange" type="button" data-action="toggle-public-mode" id="publicModeToggle">Public View</button>
+                <button class="btn blue" type="button" data-action="export-backup">Export Backup JSON</button>
+                <label class="btn ghost file-button">Import Backup<input id="backupImport" type="file" accept="application/json" /></label>
+                <button class="btn ghost" type="button" data-action="copy-daily-brief">Copy Daily Brief</button>
+                <button class="btn ghost" type="button" data-action="reset-demo">Reset Demo Data</button>
+              </div>
+            </section>
+            <section class="settings-card safety-center">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Safety Center</span>
+                  <h2>Check the MVP before real outreach.</h2>
+                  <p class="muted">Use this before showing Forge, importing data, or collecting real contact info from the first 200.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-launch-gate">Copy Launch Gate</button>
+                  <button class="btn ghost small" type="button" data-action="copy-safety-checklist">Copy Checklist</button>
+                </div>
+              </div>
+              <div class="launch-gate" id="launchGate"></div>
+              <section class="deploy-preflight">
+                <div class="admin-heading compact">
+                  <div>
+                    <span class="split-label">Public Deploy Preflight</span>
+                    <h2>What must be true before strangers use Forge?</h2>
+                    <p class="muted">Use this before moving from controlled beta to a public link.</p>
+                  </div>
+                  <div class="compact-actions">
+                    <button class="btn ghost small" type="button" data-action="copy-rc-packet">Copy RC Packet</button>
+                    <button class="btn ghost small" type="button" data-action="copy-launch-runbook">Copy Runbook</button>
+                    <button class="btn ghost small" type="button" data-action="copy-security-command">Copy Check Command</button>
+                    <button class="btn ghost small" type="button" data-action="copy-final-gate">Copy Final Gate</button>
+                    <button class="btn ghost small" type="button" data-action="copy-security-review">Copy Security Review</button>
+                    <button class="btn ghost small" type="button" data-action="copy-deploy-plan">Copy Deploy Plan</button>
+                  </div>
+                </div>
+                <div class="readiness-score" id="publicReadinessScore"></div>
+                <div class="final-gate" id="finalSecurityGate"></div>
+                <div class="deploy-grid" id="deployChecklist"></div>
+              </section>
+              <div class="safety-grid" id="safetyChecklist"></div>
+            </section>
+            <section class="settings-card launch-command">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Launch Command</span>
+                  <h2>Who needs action today?</h2>
+                  <p class="muted">See the first-200 pipeline by audience so outreach stays focused instead of scattered.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-launch-command">Copy Today</button>
+              </div>
+              <div class="launch-command-grid" id="launchCommandCenter"></div>
+            </section>
+            <section class="settings-card outreach-recap">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Outreach Recap</span>
+                  <h2>What moved today?</h2>
+                  <p class="muted">Summarize the latest contact, conversion, message, and safety work from the activity log.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-outreach-recap">Copy Recap</button>
+              </div>
+              <div class="outreach-recap-grid" id="outreachRecap"></div>
+            </section>
+            <section class="settings-card next-batch">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Next 10 Batch</span>
+                  <h2>Run one focused outreach sprint.</h2>
+                  <p class="muted">Use this when you have 20 minutes: contact the highest-priority people first, then mark each one contacted or moved forward.</p>
+                </div>
+                <div class="hero-actions compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-outreach-batch">Copy Batch</button>
+                  <button class="btn blue small" type="button" data-action="complete-outreach-sprint">Complete Sprint</button>
+                </div>
+              </div>
+              <div class="next-batch-list" id="outreachBatch"></div>
+            </section>
+            <section class="settings-card session-history">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Session History</span>
+                  <h2>Recent outreach sprints.</h2>
+                  <p class="muted">Review completed outreach sessions without digging through the full activity log.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-session-history">Copy History</button>
+              </div>
+              <div class="session-history-list" id="sessionHistory"></div>
+            </section>
+            <section class="settings-card">
+              <div class="admin-heading compact">
+                <div>
+                  <h2>Follow-Up Queue</h2>
+                  <p class="muted">Filter who needs attention next across jobs, workers, and referrals.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-follow-up-queue">Copy Queue</button>
+              </div>
+              <div class="filter-row">
+                <select id="queueTypeFilter">
+                  <option>All Lead Types</option>
+                  <option>Homebuilding</option>
+                  <option>Projects</option>
+                  <option>Jobs</option>
+                  <option>Workers</option>
+                  <option>Referrals</option>
+                  <option>Careers</option>
+                </select>
+                <select id="queueStatusFilter">
+                  <option>Needs Follow-Up</option>
+                  <option>All Statuses</option>
+                  <option>New</option>
+                  <option>Contacted</option>
+                  <option>Matching</option>
+                  <option>Ready</option>
+                  <option>Hot</option>
+                  <option>New Project Lead</option>
+                  <option>Needs More Info</option>
+                  <option>Forge Qualified</option>
+                  <option>Sent to Seneca</option>
+                  <option>Partner Reviewing</option>
+                  <option>Accepted by Partner</option>
+                  <option>Proposal Requested</option>
+                  <option>Site Visit Scheduled</option>
+                  <option>Contract Pending</option>
+                  <option>Won</option>
+                  <option>Lost</option>
+                  <option>Not a Fit</option>
+                  <option>Routed to Forge Pro</option>
+                  <option>NEW</option>
+                  <option>NEEDS_MORE_INFO</option>
+                  <option>FORGE_QUALIFIED</option>
+                  <option>MAJOR_PROJECT_REVIEW</option>
+                  <option>SENT_TO_SENECA</option>
+                  <option>PARTNER_REVIEWING</option>
+                  <option>ACCEPTED_BY_PARTNER</option>
+                  <option>PROPOSAL_REQUESTED</option>
+                  <option>SITE_VISIT_SCHEDULED</option>
+                  <option>CONTRACT_PENDING</option>
+                  <option>WON</option>
+                  <option>LOST</option>
+                  <option>NOT_A_FIT</option>
+                  <option>ROUTED_TO_FORGE_PRO</option>
+                </select>
+              </div>
+              <div class="follow-up-progress" id="followUpProgress"></div>
+              <div class="today-follow-up" id="todayFollowUp"></div>
+              <div class="follow-up-list" id="followUpQueue"></div>
+            </section>
+            <div class="admin-heading">
+              <h2>New Job Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-jobs">Export Jobs CSV</button>
+            </div>
+            <div class="table-card"><table id="adminLeadsTable"></table></div>
+            <div class="lead-board" id="adminJobPipeline"></div>
+            <div class="admin-heading">
+              <h2>Worker Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-workers">Export Workers CSV</button>
+            </div>
+            <div class="table-card"><table id="adminWorkersTable"></table></div>
+            <div class="lead-board" id="adminWorkerPipeline"></div>
+            <div class="admin-heading">
+              <h2>Referral / Friend Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-referrals">Export Referrals CSV</button>
+            </div>
+            <div class="table-card"><table id="adminReferralsTable"></table></div>
+            <div class="lead-board" id="adminReferralPipeline"></div>
+            <div class="admin-heading">
+              <h2>Homebuilding Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-homebuilding">Export Homebuilding CSV</button>
+            </div>
+            <div class="table-card"><table id="adminHomebuildingTable"></table></div>
+            <div class="lead-board" id="adminHomebuildingPipeline"></div>
+            <div class="admin-heading">
+              <h2>Project Leads</h2>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="export-projects">Export Projects CSV</button>
+                <button class="btn blue small" type="button" data-nav="admin-projects">Open Projects Queue</button>
+              </div>
+            </div>
+            <div class="table-card"><table id="adminProjectsTable"></table></div>
+            <div class="lead-board" id="adminProjectsPipeline"></div>
+            <div class="admin-heading">
+              <h2>Bid Activity</h2>
+              <button class="btn ghost small" type="button" data-action="export-bids">Export Bids CSV</button>
+            </div>
+            <div class="table-card"><table id="adminBidsTable"></table></div>
+            <section class="outreach-grid">
+              <article class="settings-card">
+                <h2>Job Poster Follow-Up</h2>
+                <p class="muted" id="jobTemplatePreview"></p>
+                <button class="btn blue" type="button" data-action="copy-job-template">Copy Job Text</button>
+              </article>
+              <article class="settings-card">
+                <h2>Worker Follow-Up</h2>
+                <p class="muted" id="workerTemplatePreview"></p>
+                <button class="btn blue" type="button" data-action="copy-worker-template">Copy Worker Text</button>
+              </article>
+            </section>
+            <div class="admin-heading">
+              <h2>Activity Log</h2>
+              <button class="btn ghost small" type="button" data-action="clear-activity">Clear Log</button>
+            </div>
+            <div class="activity-log" id="activityLog"></div>
+            <button class="btn ghost full" type="button" data-nav="jobs">View All Jobs</button>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="admin-projects-screen" data-screen="admin-projects">
+        <section class="dashboard-shell">
+          <aside class="side-nav">
+            <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+            <button type="button" data-nav="admin">Admin</button>
+            <button type="button" data-nav="admin-projects">Projects</button>
+            <button type="button" data-nav="projects">Public Page</button>
+            <button type="button" data-nav="messages">Messages</button>
+            <button type="button" data-nav="reports">Reports</button>
+          </aside>
+          <section class="dashboard-main admin-projects-main">
+            <div class="admin-heading">
+              <div>
+                <span class="split-label">/admin/projects</span>
+                <h1>Projects Admin Queue</h1>
+                <p class="muted">Review home projects, major builds, investment opportunities, partner consent, and Seneca routing readiness.</p>
+              </div>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="copy-projects-queue">Copy Queue</button>
+                <button class="btn orange small" type="button" data-action="export-projects">Export Projects CSV</button>
+              </div>
+            </div>
+            <div class="stat-row" id="adminProjectStats"></div>
+            <section class="settings-card partner-admin-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Partner routing</span>
+                  <h2>Seneca Development Co.</h2>
+                  <p class="muted" id="adminSenecaPartnerSummary"></p>
+                </div>
+                <span class="status-badge" id="adminSenecaPartnerBadge">Draft</span>
+              </div>
+              <div class="partner-document-grid" id="adminPartnerDocuments"></div>
+            </section>
+            <div class="admin-heading">
+              <h2>Major Projects Review</h2>
+              <button class="btn ghost small" type="button" data-nav="projects">Open Public Intake</button>
+            </div>
+            <div class="table-card"><table id="adminProjectsFullTable"></table></div>
+            <div class="lead-board project-admin-board" id="adminProjectsFullPipeline"></div>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="reports-screen" data-screen="reports">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="admin">← Admin</button>
+          <strong>Forge Reports</strong>
+        </header>
+        <section class="content-wrap">
+          <h1>MVP traction report</h1>
+          <p class="muted">A simple operator view for demos, nightly review, and early launch decisions.</p>
+          <div class="stat-row" id="reportStats"></div>
+          <section class="report-grid">
+            <article class="settings-card">
+              <span class="split-label">Next actions</span>
+              <h2>Who needs attention first?</h2>
+              <div class="report-list" id="reportActions"></div>
+            </article>
+            <article class="settings-card">
+              <span class="split-label">Launch health</span>
+              <h2>Current MVP signal</h2>
+              <div class="report-list" id="reportHealth"></div>
+              <button class="btn blue" type="button" data-action="copy-daily-brief">Copy Daily Brief</button>
+            </article>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="legal-screen" data-screen="legal">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Early Access Terms & Privacy</strong>
+        </header>
+        <section class="legal-layout">
+          <article class="legal-card">
+            <span class="split-label">Early access</span>
+            <h1>Forge is a controlled beta MVP.</h1>
+            <p>Forge helps collect local job, worker, referral, bid, and follow-up information so the operator can manually match work with local people. The MVP is not a payment processor, escrow service, background-check provider, insurance provider, or emergency service.</p>
+            <div class="legal-grid">
+              <article>
+                <strong>What Forge collects</strong>
+                <p>Names, phone numbers, emails, job details, worker profile details, bids, referrals, notes, and messages entered into the MVP.</p>
+              </article>
+              <article>
+                <strong>How it is used</strong>
+                <p>Forge uses this information to follow up by text, phone, or email, coordinate early job matching, and improve the first local launch group.</p>
+              </article>
+              <article>
+                <strong>Payments</strong>
+                <p>No payment is collected in this MVP. Keep deposits, payment, disputes, and contracts outside Forge until the production trust workflow is ready.</p>
+              </article>
+              <article>
+                <strong>Safety</strong>
+                <p>Users should verify identity, licensing, insurance, pricing, job scope, and worksite safety before work begins.</p>
+              </article>
+            </div>
+          </article>
+          <article class="legal-card">
+            <span class="split-label">Privacy basics</span>
+            <h2>Controlled beta privacy commitments</h2>
+            <ul class="legal-list">
+              <li>Forge stores MVP data locally in this browser unless a webhook or backend is connected.</li>
+              <li>Admins should export backups before demos, resets, imports, or public testing.</li>
+              <li>Only collect contact info from people who agreed to early access follow-up.</li>
+              <li>Do not enter passwords, payment cards, bank information, Social Security numbers, or other sensitive documents into this MVP.</li>
+              <li>Before broad public launch, Forge needs final legal review, real authentication, backend storage, backup policy, and trust and safety workflow.</li>
+            </ul>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+              <button class="btn blue" type="button" data-nav="signup">Join Worker List</button>
+              <button class="btn ghost" type="button" data-nav="home">Back Home</button>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div class="mobile-tabbar">
+      <button type="button" data-nav="home" aria-label="Open Forge home">Home</button>
+      <button type="button" data-nav="perspective" aria-label="Open demo paths">Demo</button>
+      <button type="button" data-nav="post" aria-label="Post a job">Post</button>
+      <button type="button" data-nav="jobs" aria-label="Browse jobs">Jobs</button>
+      <button type="button" data-nav="auto" aria-label="Open Forge Auto services">Auto</button>
+      <button type="button" data-nav="projects" aria-label="Open Forge Projects">Projects</button>
+      <button type="button" data-nav="homebuilding" aria-label="Open homebuilding">Build</button>
+      <button type="button" data-nav="messages" aria-label="Open messages">Msgs</button>
+      <button type="button" data-nav="profile" aria-label="Open profile status">Profile</button>
+    </div>
+
+    <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=70"></script>
+  </body>
+</html>
