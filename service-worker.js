@@ -2,6 +2,9 @@ const CACHE_NAME = "forge-mvp-v70";
 const CORE_ASSETS = [
   "./",
   "./auto/",
+  "./photography/",
+  "./photography/request/",
+  "./photography/apply/",
   "./photography-videography/",
   "./projects/",
   "./admin/projects/",
