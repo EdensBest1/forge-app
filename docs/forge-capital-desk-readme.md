@@ -7,14 +7,16 @@ Forge Capital Desk collects basic business-owner lead/contact information and co
 ## Setup
 
 1. Add the approved Flex referral URL to `NEXT_PUBLIC_FLEX_REFERRAL_URL`.
-2. Run `migrations/20260626_forge_flex_leads.sql` in Supabase when backend storage is ready.
-3. Keep public static intake local-only until a server-owned API route, Zapier action, or Supabase Edge Function can validate and write leads.
-4. Use `/forge/capital`, `/forge/flex`, or `/partners/flex` for the public page aliases.
+2. Add `FLEX_APP_URL` only when there is an approved Flex app or intake flow that Building finance requests may open directly.
+3. Run `migrations/20260626_forge_flex_leads.sql` in Supabase when backend storage is ready.
+4. Keep public static intake local-only until a server-owned API route, Zapier action, or Supabase Edge Function can validate and write leads.
+5. Use `/forge/capital`, `/forge/flex`, or `/partners/flex` for the public page aliases.
 
 ## Environment Variables
 
 ```env
 NEXT_PUBLIC_FLEX_REFERRAL_URL="https://REPLACE-WITH-APPROVED-FLEX-REFERRAL-LINK"
+FLEX_APP_URL=""
 FLEX_PARTNER_MODE="referral"
 FORGE_CAPITAL_DESK_ENABLED="true"
 FORGE_LEAD_NOTIFY_EMAIL="admin@forge.local"

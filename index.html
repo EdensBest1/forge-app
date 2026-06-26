@@ -920,14 +920,14 @@
         <section class="auto-hero">
           <img src="./assets/forge-auto-services-hero.png" alt="Forge Auto Services mechanic shop, diesel truck, trailer transport, detailing, and dealer inventory" />
           <div class="auto-hero-copy">
-            <span class="split-label">Forge Auto Services</span>
-            <h1>Forge Auto Services</h1>
+            <span class="split-label">Forge Auto & Transport · Forge Auto Services</span>
+            <h1>Forge Auto & Transport</h1>
             <p class="auto-hero-line">Buy. Sell. Repair. Transport.</p>
-            <p>Trusted auto services powered by the Forge Blue Collar Marketplace.</p>
+            <p>Sell My Car on Forge, vehicle requests, transport, executive rides, auction sourcing, repairs, and premium auto concierge support through approved partners.</p>
             <div class="hero-actions">
               <button class="btn gold" type="button" data-action="focus-auto-request">Request Auto Service</button>
               <button class="btn orange" type="button" data-nav="road-rescue">Road Rescue</button>
-              <button class="btn ghost light" type="button" data-action="focus-vehicle-listing">List a Vehicle</button>
+              <button class="btn ghost light" type="button" data-action="focus-vehicle-listing">Sell My Car</button>
               <button class="btn ghost light" type="button" data-action="focus-auto-partners">Partner With Forge Auto</button>
             </div>
           </div>
@@ -943,6 +943,26 @@
               <button class="btn orange small" type="button" data-action="copy-auto-market-brief">Copy Auto Brief</button>
             </div>
             <div class="auto-stats" id="autoStats"></div>
+            <section class="auto-transport-menu">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Auto & Transport paths</span>
+                  <h2>Start with the exact vehicle outcome.</h2>
+                  <p class="muted">Each path saves the right lead type, routing tags, safety boundary, and partner follow-up for the admin desk.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-auto-transport-menu">Copy Menu</button>
+              </div>
+              <div class="auto-transport-grid" id="autoTransportServiceGrid"></div>
+            </section>
+            <section class="forge-platinum-panel" id="forgePlatinumAutoConcierge">
+              <div>
+                <span class="split-label">Premium auto</span>
+                <h2>Forge Platinum Auto Concierge</h2>
+                <p class="platinum-subtitle">Premium vehicle sourcing, selling, consignment, and white-glove transport.</p>
+                <p>For luxury cars, exotic vehicles, premium SUVs, executive transport, and high-value automotive needs, Forge Platinum connects customers with Forge's approved automotive partner network while keeping the experience organized, professional, and protected.</p>
+              </div>
+              <button class="btn gold" type="button" data-action="start-auto-path" data-auto-path="Forge Platinum Auto Concierge">Start Platinum Request</button>
+            </section>
             <section class="auto-services">
               <div class="section-title compact">
                 <div>
@@ -1039,28 +1059,83 @@
             </section>
           </div>
           <form class="auto-sell-card" id="vehicleListingForm">
-            <span class="split-label">Sell a car</span>
-            <h2>Post a vehicle for local buyers.</h2>
-            <p class="muted">Save the year, make, model, price, mileage, seller contact, and dealer partner so a buyer can follow up.</p>
+            <span class="split-label">Sell My Car on Forge</span>
+            <h2>Submit your vehicle once and let Forge help route it to the right buyer, partner, or selling path.</h2>
+            <p class="muted">Add your vehicle details, photos, title status, mileage, condition, and asking price. Forge reviews each submission and can help with private sale leads, consignment, wholesale offers, auction opportunities, or transport.</p>
+            <label>Selling path<select id="vehicleSellingPath">
+              <option>Sell My Car on Forge</option>
+              <option>List My Vehicle</option>
+              <option>Consign My Vehicle</option>
+              <option>Wholesale Offer</option>
+              <option>Auction Vehicle Sourcing</option>
+              <option>Forge Platinum Auto Concierge</option>
+            </select></label>
             <div class="field-row">
               <label>Year<input id="vehicleYear" required placeholder="2016" /></label>
               <label>Make<input id="vehicleMake" required placeholder="Toyota" /></label>
             </div>
-            <label>Model<input id="vehicleModel" required placeholder="Camry SE" /></label>
+            <div class="field-row">
+              <label>Model<input id="vehicleModel" required placeholder="Camry SE" /></label>
+              <label>Trim<input id="vehicleTrim" placeholder="SE, Lariat, AMG, Platinum" /></label>
+            </div>
             <div class="field-row">
               <label>Price<input id="vehiclePrice" required placeholder="$8,900" /></label>
-              <label>Mileage<input id="vehicleMileage" required placeholder="104,000 miles" /></label>
+              <label>Lowest acceptable price<input id="vehicleLowestPrice" placeholder="Private admin only" /></label>
             </div>
-            <label>Location<input id="vehicleLocation" required value="Medford, OR" /></label>
+            <div class="field-row">
+              <label>Mileage<input id="vehicleMileage" required placeholder="104,000 miles" /></label>
+              <label>VIN / last 6<input id="vehicleVin" placeholder="Optional for admin review" /></label>
+            </div>
+            <div class="field-row">
+              <label>Exterior color<input id="vehicleExteriorColor" placeholder="White" /></label>
+              <label>Interior color<input id="vehicleInteriorColor" placeholder="Black leather" /></label>
+            </div>
+            <div class="field-row">
+              <label>Fuel type<select id="vehicleFuelType"><option>Gas</option><option>Diesel</option><option>Hybrid</option><option>EV</option><option>Other</option></select></label>
+              <label>Drivetrain<select id="vehicleDrivetrain"><option>Unknown</option><option>FWD</option><option>RWD</option><option>AWD</option><option>4WD</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Transmission<select id="vehicleTransmission"><option>Automatic</option><option>Manual</option><option>Other / unknown</option></select></label>
+              <label>Plate state<input id="vehiclePlateState" maxlength="2" placeholder="OR" /></label>
+            </div>
+            <div class="field-row">
+              <label>City / location<input id="vehicleLocation" required value="Medford, OR" /></label>
+              <label>Timeline<select id="vehicleSellTimeline"><option>ASAP</option><option>This week</option><option>This month</option><option>Flexible</option></select></label>
+            </div>
             <label>Dealer Partner<select id="vehicleDealer"></select></label>
-            <label>Description<textarea id="vehicleDescription" rows="4" placeholder="Clean title, condition, recent work, why selling."></textarea></label>
+            <label>Condition<select id="vehicleCondition"><option>Excellent</option><option>Good</option><option>Fair</option><option>Needs work</option><option>Not running</option></select></label>
+            <div class="field-row">
+              <label>Runs and drives?<select id="vehicleRunning"><option>Yes</option><option>Yes, but needs work</option><option>No</option><option>Unknown</option></select></label>
+              <label>Title status<select id="vehicleTitleStatus"><option>Clean title</option><option>Title in hand</option><option>Lien / payoff</option><option>Lost title</option><option>Salvage / rebuilt</option><option>Other title help needed</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Loan or lien?<select id="vehicleLoanLien"><option>No</option><option>Yes</option><option>Unsure</option></select></label>
+              <label>Payoff amount<input id="vehiclePayoff" placeholder="If known" /></label>
+            </div>
+            <label>Vehicle description<textarea id="vehicleDescription" rows="4" placeholder="Recent work, why selling, options, packages, ownership story, known issues."></textarea></label>
+            <label>Mechanical issues<textarea id="vehicleMechanicalIssues" rows="2" placeholder="Warning lights, leaks, noises, major repairs needed."></textarea></label>
+            <label>Cosmetic issues<textarea id="vehicleCosmeticIssues" rows="2" placeholder="Dents, scratches, paint, interior wear, windshield, tires."></textarea></label>
+            <div class="field-row">
+              <label>Accident history<select id="vehicleAccidentHistory"><option>No known accidents</option><option>Minor accident</option><option>Major accident</option><option>Unknown</option></select></label>
+              <label>Service records<select id="vehicleServiceRecords"><option>Available</option><option>Some records</option><option>Not available</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Smog / emissions<select id="vehicleSmogStatus"><option>Not required / unsure</option><option>Passed</option><option>Needs test</option><option>Failed</option></select></label>
+              <label>Keys<select id="vehicleKeys"><option>Two or more keys</option><option>One key</option><option>No keys</option></select></label>
+            </div>
+            <label>Photos / upload notes<textarea id="vehiclePhotoNotes" rows="3" placeholder="Add photo links or notes. Best photos: front, rear, both sides, interior, dash, odometer, VIN plate, title if safe, engine bay, tires, damage, service records."></textarea></label>
             <div class="field-row">
               <label>Seller Name<input id="vehicleSeller" required placeholder="Seller name" /></label>
               <label>Phone<input id="vehiclePhone" required placeholder="(541) 555-0000" /></label>
             </div>
-            <label>Email<input id="vehicleEmail" type="email" placeholder="optional@email.com" /></label>
+            <div class="field-row">
+              <label>Email<input id="vehicleEmail" type="email" placeholder="optional@email.com" /></label>
+              <label>Preferred contact<select id="vehiclePreferredContact"><option>Text</option><option>Call</option><option>Email</option></select></label>
+            </div>
+            <label class="check-row"><input id="vehicleWantsReplacement" type="checkbox" /> I also want help finding another vehicle.</label>
+            <label class="check-row"><input id="vehiclePartnerConsent" required type="checkbox" /> I consent to Forge reviewing this vehicle and contacting approved auto partners when there may be a fit.</label>
             <p class="trust-note"><strong>Auto safety:</strong> Forge does not verify title, financing, mechanical condition, insurance, or payment in this MVP. Meet safely, inspect the vehicle, verify ownership, and keep payment outside Forge.</p>
-            <button class="btn orange" type="submit">Post Vehicle</button>
+            <button class="btn orange" type="submit">Submit Vehicle For Review</button>
           </form>
         </section>
       </section>
@@ -1613,7 +1688,7 @@
             </div>
             <section class="building-finance-fields" id="buildingFinanceFields">
               <span class="split-label">Business finance fields</span>
-              <label>businessName<input id="buildingCompanyName" placeholder="Business name" /></label>
+              <label>businessName<input id="buildingBusinessName" placeholder="Business name" /></label>
               <label>ownerName<input id="buildingOwnerName" required placeholder="Owner or contact name" autocomplete="name" /></label>
               <div class="field-row">
                 <label>email<input id="buildingEmail" type="email" required placeholder="name@email.com" autocomplete="email" /></label>
@@ -2083,6 +2158,8 @@
             <button type="button" data-nav="messages">Messages</button>
             <button type="button" data-nav="profile">Profile Status</button>
             <button type="button" data-nav="reports">Reports</button>
+            <button type="button" data-action="focus-auto-admin">Auto Ops</button>
+            <button type="button" data-action="focus-operations-vault">Ops Vault</button>
           </aside>
           <section class="dashboard-main">
             <h1>Admin Dashboard</h1>
@@ -2236,6 +2313,65 @@
                 <button class="btn ghost small" type="button" data-action="copy-launch-command">Copy Today</button>
               </div>
               <div class="launch-command-grid" id="launchCommandCenter"></div>
+            </section>
+            <section class="settings-card auto-admin-ops" id="adminAutoOperations">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Forge Auto Admin</span>
+                  <h2>Vehicle seller leads, Platinum routing, auction review, and revenue tracking.</h2>
+                  <p class="muted">Internal workspace for Sell My Car on Forge, public listing review, partner routing, and high-value auto deal follow-up.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-auto-admin-summary">Copy Auto Ops Summary</button>
+                  <button class="btn orange small" type="button" data-nav="auto">Open Auto Page</button>
+                </div>
+              </div>
+              <div class="auto-admin-grid" id="autoRevenueSummary"></div>
+              <div class="admin-heading compact">
+                <div>
+                  <h2>Vehicle Seller Leads</h2>
+                  <p class="muted">Private admin fields include lowest price, lien/payoff notes, tags, and assigned partner route.</p>
+                </div>
+              </div>
+              <div class="table-card auto-admin-table"><table id="vehicleSellerLeadsTable"></table></div>
+              <div class="auto-admin-columns">
+                <section>
+                  <h2>Vehicle Listing Review</h2>
+                  <div class="auto-review-list" id="vehicleListingReview"></div>
+                </section>
+                <section>
+                  <h2>Forge Platinum Deal Desk</h2>
+                  <div class="auto-review-list" id="forgePlatinumDealDesk"></div>
+                </section>
+                <section>
+                  <h2>Auction Deal Desk</h2>
+                  <div class="auto-review-list" id="auctionDealDesk"></div>
+                </section>
+              </div>
+            </section>
+            <section class="settings-card operations-vault" id="forgeOperationsVault">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Forge Operations Vault</span>
+                  <h2>Internal document library for running Forge.</h2>
+                  <p class="muted">Admin-only SOPs, checklists, templates, and partner routing docs. Legal templates are drafts and require attorney review before use.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-operations-vault-index">Copy Vault Index</button>
+                </div>
+              </div>
+              <div class="filter-row">
+                <input id="operationsVaultSearch" placeholder="Search operations documents, categories, owners, or tags" />
+                <select id="operationsVaultCategory">
+                  <option>All Categories</option>
+                  <option>Master Business Operations</option>
+                  <option>Customer Operations</option>
+                  <option>Auto Operations</option>
+                  <option>Partner Routing</option>
+                  <option>Legal / Contracts</option>
+                </select>
+              </div>
+              <div class="operations-vault-grid" id="operationsVaultGrid"></div>
             </section>
             <section class="settings-card outreach-recap">
               <div class="admin-heading compact">

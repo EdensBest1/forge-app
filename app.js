@@ -6,8 +6,293 @@ const CREATIVE_CATEGORY_SLUG = "photography-videography";
 const NORTHSTAR_CATEGORY_VALUE = "northstar_creative";
 const NORTHSTAR_OPERATIONS_CATEGORY_VALUE = "northstar_marketing_operations";
 const NORTHSTAR_CATEGORY_LABEL = "NorthStar Creative Co.";
-const categories = ["Handyman", "Landscaping", "Junk Removal", "Moving", "Painting", "Plumbing", "Electrical", "Cleaning", CREATIVE_CATEGORY_LABEL, NORTHSTAR_CATEGORY_LABEL];
-const jobStatuses = ["New", "Submitted", "Pending", "Contacted", "Matching", "Quoted", "Accepted", "Assigned", "In Progress", "Completed", "Canceled"];
+const yesNoOptions = ["No", "Yes"];
+const serviceJobStatusLabels = ["Open for bids", "Bid submitted", "Provider selected", "Scheduled", "In progress", "Completed", "Cancelled"];
+const serviceVerticals = [
+  {
+    id: "cleaning",
+    title: "Home Cleaning & Airbnb Turnovers",
+    shortTitle: "Cleaning",
+    publicHeadline: "Need help turning your home into an Airbnb-ready property?",
+    publicSubheadline: "Home cleaning, guest-ready resets, laundry, linens, restocking, and recurring short-term rental cleaning.",
+    publicBody: "Forge helps homeowners, landlords, and property managers find reliable cleaning pros for Airbnb turnovers, guest-ready resets, laundry, linens, restocking, and recurring short-term rental cleaning.",
+    ctas: ["Post an Airbnb Cleaning Job", "Find Cleaning Help", "Join as a Cleaning Provider"],
+    categories: [
+      "Home Cleaning & Airbnb Turnovers",
+      "Residential Cleaning",
+      "Airbnb / Short-Term Rental Turnover",
+      "Deep Cleaning",
+      "Move-In / Move-Out Cleaning",
+      "Post-Construction Cleaning",
+      "Office / Commercial Cleaning",
+      "Rental Property Cleaning",
+      "Garage / Shop Cleaning",
+      "Window Cleaning",
+      "Laundry / Linen Support",
+      "Restocking / Supply Check",
+      "Same-Day Turnover Cleaning"
+    ],
+    providerTypes: [
+      "Independent Cleaner",
+      "Cleaning Lady / Housekeeper",
+      "Cleaning Business",
+      "Airbnb Turnover Specialist",
+      "Property Cleaning Crew",
+      "Commercial Cleaner"
+    ],
+    tags: ["women-owned", "family-owned", "solo cleaner", "Airbnb specialist", "deep clean specialist", "commercial specialist"],
+    filters: ["Airbnb turnover specialists", "Same-day available", "Laundry included", "Supplies included", "Recurring cleaning", "Move-out cleaning", "Deep cleaning", "Commercial cleaning", "Service area", "Starting price", "Women-owned", "Solo cleaner", "Family-owned"],
+    checklist: [
+      "Clean bathrooms",
+      "Clean kitchen",
+      "Change bedsheets",
+      "Wash / replace towels",
+      "Restock toilet paper, paper towels, soap, coffee, and basics",
+      "Remove trash",
+      "Check damages",
+      "Take before/after photos",
+      "Reset furniture",
+      "Confirm guest-ready condition before check-in"
+    ],
+    providerFields: [
+      { name: "businessName", label: "Business / profile name" },
+      { name: "ownerName", label: "Owner / contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "cleaningTypes", label: "Type of cleaning offered", type: "textarea" },
+      { name: "airbnbExperience", label: "Airbnb turnover experience", type: "select", options: yesNoOptions },
+      { name: "yearsExperience", label: "Years of experience" },
+      { name: "availableDays", label: "Available days" },
+      { name: "sameDayAvailability", label: "Emergency / same-day availability", type: "select", options: yesNoOptions },
+      { name: "teamSize", label: "Team size" },
+      { name: "suppliesProvided", label: "Supplies provided", type: "select", options: yesNoOptions },
+      { name: "laundryOffered", label: "Laundry / linens offered", type: "select", options: yesNoOptions },
+      { name: "restockingOffered", label: "Restocking offered", type: "select", options: yesNoOptions },
+      { name: "beforeAfterPhotos", label: "Before/after photos offered", type: "select", options: yesNoOptions },
+      { name: "insuredBonded", label: "Insurance / bonded", type: "select", options: yesNoOptions },
+      { name: "minimumPrice", label: "Starting price or minimum job price" },
+      { name: "bio", label: "Bio / description", type: "textarea" },
+      { name: "profilePhoto", label: "Upload photo or logo", type: "file", accept: "image/*" }
+    ],
+    jobFields: [
+      { name: "propertyType", label: "Property type", type: "select", options: ["House", "Apartment", "Airbnb", "Office", "Rental", "Commercial", "Construction site", "Other"] },
+      { name: "bedrooms", label: "Bedrooms" },
+      { name: "bathrooms", label: "Bathrooms" },
+      { name: "squareFootage", label: "Square footage" },
+      { name: "cleaningType", label: "Cleaning type needed", type: "select", options: ["Residential Cleaning", "Airbnb / Short-Term Rental Turnover", "Deep Cleaning", "Move-In / Move-Out Cleaning", "Post-Construction Cleaning", "Office / Commercial Cleaning", "Rental Property Cleaning", "Same-Day Turnover Cleaning", "Other"] },
+      { name: "recurring", label: "One-time or recurring", type: "select", options: ["One-time", "Recurring", "Not sure"] },
+      { name: "desiredDate", label: "Desired date", type: "date" },
+      { name: "desiredTimeWindow", label: "Desired time window" },
+      { name: "airbnbDeadline", label: "Deadline / guest check-in time if Airbnb" },
+      { name: "isAirbnbTurnover", label: "Is this an Airbnb turnover?", type: "select", options: yesNoOptions },
+      { name: "laundryNeeded", label: "Laundry needed?", type: "select", options: yesNoOptions },
+      { name: "linensNeeded", label: "Linens needed?", type: "select", options: yesNoOptions },
+      { name: "restockingNeeded", label: "Restocking needed?", type: "select", options: yesNoOptions },
+      { name: "trashRemovalNeeded", label: "Trash removal needed?", type: "select", options: yesNoOptions },
+      { name: "dishesNeeded", label: "Dishes needed?", type: "select", options: yesNoOptions },
+      { name: "fridgeCleaningNeeded", label: "Fridge cleaning needed?", type: "select", options: yesNoOptions },
+      { name: "ovenCleaningNeeded", label: "Oven cleaning needed?", type: "select", options: yesNoOptions },
+      { name: "windowsNeeded", label: "Windows needed?", type: "select", options: yesNoOptions },
+      { name: "petsInHome", label: "Pets in home?", type: "select", options: yesNoOptions },
+      { name: "customerSupplies", label: "Supplies provided by customer?", type: "select", options: yesNoOptions },
+      { name: "additionalDetails", label: "Additional details", type: "textarea" }
+    ]
+  },
+  {
+    id: "hauling",
+    title: "Dump Truck, Dump Runs & Hauling",
+    shortTitle: "Hauling",
+    publicHeadline: "Forge Dump Truck, Dump Runs & Hauling",
+    publicSubheadline: "Post hauling jobs and get bids from local dump truck drivers, trailer owners, and cleanup crews.",
+    publicBody: "Whether you need a dump run, gravel delivered, construction debris hauled, dirt moved, or a jobsite cleaned up, Forge helps connect customers with local hauling providers who can bid on the job.",
+    ctas: ["Post a Hauling Job", "Find Dump Truck Help", "Join as a Hauling Provider"],
+    categories: [
+      "Dump Truck Services",
+      "Dump Runs",
+      "Junk Removal",
+      "Construction Debris Hauling",
+      "Yard Debris Hauling",
+      "Dirt Hauling",
+      "Gravel Delivery",
+      "Rock Delivery",
+      "Sand Delivery",
+      "Topsoil Delivery",
+      "Mulch / Bark Delivery",
+      "Brush Removal",
+      "Appliance Hauling",
+      "Jobsite Cleanup",
+      "Trailer Hauling",
+      "Material Delivery"
+    ],
+    providerTypes: ["Dump Truck Operator", "Dump Run Provider", "Junk Removal Business", "Construction Debris Hauler", "Material Delivery Driver", "Trailer Hauling Provider", "Site Cleanup Crew"],
+    tags: ["dump truck", "dump trailer", "same-day", "material delivery", "junk removal", "construction cleanup", "yard cleanup"],
+    filters: ["Dump truck", "Dump trailer", "Same-day available", "Material delivery", "Junk removal", "Construction cleanup", "Yard cleanup", "Max load size", "Service area", "Minimum trip charge"],
+    checklist: ["Confirm pickup access", "Confirm load type", "Confirm dump destination", "Confirm disposal fees", "Confirm number of loads", "Verify trailer or dump truck access"],
+    providerFields: [
+      { name: "businessName", label: "Business / profile name" },
+      { name: "ownerName", label: "Owner / contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "truckType", label: "Truck type" },
+      { name: "trailerAvailable", label: "Trailer available", type: "select", options: yesNoOptions },
+      { name: "dumpTrailerAvailable", label: "Dump trailer available", type: "select", options: yesNoOptions },
+      { name: "dumpTruckAvailable", label: "Dump truck available", type: "select", options: yesNoOptions },
+      { name: "maxLoadSize", label: "Max load size" },
+      { name: "materialDelivery", label: "Material delivery offered", type: "select", options: yesNoOptions },
+      { name: "dumpRuns", label: "Dump runs offered", type: "select", options: yesNoOptions },
+      { name: "constructionDebris", label: "Construction debris hauling", type: "select", options: yesNoOptions },
+      { name: "yardDebris", label: "Yard debris hauling", type: "select", options: yesNoOptions },
+      { name: "junkRemoval", label: "Junk removal", type: "select", options: yesNoOptions },
+      { name: "applianceHauling", label: "Appliance hauling", type: "select", options: yesNoOptions },
+      { name: "sameDayAvailability", label: "Same-day availability", type: "select", options: yesNoOptions },
+      { name: "availableDays", label: "Available days" },
+      { name: "minimumTripCharge", label: "Minimum trip charge" },
+      { name: "pricePerLoad", label: "Price per load if applicable" },
+      { name: "insurance", label: "Insurance", type: "select", options: yesNoOptions },
+      { name: "licenseInfo", label: "License / registration info if applicable" },
+      { name: "bio", label: "Bio / description", type: "textarea" },
+      { name: "equipmentPhoto", label: "Upload truck/equipment photo", type: "file", accept: "image/*" }
+    ],
+    jobFields: [
+      { name: "pickupLocation", label: "Pickup location" },
+      { name: "dropoffLocation", label: "Drop-off location or dump destination if known" },
+      { name: "haulingJobType", label: "Type of job", type: "select", options: ["Dump run", "Junk removal", "Construction debris", "Dirt hauling", "Gravel delivery", "Rock delivery", "Sand delivery", "Topsoil delivery", "Yard debris", "Appliance hauling", "Jobsite cleanup", "Other"] },
+      { name: "materialType", label: "Material type" },
+      { name: "loadSize", label: "Estimated load size" },
+      { name: "numberOfLoads", label: "Number of loads if known" },
+      { name: "heavyEquipmentNeeded", label: "Is heavy equipment needed?", type: "select", options: yesNoOptions },
+      { name: "loadingHelpNeeded", label: "Is loading help needed?", type: "select", options: yesNoOptions },
+      { name: "materialPiled", label: "Is the material already piled up?", type: "select", options: yesNoOptions },
+      { name: "accessNotes", label: "Access notes", type: "textarea", placeholder: "Driveway, gate, steep road, narrow road, soft ground, trailer access" },
+      { name: "desiredDate", label: "Desired date", type: "date" },
+      { name: "desiredTimeWindow", label: "Desired time window" },
+      { name: "urgencyDetail", label: "Urgency", type: "select", options: ["Flexible", "This week", "Same-day", "Emergency"] },
+      { name: "additionalDetails", label: "Additional details", type: "textarea" }
+    ]
+  },
+  {
+    id: "asphalt_concrete",
+    title: "Asphalt, Concrete, Driveways & Pavement",
+    shortTitle: "Concrete & Asphalt",
+    publicHeadline: "Forge Asphalt, Concrete, Driveways & Pavement",
+    publicSubheadline: "Get bids from local crews for driveways, slabs, pavement repairs, sealcoating, and concrete work.",
+    publicBody: "Forge helps homeowners, businesses, landlords, and property owners post asphalt, concrete, driveway, and pavement jobs so local contractors can bid based on the real scope and dollar value of the work.",
+    ctas: ["Post a Driveway or Concrete Job", "Find Asphalt & Concrete Help", "Join as a Concrete or Asphalt Provider"],
+    categories: ["Asphalt", "Concrete", "Driveways", "Pavement", "Parking Pads", "Concrete Pads", "Sidewalks", "Walkways", "Driveway Repair", "Asphalt Patch", "Sealcoating", "Grading for Driveways", "Gravel Driveways", "Concrete Removal", "Asphalt Removal", "Small Slabs", "Curbs", "Drainage Around Driveways"],
+    providerTypes: ["Concrete Contractor", "Asphalt Contractor", "Driveway Contractor", "Pavement Repair Provider", "Sealcoating Provider", "Gravel Driveway Provider", "Concrete Removal Crew", "Small Slab Contractor"],
+    tags: ["concrete", "asphalt", "driveway", "sealcoating", "pavement repair", "gravel driveway", "drainage", "demo"],
+    filters: ["Concrete", "Asphalt", "Driveways", "Sealcoating", "Gravel driveway", "Pavement repair", "Demo/removal", "Drainage", "Licensed", "Insured", "Service area", "Minimum job price"],
+    checklist: ["Confirm dimensions", "Confirm current surface", "Confirm base prep", "Confirm drainage", "Confirm demo/removal", "Confirm access and traffic needs"],
+    providerFields: [
+      { name: "businessName", label: "Business / profile name" },
+      { name: "ownerName", label: "Owner / contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "servicesOffered", label: "Services offered", type: "textarea" },
+      { name: "yearsExperience", label: "Years of experience" },
+      { name: "residentialWork", label: "Residential work", type: "select", options: yesNoOptions },
+      { name: "commercialWork", label: "Commercial work", type: "select", options: yesNoOptions },
+      { name: "drivewayWork", label: "Driveway work", type: "select", options: yesNoOptions },
+      { name: "asphaltWork", label: "Asphalt work", type: "select", options: yesNoOptions },
+      { name: "concreteWork", label: "Concrete work", type: "select", options: yesNoOptions },
+      { name: "gravelDrivewayWork", label: "Gravel driveway work", type: "select", options: yesNoOptions },
+      { name: "sealcoating", label: "Sealcoating offered", type: "select", options: yesNoOptions },
+      { name: "demoRemoval", label: "Demo/removal offered", type: "select", options: yesNoOptions },
+      { name: "gradingPrep", label: "Grading/prep offered", type: "select", options: yesNoOptions },
+      { name: "drainageWork", label: "Drainage work offered", type: "select", options: yesNoOptions },
+      { name: "equipmentAvailable", label: "Equipment available", type: "textarea" },
+      { name: "crewSize", label: "Crew size" },
+      { name: "minimumJobPrice", label: "Minimum job price" },
+      { name: "licenseInfo", label: "License info if applicable" },
+      { name: "insurance", label: "Insurance", type: "select", options: yesNoOptions },
+      { name: "bonded", label: "Bonded", type: "select", options: yesNoOptions },
+      { name: "portfolioPhotos", label: "Portfolio / past project photos", type: "file", accept: "image/*" },
+      { name: "bio", label: "Bio / description", type: "textarea" }
+    ],
+    jobFields: [
+      { name: "propertyType", label: "Property type", type: "select", options: ["Residential", "Commercial", "Rental", "Farm", "Shop", "Other"] },
+      { name: "serviceNeeded", label: "Service needed", type: "select", options: ["Asphalt", "Concrete", "Driveway", "Pavement repair", "Sealcoating", "Gravel driveway", "Sidewalk", "Slab", "Patio", "Removal", "Drainage", "Other"] },
+      { name: "dimensions", label: "Approximate dimensions" },
+      { name: "squareFootage", label: "Square footage if known" },
+      { name: "currentSurface", label: "Current surface", type: "select", options: ["Dirt", "Gravel", "Asphalt", "Concrete", "Broken concrete", "Grass", "Other"] },
+      { name: "finishedSurface", label: "Desired finished surface" },
+      { name: "removalNeeded", label: "Is removal/demo needed?", type: "select", options: yesNoOptions },
+      { name: "gradingNeeded", label: "Is grading/prep needed?", type: "select", options: yesNoOptions },
+      { name: "drainageNeeded", label: "Is drainage needed?", type: "select", options: yesNoOptions },
+      { name: "trafficType", label: "Vehicle traffic type", type: "select", options: ["Cars", "Trucks", "RV", "Trailers", "Heavy equipment"] },
+      { name: "desiredDate", label: "Desired date", type: "date" },
+      { name: "additionalDetails", label: "Additional details", type: "textarea" }
+    ]
+  },
+  {
+    id: "masonry_pavers",
+    title: "Stonework, Masonry, Pavers & Hardscaping",
+    shortTitle: "Masonry & Pavers",
+    publicHeadline: "Forge Stonework, Masonry, Pavers & Hardscaping",
+    publicSubheadline: "Find local crews for pavers, retaining walls, patios, walkways, stonework, brick, block, and hardscape projects.",
+    publicBody: "Forge helps property owners post stonework, masonry, paver, and hardscaping jobs so skilled local providers can bid on real projects with clear scope, photos, budget, and timing.",
+    ctas: ["Post a Stonework or Paver Job", "Find Masonry Help", "Join as a Hardscape Provider"],
+    categories: ["Stonework", "Masonry", "Pavers", "Hardscaping", "Retaining Walls", "Patio Pavers", "Walkway Pavers", "Fire Pits", "Outdoor Steps", "Brick Work", "Block Work", "Rock Walls", "Decorative Stone", "Landscape Borders", "Drainage Stone", "Gravel Paths"],
+    providerTypes: ["Masonry Contractor", "Stonework Specialist", "Paver Installer", "Hardscape Contractor", "Retaining Wall Builder", "Patio / Walkway Installer", "Brick / Block Contractor"],
+    tags: ["masonry", "pavers", "stonework", "retaining walls", "patios", "walkways", "hardscaping", "brick", "block"],
+    filters: ["Pavers", "Stonework", "Masonry", "Retaining walls", "Patios", "Walkways", "Brick/block", "Hardscaping", "Drainage", "Licensed", "Insured", "Service area", "Minimum job price"],
+    checklist: ["Confirm material", "Confirm dimensions", "Confirm base prep", "Confirm drainage", "Confirm removal/demo", "Confirm access for equipment"],
+    providerFields: [
+      { name: "businessName", label: "Business / profile name" },
+      { name: "ownerName", label: "Owner / contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "servicesOffered", label: "Services offered", type: "textarea" },
+      { name: "yearsExperience", label: "Years of experience" },
+      { name: "residentialWork", label: "Residential work", type: "select", options: yesNoOptions },
+      { name: "commercialWork", label: "Commercial work", type: "select", options: yesNoOptions },
+      { name: "paversOffered", label: "Pavers offered", type: "select", options: yesNoOptions },
+      { name: "stoneWalls", label: "Stone walls offered", type: "select", options: yesNoOptions },
+      { name: "retainingWalls", label: "Retaining walls offered", type: "select", options: yesNoOptions },
+      { name: "brickBlock", label: "Brick/block work offered", type: "select", options: yesNoOptions },
+      { name: "outdoorLiving", label: "Outdoor living/fire pit work offered", type: "select", options: yesNoOptions },
+      { name: "drainagePrep", label: "Drainage/hardscape prep offered", type: "select", options: yesNoOptions },
+      { name: "equipmentAvailable", label: "Equipment available", type: "textarea" },
+      { name: "crewSize", label: "Crew size" },
+      { name: "minimumJobPrice", label: "Minimum job price" },
+      { name: "licenseInfo", label: "License info if applicable" },
+      { name: "insurance", label: "Insurance", type: "select", options: yesNoOptions },
+      { name: "bonded", label: "Bonded", type: "select", options: yesNoOptions },
+      { name: "portfolioPhotos", label: "Portfolio / past project photos", type: "file", accept: "image/*" },
+      { name: "bio", label: "Bio / description", type: "textarea" }
+    ],
+    jobFields: [
+      { name: "propertyType", label: "Property type", type: "select", options: ["Residential", "Commercial", "Rental", "Farm", "Shop", "Other"] },
+      { name: "serviceNeeded", label: "Service needed", type: "select", options: ["Stonework", "Masonry", "Pavers", "Retaining wall", "Patio", "Walkway", "Outdoor steps", "Fire pit", "Brick work", "Block work", "Decorative stone", "Gravel path", "Other"] },
+      { name: "dimensions", label: "Approximate dimensions" },
+      { name: "footage", label: "Square footage or linear footage if known" },
+      { name: "currentCondition", label: "Current surface/condition", type: "textarea" },
+      { name: "desiredMaterial", label: "Desired material" },
+      { name: "removalNeeded", label: "Is removal/demo needed?", type: "select", options: yesNoOptions },
+      { name: "basePrepNeeded", label: "Is base prep needed?", type: "select", options: yesNoOptions },
+      { name: "drainageNeeded", label: "Is drainage needed?", type: "select", options: yesNoOptions },
+      { name: "desiredDate", label: "Desired date", type: "date" },
+      { name: "additionalDetails", label: "Additional details", type: "textarea" }
+    ]
+  }
+];
+const serviceVerticalCategoryOptions = uniqueValues(serviceVerticals.flatMap((vertical) => vertical.categories));
+const optionalExtraServiceCategories = [
+  "Fencing",
+  "Custom iron gates",
+  "Photography and videography",
+  "Personal drivers",
+  "Pothole help / roadside support",
+  "Home repair",
+  "Landscaping",
+  "Tree trimming",
+  "Pressure washing",
+  "Gutter cleaning",
+  "Painting",
+  "Roofing",
+  "Handyman work",
+  "Moving help",
+  "Appliance install",
+  "Property maintenance"
+];
+const categories = uniqueValues(["Handyman", "Landscaping", "Junk Removal", "Moving", "Painting", "Plumbing", "Electrical", "Cleaning", ...serviceVerticalCategoryOptions, ...optionalExtraServiceCategories, CREATIVE_CATEGORY_LABEL, NORTHSTAR_CATEGORY_LABEL]);
+const jobStatuses = uniqueValues(["New", "Submitted", "Pending", "Contacted", "Matching", "Quoted", "Accepted", "Assigned", "In Progress", "Completed", "Canceled", ...serviceJobStatusLabels]);
 const workerStatuses = ["New", "Submitted", "Contacted", "Ready", "Approved", "Rejected", "Suspended", "Paused"];
 const referralStatuses = ["New", "Contacted", "Converted", "Later"];
 const roadRescueStatuses = ["New", "Contacted", "Provider Notified", "Matched", "Closed"];
@@ -258,7 +543,7 @@ const buildingPublicCards = [
     body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can collect a finance request and route qualified business owners to approved finance partner review when available.",
     bestFor: ["Contractors", "Builders", "Service businesses", "Blue-collar companies", "Project operators", "Businesses with payroll, invoices, vendors, or material costs"],
     button: "Request Business Finance Review",
-    action: "focus-building-finance"
+    action: "open-building-finance-review"
   },
   {
     title: "Forge Partner Network",
@@ -332,7 +617,316 @@ const autoServiceGroups = [
     ]
   }
 ];
-const autoServiceOptions = autoServiceGroups.flatMap((group) => group.items);
+const autoTransportServiceCards = [
+  {
+    title: "Sell My Car on Forge",
+    tag: "sell_my_car",
+    body: "Submit your vehicle once and let Forge help route it to the right buyer, partner, or selling path.",
+    action: "focus-vehicle-listing",
+    formTarget: "Sell My Car on Forge"
+  },
+  {
+    title: "List My Vehicle",
+    tag: "list_vehicle",
+    body: "Create a reviewed public listing with safe contact handoff, admin approval, and privacy boundaries.",
+    action: "focus-vehicle-listing",
+    formTarget: "List My Vehicle"
+  },
+  {
+    title: "Consign My Vehicle",
+    tag: "consign_vehicle",
+    body: "Ask Forge to review whether a partner consignment path may fit the vehicle and seller timeline.",
+    action: "focus-vehicle-listing",
+    formTarget: "Consign My Vehicle"
+  },
+  {
+    title: "Request a Vehicle",
+    tag: "request_vehicle",
+    body: "Tell Forge what you want to buy so the request can be matched with dealer partners and available inventory.",
+    action: "focus-auto-request",
+    formTarget: "Buyer requests"
+  },
+  {
+    title: "Transport My Vehicle",
+    tag: "transport_needed",
+    body: "Request local pickup, dealer delivery, long-distance transport, auction pickup, or fleet movement help.",
+    action: "focus-auto-request",
+    formTarget: "Long-distance vehicle transport"
+  },
+  {
+    title: "Book Executive Transport",
+    tag: "executive_transport",
+    body: "Capture premium ride, event, airport, business, or white-glove transport requests for partner review.",
+    action: "focus-auto-request",
+    formTarget: "Executive transport"
+  },
+  {
+    title: "Forge Platinum Auto Concierge",
+    tag: "luxury_or_exotic",
+    body: "Premium vehicle sourcing, selling, consignment, and white-glove transport for high-value auto needs.",
+    action: "focus-auto-request",
+    formTarget: "Forge Platinum Auto Concierge"
+  },
+  {
+    title: "Auction Vehicle Sourcing",
+    tag: "auction_sourcing",
+    body: "Capture auction sourcing, pickup, transport, inspection, and partner review needs before any purchase path.",
+    action: "focus-auto-request",
+    formTarget: "Auction Vehicle Sourcing"
+  }
+];
+const autoLeadCategoryLabels = [
+  "sell_my_car",
+  "list_vehicle",
+  "consign_vehicle",
+  "wholesale_offer",
+  "auction_sourcing",
+  "luxury_or_exotic",
+  "standard_vehicle",
+  "truck_or_commercial",
+  "transport_needed",
+  "financing_needed",
+  "title_help_needed",
+  "high_priority_review"
+];
+const autoReviewStatuses = ["New Lead", "Needs Review", "Approved Public Listing", "Partner Review", "Contacted", "Closed"];
+const autoMonetizationSettings = [
+  ["Private sale lead", "Flat listing or success fee after written terms"],
+  ["Dealer / partner route", "Referral or lead fee only after partner agreement"],
+  ["Consignment", "Partner consignment fee share after written terms"],
+  ["Transport", "Partner referral or coordination fee after written terms"],
+  ["Platinum Concierge", "Premium concierge or partner success fee after written terms"],
+  ["Auction sourcing", "Sourcing fee, inspection coordination, or partner referral after written terms"]
+];
+const operationsVaultDocuments = [
+  {
+    id: "forge-master-operating-manual",
+    category: "Master Business Operations",
+    title: "Forge Master Operating Manual",
+    type: "Operating Manual",
+    owner: "Forge Admin",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["core", "admin", "launch"],
+    checklist: ["Protect customer data", "Route licensed work to qualified partners", "Log every lead", "Use admin review before third-party sharing"],
+    body: "Forge collects blue-collar marketplace demand, organizes it by category, and routes qualified opportunities to the right internal queue or approved partner path. Operators must verify consent, keep public claims conservative, and record every handoff in the admin dashboard."
+  },
+  {
+    id: "daily-operations-checklist",
+    category: "Master Business Operations",
+    title: "Forge Daily Operations Checklist",
+    type: "Checklist",
+    owner: "Operations",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["daily", "follow-up"],
+    checklist: ["Review new leads", "Prioritize urgent safety issues", "Copy follow-up queue", "Confirm webhook/export backup", "Log outreach notes"],
+    body: "Open Admin, review Launch Command, process urgent auto/road/job requests first, contact new leads, update statuses, export a backup, and copy the recap before ending the session."
+  },
+  {
+    id: "weekly-operations-review",
+    category: "Master Business Operations",
+    title: "Forge Weekly Operations Review",
+    type: "Review Template",
+    owner: "Operations",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["weekly", "metrics"],
+    checklist: ["Lead volume", "Response time", "Partner bottlenecks", "Safety issues", "Revenue opportunities"],
+    body: "Summarize total leads by category, conversion movement, response delays, partner readiness, user complaints, safety flags, and next week's top three growth actions."
+  },
+  {
+    id: "monthly-business-review",
+    category: "Master Business Operations",
+    title: "Forge Monthly Business Review",
+    type: "Review Template",
+    owner: "Founder",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["monthly", "strategy"],
+    checklist: ["Revenue", "Lead quality", "Active partners", "User feedback", "Public readiness"],
+    body: "Review revenue potential, actual closed outcomes, category expansion, partner risk, operational load, customer trust, public launch gates, and the next month of experiments."
+  },
+  {
+    id: "service-category-launch-checklist",
+    category: "Master Business Operations",
+    title: "Forge Service Category Launch Checklist",
+    type: "Checklist",
+    owner: "Product",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["launch", "category"],
+    checklist: ["Public copy approved", "Intake form tested", "Admin table exists", "Safety boundary present", "Webhook payload documented"],
+    body: "Before launching a new Forge category, confirm public copy, intake fields, admin review path, partner boundaries, privacy notes, webhook fields, and backup/export path."
+  },
+  {
+    id: "customer-intake-sop",
+    category: "Customer Operations",
+    title: "Customer Intake SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["customer", "intake"],
+    checklist: ["Confirm contact info", "Capture scope", "Capture location", "Capture timeline", "Capture consent"],
+    body: "Ask only for information needed to route the request. Confirm consent, explain Forge is coordinating a beta intake, avoid guarantees, and save a clear next action in the lead record."
+  },
+  {
+    id: "customer-qualification-checklist",
+    category: "Customer Operations",
+    title: "Customer Qualification Checklist",
+    type: "Checklist",
+    owner: "Customer Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["qualification"],
+    checklist: ["Need is real", "Location serviceable", "Timeline clear", "Budget range present", "Safety/legal issue flagged"],
+    body: "A qualified request has a real customer, reachable contact, clear scope, serviceable location, rough budget or price expectation, and no unresolved safety/legal blocker."
+  },
+  {
+    id: "customer-follow-up-sop",
+    category: "Customer Operations",
+    title: "Customer Follow-Up SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["follow-up"],
+    checklist: ["Respond quickly", "Restate request", "Confirm next step", "Set follow-up date", "Log outcome"],
+    body: "Follow up with a simple message that restates the request, confirms Forge received it, explains that partner fit must be reviewed, and sets the next follow-up action."
+  },
+  {
+    id: "quote-request-sop",
+    category: "Customer Operations",
+    title: "Quote Request SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["quote", "partner"],
+    checklist: ["Scope ready", "Photos attached or requested", "Budget range noted", "Partner consent recorded", "No price guarantee"],
+    body: "Prepare clean scope notes and send only to approved partners after consent. Do not quote licensed services on Forge's behalf unless Forge is actually performing that service through a proper legal setup."
+  },
+  {
+    id: "scheduling-sop",
+    category: "Customer Operations",
+    title: "Scheduling SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["scheduling"],
+    checklist: ["Confirm availability", "Confirm location", "Confirm arrival window", "Confirm contact", "Log schedule note"],
+    body: "Coordinate only confirmed time windows, avoid overpromising availability, and keep both customer and provider contact details clear in the admin record."
+  },
+  {
+    id: "job-completion-sop",
+    category: "Customer Operations",
+    title: "Job Completion SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["completion", "reviews"],
+    checklist: ["Confirm work status", "Capture feedback", "Ask for photos if appropriate", "Log payment handled outside MVP", "Request review"],
+    body: "After completion, confirm the outcome, capture customer feedback, request a review/testimonial when appropriate, and record any issue requiring follow-up."
+  },
+  {
+    id: "customer-complaint-sop",
+    category: "Customer Operations",
+    title: "Customer Complaint SOP",
+    type: "SOP",
+    owner: "Customer Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["complaints", "safety"],
+    checklist: ["Acknowledge", "Collect facts", "Pause routing if needed", "Escalate safety issues", "Document resolution"],
+    body: "Treat complaints as safety and trust events. Acknowledge quickly, gather facts, avoid assigning blame too early, pause risky partner routing, and document the resolution path."
+  },
+  {
+    id: "auto-seller-intake-sop",
+    category: "Auto Operations",
+    title: "Forge Auto Seller Intake SOP",
+    type: "SOP",
+    owner: "Auto Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["sell_my_car", "vehicle"],
+    checklist: ["Seller contact", "Vehicle facts", "Title/lien status", "Condition disclosure", "Photos or notes", "Consent"],
+    body: "Vehicle seller intake must capture price, mileage, condition, title status, lien/payoff risk, private lowest price, photos/notes, and consent before routing to a dealer, Platinum partner, auction, or public listing review."
+  },
+  {
+    id: "platinum-partner-routing-sop",
+    category: "Partner Routing",
+    title: "Forge Platinum Partner Routing SOP",
+    type: "SOP",
+    owner: "Auto Ops",
+    status: "Internal only",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["platinum", "luxury", "partner"],
+    checklist: ["Use Forge Platinum public brand", "Hide private partner names", "Verify consent", "Confirm partner approval", "Log handoff"],
+    body: "Forge Platinum Auto Concierge is the customer-facing brand. Private partner names, company names, logos, photos, and service claims stay internal unless written approval and admin branding permission are confirmed."
+  },
+  {
+    id: "vehicle-listing-review-checklist",
+    category: "Auto Operations",
+    title: "Vehicle Listing Review Checklist",
+    type: "Checklist",
+    owner: "Auto Ops",
+    status: "Ready for beta",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["public listing", "privacy"],
+    checklist: ["Remove private lowest price", "Remove payoff details", "Avoid title guarantees", "Confirm seller consent", "Mark reviewed status"],
+    body: "Public listings may show year, make, model, asking price, mileage, location, basic condition, and approved seller route. Private lowest price, lien/payoff details, VIN, admin notes, and private partner routing stay internal."
+  },
+  {
+    id: "auction-sourcing-worksheet",
+    category: "Auto Operations",
+    title: "Auction Sourcing Worksheet",
+    type: "Worksheet",
+    owner: "Auto Ops",
+    status: "Draft v1",
+    version: "1.0",
+    reviewed: "2026-06-26",
+    tags: ["auction_sourcing"],
+    checklist: ["Target vehicle", "Budget ceiling", "Inspection need", "Transport need", "Dealer/auction partner"],
+    body: "Record the target vehicle, budget ceiling, auction source, inspection requirements, transport needs, buyer consent, and partner handoff. Do not imply Forge owns auction access unless properly arranged."
+  },
+  {
+    id: "partner-referral-agreement-template",
+    category: "Legal / Contracts",
+    title: "Partner Referral Agreement Template",
+    type: "Template - requires attorney review before use",
+    owner: "Legal",
+    status: "Attorney review required",
+    version: "0.1",
+    reviewed: "2026-06-26",
+    tags: ["legal", "partner"],
+    checklist: ["Parties", "Services", "Fees", "Data sharing", "Compliance", "Termination"],
+    body: "Template only. Define partner services, referral fee rules, customer consent, data handling, licensing responsibilities, insurance, dispute process, and termination. Do not use publicly until reviewed by an attorney."
+  }
+];
+const autoServiceOptions = [
+  ...autoServiceGroups.flatMap((group) => group.items),
+  ...autoTransportServiceCards.map((card) => card.formTarget),
+  "Executive transport",
+  "Forge Platinum Auto Concierge"
+].filter((item, index, list) => list.indexOf(item) === index);
 const ROAD_RESCUE_SERVICE_TYPE = "road_rescue";
 const roadRescueServices = [
   {
@@ -1197,6 +1791,30 @@ const seedState = {
       adminDescription: "Flex is being tracked as a potential contractor finance and business-tools partner candidate for builders, contractors, service businesses, and project operators who need business banking, credit, expense management, bill pay, vendor payments, working capital, AP/AR automation, and related business finance tools. No public partnership claim, logo use, customer data sharing, or official language is allowed until written approval is recorded.",
       bestFit: ["Contractors", "Builders", "Remodelers", "Blue-collar service businesses", "Project operators", "Businesses with vendor payments", "Businesses with cash-flow gaps", "Businesses needing expense controls", "Businesses needing AP/AR automation"],
       disclaimer: "Finance partner routing is subject to written approval, consent, eligibility, partner terms, and data-sharing approval. Forge is not a lender, bank, broker-dealer, financial advisor, or credit provider."
+    },
+    {
+      id: "marc-portland-luxury-auto-partner",
+      name: "Private Luxury Auto Partner",
+      internalNickname: "Marc - Portland Luxury Auto Partner",
+      customerFacingBrand: "Forge Platinum Auto Concierge",
+      subtitle: "Luxury Auto Fulfillment Candidate",
+      region: "Portland, Lake Oswego, Beaverton, Vancouver WA, and broader Oregon by admin approval",
+      focus: "Luxury car sourcing, exotic vehicle selling, premium SUV support, consignment, auction sourcing, and white-glove transport",
+      contactRelationshipNote: "Private internal auto partner candidate. Do not publish personal or company branding without written approval.",
+      partnerType: "luxury_auto_partner",
+      approved: false,
+      publicDisplayEnabled: false,
+      logoUseApproved: false,
+      referralAgreementSigned: false,
+      dataSharingApproved: false,
+      officialPartnerLanguageApproved: false,
+      brandingPermissionConfirmed: false,
+      featureFlag: "forgePlatinumAutoConcierge",
+      status: "Internal candidate record",
+      publicDisplayRule: "Do not publicly display the internal partner name, company name, branding, logo, photos, or services unless written approval and admin branding permission are confirmed. Forge Platinum Auto Concierge remains the customer-facing brand.",
+      adminDescription: "Marc is approved as a potential Portland-area luxury automotive fulfillment partner for Forge Platinum Auto Concierge. Do not publicly display Marc's name, company name, branding, logo, photos, or services unless written approval and admin branding permission are confirmed. Forge Platinum remains the customer-facing brand.",
+      bestFit: ["Luxury cars", "Exotic vehicles", "Premium SUVs", "Executive transport", "High-value consignment", "Auction vehicle sourcing", "Portland metro auto needs"],
+      disclaimer: "Partner routing is subject to customer consent, partner approval, licensing, written agreement, and admin branding permission."
     }
   ],
   partnerReferrals: [],
@@ -1477,10 +2095,10 @@ function normalizeState(value) {
   next.worker = normalizeDemoWorker(value?.worker || seedState.worker);
   next.workers = value?.workers || [next.worker, ...seedState.workers.slice(1)];
   next.referrals = value?.referrals || seedState.referrals;
-  next.jobs = next.jobs.map((job) => ({ notes: "", phone: "", email: "", customer: "Unknown", ...job }));
-  next.bids = next.bids.map((bid) => ({ id: `${bid.jobId}-${bid.worker}`, timeline: "TBD", message: "", status: "Submitted", rating: "New", reviews: 0, chosen: false, ...bid }));
+  next.jobs = next.jobs.map((job) => normalizeServiceJob({ notes: "", phone: "", email: "", customer: "Unknown", ...job }));
+  next.bids = next.bids.map((bid) => normalizeServiceBid({ id: `${bid.jobId}-${bid.worker}`, timeline: "TBD", message: "", status: "Submitted", rating: "New", reviews: 0, chosen: false, ...bid }));
   next.bids = next.bids.map((bid) => bid.worker === "Medford Handyman" ? { ...bid, id: "bid-mike-jones", worker: "Mike Jones" } : bid);
-  next.workers = next.workers.map((worker) => ({ status: "New", ...normalizeDemoWorker(worker) }));
+  next.workers = next.workers.map((worker) => normalizeServiceProvider({ status: "New", ...normalizeDemoWorker(worker) }));
   ensureMikeJones(next);
   next.referrals = next.referrals.map((referral) => ({ status: "New", priority: "Warm", note: "", email: "", ...referral }));
   next.messages = next.messages.map((message) => ({ status: "Sent", sentAt: "Today", from: "Forge", ...message }));
@@ -1992,6 +2610,76 @@ function categoryMatches(jobCategory, selectedCategory) {
     || categoryLabel(jobCategory) === selectedCategory;
 }
 
+function serviceVerticalById(id) {
+  return serviceVerticals.find((vertical) => vertical.id === id) || null;
+}
+
+function serviceVerticalForCategory(category) {
+  const label = categoryLabel(category);
+  return serviceVerticals.find((vertical) => vertical.categories.includes(label) || vertical.title === label || vertical.shortTitle === label) || null;
+}
+
+function serviceVerticalForProvider(worker) {
+  return serviceVerticalById(worker?.serviceVertical)
+    || serviceVerticalForCategory(worker?.providerCategory)
+    || serviceVerticalForCategory(worker?.trade)
+    || serviceVerticalForCategory(worker?.category)
+    || null;
+}
+
+function isServiceVerticalJob(job) {
+  return Boolean(serviceVerticalById(job?.serviceVertical) || serviceVerticalForCategory(job?.category));
+}
+
+function isServiceVerticalProvider(worker) {
+  return Boolean(serviceVerticalForProvider(worker));
+}
+
+function normalizeServiceJob(job) {
+  const vertical = serviceVerticalById(job.serviceVertical) || serviceVerticalForCategory(job.category || job.categoryLabel);
+  if (!vertical) return job;
+  return {
+    serviceVertical: vertical.id,
+    serviceVerticalTitle: vertical.title,
+    serviceDetails: {},
+    servicePhotoSummary: "0 photos selected",
+    status: job.status || "Open for bids",
+    ...job,
+    categoryLabel: job.categoryLabel || categoryLabel(job.category)
+  };
+}
+
+function normalizeServiceProvider(worker) {
+  const vertical = serviceVerticalForProvider(worker);
+  if (!vertical) return worker;
+  return {
+    serviceVertical: vertical.id,
+    serviceVerticalTitle: vertical.title,
+    providerType: worker.providerType || vertical.providerTypes[0],
+    profileDetails: {},
+    tags: [],
+    serviceArea: worker.area || worker.serviceArea || "",
+    ...worker
+  };
+}
+
+function normalizeServiceBid(bid) {
+  return {
+    earliestAvailability: "",
+    estimatedDuration: "",
+    crewMembers: "",
+    materialsIncluded: "No",
+    suppliesIncluded: "No",
+    equipmentIncluded: "No",
+    dumpFeesIncluded: "No",
+    laundryIncluded: "No",
+    restockingIncluded: "No",
+    recurringAvailable: "No",
+    experienceNote: "",
+    ...bid
+  };
+}
+
 function isCreativeJob(job) {
   return categoryValue(job?.category) === CREATIVE_CATEGORY_VALUE;
 }
@@ -2095,6 +2783,10 @@ function render() {
   renderNorthStarPage();
   renderCapitalPage();
   renderProviderGrowthTools();
+  renderServiceVerticals();
+  renderServiceJobFields();
+  renderProviderServiceFields();
+  renderProviderDirectory();
   renderAutos();
   renderRoadRescue();
   renderOpportunities();
@@ -2484,6 +3176,8 @@ function fieldSelectedValues(selector) {
 function renderSelects() {
   fillSelect("#jobCategory", ["", ...categories], "Select a category");
   fillSelect("#listingCategory", ["All Categories", ...categories]);
+  fillSelect("#workerServiceVertical", [["", "General Forge worker"], ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
+  fillSelect("#providerVerticalFilter", ["All Provider Types", ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
   fillSelect("#creativeProjectType", ["", ...creativeProjectTypes], "Select a service type");
   fillSelect("#creativeBudget", creativeBudgetOptions);
   fillSelect("#creativeMediaType", creativeMediaOptions);
@@ -2893,6 +3587,200 @@ function renderProviderGrowthTools() {
   `).join("");
 }
 
+function renderServiceVerticals() {
+  const cards = document.querySelectorAll("[data-service-vertical-cards]");
+  const chipTargets = document.querySelectorAll("[data-service-category-chips]");
+  const statusTargets = document.querySelectorAll("[data-service-status-labels]");
+  const airbnbChecklist = document.querySelector("#airbnbTurnoverChecklist");
+  const safetyTargets = document.querySelectorAll("[data-service-safety-notes]");
+
+  cards.forEach((target) => {
+    target.innerHTML = serviceVerticals.map((vertical) => `
+      <article class="service-vertical-card">
+        <span class="split-label">${escapeHtml(vertical.shortTitle)}</span>
+        <h3>${escapeHtml(vertical.publicHeadline)}</h3>
+        <p>${escapeHtml(vertical.publicSubheadline)}</p>
+        <p>${escapeHtml(vertical.publicBody)}</p>
+        <div class="service-category-mini">
+          ${vertical.categories.slice(0, 8).map((category) => `<span>${escapeHtml(category)}</span>`).join("")}
+        </div>
+        <div class="hero-actions">
+          <button class="btn orange small" type="button" data-action="start-service-job" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[0])}</button>
+          <button class="btn ghost small" type="button" data-action="browse-service-jobs" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[1])}</button>
+          <button class="btn blue small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[2])}</button>
+        </div>
+      </article>
+    `).join("");
+  });
+
+  chipTargets.forEach((target) => {
+    target.innerHTML = serviceVerticalCategoryOptions.map((category) => `
+      <button type="button" data-action="choose-service-category" data-service-category="${escapeHtml(category)}">${escapeHtml(category)}</button>
+    `).join("");
+  });
+
+  statusTargets.forEach((target) => {
+    target.innerHTML = serviceJobStatusLabels.map((status) => `<span>${escapeHtml(status)}</span>`).join("");
+  });
+
+  if (airbnbChecklist) {
+    const cleaning = serviceVerticalById("cleaning");
+    airbnbChecklist.innerHTML = cleaning.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+  }
+
+  safetyTargets.forEach((target) => {
+    target.innerHTML = [
+      "Forge helps connect customers with local service providers. Customers should verify references, insurance, licensing, access instructions, property details, and final scope before allowing entry or approving work.",
+      "Service providers should confirm scope, price, access instructions, photos, timing, cancellation terms, disposal fees, material costs, permit responsibility, and payment terms before accepting work.",
+      "Some asphalt, concrete, masonry, driveway, hauling, grading, and hardscape jobs may require permits, utility locates, licensed contractors, insurance, traffic control, or code compliance. Customers and providers are responsible for confirming local requirements before work begins."
+    ].map((note) => `<p>${escapeHtml(note)}</p>`).join("");
+  });
+}
+
+function renderServiceJobFields() {
+  const target = document.querySelector("#serviceJobFields");
+  if (!target) return;
+  const vertical = serviceVerticalForCategory(document.querySelector("#jobCategory")?.value);
+  target.classList.toggle("hidden", !vertical);
+  if (!vertical) {
+    target.innerHTML = "";
+    return;
+  }
+  target.innerHTML = `
+    <section class="dynamic-service-panel">
+      <span class="split-label">${escapeHtml(vertical.title)}</span>
+      <h2>Detailed scope for bids</h2>
+      <p class="muted">These details help local providers bid on dollar value, scope, timing, and service type.</p>
+      <div class="dynamic-field-grid">
+        ${vertical.jobFields.map((field) => serviceFieldMarkup(field, "serviceJob", "data-service-job-field")).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderProviderServiceFields() {
+  const target = document.querySelector("#providerProfileFields");
+  if (!target) return;
+  const selectedVerticalId = document.querySelector("#workerServiceVertical")?.value;
+  const vertical = serviceVerticalById(selectedVerticalId) || serviceVerticalForCategory(fieldValue("#workerTrade"));
+  target.classList.toggle("hidden", !vertical);
+  if (!vertical) {
+    target.innerHTML = "";
+    return;
+  }
+  target.innerHTML = `
+    <section class="dynamic-service-panel">
+      <span class="split-label">${escapeHtml(vertical.title)}</span>
+      <h2>Provider profile details</h2>
+      <label>Provider type
+        <select id="workerProviderType" required>
+          ${vertical.providerTypes.map((type) => `<option>${escapeHtml(type)}</option>`).join("")}
+        </select>
+      </label>
+      <div class="dynamic-field-grid">
+        ${vertical.providerFields.map((field) => serviceFieldMarkup(field, "providerProfile", "data-provider-profile-field")).join("")}
+      </div>
+      <div class="tag-check-grid">
+        ${vertical.tags.map((tag) => `
+          <label class="check-row">
+            <input type="checkbox" name="workerTags" value="${escapeHtml(tag)}" />
+            ${escapeHtml(tag)}
+          </label>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function serviceFieldMarkup(field, idPrefix, dataAttr) {
+  const id = `${idPrefix}-${field.name}`;
+  const common = `${dataAttr}="${escapeHtml(field.name)}"`;
+  if (field.type === "textarea") {
+    return `<label>${escapeHtml(field.label)}<textarea id="${escapeHtml(id)}" ${common} rows="3" placeholder="${escapeHtml(field.placeholder || "")}"></textarea></label>`;
+  }
+  if (field.type === "select") {
+    return `<label>${escapeHtml(field.label)}<select id="${escapeHtml(id)}" ${common}>${(field.options || []).map((option) => `<option>${escapeHtml(option)}</option>`).join("")}</select></label>`;
+  }
+  if (field.type === "file") {
+    return `<label>${escapeHtml(field.label)}<input id="${escapeHtml(id)}" ${common} type="file" ${field.accept ? `accept="${escapeHtml(field.accept)}"` : ""} multiple /></label>`;
+  }
+  return `<label>${escapeHtml(field.label)}<input id="${escapeHtml(id)}" ${common} type="${escapeHtml(field.type || "text")}" placeholder="${escapeHtml(field.placeholder || "")}" /></label>`;
+}
+
+function renderProviderDirectory() {
+  const directory = document.querySelector("#providerDirectory");
+  const filterOptions = document.querySelector("#providerFilterOptions");
+  if (!directory || !filterOptions) return;
+
+  const selectedVerticalId = document.querySelector("#providerVerticalFilter")?.value || "All Provider Types";
+  const activeVertical = serviceVerticalById(selectedVerticalId);
+  const filters = activeVertical?.filters || uniqueValues(serviceVerticals.flatMap((vertical) => vertical.filters));
+  const activeFilters = Array.from(document.querySelectorAll("input[name='providerFilter']:checked")).map((input) => input.value);
+  const search = normalizeLookup(document.querySelector("#providerSearch")?.value || "");
+  const serviceArea = normalizeLookup(document.querySelector("#providerServiceArea")?.value || "");
+
+  filterOptions.innerHTML = filters.map((filter) => `
+    <label class="check-row provider-filter-chip">
+      <input type="checkbox" name="providerFilter" value="${escapeHtml(filter)}" ${activeFilters.includes(filter) ? "checked" : ""} />
+      ${escapeHtml(filter)}
+    </label>
+  `).join("");
+
+  const providers = state.workers.filter((worker) => {
+    const vertical = serviceVerticalForProvider(worker);
+    const text = normalizeLookup(providerSearchText(worker));
+    const matchesVertical = !activeVertical || vertical?.id === activeVertical.id;
+    const matchesSearch = !search || text.includes(search);
+    const matchesArea = !serviceArea || normalizeLookup(worker.area || worker.serviceArea || worker.service_area || "").includes(serviceArea);
+    const matchesFilters = activeFilters.every((filter) => providerMatchesFilter(worker, filter));
+    return matchesVertical && matchesSearch && matchesArea && matchesFilters;
+  });
+
+  directory.innerHTML = providers.map((worker) => {
+    const vertical = serviceVerticalForProvider(worker);
+    const details = worker.profileDetails || {};
+    return `
+      <article class="provider-directory-card">
+        <div>
+          <span class="split-label">${escapeHtml(vertical?.title || worker.trade || "Forge worker")}</span>
+          <h3>${escapeHtml(worker.businessName || worker.name)}</h3>
+          <p>${escapeHtml(worker.providerType || worker.trade)} · ${escapeHtml(worker.area || worker.serviceArea || "Service area pending")}</p>
+          <div class="service-category-mini">
+            ${(worker.tags || []).slice(0, 6).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+            ${details.minimumPrice || details.minimumTripCharge || details.minimumJobPrice ? `<span>${escapeHtml(details.minimumPrice || details.minimumTripCharge || details.minimumJobPrice)}</span>` : ""}
+          </div>
+        </div>
+        <div class="lead-actions">
+          ${contactLinks(worker.phone, worker.email, workerTemplate(worker))}
+          <button class="btn ghost small" type="button" data-action="copy-worker-direct" data-worker-email="${escapeHtml(worker.email)}">Copy</button>
+        </div>
+      </article>
+    `;
+  }).join("") || `<article class="provider-directory-card"><div><h3>No providers match these filters.</h3><p>Clear filters or invite the first provider for this service.</p></div></article>`;
+}
+
+function providerSearchText(worker) {
+  return [
+    worker.name,
+    worker.businessName,
+    worker.trade,
+    worker.providerType,
+    worker.area,
+    worker.serviceArea,
+    worker.serviceVerticalTitle,
+    ...(worker.tags || []),
+    ...Object.values(worker.profileDetails || {})
+  ].join(" ");
+}
+
+function providerMatchesFilter(worker, filter) {
+  const text = normalizeLookup(providerSearchText(worker));
+  const normalized = normalizeLookup(filter);
+  if (["service area", "max load size", "minimum trip charge", "starting price", "minimum job price"].includes(normalized)) return true;
+  return text.includes(normalized)
+    || normalized.split(/\s+/).some((part) => part.length > 3 && text.includes(part));
+}
+
 function renderAutos() {
   const stats = document.querySelector("#autoStats");
   const listings = document.querySelector("#autoListings");
@@ -3115,7 +4003,7 @@ function renderBuildingPage() {
       <h2>${escapeHtml(card.title)}</h2>
       <p>${escapeHtml(card.body)}</p>
       ${card.bestFor.length ? `<strong>Best for:</strong><ul>${card.bestFor.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
-      <button class="btn ${card.action === "focus-building-major" ? "blue" : card.action === "focus-building-finance" ? "ghost" : "orange"} small" type="button" data-action="${escapeHtml(card.action)}">${escapeHtml(card.button)}</button>
+      <button class="btn ${card.action === "focus-building-major" ? "blue" : ["focus-building-finance", "open-building-finance-review"].includes(card.action) ? "ghost" : "orange"} small" type="button" data-action="${escapeHtml(card.action)}">${escapeHtml(card.button)}</button>
     </article>
   `).join("");
   timeline.innerHTML = ["NEW_BUILDING_LEAD", "HOME_PROJECT_REVIEW", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED", "CUSTOMER_CONSENT_APPROVED", "SENECA_REVIEW_ELIGIBLE", "FLEX_REVIEW_ELIGIBLE", "WON"].map((status, index) => `
@@ -3174,7 +4062,7 @@ function buildingDraftFromForm() {
     hasPlans: document.querySelector("#buildingHasPlans")?.value || "not_sure",
     hasPermits: document.querySelector("#buildingHasPermits")?.value || "not_sure",
     needsFinancing: document.querySelector("#buildingNeedsFinancing")?.value || "not_sure",
-    businessName: fieldValue("#buildingBusinessName"),
+    businessName: fieldValue("#buildingBusinessName") || fieldValue("#buildingCompanyName"),
     ownerName: fieldValue("#buildingOwnerName"),
     email: fieldValue("#buildingEmail"),
     phone: fieldValue("#buildingPhone"),
@@ -6174,22 +7062,29 @@ function renderTable(selector, rows) {
 function postJobFromForm() {
   const title = document.querySelector("#jobTitle").value.trim();
   const selectedCategory = document.querySelector("#jobCategory").value;
+  const vertical = serviceVerticalForCategory(selectedCategory);
+  const serviceDetails = vertical ? collectServiceDetails("data-service-job-field") : {};
+  const photoSummary = selectedFileSummary("#jobPhotos", "photo");
   const job = {
     id: `${Date.now()}`,
     title,
     category: categoryValue(selectedCategory),
     categoryLabel: categoryLabel(selectedCategory),
+    serviceVertical: vertical?.id || "",
+    serviceVerticalTitle: vertical?.title || "",
+    serviceDetails,
+    servicePhotoSummary: photoSummary,
     location: document.querySelector("#jobLocation").value.trim(),
     urgency: document.querySelector("#jobUrgency").value,
     budget: document.querySelector("#jobBudget").value,
     bids: 0,
-    status: "New",
+    status: vertical ? "Open for bids" : "New",
     posted: "Today",
     description: document.querySelector("#jobDescription").value.trim() || "New Forge job lead ready for bids.",
     customer: document.querySelector("#customerName").value.trim(),
     phone: document.querySelector("#customerPhone").value.trim(),
     email: document.querySelector("#customerEmail").value.trim(),
-    notes: "New lead from Forge MVP."
+    notes: vertical ? `New ${vertical.title} lead from Forge MVP.` : "New lead from Forge MVP."
   };
   state.jobs.unshift(job);
   state.activeJobId = job.id;
@@ -6201,7 +7096,8 @@ function postJobFromForm() {
     details: [
       `${job.title} in ${job.location}`,
       `${job.budget} budget range`,
-      `${job.urgency} timeline`
+      `${job.urgency} timeline`,
+      vertical ? `${vertical.title} · ${photoSummary}` : photoSummary
     ],
     nextSteps: [
       "Forge saves this job to the local Admin queue",
@@ -6316,6 +7212,25 @@ function buildingPartnerReadinessText(lead) {
 function selectedFileSummary(selector, noun = "file") {
   const count = document.querySelector(selector)?.files?.length || 0;
   return `${count} ${noun}${count === 1 ? "" : "s"} selected`;
+}
+
+function collectServiceDetails(attributeName) {
+  return Array.from(document.querySelectorAll(`[${attributeName}]`)).reduce((details, field) => {
+    const key = field.getAttribute(attributeName);
+    if (!key) return details;
+    if (field.type === "file") {
+      details[key] = `${field.files?.length || 0} file${field.files?.length === 1 ? "" : "s"} selected`;
+      return details;
+    }
+    details[key] = field.value?.trim?.() || field.value || "";
+    return details;
+  }, {});
+}
+
+function serviceDetailRows(details = {}, fields = []) {
+  return fields
+    .map((field) => [field.label, details[field.name]])
+    .filter(([, value]) => String(value || "").trim());
 }
 
 function submitCreativeLead() {
@@ -6730,10 +7645,42 @@ function configuredFlexAppUrl() {
   return /^https?:\/\//i.test(url) ? url : "";
 }
 
+function createPendingBuildingFinanceLead() {
+  const lead = normalizeBuildingLead({
+    id: `building-finance-${Date.now()}`,
+    createdAt: "Today",
+    updatedAt: "Today",
+    leadType: "CONTRACTOR_FINANCE",
+    projectType: "CONTRACTOR_FINANCE",
+    projectTitle: "Contractor finance review request",
+    projectDescription: "Public Building finance CTA selected. FLEX_APP_URL is not configured and no internal Flex flow is available, so Forge retained this request in Building admin review.",
+    budgetRange: "NOT_SURE",
+    timeline: "Flexible",
+    projectStage: "NEED_FINANCING",
+    state: "OR",
+    financeNeed: "WORKING_CAPITAL",
+    preferredContactMethod: "Phone",
+    consentToReview: true,
+    consentToContact: false,
+    consentToShareWithApprovedPartners: false,
+    adminNotes: "Flex integration pending configuration. Do not share this lead with Flex or any third-party finance partner until customer consent, partner approval, and data-sharing approval are recorded."
+  });
+  state.buildingLeads.unshift(lead);
+  addActivity("Building finance fallback lead saved because FLEX_APP_URL and internal Flex flow were unavailable.");
+  saveState();
+  render();
+  showToast("Finance request saved inside Forge review.");
+  return lead;
+}
+
 function openBuildingFinanceReview() {
   if (screenExists("capital")) {
     navigate("capital");
     focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
+    if (!configuredFlexAppUrl()) {
+      addActivity("Building finance review opened in Forge Capital Desk. FLEX_APP_URL is not configured; external Flex integration remains pending.");
+      saveState();
+    }
     return;
   }
   const url = configuredFlexAppUrl();
@@ -6743,7 +7690,25 @@ function openBuildingFinanceReview() {
     return;
   }
   focusBuildingForm("CONTRACTOR_FINANCE", "CONTRACTOR_FINANCE");
-  showToast("Flex integration pending. Finance request will stay in Forge review.");
+  const lead = createPendingBuildingFinanceLead();
+  state.lastConfirmation = {
+    type: "building",
+    title: "Finance review saved inside Forge.",
+    body: "Forge kept this finance request in the Building admin review queue because no approved Flex connection is configured.",
+    details: [
+      `${projectOptionLabel(buildingLeadTypeOptions, lead.leadType)} · ${projectOptionLabel(buildingProjectTypeOptions, lead.projectType)}`,
+      `${buildingStatusLabel(lead.status)} · ${lead.partnerEligibility}`,
+      "No third-party sharing consent captured"
+    ],
+    nextSteps: [
+      "Collect customer contact details before follow-up",
+      "Configure FLEX_APP_URL or use Forge Capital Desk before any external Flex handoff",
+      "Require consent, partner approval, and data-sharing approval before partner sharing"
+    ],
+    primary: { label: "Open Building Admin", screen: "admin-building-leads" },
+    secondary: { label: "Back to Building", screen: "building" }
+  };
+  navigate("confirm");
 }
 
 function escapeHtml(value) {
@@ -6756,6 +7721,10 @@ function escapeHtml(value) {
 
 function humanize(value) {
   return value.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
 }
 
 function creativeStatusText(status) {
