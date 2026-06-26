@@ -25,6 +25,7 @@
             <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
             <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
+            <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
             <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
@@ -97,6 +98,12 @@
             <h2>NorthStar Creative Co.</h2>
             <p>Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations for blue-collar businesses.</p>
             <button class="btn ghost" type="button" data-nav="northstar">Grow My Business</button>
+          </article>
+          <article>
+            <span class="split-label">I need breathing room</span>
+            <h2>Forge Capital Desk</h2>
+            <p>Basic business-owner intake and consent before continuing through the official Flex referral channel.</p>
+            <button class="btn ghost" type="button" data-nav="capital">Check Flex Options</button>
           </article>
           <article>
             <span class="split-label">I want a path up</span>
@@ -779,6 +786,107 @@
               <button class="btn orange" type="submit">Get Marketing Help</button>
             </form>
             <div class="northstar-lead-list" id="northstarLeadList"></div>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen capital-screen" id="capital-screen" data-screen="capital">
+        <header class="blue-bar capital-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons">
+            <button type="button" data-action="focus-flex-form">Form</button>
+            <button type="button" data-action="copy-flex-brief">Brief</button>
+          </div>
+        </header>
+        <section class="capital-hero">
+          <div class="capital-hero-copy">
+            <span class="split-label">Forge Capital Desk</span>
+            <h1>Business owners need breathing room.</h1>
+            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators discover modern business finance tools through our Flex referral channel.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-flex-form">Check Flex Options</button>
+              <button class="btn ghost light" type="button" data-action="copy-flex-outreach">Talk to Forge Capital Desk</button>
+            </div>
+          </div>
+          <figure class="capital-hero-photo">
+            <img src="./assets/forge-hero.png" alt="Local business owner reviewing work before a job" />
+          </figure>
+        </section>
+        <section class="capital-layout">
+          <div class="capital-main">
+            <section class="capital-section">
+              <span class="split-label">Who this helps</span>
+              <h2>Built for businesses that spend money before they get paid.</h2>
+              <div id="flexWhoHelpsList"></div>
+            </section>
+            <section class="capital-section capital-problems">
+              <span class="split-label">Common business problems</span>
+              <h2>Signals that a business may need better finance tools.</h2>
+              <ul id="flexProblemsList"></ul>
+            </section>
+            <section class="capital-section capital-flex-help">
+              <span class="split-label">What Flex may help with</span>
+              <h2>Modern business finance tools through Flex.</h2>
+              <ul id="flexMayHelpList"></ul>
+            </section>
+            <section class="capital-section">
+              <span class="split-label">How Forge referral works</span>
+              <h2>Forge collects consent. Flex handles the product path.</h2>
+              <div class="capital-steps" id="flexHowItWorks"></div>
+            </section>
+            <section class="capital-section compliance">
+              <span class="split-label">Compliance/disclaimer</span>
+              <p data-flex-compliance></p>
+            </section>
+            <section class="capital-section upsell">
+              <span class="split-label">Forge / NorthStar upsell</span>
+              <h2>Capital is one part of business growth.</h2>
+              <p>Forge can also help business owners with more customer leads, marketing through NorthStar Creative Co., websites, CRM, automation setup, hiring, operations, and payment processing help.</p>
+              <div class="hero-actions">
+                <button class="btn ghost small" type="button" data-nav="northstar">Open NorthStar</button>
+                <button class="btn ghost small" type="button" data-nav="capture" data-operator-only>Capture Referral</button>
+              </div>
+            </section>
+            <section class="capital-section recent">
+              <span class="split-label">Recent Capital Desk leads</span>
+              <div class="capital-recent-grid" id="flexRecentLeads"></div>
+            </section>
+          </div>
+          <aside class="capital-form-panel" id="flexLeadFormSection">
+            <form class="capital-form" id="flexLeadForm">
+              <span class="split-label">Lead form</span>
+              <h2>Check Flex Options</h2>
+              <p class="muted">Forge only collects basic lead and consent details before sending business owners to the official Flex referral URL.</p>
+              <label>Owner name<input id="flexOwnerName" required autocomplete="name" placeholder="Full name" /></label>
+              <label>Business name<input id="flexBusinessName" required placeholder="Business name" /></label>
+              <label>Email<input id="flexEmail" required type="email" autocomplete="email" placeholder="owner@example.com" /></label>
+              <label>Phone optional<input id="flexPhone" autocomplete="tel" placeholder="(541) 555-0000" /></label>
+              <div class="field-row">
+                <label>City<input id="flexCity" placeholder="Medford" /></label>
+                <label>State<input id="flexState" maxlength="2" placeholder="OR" /></label>
+              </div>
+              <label>Industry<select id="flexIndustry" required></select></label>
+              <label>Website optional<input id="flexWebsite" type="url" placeholder="https://example.com" /></label>
+              <div class="field-row">
+                <label>Years in business<select id="flexYearsInBusiness"></select></label>
+                <label>Employees<select id="flexEmployeeCount"></select></label>
+              </div>
+              <div class="field-row">
+                <label>Monthly revenue<select id="flexMonthlyRevenue"></select></label>
+                <label>Monthly spend<select id="flexMonthlySpend"></select></label>
+              </div>
+              <label>Primary need<select id="flexPrimaryNeed"></select></label>
+              <label>Anything else Forge should know?<textarea id="flexNotes" rows="3" placeholder="Timing, vendor bills, payroll timing, fuel, materials, equipment, cards, growth plans, or follow-up notes."></textarea></label>
+              <div class="capital-checkboxes">
+                <label class="check-row"><input id="flexInterestedForge" type="checkbox" /> Interested in more customer leads through Forge</label>
+                <label class="check-row"><input id="flexInterestedNorthstar" type="checkbox" /> Interested in marketing through NorthStar Creative Co.</label>
+                <label class="check-row"><input id="flexInterestedPayments" type="checkbox" /> Interested in payment processing help</label>
+              </div>
+              <p class="trust-note" data-flex-compliance></p>
+              <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
+              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive the official Flex referral link.</label>
+              <button class="btn orange full" type="submit">Check Flex Options</button>
+            </form>
           </aside>
         </section>
       </section>
@@ -1551,6 +1659,10 @@
               <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
               <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
             </div>
+            <section class="provider-growth-tools">
+              <span class="split-label">Business Growth Tools</span>
+              <div id="providerGrowthTools"></div>
+            </section>
             <p class="trust-note"><strong>Worker follow-up:</strong> Forge will use this contact info to follow up about early worker opportunities by text, phone, or email.</p>
             <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
             <button class="btn orange" type="submit">Create My Profile</button>
@@ -1586,6 +1698,7 @@
             <button type="button" data-nav="admin">Dashboard</button>
             <button type="button" data-nav="jobs">Jobs</button>
             <button type="button" data-nav="signup">Workers</button>
+            <button type="button" data-nav="capital">Flex Leads</button>
             <button type="button" data-nav="admin-projects">Projects</button>
             <button type="button" data-nav="bid">Bids</button>
             <button type="button" data-nav="messages">Messages</button>
