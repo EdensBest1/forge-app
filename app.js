@@ -8704,7 +8704,7 @@ function foundingSegments() {
     ["Projects", (state.projectLeads || []).length, 25, "Home projects and major OR/WA project opportunities ready for routing.", "projects", "Projects"],
     ["NorthStar", (state.northstarLeads || []).length, 20, "Blue-collar businesses that need marketing, CRM, lead follow-up, job tracking, or operations help.", "northstar", "NorthStar"],
     ["Capital Desk", (state.flexLeads || []).length, 20, "Business owners who need breathing room, cash-flow tools, cards, bill pay, or Flex referral follow-up.", "capital", "Capital Desk"],
-    ["Manufacturing", (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length, 30, "Brands, suppliers, labs, packaging providers, and compliance partners in the manufacturing pipeline.", "manufacturing", "Manufacturing"],
+    ["Manufacturing", (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.manufacturingSupplierLeads || []).length, 30, "Brands, suppliers, labs, packaging providers, and compliance partners in the manufacturing pipeline.", "manufacturing", "Manufacturing"],
     ["Road Rescue", (state.roadRescueRequests || []).length, 20, "Neighbors who need pothole, roadside, tire, tow, wheel, or mechanic help.", "road-rescue", "Road Rescue"],
     ["Career leads", (state.opportunityLeads || []).length, 25, "People applying to trade schools, unions, apprenticeships, and blue-collar AI jobs.", "opportunities", "Career Path"],
     ["Referrals", state.referrals.length, 30, "Introductions to job posters, workers, career applicants, and local businesses.", "capture", "Capture Referral"]
