@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0648b7" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Forge MVP</title>
-    <link rel="stylesheet" href="./styles.css?v=70" />
+    <link rel="stylesheet" href="./styles.css?v=71" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -22,11 +22,13 @@
           </a>
           <div class="top-actions">
             <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
+            <button class="btn ghost small" type="button" data-nav="services">Services</button>
             <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
             <button class="btn ghost small" type="button" data-nav="road-rescue">Road Rescue</button>
             <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
+            <button class="btn ghost small" type="button" data-nav="manufacturing">Manufacturing</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="building">Building</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
@@ -44,6 +46,7 @@
             <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
             <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
+            <button class="btn ghost" type="button" data-nav="services">Browse Forge Services</button>
             <button class="btn ghost" type="button" data-nav="status">Check Job Status</button>
           </div>
           </div>
@@ -112,6 +115,12 @@
             <h2>Forge Capital Desk</h2>
             <p>Basic business-owner intake and consent before any approved finance partner review.</p>
             <button class="btn ghost" type="button" data-nav="capital">Request Finance Review</button>
+          </article>
+          <article>
+            <span class="split-label">I need a product made</span>
+            <h2>Forge Manufacturing + Nutraceuticals</h2>
+            <p>Find supplement, vitamin, gummy, powder, beverage, skincare, pet wellness, packaging, lab, and compliance partners.</p>
+            <button class="btn ghost" type="button" data-nav="manufacturing">Find a Manufacturer</button>
           </article>
           <article>
             <span class="split-label">I want a path up</span>
@@ -236,7 +245,9 @@
             <button type="button" data-nav="creative">Photography & Videography</button>
             <button type="button" data-nav="road-rescue">Road Rescue</button>
             <button type="button" data-nav="northstar">NorthStar Creative Co.</button>
+            <button type="button" data-nav="manufacturing">Manufacturing + Nutraceuticals</button>
           </div>
+          <div class="chips service-chips" data-service-category-chips></div>
           <div class="service-category-cards">
             <article class="service-category-card">
               <span class="split-label">Community service</span>
@@ -256,7 +267,53 @@
               <p>Marketing, websites, CRM, lead generation, job tracking, and business operations for blue-collar businesses.</p>
               <button class="btn ghost small" type="button" data-nav="northstar">Grow My Business</button>
             </article>
+            <article class="service-category-card">
+              <span class="split-label">Manufacturing network</span>
+              <h3>Manufacturing + Nutraceuticals</h3>
+              <p>Original Forge supplier profiles, quote requests, and pipelines for compliant vitamins, supplements, wellness products, packaging, labs, and fulfillment.</p>
+              <button class="btn ghost small" type="button" data-nav="manufacturing">Compare Suppliers</button>
+            </article>
           </div>
+        </section>
+
+        <section class="forge-positioning-panel">
+          <div>
+            <span class="split-label">Community work marketplace</span>
+            <h2>Forge helps the community get real work done.</h2>
+            <p>From cleaning homes and turning over Airbnbs to hauling debris, pouring concrete, fixing driveways, installing pavers, and building hardscapes, Forge connects customers with local blue-collar service providers who can bid on real jobs. Customers get options. Workers get opportunities. The community gets served.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+            <button class="btn blue" type="button" data-nav="signup">Join as a Provider</button>
+            <button class="btn ghost" type="button" data-nav="services">Browse Forge Services</button>
+          </div>
+        </section>
+
+        <section class="airbnb-cleaning-panel">
+          <div>
+            <span class="split-label">Airbnb turnovers</span>
+            <h2>Need help turning your home into an Airbnb-ready property?</h2>
+            <p>Forge helps homeowners, landlords, and property managers find reliable cleaning pros for Airbnb turnovers, guest-ready resets, laundry, linens, restocking, and recurring short-term rental cleaning.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="start-service-job" data-service-vertical="cleaning">Post an Airbnb Cleaning Job</button>
+              <button class="btn ghost" type="button" data-action="browse-service-jobs" data-service-vertical="cleaning">Find Cleaning Help</button>
+              <button class="btn blue" type="button" data-action="join-service-provider" data-service-vertical="cleaning">Join as a Cleaning Provider</button>
+            </div>
+          </div>
+          <ul id="airbnbTurnoverChecklist"></ul>
+        </section>
+
+        <section class="service-verticals-panel">
+          <div class="section-title">
+            <div>
+              <span class="split-label">New Forge verticals</span>
+              <h2>Cleaning, hauling, pavement, masonry, pavers, and hardscaping.</h2>
+              <p>Customers post a real job. Local providers create profiles, bid on the work, and compete on price, timing, scope, and fit.</p>
+            </div>
+            <button class="btn ghost small" type="button" data-nav="services">Open Services</button>
+          </div>
+          <div class="service-vertical-grid" data-service-vertical-cards></div>
+          <div class="service-safety-notes" data-service-safety-notes></div>
         </section>
 
         <section class="timeline">
@@ -474,6 +531,56 @@
         </section>
       </section>
 
+      <section class="screen" id="services-screen" data-screen="services">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Services</strong>
+        </header>
+        <section class="services-page">
+          <div class="services-page-heading">
+            <span class="split-label">Browse Forge Services</span>
+            <h1>Post jobs and get bids from local service providers.</h1>
+            <p>Forge supports the core local job marketplace plus new cleaning, Airbnb turnover, hauling, dump truck, asphalt, concrete, driveway, masonry, paver, and hardscaping verticals.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as a Provider</button>
+              <button class="btn ghost" type="button" data-nav="jobs">See Available Jobs</button>
+            </div>
+          </div>
+          <section class="forge-positioning-panel compact">
+            <div>
+              <span class="split-label">Forge purpose</span>
+              <h2>Forge helps the community get real work done.</h2>
+              <p>From cleaning homes and turning over Airbnbs to hauling debris, pouring concrete, fixing driveways, installing pavers, and building hardscapes, Forge connects customers with local blue-collar service providers who can bid on real jobs. Customers get options. Workers get opportunities. The community gets served.</p>
+            </div>
+          </section>
+          <section class="service-verticals-panel compact">
+            <div class="section-title">
+              <div>
+                <span class="split-label">Major service verticals</span>
+                <h2>Choose the lane that fits the work.</h2>
+              </div>
+            </div>
+            <div class="service-vertical-grid" data-service-vertical-cards></div>
+          </section>
+          <section class="service-category-library">
+            <div>
+              <span class="split-label">Service categories</span>
+              <h2>Every new category is available in the job post and job filter lists.</h2>
+            </div>
+            <div class="chips service-chips" data-service-category-chips></div>
+          </section>
+          <section class="service-status-panel">
+            <div>
+              <span class="split-label">Job status labels</span>
+              <h2>Simple status path for cleaning and exterior sitework jobs.</h2>
+            </div>
+            <div class="status-chip-row" data-service-status-labels></div>
+          </section>
+          <section class="service-safety-notes" data-service-safety-notes></section>
+        </section>
+      </section>
+
       <section class="screen" id="post-screen" data-screen="post">
         <header class="simple-bar">
           <button class="back-link" type="button" data-nav="home">← Home</button>
@@ -488,6 +595,7 @@
               <label>Job Category<select id="jobCategory" required></select></label>
               <label>Job Title<input id="jobTitle" required placeholder="Ex: Bathroom faucet installation" /></label>
               <label>Describe your job<textarea id="jobDescription" maxlength="500" placeholder="Tell us more about the work you need done..."></textarea></label>
+              <div class="dynamic-service-fields hidden" id="serviceJobFields"></div>
             </fieldset>
 
             <fieldset class="step-panel" data-step="2">
@@ -531,6 +639,22 @@
             <select id="listingDate"><option>All Dates</option><option>ASAP</option><option>This week</option><option>Flexible</option></select>
           </div>
           <div class="job-feed" id="jobFeed"></div>
+          <section class="provider-directory-panel">
+            <div class="section-title compact">
+              <div>
+                <span class="split-label">Provider filters</span>
+                <h2>Search local providers by service type, area, availability, equipment, and tags.</h2>
+              </div>
+              <button class="btn ghost small" type="button" data-nav="signup">Join as Provider</button>
+            </div>
+            <div class="provider-directory-controls">
+              <select id="providerVerticalFilter"></select>
+              <input id="providerSearch" placeholder="Search provider tags, services, or notes" />
+              <input id="providerServiceArea" placeholder="Service area" />
+            </div>
+            <div class="provider-filter-options" id="providerFilterOptions"></div>
+            <div class="provider-directory" id="providerDirectory"></div>
+          </section>
         </section>
       </section>
 
@@ -907,6 +1031,193 @@
               <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
               <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive approved finance partner review information if available.</label>
               <button class="btn orange full" type="submit">Request Finance Review</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen manufacturing-screen" id="manufacturing-screen" data-screen="manufacturing">
+        <header class="blue-bar manufacturing-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons">
+            <button type="button" data-action="focus-manufacturing-rfq">RFQ</button>
+            <button type="button" data-action="focus-manufacturing-supplier">Supplier</button>
+            <button type="button" data-action="copy-manufacturing-brief">Brief</button>
+          </div>
+        </header>
+        <section class="manufacturing-hero">
+          <figure>
+            <img src="./assets/forge-hero.png" alt="Forge team preparing a customer project" />
+          </figure>
+          <div class="manufacturing-hero-copy">
+            <span class="split-label">Forge Manufacturing + Nutraceuticals</span>
+            <h1>Find the right manufacturing partner for compliant wellness products.</h1>
+            <p>Forge helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs find trusted partners to manufacture vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other compliant health products.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-manufacturing-rfq">Find a Manufacturer</button>
+              <button class="btn blue" type="button" data-action="focus-manufacturing-supplier">Create Supplier Profile</button>
+              <button class="btn ghost light" type="button" data-action="copy-manufacturing-queue">Compare Suppliers</button>
+            </div>
+          </div>
+        </section>
+        <section class="manufacturing-layout">
+          <div class="manufacturing-main">
+            <section class="manufacturing-intro">
+              <div>
+                <span class="split-label">Direct supplier discovery</span>
+                <h2>Forge builds original profiles, quote requests, and project pipelines.</h2>
+                <p>Forge does not copy supplier directories. We build direct relationships, verified profiles, quote requests, and project pipelines so manufacturers and buyers can do business faster.</p>
+              </div>
+              <button class="btn ghost small" type="button" data-action="copy-manufacturing-brief">Copy Brief</button>
+            </section>
+            <div class="manufacturing-stats" id="manufacturingStats"></div>
+            <section class="manufacturing-paths">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Product paths</span>
+                  <h2>Supplements, vitamins, private label, packaging, labs, and support partners.</h2>
+                </div>
+              </div>
+              <div class="manufacturing-chip-grid" id="manufacturingProductGrid"></div>
+            </section>
+            <section class="manufacturing-network">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Supplier profile types</span>
+                  <h2>Manufacturers, co-packers, formulators, packaging suppliers, labs, consultants, and fulfillment providers.</h2>
+                </div>
+              </div>
+              <div class="manufacturing-supplier-types" id="manufacturingSupplierTypes"></div>
+            </section>
+            <section class="manufacturing-directory">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Supplier discovery</span>
+                  <h2>Search Forge demo suppliers and future verified profiles.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue">Copy Manufacturing Queue</button>
+              </div>
+              <div class="manufacturing-filters">
+                <select id="manufacturingProductFilter"></select>
+                <select id="manufacturingSupplierFilter"></select>
+                <select id="manufacturingDosageFilter"></select>
+                <input id="manufacturingLocationFilter" placeholder="Location" />
+                <select id="manufacturingMoqFilter"></select>
+                <select id="manufacturingCertificationFilter"></select>
+              </div>
+              <div class="manufacturing-filter-flags" id="manufacturingFilterFlags"></div>
+              <div class="manufacturing-directory-grid" id="manufacturingSupplierDirectory"></div>
+            </section>
+            <section class="manufacturing-eden">
+              <div>
+                <span class="split-label">Eden's Best / The Health Center</span>
+                <h2>Built to support a real product ecosystem.</h2>
+                <p>This vertical can support Eden's Best Holding Co., The Health Center retail product pipeline, Knockout Nutrients / KAT Sport-style sports nutrition, and future wellness product families.</p>
+              </div>
+              <div class="manufacturing-eden-grid" id="manufacturingEdenGrid"></div>
+            </section>
+            <section class="manufacturing-documents">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Business documents</span>
+                  <h2>Manufacturing operations templates and placeholders.</h2>
+                </div>
+              </div>
+              <div class="manufacturing-doc-grid" id="manufacturingDocumentGrid"></div>
+            </section>
+            <section class="manufacturing-pipeline">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">CRM / pipeline</span>
+                  <h2>Manufacturing RFQ statuses.</h2>
+                </div>
+              </div>
+              <div class="manufacturing-status-grid" id="manufacturingStatusGrid"></div>
+              <div class="manufacturing-rfq-list" id="manufacturingRfqList"></div>
+            </section>
+            <section class="manufacturing-compliance">
+              <span class="split-label">Compliance notice</span>
+              <p data-manufacturing-compliance></p>
+            </section>
+          </div>
+          <aside class="manufacturing-sidebar">
+            <form class="manufacturing-form" id="manufacturingRfqForm">
+              <span class="split-label">Request Manufacturing Quote</span>
+              <h2>Request Manufacturing Quote</h2>
+              <div class="field-row">
+                <label>Product type<select id="manufacturingProductType" required></select></label>
+                <label>Brand name<input id="manufacturingBrandName" required placeholder="Brand or project name" /></label>
+              </div>
+              <div class="field-row">
+                <label>Formula status<select id="manufacturingFormulaStatus" required></select></label>
+                <label>Dosage form<select id="manufacturingDosageForm" required></select></label>
+              </div>
+              <div class="field-row">
+                <label>Target quantity / MOQ<input id="manufacturingTargetQuantity" required placeholder="Example: 5,000 bottles" /></label>
+                <label>Desired packaging<input id="manufacturingPackaging" required placeholder="Bottles, pouches, sticks, jars" /></label>
+              </div>
+              <label>Ingredient requirements<textarea id="manufacturingIngredients" rows="3" required placeholder="Active ingredients, exclusions, flavors, allergens, sourcing needs"></textarea></label>
+              <label>Organic / vegan / non-GMO / gluten-free / sugar-free / clean-label requirements<select id="manufacturingCleanLabelRequirements" multiple></select></label>
+              <div class="field-row">
+                <label>CBD/hemp involved?<select id="manufacturingCbdHemp" required></select></label>
+                <label>Testing needs<input id="manufacturingTestingNeeds" placeholder="COA, micro, heavy metals, stability, potency" /></label>
+              </div>
+              <p class="trust-note"><strong>CBD/hemp notice:</strong> CBD/hemp projects require legal-state compliance review before any supplier routing.</p>
+              <label>Certifications required<select id="manufacturingCertificationsRequired" multiple></select></label>
+              <div class="field-row">
+                <label>Target launch date<input id="manufacturingLaunchDate" type="date" required /></label>
+                <label>Budget range<select id="manufacturingBudgetRange" required></select></label>
+              </div>
+              <label>Location preference<input id="manufacturingLocationPreference" required placeholder="U.S., global, West Coast, specific state, no preference" /></label>
+              <div class="field-row">
+                <label>Contact name<input id="manufacturingContactName" required placeholder="Full name" /></label>
+                <label>Contact email<input id="manufacturingContactEmail" required type="email" placeholder="name@example.com" /></label>
+              </div>
+              <label>Contact phone<input id="manufacturingContactPhone" required placeholder="(555) 000-0000" /></label>
+              <!-- TODO: connect formula/spec-sheet uploads to backend object storage before public launch. -->
+              <label class="file-button btn ghost full">Upload formula/spec sheet<input id="manufacturingSpecUpload" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*" /></label>
+              <label class="check-row"><input id="manufacturingRfqConsent" required type="checkbox" /> I agree to be contacted by Forge about this manufacturing request.</label>
+              <button class="btn orange full" type="submit">Request Manufacturing Quote</button>
+            </form>
+            <form class="manufacturing-form supplier" id="manufacturingSupplierForm">
+              <span class="split-label">Create Supplier Profile</span>
+              <h2>Create Supplier Profile</h2>
+              <div class="field-row">
+                <label>Company name<input id="manufacturingSupplierCompany" required placeholder="Company name" /></label>
+                <label>Contact person<input id="manufacturingSupplierContact" required placeholder="Full name" /></label>
+              </div>
+              <div class="field-row">
+                <label>Location<input id="manufacturingSupplierLocation" required placeholder="City, state, country" /></label>
+                <label>Service area<input id="manufacturingSupplierServiceArea" required placeholder="U.S., global, regional" /></label>
+              </div>
+              <label>Supplier type<select id="manufacturingSupplierTypeInput" required></select></label>
+              <label>Capabilities<textarea id="manufacturingSupplierCapabilities" rows="3" required placeholder="Products, processes, batch sizes, specialties"></textarea></label>
+              <label>Dosage forms supported<select id="manufacturingSupplierDosageForms" multiple required></select></label>
+              <div class="field-row">
+                <label>Minimum order quantity<input id="manufacturingSupplierMoq" required placeholder="Example: 2,500 units" /></label>
+                <label>Certifications<select id="manufacturingSupplierCertifications" multiple></select></label>
+              </div>
+              <div class="field-row">
+                <label>Facility type<input id="manufacturingSupplierFacilityType" required placeholder="GMP facility, co-packer, lab, warehouse" /></label>
+                <label>Turnaround time<input id="manufacturingSupplierTurnaround" required placeholder="Example: 8-12 weeks" /></label>
+              </div>
+              <label>Packaging options<input id="manufacturingSupplierPackagingOptions" required placeholder="Bottles, jars, pouches, stick packs, labels" /></label>
+              <div class="manufacturing-support-grid">
+                <label class="check-row"><input id="manufacturingSupplierIngredientSourcing" type="checkbox" /> Ingredient sourcing support</label>
+                <label class="check-row"><input id="manufacturingSupplierFormulation" type="checkbox" /> Formulation support</label>
+                <label class="check-row"><input id="manufacturingSupplierTesting" type="checkbox" /> Testing/lab support</label>
+                <label class="check-row"><input id="manufacturingSupplierCompliance" type="checkbox" /> Compliance support</label>
+                <label class="check-row"><input id="manufacturingSupplierPrivateLabel" type="checkbox" /> White-label/private-label support</label>
+                <label class="check-row"><input id="manufacturingSupplierFulfillment" type="checkbox" /> Fulfillment support</label>
+              </div>
+              <div class="field-row">
+                <label>Website<input id="manufacturingSupplierWebsite" type="url" placeholder="https://example.com" /></label>
+                <label>Phone/email<input id="manufacturingSupplierContactInfo" required placeholder="Phone or email" /></label>
+              </div>
+              <label>Notes<textarea id="manufacturingSupplierNotes" rows="3" placeholder="Capacity, lead times, compliance notes, ideal customer fit"></textarea></label>
+              <p class="trust-note"><strong>Verified by Forge:</strong> Placeholder status only. Public verified claims require manual review, documents, and approval.</p>
+              <label class="check-row"><input id="manufacturingSupplierConsent" required type="checkbox" /> I agree to be contacted by Forge about supplier onboarding.</label>
+              <button class="btn blue full" type="submit">Join Forge Manufacturing Network</button>
             </form>
           </aside>
         </section>
@@ -2019,6 +2330,25 @@
               <label>Bid Amount<input id="bidAmount" required placeholder="$175" /></label>
               <label>Timeline<input id="bidTimeline" required placeholder="Tomorrow morning" /></label>
             </div>
+            <div class="field-row">
+              <label>Earliest available date/time<input id="bidEarliestAvailability" placeholder="Tomorrow 9 AM" /></label>
+              <label>Estimated job duration<input id="bidDuration" placeholder="3 hours, 1 day, 2 visits" /></label>
+            </div>
+            <label>Number of workers / cleaners / crew members<input id="bidCrewCount" placeholder="2 cleaners, 3-person crew" /></label>
+            <div class="field-row">
+              <label>Materials included<select id="bidMaterialsIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+              <label>Supplies included<select id="bidSuppliesIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Equipment included<select id="bidEquipmentIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+              <label>Dump fees included<select id="bidDumpFeesIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Laundry included<select id="bidLaundryIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+              <label>Restocking included<select id="bidRestockingIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
+            </div>
+            <label>Recurring work available<select id="bidRecurringAvailable"><option>No</option><option>Yes</option><option>Open to discuss</option></select></label>
+            <label>Experience note<textarea id="bidExperienceNote" rows="3" placeholder="Relevant cleaning, hauling, concrete, asphalt, masonry, paver, or hardscape experience."></textarea></label>
             <label>Message<textarea id="bidMessage" rows="4" placeholder="Tell the customer when you can arrive, what is included, and anything they need to know."></textarea></label>
             <button class="btn orange" type="submit">Submit Bid</button>
           </form>
@@ -2106,12 +2436,14 @@
             <p class="muted">Create your profile and start getting jobs.</p>
             <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
             <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
+            <label>Service vertical<select id="workerServiceVertical"></select></label>
             <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
             <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
             <div class="field-row">
               <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
               <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
             </div>
+            <div class="dynamic-service-fields hidden" id="providerProfileFields"></div>
             <section class="provider-growth-tools">
               <span class="split-label">Business Growth Tools</span>
               <div id="providerGrowthTools"></div>
@@ -2815,6 +3147,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=70"></script>
+    <script src="./app.js?v=71"></script>
   </body>
 </html>
