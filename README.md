@@ -17,7 +17,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Forge Autos soft-launch lead route for buyer inquiry, dealer handoff, safety boundary, and follow-up
 - Auto dealer setup checklist and `AUTO_DEALER_INTEGRATION.md` for approved dealer contact, inventory, terms, and compliance setup
 - Auto buyer inquiry form and queue for routing vehicle interest to dealer partners
-- Photography & Videography page and route for customer creative requests and approved local creative provider applications
+- Photography & Videography routes at `/photography`, `/photography/request`, and `/photography/apply` for customer creative requests and approved local creative provider applications
 - Demo login screen with worker, job poster, and admin roles
 - Perspective Demo screen for showing Forge as John, Mike, or Admin
 - Perspective Demo now includes an Auto marketplace proof path, Autos cue card, and shareable Autos link
