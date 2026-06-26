@@ -64,12 +64,16 @@ const requiredHtml = [
   "Copy Buyer Queue",
   "Auto safety",
   "Photography & Videography",
-  "Hire Local Photographers & Videographers",
+  "Hire a Photographer",
+  "Request a Shoot",
+  "Apply as a Photographer",
   "creativeLeadForm",
   "creativeProviderForm",
-  "Book a Creative",
-  "Apply as a Provider",
-  "Forge helps customers connect with trusted local creatives, including photographers and videographers like Dennis and other approved providers in the community.",
+  "creativeDeliveryDeadline",
+  "creativeProviderEditingSoftware",
+  "Photography & Videography Booking Notes",
+  "Built for trust and quality.",
+  "Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.",
   "Start here",
   "Choose the path that matches why you came to Forge.",
   "startPathGrid",
@@ -230,8 +234,15 @@ const requiredJs = [
   "Vehicle listing saved.",
   "Copy Seller Info",
   "CREATIVE_CATEGORY_VALUE",
+  "CREATIVE_CATEGORY_SLUG",
   "photography_videography",
+  "creativeRequestStatuses",
+  "creativeProviderStatuses",
+  "creativeDeliveryOptions",
   "creativeServiceTypes",
+  "creativeProviderDroneCapability",
+  "adminCreativeRequestsTable",
+  "adminCreativeProvidersTable",
   "renderCreativePage",
   "submitCreativeLead",
   "submitCreativeProvider",
@@ -432,6 +443,9 @@ const packageJson = await readFile("package.json", "utf8");
 const githubWorkflow = await readFile(".github/workflows/forge-checks.yml", "utf8");
 const finalPublicGate = await readFile("FINAL_PUBLIC_GATE.md", "utf8");
 const autoDealerIntegration = await readFile("AUTO_DEALER_INTEGRATION.md", "utf8");
+const photographyRoute = await readFile("photography/index.html", "utf8");
+const photographyRequestRoute = await readFile("photography/request/index.html", "utf8");
+const photographyApplyRoute = await readFile("photography/apply/index.html", "utf8");
 const creativeRoute = await readFile("photography-videography/index.html", "utf8");
 
 const missingHtml = requiredHtml.filter((text) => !html.includes(text));
@@ -446,6 +460,7 @@ const missingCss = [
   ["auto buyer inquiries", css.includes(".auto-inquiries") && css.includes(".auto-inquiry-list")],
   ["auto lead route", css.includes(".auto-route-grid") && css.includes(".auto-route")],
   ["photography videography page", css.includes(".creative-layout") && css.includes(".creative-service-grid") && css.includes(".creative-provider-panel")],
+  ["photography quality notes", css.includes(".creative-quality") && css.includes(".creative-booking-notes") && css.includes(".creative-disclaimer")],
   ["homebuilding page", css.includes(".homebuilding-layout") && css.includes(".tracker-feature-card")],
   ["build tracker dashboard", css.includes(".build-tracker-dashboard") && css.includes(".tracker-card")],
   ["build tracker gantt", css.includes(".gantt-scroll") && css.includes(".gantt-bar")],
@@ -491,19 +506,22 @@ const missingDeploy = [
   ["vercel rewrite", vercel.includes("\"rewrites\"") && vercel.includes("\"/index.html\"")],
   ["robots present", robots.includes("User-agent: *")],
   ["security review checklist", securityReview.includes("Forge Security Review Checklist") && securityReview.includes("Launch Decision")],
-  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("enable row level security")],
-  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("opportunity") && webhookPayloads.includes("Public Beta Safety")],
+  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("enable row level security")],
+  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("Public Beta Safety")],
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography-videography?v=70")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography?v=70") && releaseManifest.includes("/photography/request?v=70") && releaseManifest.includes("/photography/apply?v=70") && releaseManifest.includes("/photography-videography?v=70")],
   ["release candidate notes", releaseCandidate.includes("Forge Public Beta Release Candidate") && releaseCandidate.includes("Human Gates Still Required")],
   ["release check script", releaseCheck.includes("Forge release check passed.") && releaseCheck.includes("service worker version")],
   ["package scripts", packageJson.includes("\"check\"") && packageJson.includes("check:release")],
   ["github checks workflow", githubWorkflow.includes("Forge Checks") && githubWorkflow.includes("npm run check")],
   ["final public gate", finalPublicGate.includes("Forge Final Public Gate") && finalPublicGate.includes("Launch Decision")],
   ["auto dealer integration", autoDealerIntegration.includes("Forge Auto Dealer Integration") && autoDealerIntegration.includes("JoCo Auto Sales")],
-  ["photography videography route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")]
+  ["photography route", photographyRoute.includes("Forge Photography & Videography") && photographyRoute.includes("/route-loader.js")],
+  ["photography request route", photographyRequestRoute.includes("Forge Photography & Videography Request") && photographyRequestRoute.includes("/route-loader.js")],
+  ["photography apply route", photographyApplyRoute.includes("Forge Photography & Videography Provider Application") && photographyApplyRoute.includes("/route-loader.js")],
+  ["photography videography alias route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 
