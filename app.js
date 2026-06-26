@@ -4807,7 +4807,7 @@ function renderManufacturingPage() {
     ["Supplier Leads", supplierLeads.length],
     ["Supplier Types", manufacturingSupplierTypes.length],
     ["Documents", manufacturingDocumentTemplates.length],
-    ["Open Pipeline", rfqs.filter((lead) => !["Closed Won", "Closed Lost"].includes(lead.status)).length]
+    ["Open Pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
   ]);
 
   productGrid.innerHTML = manufacturingProductCategories.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
@@ -9100,7 +9100,7 @@ function followUpScore(row) {
 
 function followUpReason(row) {
   const first = row.priority === "Hot" ? "Hot lead" : `${row.priority} lead`;
-  const second = ["New", "Pending", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "New RFQ", "Needs Review", "Supplier Matching", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status) ? "needs first touch" : `${projectStatuses.includes(row.status) ? projectStatusLabel(row.status).toLowerCase() : row.status.toLowerCase()} status`;
+  const second = ["New", "Pending", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "Request received", "Sourcing manufacturers", "Awaiting bids", "Not contacted", "Follow-up needed", "New RFQ", "Needs Review", "Supplier Matching", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status) ? "needs first touch" : `${projectStatuses.includes(row.status) ? projectStatusLabel(row.status).toLowerCase() : row.status.toLowerCase()} status`;
   const third = row.kind === "Jobs" ? "creates demand"
     : row.kind === "Projects" ? "may route to Forge Pros, Major Projects Review, or partner review"
     : row.kind === "Homebuilding" ? "opens a build or contractor path"
@@ -9124,7 +9124,8 @@ function renderReports() {
   const hotReferrals = state.referrals.filter((lead) => lead.priority === "Hot" || lead.status === "New");
   const activeNorthStar = (state.northstarLeads || []).filter((lead) => !["Closed"].includes(lead.status));
   const activeFlex = (state.flexLeads || []).filter((lead) => !["closed_lost", "commission_paid"].includes(lead.status));
-  const activeManufacturing = (state.manufacturingRfqs || []).filter((lead) => !["Closed Won", "Closed Lost"].includes(lead.status));
+  const activeManufacturing = (state.manufacturingRfqs || []).filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status));
+  const activeSupplierLeads = (state.manufacturingSupplierLeads || []).filter((lead) => !["Converted to Provider Profile", "Not a fit", "Partner", "Customer"].includes(lead.outreachStatus));
   const activeHomebuilding = (state.homebuildingLeads || []).filter((lead) => !["Closed"].includes(lead.status));
   const activeProjects = (state.projectLeads || []).filter((lead) => !["WON", "LOST", "NOT_A_FIT"].includes(lead.status));
   const chosenBids = state.bids.filter((bid) => bid.chosen);
@@ -9134,7 +9135,7 @@ function renderReports() {
     ["Workers", state.workers.length],
     ["NorthStar", (state.northstarLeads || []).length],
     ["Capital Desk", (state.flexLeads || []).length],
-    ["Manufacturing", (state.manufacturingRfqs || []).length],
+    ["Manufacturing", (state.manufacturingRfqs || []).length + (state.manufacturingSupplierLeads || []).length],
     ["Homebuilding", (state.homebuildingLeads || []).length],
     ["Projects", (state.projectLeads || []).length],
     ["Bids", state.bids.length],
@@ -9146,6 +9147,7 @@ function renderReports() {
     ...activeNorthStar.slice(0, 2).map((lead) => reportItem(lead.businessName, `${lead.name} needs NorthStar ${lead.status.toLowerCase()} follow-up for ${lead.trade}.`)),
     ...activeFlex.slice(0, 2).map((lead) => reportItem(lead.business_name, `${flexStatusLabel(lead.status)} Capital Desk lead with score ${lead.lead_score}.`)),
     ...activeManufacturing.slice(0, 2).map((lead) => reportItem(lead.brandName || "Manufacturing RFQ", `${lead.productType} is in ${lead.status} with ${lead.dosageForm} form and ${lead.targetQuantity} target quantity.`)),
+    ...activeSupplierLeads.slice(0, 2).map((lead) => reportItem(lead.companyName || "Supplier lead", `${lead.source} lead is ${lead.outreachStatus}; next follow-up ${lead.nextFollowUpDate || "not scheduled"}.`)),
     ...activeProjects.slice(0, 2).map((lead) => reportItem(lead.contactName, `${lead.projectTitle} needs ${projectStatusLabel(lead.status)} review in Projects.`)),
     ...activeHomebuilding.slice(0, 2).map((lead) => reportItem(lead.name, `${lead.type} needs project review and partner routing.`)),
     ...readyWorkers.slice(0, 2).map((worker) => reportItem(worker.name, `${worker.trade} is ${worker.status.toLowerCase()} for jobs.`)),
@@ -9157,7 +9159,7 @@ function renderReports() {
     reportItem("Demand", `${openJobs.length} open job${openJobs.length === 1 ? "" : "s"} still need movement.`),
     reportItem("NorthStar", `${activeNorthStar.length} marketing or operations lead${activeNorthStar.length === 1 ? "" : "s"} still need scoping, proposal, or delivery movement.`),
     reportItem("Capital Desk", `${activeFlex.length} Flex referral lead${activeFlex.length === 1 ? "" : "s"} still need consent-safe follow-up.`),
-    reportItem("Manufacturing", `${activeManufacturing.length} manufacturing RFQ${activeManufacturing.length === 1 ? "" : "s"} still need supplier matching, quotes, samples, compliance review, or production movement.`),
+    reportItem("Manufacturing", `${activeManufacturing.length} manufacturing RFQ${activeManufacturing.length === 1 ? "" : "s"} and ${activeSupplierLeads.length} supplier lead${activeSupplierLeads.length === 1 ? "" : "s"} still need sourcing, outreach, quotes, samples, compliance review, or production movement.`),
     reportItem("Projects", `${activeProjects.length} project opportunit${activeProjects.length === 1 ? "y" : "ies"} still need routing or review.`),
     reportItem("Homebuilding", `${activeHomebuilding.length} build or contractor project${activeHomebuilding.length === 1 ? "" : "s"} still need review.`),
     reportItem("Trust", `${chosenBids.length} chosen bid${chosenBids.length === 1 ? "" : "s"} and ${state.bids.length} total bid${state.bids.length === 1 ? "" : "s"}.`)
