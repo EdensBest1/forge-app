@@ -35,8 +35,14 @@ const requiredHtml = [
   "Forge is a controlled beta MVP.",
   "Terms & Privacy",
   "Forge Auto Services",
+  "Forge Auto & Transport",
   "Buy. Sell. Repair. Transport.",
+  "Sell My Car on Forge",
+  "Forge Platinum Auto Concierge",
+  "Premium vehicle sourcing, selling, consignment, and white-glove transport.",
   "vehicleListingForm",
+  "vehicleSellingPath",
+  "vehiclePartnerConsent",
   "Track Your Home From Dirt to Done",
   "Forge Build Tracker",
   "homebuildingFeatureGrid",
@@ -186,8 +192,8 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=70",
-  "app.js?v=70"
+  "styles.css?v=71",
+  "app.js?v=71"
 ];
 
 const requiredJs = [
@@ -241,6 +247,9 @@ const requiredJs = [
   "copyInviteText",
   "vehicles",
   "autoServiceGroups",
+  "autoTransportServiceCards",
+  "autoLeadCategoryLabels",
+  "operationsVaultDocuments",
   "autoServiceOptions",
   "autoRequests",
   "autoDealers",
@@ -257,14 +266,22 @@ const requiredJs = [
   "copyAutoServiceQueue",
   "Forge Auto service request",
   "copyAutoMarketBrief",
+  "copyAutoTransportMenu",
+  "renderAutoAdminViews",
+  "renderOperationsVault",
+  "copyOperationsVaultIndex",
   "copyVehicleContact",
+  "vehicleLeadTags",
+  "vehicleAssignedPartner",
+  "Forge Platinum Auto Concierge",
+  "Marc - Portland Luxury Auto Partner",
   "autoInquiries",
   "copyAutoInquiry",
   "copyAutoInquiryQueue",
   "autoInquiryLines",
   "Forge auto buyer inquiry",
   "Forge Auto Services brief",
-  "Vehicle listing saved.",
+  "Vehicle seller lead saved.",
   "Copy Seller Info",
   "ROAD_RESCUE_SERVICE_TYPE",
   "road_rescue",
@@ -540,6 +557,41 @@ const flexReadme = await readFile("docs/forge-capital-desk-readme.md", "utf8");
 const flexOutreach = await readFile("docs/forge-flex-capital-desk-outreach.md", "utf8");
 const flexApiRoute = await readFile("api/forge/flex-leads/route.ts", "utf8");
 const envExample = await readFile(".env.example", "utf8");
+const requiredTradeLabels = [
+  "Electrician",
+  "Plumbing",
+  "HVAC",
+  "Roofing",
+  "Carpentry",
+  "Welding",
+  "Concrete",
+  "Masonry",
+  "Heavy Equipment",
+  "CDL Training",
+  "Diesel Mechanics",
+  "Automotive",
+  "Landscaping",
+  "Arborist",
+  "Solar Installation",
+  "Fiber Optics",
+  "Low Voltage Systems",
+  "Appliance Repair",
+  "Painting",
+  "General Contracting"
+];
+const missingTradeLabels = requiredTradeLabels.filter((label) => !js.includes(`label: "${label}"`) && !js.includes(`category: "${label}"`) && !js.includes(`categoryLabel: "${label}"`));
+const missingTradeHooks = [
+  ["customer job category", html.includes("id=\"jobCategory\"")],
+  ["service job details", html.includes("id=\"serviceJobFields\"")],
+  ["provider vertical", html.includes("id=\"workerServiceVertical\"")],
+  ["provider trade categories", html.includes("id=\"workerTradeCategories\"")],
+  ["provider profile fields", html.includes("id=\"providerProfileFields\"")],
+  ["job board category filter", html.includes("id=\"listingCategory\"")],
+  ["provider directory filter", html.includes("id=\"providerVerticalFilter\"")],
+  ["admin category filter", html.includes("id=\"adminTradeCategoryFilter\"")],
+  ["homepage trade grid", html.includes("id=\"requiredTradeCategoryGrid\"")],
+  ["central trade schema", js.includes("forgeTradeCategorySchema")]
+].filter(([, ok]) => !ok).map(([label]) => label);
 
 const missingHtml = requiredHtml.filter((text) => !html.includes(text));
 const missingJs = requiredJs.filter((text) => !js.includes(text));
@@ -547,6 +599,8 @@ const missingCss = [
   ["safe-area mobile tabbar", css.includes("env(safe-area-inset-bottom)")],
   ["compact phone feature strip", css.includes(".feature-strip") && css.includes("repeat(3, minmax(0, 1fr))")],
   ["auto services", css.includes(".auto-layout") && css.includes(".auto-card") && css.includes(".auto-sell-card") && css.includes(".auto-service-grid")],
+  ["auto transport and platinum", css.includes(".auto-transport-grid") && css.includes(".forge-platinum-panel")],
+  ["auto admin operations", css.includes(".auto-admin-ops") && css.includes(".auto-admin-columns") && css.includes(".operations-vault-grid")],
   ["auto service requests", css.includes(".auto-request-section") && css.includes(".auto-request-list") && css.includes(".auto-service-form")],
   ["auto dealer network", css.includes(".auto-dealer-grid") && css.includes(".auto-dealers")],
   ["auto dealer setup", css.includes(".auto-setup-grid") && css.includes(".auto-setup")],
@@ -596,7 +650,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v70")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v71")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -605,12 +659,12 @@ const missingDeploy = [
   ["vercel rewrite", vercel.includes("\"rewrites\"") && vercel.includes("\"/index.html\"")],
   ["robots present", robots.includes("User-agent: *")],
   ["security review checklist", securityReview.includes("Forge Security Review Checklist") && securityReview.includes("Launch Decision")],
-  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("northstar_marketing_operations_leads") && supabaseSchema.includes("forge_flex_leads") && supabaseSchema.includes("building_leads") && supabaseSchema.includes("enable row level security")],
-  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("northstar") && webhookPayloads.includes("forge-flex") && webhookPayloads.includes("Public Beta Safety")],
+  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("northstar_marketing_operations_leads") && supabaseSchema.includes("forge_flex_leads") && supabaseSchema.includes("building_leads") && supabaseSchema.includes("forge_vehicle_seller_leads") && supabaseSchema.includes("forge_operations_vault_documents") && supabaseSchema.includes("enable row level security")],
+  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("northstar") && webhookPayloads.includes("forge-flex") && webhookPayloads.includes("vehicle-seller") && webhookPayloads.includes("Public Beta Safety")],
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography?v=70") && releaseManifest.includes("/photography/request?v=70") && releaseManifest.includes("/photography/apply?v=70") && releaseManifest.includes("/photography-videography?v=70") && releaseManifest.includes("/northstar-creative?v=70") && releaseManifest.includes("/forge/capital?v=70") && releaseManifest.includes("/forge/flex?v=70") && releaseManifest.includes("/partners/flex?v=70") && releaseManifest.includes("/building?v=70") && releaseManifest.includes("/admin/building-leads?v=70")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v71\"") && releaseManifest.includes("/photography?v=71") && releaseManifest.includes("/photography/request?v=71") && releaseManifest.includes("/photography/apply?v=71") && releaseManifest.includes("/photography-videography?v=71") && releaseManifest.includes("/northstar-creative?v=71") && releaseManifest.includes("/forge/capital?v=71") && releaseManifest.includes("/forge/flex?v=71") && releaseManifest.includes("/partners/flex?v=71") && releaseManifest.includes("/building?v=71") && releaseManifest.includes("/admin/building-leads?v=71")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["building cached routes", serviceWorker.includes("./building/") && serviceWorker.includes("./admin/building-leads/")],
   ["release candidate notes", releaseCandidate.includes("Forge Public Beta Release Candidate") && releaseCandidate.includes("Human Gates Still Required")],
@@ -636,13 +690,15 @@ const missingDeploy = [
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 
-if (missingHtml.length || missingJs.length || missingCss.length || missingPwa.length || missingDeploy.length || darkThemeLeak) {
+if (missingHtml.length || missingJs.length || missingCss.length || missingPwa.length || missingDeploy.length || missingTradeLabels.length || missingTradeHooks.length || darkThemeLeak) {
   console.error("Forge smoke test failed.");
   if (missingHtml.length) console.error("Missing HTML:", missingHtml.join(", "));
   if (missingJs.length) console.error("Missing JS:", missingJs.join(", "));
   if (missingCss.length) console.error("Missing CSS:", missingCss.join(", "));
   if (missingPwa.length) console.error("Missing PWA:", missingPwa.join(", "));
   if (missingDeploy.length) console.error("Missing Deploy:", missingDeploy.join(", "));
+  if (missingTradeLabels.length) console.error("Missing trade categories:", missingTradeLabels.join(", "));
+  if (missingTradeHooks.length) console.error("Missing trade hooks:", missingTradeHooks.join(", "));
   if (darkThemeLeak) console.error("Found a dark-theme marker in styles.css");
   process.exit(1);
 }

@@ -1,6 +1,6 @@
 # Forge Auto Dealer Integration
 
-Current release candidate: `v70`
+Current release candidate: `v71`
 
 Forge Auto Services can show dealer partners and collect auto service requests in the MVP, but public lead routing should wait until each auto partner has approved contact, intake, qualification, and compliance details.
 

@@ -1132,6 +1132,19 @@ const operationsVaultDocuments = [
     checklist: ["Target vehicle", "Budget ceiling", "Inspection need", "Transport need", "Dealer/auction partner"],
     body: "Record the target vehicle, budget ceiling, auction source, inspection requirements, transport needs, buyer consent, and partner handoff. Do not imply Forge owns auction access unless properly arranged."
   },
+  ...manufacturingDocumentTemplates.map((title, index) => ({
+    id: `manufacturing-template-${index + 1}`,
+    category: "Manufacturing Operations",
+    title,
+    type: title.toLowerCase().includes("agreement") || title.toLowerCase().includes("nda") || title.toLowerCase().includes("purchase order") ? "Template placeholder - requires legal review before use" : "Checklist / template placeholder",
+    owner: "Manufacturing Ops",
+    status: title.toLowerCase().includes("legal") || title.toLowerCase().includes("agreement") || title.toLowerCase().includes("nda") || title.toLowerCase().includes("fda") ? "Attorney or compliance review required" : "Draft placeholder",
+    version: "0.1",
+    reviewed: "2026-06-26",
+    tags: ["manufacturing", "nutraceuticals", "supplements"],
+    checklist: ["Use original Forge intake data", "Confirm buyer/supplier consent", "Record compliance flags", "Do not copy external directory content", "Review before production or partner routing"],
+    body: `${title} for Forge Manufacturing + Nutraceuticals. Placeholder only. Use with original Forge RFQ/profile data, company-created supplier information, and proper legal, FDA, FTC, claims, label, testing, insurance, CBD/hemp, food, beverage, cosmetic, pet wellness, and state/local review where applicable.`
+  })),
   {
     id: "partner-referral-agreement-template",
     category: "Legal / Contracts",
@@ -1757,7 +1770,10 @@ const seedState = {
     phone: "(541) 555-9876",
     email: "mike.jones@email.com",
     experience: "5+ years",
-    area: "Medford, OR"
+    area: "Medford, OR",
+    providerType: "Individual Worker",
+    tradeCategories: ["Handyman", "Carpentry", "General Contracting"],
+    providerCategories: ["Handyman", "Carpentry", "General Contracting"]
   },
   workers: [
     {
@@ -1767,6 +1783,9 @@ const seedState = {
       email: "mike.jones@email.com",
       experience: "5+ years",
       area: "Medford, OR",
+      providerType: "Individual Worker",
+      tradeCategories: ["Handyman", "Carpentry", "General Contracting"],
+      providerCategories: ["Handyman", "Carpentry", "General Contracting"],
       status: "Ready"
     },
     {
@@ -1776,7 +1795,67 @@ const seedState = {
       email: "rosa@example.com",
       experience: "2-4 years",
       area: "Central Point, OR",
+      providerType: "Landscaping Crew",
+      tradeCategories: ["Landscaping", "Arborist"],
+      providerCategories: ["Landscaping", "Arborist"],
+      businessName: "Evergreen Tree & Landscape",
+      availability: "Weekdays and Saturdays",
+      insuranceStatus: "Insured",
       status: "New"
+    },
+    {
+      name: "Avery Cole",
+      trade: "Electrician",
+      phone: "(541) 555-0191",
+      email: "avery.electric@example.com",
+      experience: "5+ years",
+      area: "Medford, OR",
+      businessName: "Rogue Valley Electric Co.",
+      providerType: "Electrical Contractor / Company",
+      serviceVertical: "electrician",
+      serviceVerticalTitle: "Electrician",
+      tradeCategories: ["Electrician", "Low Voltage Systems", "Solar Installation"],
+      providerCategories: ["Electrician", "Low Voltage Systems", "Solar Installation"],
+      availability: "Weekdays, emergency troubleshooting by request",
+      licenseStatus: "Licensed",
+      insuranceStatus: "Insured",
+      status: "Ready"
+    },
+    {
+      name: "Dante Brooks",
+      trade: "Diesel Mechanics",
+      phone: "(541) 555-0188",
+      email: "dante.diesel@example.com",
+      experience: "5+ years",
+      area: "White City, OR",
+      businessName: "Valley Diesel & Equipment",
+      providerType: "Diesel Repair Company",
+      serviceVertical: "diesel_mechanics",
+      serviceVerticalTitle: "Diesel Mechanics",
+      tradeCategories: ["Diesel Mechanics", "Heavy Equipment", "Automotive"],
+      providerCategories: ["Diesel Mechanics", "Heavy Equipment", "Automotive"],
+      availability: "Fleet maintenance windows and mobile repair calls",
+      licenseStatus: "Not sure / not applicable",
+      insuranceStatus: "Insured",
+      status: "Ready"
+    },
+    {
+      name: "Summit Build Crew",
+      trade: "General Contracting",
+      phone: "(541) 555-0164",
+      email: "summit.build@example.com",
+      experience: "5+ years",
+      area: "Ashland, OR",
+      businessName: "Summit Build Crew",
+      providerType: "Multi-Trade Crew",
+      serviceVertical: "general_contracting",
+      serviceVerticalTitle: "General Contracting",
+      tradeCategories: ["Roofing", "Carpentry", "Painting", "General Contracting"],
+      providerCategories: ["Roofing", "Carpentry", "Painting", "General Contracting"],
+      availability: "Bid walks Tuesday through Friday",
+      licenseStatus: "Licensed",
+      insuranceStatus: "Insured",
+      status: "Contacted"
     }
   ],
   referrals: [
@@ -1824,6 +1903,74 @@ const seedState = {
       phone: "(541) 555-8031",
       email: "homeowner@example.com",
       notes: "Good recurring maintenance candidate."
+    },
+    {
+      id: "panel-outlet-repair",
+      title: "Electrical Panel and Outlet Repair",
+      category: "Electrician",
+      categoryLabel: "Electrician",
+      location: "Medford, OR",
+      urgency: "This week",
+      budget: "$500 - $1,000",
+      bids: 1,
+      status: "Open for bids",
+      posted: "Today",
+      description: "Need a licensed electrician to inspect a panel issue and repair two outlets.",
+      customer: "North Medford Homeowner",
+      phone: "(541) 555-3310",
+      email: "electric-job@example.com",
+      notes: "Ask for panel photos and access details before matching."
+    },
+    {
+      id: "hvac-maintenance",
+      title: "HVAC Maintenance Before Heat Wave",
+      category: "HVAC",
+      categoryLabel: "HVAC",
+      location: "Central Point, OR",
+      urgency: "This week",
+      budget: "$250 - $500",
+      bids: 0,
+      status: "Open for bids",
+      posted: "Today",
+      description: "Service AC system, check filter and ductwork, and advise on maintenance needs.",
+      customer: "Central Point Rental Owner",
+      phone: "(541) 555-4412",
+      email: "hvac-job@example.com",
+      notes: "Good maintenance route candidate."
+    },
+    {
+      id: "tree-stump-work",
+      title: "Tree Trimming and Stump Work",
+      category: "Arborist",
+      categoryLabel: "Arborist",
+      location: "Ashland, OR",
+      urgency: "Flexible",
+      budget: "$1,000+",
+      bids: 0,
+      status: "Open for bids",
+      posted: "Today",
+      description: "Trim two large trees away from roofline and quote stump grinding for an old stump.",
+      customer: "Ashland Property Owner",
+      phone: "(541) 555-2109",
+      email: "tree-job@example.com",
+      notes: "Confirm access, debris hauling, and safety requirements."
+    },
+    {
+      id: "camera-network-install",
+      title: "Low Voltage Camera and Network Install",
+      category: "Low Voltage Systems",
+      categoryLabel: "Low Voltage Systems",
+      location: "Medford, OR",
+      urgency: "ASAP",
+      budget: "$500 - $1,000",
+      bids: 0,
+      status: "Open for bids",
+      posted: "Today",
+      description: "Install two cameras, run low-voltage cabling, and clean up a small office network rack.",
+      customer: "Local Office Manager",
+      phone: "(541) 555-7702",
+      email: "lowvoltage-job@example.com",
+      notes: "Ask about camera model, access control needs, and after-hours availability."
     },
     {
       id: "bathroom-vanity",
@@ -2457,6 +2604,15 @@ const startPaths = [
     screen: "capital",
     action: "Finance Review",
     tone: "orange"
+  },
+  {
+    label: "I need a product made",
+    title: "Forge Manufacturing + Nutraceuticals.",
+    body: "Request manufacturing quotes or create a supplier profile for vitamins, supplements, gummies, powders, beverages, skincare, pet wellness, packaging, labs, and compliance support.",
+    next: "Forge saves the RFQ or supplier profile, then moves it through supplier matching, quotes, samples, compliance review, PO, production, and fulfillment.",
+    screen: "manufacturing",
+    action: "Manufacturing",
+    tone: "blue"
   },
   {
     label: "I want training or a better job",
@@ -3110,6 +3266,21 @@ function categoryMatches(jobCategory, selectedCategory) {
     || categoryLabel(jobCategory) === selectedCategory;
 }
 
+function workerMatchesCategory(worker, selectedCategory) {
+  if (selectedCategory === "All Categories") return true;
+  const vertical = serviceVerticalForProvider(worker);
+  const workerCategories = [
+    worker?.trade,
+    worker?.category,
+    worker?.providerCategory,
+    worker?.serviceVerticalTitle,
+    ...(worker?.tradeCategories || []),
+    ...(worker?.providerCategories || []),
+    ...(vertical?.categories || [])
+  ];
+  return workerCategories.some((category) => categoryMatches(category, selectedCategory));
+}
+
 function serviceVerticalById(id) {
   return serviceVerticals.find((vertical) => vertical.id === id) || null;
 }
@@ -3121,6 +3292,7 @@ function serviceVerticalForCategory(category) {
 
 function serviceVerticalForProvider(worker) {
   return serviceVerticalById(worker?.serviceVertical)
+    || serviceVerticalById(worker?.providerCategory)
     || serviceVerticalForCategory(worker?.providerCategory)
     || serviceVerticalForCategory(worker?.trade)
     || serviceVerticalForCategory(worker?.category)
@@ -3158,6 +3330,8 @@ function normalizeServiceProvider(worker) {
     providerType: worker.providerType || vertical.providerTypes[0],
     profileDetails: {},
     tags: [],
+    tradeCategories: worker.tradeCategories || worker.providerCategories || [vertical.categories[0]],
+    providerCategories: worker.providerCategories || worker.tradeCategories || [vertical.categories[0]],
     serviceArea: worker.area || worker.serviceArea || "",
     ...worker
   };
@@ -3719,6 +3893,7 @@ function renderSelects() {
   fillSelect("#manufacturingProductType", ["", ...manufacturingProductCategories], "Select product type");
   fillSelect("#manufacturingFormulaStatus", manufacturingFormulaStatuses);
   fillSelect("#manufacturingDosageForm", manufacturingDosageForms);
+  fillSelect("#manufacturingCbdHemp", yesNoOptions);
   fillSelect("#manufacturingCleanLabelRequirements", manufacturingCleanLabelOptions);
   fillSelect("#manufacturingCertificationsRequired", manufacturingCertificationOptions);
   fillSelect("#manufacturingBudgetRange", manufacturingBudgetRanges);
@@ -3856,6 +4031,7 @@ function renderDemoLinks() {
     ["Forge Admin", "Operator view", "admin", "admin"],
     ["Forge Admin", "Readiness", "admin", "profile"],
     ["Forge Auto Services", "Auto services", "customer", "auto"],
+    ["Forge Manufacturing", "Manufacturing + Nutraceuticals", "customer", "manufacturing"],
     ["Forge Careers", "Training & careers", "customer", "opportunities"]
   ];
   target.innerHTML = links.map(([name, label, role, screen]) => `
@@ -4107,6 +4283,158 @@ function renderCapitalPage() {
   `).join("") || `<article><p class="muted">No Capital Desk leads yet.</p></article>`;
 }
 
+function renderManufacturingPage() {
+  const stats = document.querySelector("#manufacturingStats");
+  const productGrid = document.querySelector("#manufacturingProductGrid");
+  const supplierTypes = document.querySelector("#manufacturingSupplierTypes");
+  const flags = document.querySelector("#manufacturingFilterFlags");
+  const directory = document.querySelector("#manufacturingSupplierDirectory");
+  const eden = document.querySelector("#manufacturingEdenGrid");
+  const docs = document.querySelector("#manufacturingDocumentGrid");
+  const statuses = document.querySelector("#manufacturingStatusGrid");
+  const rfqList = document.querySelector("#manufacturingRfqList");
+  const compliance = document.querySelectorAll("[data-manufacturing-compliance]");
+  if (!stats || !productGrid || !supplierTypes || !flags || !directory || !eden || !docs || !statuses || !rfqList) return;
+
+  compliance.forEach((node) => {
+    node.textContent = MANUFACTURING_COMPLIANCE_COPY;
+  });
+
+  const suppliers = state.manufacturingSuppliers || [];
+  const rfqs = state.manufacturingRfqs || [];
+  stats.innerHTML = statCards([
+    ["RFQs", rfqs.length],
+    ["Demo Suppliers", suppliers.length],
+    ["Supplier Types", manufacturingSupplierTypes.length],
+    ["Documents", manufacturingDocumentTemplates.length],
+    ["Open Pipeline", rfqs.filter((lead) => !["Closed Won", "Closed Lost"].includes(lead.status)).length]
+  ]);
+
+  productGrid.innerHTML = manufacturingProductCategories.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
+  supplierTypes.innerHTML = manufacturingSupplierTypes.map((type) => `<span>${escapeHtml(type)}</span>`).join("");
+
+  const activeFlags = Array.from(document.querySelectorAll("input[name='manufacturingFilterFlag']:checked")).map((input) => input.value);
+  flags.innerHTML = manufacturingFilterFlags.map((flag) => `
+    <label class="check-row manufacturing-filter-chip">
+      <input type="checkbox" name="manufacturingFilterFlag" value="${escapeHtml(flag)}" ${activeFlags.includes(flag) ? "checked" : ""} />
+      ${escapeHtml(flag)}
+    </label>
+  `).join("");
+
+  const filteredSuppliers = filteredManufacturingSuppliers(activeFlags);
+  directory.innerHTML = filteredSuppliers.map((supplier) => `
+    <article class="manufacturing-supplier-card">
+      <div>
+        <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
+        <h3>${escapeHtml(supplier.companyName)}</h3>
+        <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
+        <p>${escapeHtml(supplier.capabilities)}</p>
+        <div class="service-category-mini">
+          ${(supplier.productCategories || []).slice(0, 5).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          ${(supplier.dosageForms || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          ${(supplier.certifications || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+        </div>
+      </div>
+      <div class="lead-actions">
+        ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
+        <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+        <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
+      </div>
+    </article>
+  `).join("") || `<article class="manufacturing-supplier-card"><h3>No suppliers match these filters.</h3><p class="muted">Clear filters or create the first supplier profile.</p></article>`;
+
+  eden.innerHTML = manufacturingEcosystemItems.map((item) => `<article><strong>${escapeHtml(item)}</strong></article>`).join("");
+  docs.innerHTML = manufacturingDocumentTemplates.map((title) => `
+    <article>
+      <span class="split-label">Template placeholder</span>
+      <strong>${escapeHtml(title)}</strong>
+      <p>Available in the Forge Operations Vault for admin copy/review. Legal and compliance templates require professional review before use.</p>
+    </article>
+  `).join("");
+  statuses.innerHTML = manufacturingLeadStatuses.map((status, index) => `
+    <article>
+      <strong>${index + 1}</strong>
+      <span>${escapeHtml(status)}</span>
+    </article>
+  `).join("");
+  rfqList.innerHTML = rfqs.slice(0, 5).map((lead) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm)}</span>
+        <strong>${escapeHtml(lead.brandName || "Unnamed manufacturing project")}</strong>
+        <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.locationPreference)}</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
+    </article>
+  `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`;
+}
+
+function filteredManufacturingSuppliers(activeFlags = []) {
+  const product = document.querySelector("#manufacturingProductFilter")?.value || "All Product Categories";
+  const supplierType = document.querySelector("#manufacturingSupplierFilter")?.value || "All Supplier Types";
+  const dosage = document.querySelector("#manufacturingDosageFilter")?.value || "All Dosage Forms";
+  const location = normalizeLookup(document.querySelector("#manufacturingLocationFilter")?.value || "");
+  const moq = document.querySelector("#manufacturingMoqFilter")?.value || "All MOQs";
+  const certification = document.querySelector("#manufacturingCertificationFilter")?.value || "All Certifications";
+  return (state.manufacturingSuppliers || []).filter((supplier) => {
+    const text = normalizeLookup(manufacturingSupplierSearchText(supplier));
+    const productOk = product === "All Product Categories" || (supplier.productCategories || []).includes(product) || text.includes(normalizeLookup(product));
+    const typeOk = supplierType === "All Supplier Types" || supplier.supplierType === supplierType;
+    const dosageOk = dosage === "All Dosage Forms" || (supplier.dosageForms || []).includes(dosage);
+    const locationOk = !location || text.includes(location);
+    const moqOk = manufacturingMoqMatches(supplier.minimumOrderQuantity, moq);
+    const certOk = certification === "All Certifications" || (supplier.certifications || []).includes(certification);
+    const flagsOk = activeFlags.every((flag) => manufacturingSupplierSupportsFlag(supplier, flag));
+    return productOk && typeOk && dosageOk && locationOk && moqOk && certOk && flagsOk;
+  });
+}
+
+function manufacturingSupplierSearchText(supplier) {
+  return [
+    supplier.companyName,
+    supplier.contactPerson,
+    supplier.location,
+    supplier.serviceArea,
+    supplier.supplierType,
+    supplier.capabilities,
+    supplier.minimumOrderQuantity,
+    supplier.certifications?.join(" "),
+    supplier.facilityType,
+    supplier.turnaroundTime,
+    supplier.packagingOptions,
+    supplier.notes,
+    supplier.verifiedByForge,
+    supplier.status,
+    ...(supplier.productCategories || []),
+    ...(supplier.dosageForms || [])
+  ].join(" ");
+}
+
+function manufacturingMoqMatches(value, filter) {
+  if (!filter || filter === "All MOQs") return true;
+  const text = normalizeLookup(value);
+  const number = Number(String(value || "").replace(/[^\d]/g, "")) || 0;
+  if (filter === "Low MOQ") return /low|project|sample|pilot|2500|2,500|5000|5,000/.test(text) || (number > 0 && number <= 5000);
+  if (filter === "Under 5,000 units") return /under 5|2500|2,500/.test(text) || (number > 0 && number < 5000);
+  if (filter === "5,000 - 25,000 units") return /5,000|5000|10,000|10000|25,000|25000/.test(text) || (number >= 5000 && number <= 25000);
+  if (filter === "25,000+ units") return /25,000|25000|\+/.test(text) || number >= 25000;
+  return true;
+}
+
+function manufacturingSupplierSupportsFlag(supplier, flag) {
+  const normalized = normalizeLookup(flag);
+  const text = normalizeLookup(manufacturingSupplierSearchText(supplier));
+  if (normalized.includes("private label")) return Boolean(supplier.privateLabelSupport);
+  if (normalized.includes("formulation")) return Boolean(supplier.formulationSupport);
+  if (normalized.includes("packaging")) return Boolean(supplier.packagingOptions) || supplier.supplierType === "Packaging suppliers";
+  if (normalized.includes("cbd") || normalized.includes("hemp")) return text.includes("cbd") || text.includes("hemp");
+  if (normalized.includes("pet")) return text.includes("pet");
+  if (normalized.includes("organic") || normalized.includes("vegan") || normalized.includes("clean")) return /organic|vegan|clean|non gmo|non-gmo|gluten|sugar/.test(text);
+  if (normalized.includes("rush")) return text.includes("rush") || text.includes("3-8 weeks") || text.includes("5-15 business days");
+  if (normalized.includes("verified")) return normalizeLookup(supplier.status).includes("verified");
+  return text.includes(normalized);
+}
+
 function renderProviderGrowthTools() {
   const target = document.querySelector("#providerGrowthTools");
   if (!target) return;
@@ -4129,8 +4457,8 @@ function renderRequiredTradeCategories() {
         <h3>${escapeHtml(category.label)}</h3>
         <p>${escapeHtml(category.description)}</p>
         <div class="hero-actions">
-          <button class="btn orange small" type="button" data-action="choose-service-category" data-service-category="${escapeHtml(category.label)}">Post Job</button>
-          <button class="btn blue small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(vertical?.id || category.id)}">Provider Profile</button>
+          <button class="btn orange small" type="button" data-action="start-service-job" data-service-vertical="${escapeHtml(vertical?.id || category.id)}" data-service-category="${escapeHtml(category.label)}">Post Job</button>
+          <button class="btn blue small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(vertical?.id || category.id)}" data-service-category="${escapeHtml(category.label)}">Provider Profile</button>
         </div>
       </article>
     `;
@@ -4182,7 +4510,7 @@ function renderServiceVerticals() {
     target.innerHTML = [
       "Forge helps connect customers with local service providers. Customers should verify references, insurance, licensing, access instructions, property details, and final scope before allowing entry or approving work.",
       "Service providers should confirm scope, price, access instructions, photos, timing, cancellation terms, disposal fees, material costs, permit responsibility, and payment terms before accepting work.",
-      "Some asphalt, concrete, masonry, driveway, hauling, grading, and hardscape jobs may require permits, utility locates, licensed contractors, insurance, traffic control, or code compliance. Customers and providers are responsible for confirming local requirements before work begins."
+      "Some electrical, plumbing, HVAC, roofing, solar, low-voltage, fiber, arborist, concrete, masonry, hauling, grading, and construction jobs may require permits, utility locates, licensed contractors, insurance, traffic control, or code compliance. Customers and providers are responsible for confirming local requirements before work begins."
     ].map((note) => `<p>${escapeHtml(note)}</p>`).join("");
   });
 }
@@ -4289,6 +4617,7 @@ function renderProviderDirectory() {
   directory.innerHTML = providers.map((worker) => {
     const vertical = serviceVerticalForProvider(worker);
     const details = worker.profileDetails || {};
+    const tradeList = (worker.tradeCategories || worker.providerCategories || [worker.trade]).filter(Boolean).slice(0, 5);
     return `
       <article class="provider-directory-card">
         <div>
@@ -4296,8 +4625,11 @@ function renderProviderDirectory() {
           <h3>${escapeHtml(worker.businessName || worker.name)}</h3>
           <p>${escapeHtml(worker.providerType || worker.trade)} · ${escapeHtml(worker.area || worker.serviceArea || "Service area pending")}</p>
           <div class="service-category-mini">
+            ${tradeList.map((category) => `<span>${escapeHtml(category)}</span>`).join("")}
             ${(worker.tags || []).slice(0, 6).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
             ${details.minimumPrice || details.minimumTripCharge || details.minimumJobPrice ? `<span>${escapeHtml(details.minimumPrice || details.minimumTripCharge || details.minimumJobPrice)}</span>` : ""}
+            ${worker.licenseStatus ? `<span>${escapeHtml(worker.licenseStatus)}</span>` : ""}
+            ${worker.insuranceStatus ? `<span>${escapeHtml(worker.insuranceStatus)}</span>` : ""}
           </div>
         </div>
         <div class="lead-actions">
@@ -4314,7 +4646,10 @@ function providerSearchText(worker) {
     worker.name,
     worker.businessName,
     worker.trade,
+    ...(worker.tradeCategories || []),
+    ...(worker.providerCategories || []),
     worker.providerType,
+    worker.contactMethod,
     worker.area,
     worker.serviceArea,
     worker.serviceVerticalTitle,
@@ -4331,12 +4666,13 @@ function providerMatchesFilter(worker, filter) {
     || normalized.split(/\s+/).some((part) => part.length > 3 && text.includes(part));
 }
 
-function startServiceJob(verticalId) {
+function startServiceJob(verticalId, categoryOverride = "") {
   const vertical = serviceVerticalById(verticalId);
   if (!vertical) return;
   navigate("post");
-  setFieldValue("#jobCategory", vertical.categories[0]);
-  if (!fieldValue("#jobTitle")) setFieldValue("#jobTitle", vertical.categories[0]);
+  const category = categoryOverride || vertical.categories[0];
+  setFieldValue("#jobCategory", category);
+  if (!fieldValue("#jobTitle")) setFieldValue("#jobTitle", category);
   renderServiceJobFields();
   showToast(`${vertical.shortTitle} job form ready.`);
 }
@@ -4352,12 +4688,13 @@ function browseServiceJobs(verticalId) {
   showToast(`${vertical.shortTitle} jobs and providers shown.`);
 }
 
-function joinServiceProvider(verticalId) {
+function joinServiceProvider(verticalId, categoryOverride = "") {
   const vertical = serviceVerticalById(verticalId);
   if (!vertical) return;
   navigate("signup");
   setFieldValue("#workerServiceVertical", vertical.id);
-  setFieldValue("#workerTrade", vertical.title);
+  setFieldValue("#workerTrade", categoryOverride || vertical.title);
+  setSelectedValues("#workerTradeCategories", [categoryOverride || vertical.categories[0]]);
   renderProviderServiceFields();
   showToast(`${vertical.shortTitle} provider profile ready.`);
 }
@@ -5887,6 +6224,14 @@ function messageContext(thread) {
       next: "Confirm safety, location, provider availability, and documentation needs"
     };
   }
+  if (thread.id.startsWith("manufacturing-")) {
+    return {
+      screen: "manufacturing",
+      action: "Open Manufacturing",
+      detail: thread.subtitle,
+      next: "Confirm formula status, compliance flags, supplier fit, quote request, and sample path"
+    };
+  }
   return {
     screen: "capture",
     action: "Capture Lead",
@@ -5994,6 +6339,14 @@ function getMessageThreads() {
       to: lead.owner_name,
       draft: flexOutreachText(lead)
     })),
+    ...(state.manufacturingRfqs || []).map((lead) => ({
+      id: `manufacturing-${lead.id}`,
+      title: lead.brandName || "Manufacturing RFQ",
+      subtitle: `${lead.status} · ${lead.productType}`,
+      kind: "Manufacturing RFQ",
+      to: lead.contactName,
+      draft: manufacturingRfqText(lead)
+    })),
     ...(state.roadRescueRequests || []).map((request) => ({
       id: `road-rescue-${request.id}`,
       title: `${request.name} - ${roadRescueIssueSummary(request)}`,
@@ -6031,7 +6384,12 @@ function renderDashboards() {
   const northstarLeads = state.northstarLeads || [];
   const roadRescueRequests = state.roadRescueRequests || [];
   const flexLeads = state.flexLeads || [];
+  const manufacturingRfqs = state.manufacturingRfqs || [];
+  const manufacturingSuppliers = state.manufacturingSuppliers || [];
   const hotLeads = state.referrals.filter((lead) => lead.priority === "Hot").length + state.jobs.filter((job) => job.status === "New").length;
+  const adminCategory = document.querySelector("#adminTradeCategoryFilter")?.value || "All Categories";
+  const adminJobs = state.jobs.filter((job) => categoryMatches(job.categoryLabel || job.category, adminCategory));
+  const adminWorkers = state.workers.filter((worker) => workerMatchesCategory(worker, adminCategory));
 
   const workerTitle = document.querySelector("#workerDashboardTitle");
   if (workerTitle) workerTitle.textContent = state.session.role === "worker" ? `${sessionWorkerName}'s Dashboard` : "Dashboard";
@@ -6050,6 +6408,8 @@ function renderDashboards() {
     ["NorthStar", northstarLeads.length],
     ["Road Rescue", roadRescueRequests.length],
     ["Flex Leads", flexLeads.length],
+    ["Manufacturing RFQs", manufacturingRfqs.length],
+    ["Mfg Suppliers", manufacturingSuppliers.length],
     ["Referrals", referrals],
     ["Career Leads", careerLeads],
     ["Homebuilding", homebuildingLeads],
@@ -6068,7 +6428,7 @@ function renderDashboards() {
     };
   }));
 
-  renderTable("#adminLeadsTable", state.jobs.slice(0, 5).map((job) => ({
+  renderTable("#adminLeadsTable", adminJobs.slice(0, 5).map((job) => ({
     customer: job.customer,
     job: job.title,
     category: categoryLabel(job.category),
@@ -6078,9 +6438,10 @@ function renderDashboards() {
     status: job.status
   })));
 
-  renderTable("#adminWorkersTable", state.workers.map((worker) => ({
+  renderTable("#adminWorkersTable", adminWorkers.map((worker) => ({
     name: worker.name,
     trade: worker.trade,
+    categories: (worker.tradeCategories || worker.providerCategories || [worker.trade]).join(", "),
     phone: worker.phone,
     area: worker.area,
     status: worker.status
@@ -6121,6 +6482,26 @@ function renderDashboards() {
     location: request.location,
     safe: request.vehicleSafe,
     status: request.status
+  })));
+
+  renderTable("#adminManufacturingRfqsTable", manufacturingRfqs.map((lead) => ({
+    brand: lead.brandName,
+    product: lead.productType,
+    form: lead.dosageForm,
+    quantity: lead.targetQuantity,
+    certifications: (lead.certificationsRequired || []).join(", "),
+    contact: lead.contactName,
+    status: lead.status
+  })));
+
+  renderTable("#adminManufacturingSuppliersTable", manufacturingSuppliers.map((supplier) => ({
+    company: supplier.companyName,
+    type: supplier.supplierType,
+    location: supplier.location,
+    dosage: (supplier.dosageForms || []).join(", "),
+    certifications: (supplier.certifications || []).join(", "),
+    verified: supplier.verifiedByForge,
+    status: supplier.status
   })));
 
   renderFlexLeadsAdmin();
@@ -6188,6 +6569,10 @@ function renderConfirmation() {
                           ? "NorthStar request saved"
                           : confirmation.type === "flex"
                             ? "Capital Desk lead saved"
+                            : confirmation.type === "manufacturing-rfq"
+                              ? "Manufacturing RFQ saved"
+                              : confirmation.type === "manufacturing-supplier"
+                                ? "Supplier profile saved"
                   : "Forge is ready";
   document.querySelector("#confirmTitle").textContent = confirmation.title;
   document.querySelector("#confirmBody").textContent = confirmation.body;
@@ -6223,6 +6608,8 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
   if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
   if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Finance partner routing stays pending until consent and approval gates pass", "Approved finance partners handle eligibility, approval, onboarding, activation, and product support"];
+  if (confirmation.type === "manufacturing-rfq") return ["Forge saves this manufacturing RFQ", "Admin reviews product, formula, dosage, MOQ, packaging, certification, testing, and compliance flags", "Supplier matching uses original Forge profiles and company-created supplier profiles only"];
+  if (confirmation.type === "manufacturing-supplier") return ["Forge saves this supplier profile", "Admin reviews capability, MOQ, dosage forms, certifications, support areas, and contact details", "Verified-by-Forge remains a placeholder until manual review and approval"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
 }
 
@@ -6241,6 +6628,8 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
   if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
   if (confirmation.type === "flex") return "Tell the business owner how finance partner review works.";
+  if (confirmation.type === "manufacturing-rfq") return "Tell the buyer how manufacturing supplier matching works.";
+  if (confirmation.type === "manufacturing-supplier") return "Tell the supplier how onboarding review works.";
   return "Use this as the next message.";
 }
 
@@ -6288,6 +6677,12 @@ function confirmationHandoffText(confirmation) {
   }
   if (confirmation.type === "flex") {
     return `Forge saved this Capital Desk lead${detail}. Forge may route eligible business owners to approved finance partner review only when consent, written approval, and data-sharing requirements are in place. Finance partners handle eligibility, approval, onboarding, activation, and support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
+  }
+  if (confirmation.type === "manufacturing-rfq") {
+    return `Forge saved this manufacturing RFQ${detail}. The operator can review formula status, dosage form, MOQ, packaging, testing, certifications, CBD/hemp flags, and supplier fit before any quote request. Compliance, legal, label, claims, testing, and insurance review remain the user's responsibility.`;
+  }
+  if (confirmation.type === "manufacturing-supplier") {
+    return `Forge saved this supplier profile${detail}. The supplier can be reviewed for capabilities, certifications, MOQ, dosage forms, support areas, and contact details. Verified-by-Forge is only a placeholder until manual review and approval are complete.`;
   }
   return `Forge is ready for controlled first-user signups. Next: ${steps.join(" ")}`;
 }
@@ -6815,7 +7210,7 @@ function safetyChecks() {
 }
 
 function totalLeadCount() {
-  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.opportunityLeads || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
+  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.opportunityLeads || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
 }
 
 function renderLaunchCommandCenter() {
@@ -6974,7 +7369,7 @@ function outreachRecapSummary() {
     total: items.length,
     contacted: items.filter((item) => /contacted|message saved|sent to webhook|attempted via webhook/.test(text(item))).length,
     moved: items.filter((item) => /moved forward|converted|bid selected|in progress|ready|application packet/.test(text(item))).length,
-    captured: items.filter((item) => /new job lead|new worker lead|northstar lead|road rescue request|homebuilding lead|project lead|career interest|quick lead|referral/.test(text(item))).length
+    captured: items.filter((item) => /new job lead|new worker lead|northstar lead|road rescue request|manufacturing rfq|manufacturing supplier|homebuilding lead|project lead|career interest|quick lead|referral/.test(text(item))).length
   };
 }
 
@@ -7040,7 +7435,10 @@ function outreachSessionHistory() {
 }
 
 function renderLeadPipelines() {
-  document.querySelector("#adminJobPipeline").innerHTML = state.jobs.slice(0, 6).map((job) => `
+  const adminCategory = document.querySelector("#adminTradeCategoryFilter")?.value || "All Categories";
+  const adminJobs = state.jobs.filter((job) => categoryMatches(job.categoryLabel || job.category, adminCategory));
+  const adminWorkers = state.workers.filter((worker) => workerMatchesCategory(worker, adminCategory));
+  document.querySelector("#adminJobPipeline").innerHTML = adminJobs.slice(0, 6).map((job) => `
     <article class="lead-card">
       <div>
         <span class="split-label">${escapeHtml(job.status)} · ${escapeHtml(categoryLabel(job.category))}</span>
@@ -7063,12 +7461,12 @@ function renderLeadPipelines() {
     </article>
   `).join("");
 
-  document.querySelector("#adminWorkerPipeline").innerHTML = state.workers.map((worker) => `
+  document.querySelector("#adminWorkerPipeline").innerHTML = adminWorkers.map((worker) => `
     <article class="lead-card">
       <div>
         <span class="split-label">${escapeHtml(worker.status)}</span>
         <h3>${escapeHtml(worker.name)}</h3>
-        <p>${escapeHtml(worker.trade)} · ${escapeHtml(worker.phone)}</p>
+        <p>${escapeHtml(worker.trade)} · ${escapeHtml((worker.tradeCategories || worker.providerCategories || [worker.trade]).join(", "))} · ${escapeHtml(worker.phone)}</p>
       </div>
       <label>Status
         <select data-worker-status="${escapeHtml(worker.email)}">
@@ -7195,6 +7593,51 @@ function renderLeadPipelines() {
         </div>
       </article>
     `).join("") || `<article class="lead-card"><p class="muted">No Road Rescue requests yet.</p></article>`;
+  }
+
+  const manufacturingRfqsTarget = document.querySelector("#adminManufacturingRfqsPipeline");
+  if (manufacturingRfqsTarget) {
+    manufacturingRfqsTarget.innerHTML = (state.manufacturingRfqs || []).map((lead) => `
+      <article class="lead-card">
+        <div>
+          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm || "Dosage pending")}</span>
+          <h3>${escapeHtml(lead.brandName || "Manufacturing RFQ")}</h3>
+          <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.contactName || "Contact pending")}</p>
+        </div>
+        <label>Status
+          <select data-manufacturing-status="${escapeHtml(lead.id)}">
+            ${manufacturingLeadStatuses.map((status) => `<option ${status === lead.status ? "selected" : ""}>${escapeHtml(status)}</option>`).join("")}
+          </select>
+        </label>
+        <label>Notes
+          <textarea data-manufacturing-notes="${escapeHtml(lead.id)}" rows="2" placeholder="Supplier match, quote, sample, compliance, PO, production, or fulfillment notes">${escapeHtml(lead.notes || "")}</textarea>
+        </label>
+        <div class="lead-actions">
+          ${contactLinks(lead.contactPhone, lead.contactEmail, manufacturingRfqText(lead))}
+          <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
+          <button class="btn blue small" type="button" data-action="mark-manufacturing-contacted" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Needs Review</button>
+          <button class="btn orange small" type="button" data-action="move-manufacturing-forward" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Move Forward</button>
+        </div>
+      </article>
+    `).join("") || `<article class="lead-card"><p class="muted">No manufacturing RFQs yet.</p></article>`;
+  }
+
+  const manufacturingSuppliersTarget = document.querySelector("#adminManufacturingSuppliersPipeline");
+  if (manufacturingSuppliersTarget) {
+    manufacturingSuppliersTarget.innerHTML = (state.manufacturingSuppliers || []).map((supplier) => `
+      <article class="lead-card">
+        <div>
+          <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
+          <h3>${escapeHtml(supplier.companyName)}</h3>
+          <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
+        </div>
+        <p class="muted">${escapeHtml((supplier.dosageForms || []).join(", ") || "Dosage forms pending")} · ${escapeHtml((supplier.certifications || []).join(", ") || "Certifications pending")}</p>
+        <div class="lead-actions">
+          ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
+          <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+        </div>
+      </article>
+    `).join("") || `<article class="lead-card"><p class="muted">No manufacturing supplier profiles yet.</p></article>`;
   }
 
   document.querySelector("#adminReferralPipeline").innerHTML = state.referrals.map((lead) => `
@@ -7468,6 +7911,7 @@ function foundingSegments() {
     ["Projects", (state.projectLeads || []).length, 25, "Home projects and major OR/WA project opportunities ready for routing.", "projects", "Projects"],
     ["NorthStar", (state.northstarLeads || []).length, 20, "Blue-collar businesses that need marketing, CRM, lead follow-up, job tracking, or operations help.", "northstar", "NorthStar"],
     ["Capital Desk", (state.flexLeads || []).length, 20, "Business owners who need breathing room, cash-flow tools, cards, bill pay, or Flex referral follow-up.", "capital", "Capital Desk"],
+    ["Manufacturing", (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length, 30, "Brands, suppliers, labs, packaging providers, and compliance partners in the manufacturing pipeline.", "manufacturing", "Manufacturing"],
     ["Road Rescue", (state.roadRescueRequests || []).length, 20, "Neighbors who need pothole, roadside, tire, tow, wheel, or mechanic help.", "road-rescue", "Road Rescue"],
     ["Career leads", (state.opportunityLeads || []).length, 25, "People applying to trade schools, unions, apprenticeships, and blue-collar AI jobs.", "opportunities", "Career Path"],
     ["Referrals", state.referrals.length, 30, "Introductions to job posters, workers, career applicants, and local businesses.", "capture", "Capture Referral"]
@@ -7722,6 +8166,22 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
       copyAction: "copy-flex-outreach",
       dataName: "flexId"
     })),
+    ...(state.manufacturingRfqs || []).map((lead) => ({
+      id: lead.id,
+      kind: "Manufacturing",
+      title: `${lead.brandName || "Manufacturing RFQ"} · ${lead.productType}`,
+      person: lead.contactName,
+      phone: lead.contactPhone,
+      email: lead.contactEmail,
+      status: lead.status,
+      priority: ["New RFQ", "Needs Review", "Supplier Matching", "Quote Received", "Compliance Review"].includes(lead.status) ? "Hot" : "Warm",
+      message: manufacturingRfqText(lead),
+      action: "mark-manufacturing-contacted",
+      forwardAction: "move-manufacturing-forward",
+      forwardLabel: lead.status === "Supplier Matching" ? "Matching" : "Move Forward",
+      copyAction: "copy-manufacturing-rfq",
+      dataName: "manufacturingRfqId"
+    })),
     ...(state.opportunityLeads || []).map((lead) => ({
       id: lead.id,
       kind: "Careers",
@@ -7741,7 +8201,7 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
   ].filter((row) => {
     const typeOk = typeFilter === "All Lead Types" || row.kind === typeFilter;
     const statusOk = statusFilter === "All Statuses"
-      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Contacted", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
+      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Contacted", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "New RFQ", "Needs Review", "Supplier Matching", "Quote Requested", "Quote Received", "Compliance Review", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
       || row.status === statusFilter
       || row.priority === statusFilter;
     return typeOk && statusOk;
@@ -7787,6 +8247,14 @@ function followUpScore(row) {
     "Proposal Needed": 28,
     Scoping: 24,
     "Proposal Sent": 18,
+    "New RFQ": 30,
+    "Needs Review": 28,
+    "Supplier Matching": 26,
+    "Quote Requested": 22,
+    "Quote Received": 24,
+    "Sample Requested": 22,
+    "Compliance Review": 26,
+    "PO Pending": 22,
     MAJOR_PROJECT_REVIEW: 28,
     FORGE_QUALIFIED: 26,
     qualified: 26,
@@ -7801,18 +8269,19 @@ function followUpScore(row) {
     contacted: 8
   };
   const statusScore = statusScores[row.status] || 4;
-  const kindScore = row.kind === "Projects" ? 16 : row.kind === "Building" ? 16 : row.kind === "Jobs" ? 15 : row.kind === "Homebuilding" ? 14 : row.kind === "Capital Desk" ? 14 : row.kind === "NorthStar" ? 13 : row.kind === "Workers" ? 12 : row.kind === "Careers" ? 11 : 10;
+  const kindScore = row.kind === "Projects" ? 16 : row.kind === "Building" ? 16 : row.kind === "Jobs" ? 15 : row.kind === "Homebuilding" ? 14 : row.kind === "Manufacturing" ? 14 : row.kind === "Capital Desk" ? 14 : row.kind === "NorthStar" ? 13 : row.kind === "Workers" ? 12 : row.kind === "Careers" ? 11 : 10;
   const contactScore = (row.phone ? 6 : 0) + (row.email ? 3 : 0);
   return priorityScore + statusScore + kindScore + contactScore;
 }
 
 function followUpReason(row) {
   const first = row.priority === "Hot" ? "Hot lead" : `${row.priority} lead`;
-  const second = ["New", "Pending", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status) ? "needs first touch" : `${projectStatuses.includes(row.status) ? projectStatusLabel(row.status).toLowerCase() : row.status.toLowerCase()} status`;
+  const second = ["New", "Pending", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "New RFQ", "Needs Review", "Supplier Matching", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status) ? "needs first touch" : `${projectStatuses.includes(row.status) ? projectStatusLabel(row.status).toLowerCase() : row.status.toLowerCase()} status`;
   const third = row.kind === "Jobs" ? "creates demand"
     : row.kind === "Projects" ? "may route to Forge Pros, Major Projects Review, or partner review"
     : row.kind === "Homebuilding" ? "opens a build or contractor path"
       : row.kind === "Capital Desk" ? "needs consent-safe Flex referral follow-up"
+      : row.kind === "Manufacturing" ? "needs supplier matching, quote, sample, or compliance follow-up"
       : row.kind === "Building" ? "needs Building route, consent, or partner-eligibility review"
       : row.kind === "NorthStar" ? "opens marketing and operations revenue"
       : row.kind === "Workers" ? "adds supply"
@@ -7831,6 +8300,7 @@ function renderReports() {
   const hotReferrals = state.referrals.filter((lead) => lead.priority === "Hot" || lead.status === "New");
   const activeNorthStar = (state.northstarLeads || []).filter((lead) => !["Closed"].includes(lead.status));
   const activeFlex = (state.flexLeads || []).filter((lead) => !["closed_lost", "commission_paid"].includes(lead.status));
+  const activeManufacturing = (state.manufacturingRfqs || []).filter((lead) => !["Closed Won", "Closed Lost"].includes(lead.status));
   const activeHomebuilding = (state.homebuildingLeads || []).filter((lead) => !["Closed"].includes(lead.status));
   const activeProjects = (state.projectLeads || []).filter((lead) => !["WON", "LOST", "NOT_A_FIT"].includes(lead.status));
   const chosenBids = state.bids.filter((bid) => bid.chosen);
@@ -7840,6 +8310,7 @@ function renderReports() {
     ["Workers", state.workers.length],
     ["NorthStar", (state.northstarLeads || []).length],
     ["Capital Desk", (state.flexLeads || []).length],
+    ["Manufacturing", (state.manufacturingRfqs || []).length],
     ["Homebuilding", (state.homebuildingLeads || []).length],
     ["Projects", (state.projectLeads || []).length],
     ["Bids", state.bids.length],
@@ -7850,6 +8321,7 @@ function renderReports() {
     ...openJobs.slice(0, 3).map((job) => reportItem(job.customer, `${job.title} needs ${job.status === "New" ? "matching" : "follow-up"}.`)),
     ...activeNorthStar.slice(0, 2).map((lead) => reportItem(lead.businessName, `${lead.name} needs NorthStar ${lead.status.toLowerCase()} follow-up for ${lead.trade}.`)),
     ...activeFlex.slice(0, 2).map((lead) => reportItem(lead.business_name, `${flexStatusLabel(lead.status)} Capital Desk lead with score ${lead.lead_score}.`)),
+    ...activeManufacturing.slice(0, 2).map((lead) => reportItem(lead.brandName || "Manufacturing RFQ", `${lead.productType} is in ${lead.status} with ${lead.dosageForm} form and ${lead.targetQuantity} target quantity.`)),
     ...activeProjects.slice(0, 2).map((lead) => reportItem(lead.contactName, `${lead.projectTitle} needs ${projectStatusLabel(lead.status)} review in Projects.`)),
     ...activeHomebuilding.slice(0, 2).map((lead) => reportItem(lead.name, `${lead.type} needs project review and partner routing.`)),
     ...readyWorkers.slice(0, 2).map((worker) => reportItem(worker.name, `${worker.trade} is ${worker.status.toLowerCase()} for jobs.`)),
@@ -7861,6 +8333,7 @@ function renderReports() {
     reportItem("Demand", `${openJobs.length} open job${openJobs.length === 1 ? "" : "s"} still need movement.`),
     reportItem("NorthStar", `${activeNorthStar.length} marketing or operations lead${activeNorthStar.length === 1 ? "" : "s"} still need scoping, proposal, or delivery movement.`),
     reportItem("Capital Desk", `${activeFlex.length} Flex referral lead${activeFlex.length === 1 ? "" : "s"} still need consent-safe follow-up.`),
+    reportItem("Manufacturing", `${activeManufacturing.length} manufacturing RFQ${activeManufacturing.length === 1 ? "" : "s"} still need supplier matching, quotes, samples, compliance review, or production movement.`),
     reportItem("Projects", `${activeProjects.length} project opportunit${activeProjects.length === 1 ? "y" : "ies"} still need routing or review.`),
     reportItem("Homebuilding", `${activeHomebuilding.length} build or contractor project${activeHomebuilding.length === 1 ? "" : "s"} still need review.`),
     reportItem("Trust", `${chosenBids.length} chosen bid${chosenBids.length === 1 ? "" : "s"} and ${state.bids.length} total bid${state.bids.length === 1 ? "" : "s"}.`)
@@ -7897,6 +8370,16 @@ function postJobFromForm() {
   const title = document.querySelector("#jobTitle").value.trim();
   const selectedCategory = document.querySelector("#jobCategory").value;
   const vertical = serviceVerticalForCategory(selectedCategory);
+  const validation = forgeTradeCategorySchema.validateJob({
+    title,
+    category: selectedCategory,
+    location: document.querySelector("#jobLocation").value.trim(),
+    customer: document.querySelector("#customerName").value.trim()
+  });
+  if (!validation.ok) {
+    showToast(validation.errors[0]);
+    return;
+  }
   const serviceDetails = vertical ? collectServiceDetails("data-service-job-field") : {};
   const photoSummary = selectedFileSummary("#jobPhotos", "photo");
   const job = {
@@ -8339,6 +8822,119 @@ function submitFlexLead() {
   navigate("confirm");
 }
 
+function submitManufacturingRfq() {
+  const lead = normalizeManufacturingRfq({
+    id: `manufacturing-rfq-${Date.now()}`,
+    productType: fieldValue("#manufacturingProductType"),
+    brandName: fieldValue("#manufacturingBrandName"),
+    formulaStatus: fieldValue("#manufacturingFormulaStatus"),
+    dosageForm: fieldValue("#manufacturingDosageForm"),
+    targetQuantity: fieldValue("#manufacturingTargetQuantity"),
+    desiredPackaging: fieldValue("#manufacturingPackaging"),
+    ingredientRequirements: fieldValue("#manufacturingIngredients"),
+    cleanLabelRequirements: fieldSelectedValues("#manufacturingCleanLabelRequirements"),
+    cbdHemp: fieldValue("#manufacturingCbdHemp"),
+    testingNeeds: fieldValue("#manufacturingTestingNeeds"),
+    certificationsRequired: fieldSelectedValues("#manufacturingCertificationsRequired"),
+    targetLaunchDate: fieldValue("#manufacturingLaunchDate"),
+    budgetRange: fieldValue("#manufacturingBudgetRange"),
+    locationPreference: fieldValue("#manufacturingLocationPreference"),
+    contactName: fieldValue("#manufacturingContactName"),
+    contactEmail: fieldValue("#manufacturingContactEmail"),
+    contactPhone: fieldValue("#manufacturingContactPhone"),
+    specUpload: selectedFileSummary("#manufacturingSpecUpload"),
+    status: "New RFQ",
+    created: "Today",
+    notes: "RFQ captured in Forge Manufacturing + Nutraceuticals. Do not route CBD/hemp, claims, label, or regulated-product details without compliance review."
+  });
+  state.manufacturingRfqs.unshift(lead);
+  addActivity(`Manufacturing RFQ saved: ${lead.brandName} (${lead.productType}).`);
+  state.lastConfirmation = {
+    type: "manufacturing-rfq",
+    title: "Manufacturing quote request saved.",
+    body: "Forge saved this manufacturing RFQ for supplier matching, quote review, and compliance-aware follow-up.",
+    details: [
+      `${lead.brandName} · ${lead.productType}`,
+      `${lead.dosageForm} · ${lead.targetQuantity}`,
+      `${lead.locationPreference} · ${lead.budgetRange}`
+    ],
+    nextSteps: [
+      "Forge reviews the product type, formula status, dosage form, MOQ, packaging, testing, certifications, and compliance flags",
+      "Supplier matching starts only with original Forge supplier profiles or companies that create their own profiles",
+      "Legal, FDA, FTC, CBD/hemp, food, beverage, cosmetic, pet, label, claims, testing, and insurance review remain the user's responsibility"
+    ],
+    primary: { label: "Open Manufacturing", screen: "manufacturing" },
+    secondary: { label: "Open Admin Leads", screen: "admin" }
+  };
+  saveState();
+  sendLead("manufacturing-rfq", lead);
+  showToast("Manufacturing RFQ saved.");
+  document.querySelector("#manufacturingRfqForm").reset();
+  navigate("confirm");
+}
+
+function submitManufacturingSupplierProfile() {
+  const supplier = normalizeManufacturingSupplier({
+    id: `manufacturing-supplier-${Date.now()}`,
+    companyName: fieldValue("#manufacturingSupplierCompany"),
+    contactPerson: fieldValue("#manufacturingSupplierContact"),
+    location: fieldValue("#manufacturingSupplierLocation"),
+    serviceArea: fieldValue("#manufacturingSupplierServiceArea"),
+    supplierType: fieldValue("#manufacturingSupplierTypeInput"),
+    capabilities: fieldValue("#manufacturingSupplierCapabilities"),
+    productCategories: inferManufacturingSupplierCategories(fieldValue("#manufacturingSupplierTypeInput"), fieldValue("#manufacturingSupplierCapabilities")),
+    dosageForms: fieldSelectedValues("#manufacturingSupplierDosageForms"),
+    minimumOrderQuantity: fieldValue("#manufacturingSupplierMoq"),
+    certifications: fieldSelectedValues("#manufacturingSupplierCertifications"),
+    facilityType: fieldValue("#manufacturingSupplierFacilityType"),
+    turnaroundTime: fieldValue("#manufacturingSupplierTurnaround"),
+    packagingOptions: fieldValue("#manufacturingSupplierPackagingOptions"),
+    ingredientSourcingSupport: fieldChecked("#manufacturingSupplierIngredientSourcing"),
+    formulationSupport: fieldChecked("#manufacturingSupplierFormulation"),
+    testingLabSupport: fieldChecked("#manufacturingSupplierTesting"),
+    complianceSupport: fieldChecked("#manufacturingSupplierCompliance"),
+    privateLabelSupport: fieldChecked("#manufacturingSupplierPrivateLabel"),
+    fulfillmentSupport: fieldChecked("#manufacturingSupplierFulfillment"),
+    website: fieldValue("#manufacturingSupplierWebsite"),
+    phoneEmail: fieldValue("#manufacturingSupplierContactInfo"),
+    notes: fieldValue("#manufacturingSupplierNotes"),
+    verifiedByForge: "Placeholder only",
+    status: "Needs Review"
+  });
+  state.manufacturingSuppliers.unshift(supplier);
+  addActivity(`Manufacturing supplier profile saved: ${supplier.companyName} (${supplier.supplierType}).`);
+  state.lastConfirmation = {
+    type: "manufacturing-supplier",
+    title: "Supplier profile saved.",
+    body: "Forge saved this supplier profile for onboarding review. Verified status remains a placeholder until Forge completes manual review.",
+    details: [
+      `${supplier.companyName} · ${supplier.supplierType}`,
+      `${supplier.location} · ${supplier.minimumOrderQuantity}`,
+      `${supplier.dosageForms.join(", ") || "Dosage forms pending"}`
+    ],
+    nextSteps: [
+      "Forge reviews capabilities, dosage forms, MOQ, certifications, facility type, and support areas",
+      "A public verified claim requires manual review, documentation, and approval",
+      "Supplier profiles must be created or approved by the company; Forge does not copy external directory listings"
+    ],
+    primary: { label: "Open Manufacturing", screen: "manufacturing" },
+    secondary: { label: "Open Admin Leads", screen: "admin" }
+  };
+  saveState();
+  sendLead("manufacturing-supplier", supplier);
+  showToast("Supplier profile saved.");
+  document.querySelector("#manufacturingSupplierForm").reset();
+  navigate("confirm");
+}
+
+function inferManufacturingSupplierCategories(type, capabilities) {
+  const text = normalizeLookup(`${type} ${capabilities}`);
+  return manufacturingProductCategories.filter((category) => {
+    const normalized = normalizeLookup(category);
+    return text.includes(normalized.split("/")[0]) || normalized.split(/\s+/).some((part) => part.length > 4 && text.includes(part));
+  }).slice(0, 6);
+}
+
 function selectedProviderGrowthTools() {
   return Array.from(document.querySelectorAll('input[name="providerGrowthTools"]:checked')).map((input) => input.value);
 }
@@ -8622,6 +9218,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-northstar") exportCsv("forge-northstar-leads.csv", state.northstarLeads || []);
   if (action?.dataset.action === "export-road-rescue") exportCsv("forge-road-rescue-leads.csv", state.roadRescueRequests || []);
   if (action?.dataset.action === "export-flex-leads") exportCsv("forge-flex-leads.csv", state.flexLeads || []);
+  if (action?.dataset.action === "export-manufacturing-rfqs") exportCsv("forge-manufacturing-rfqs.csv", state.manufacturingRfqs || []);
+  if (action?.dataset.action === "export-manufacturing-suppliers") exportCsv("forge-manufacturing-suppliers.csv", state.manufacturingSuppliers || []);
   if (action?.dataset.action === "export-referrals") exportCsv("forge-referral-leads.csv", state.referrals);
   if (action?.dataset.action === "export-homebuilding") exportCsv("forge-homebuilding-leads.csv", state.homebuildingLeads || []);
   if (action?.dataset.action === "export-building-leads") exportCsv("forge-building-leads.csv", state.buildingLeads || []);
@@ -8664,9 +9262,9 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-first-200") copyFirst200Plan();
   if (action?.dataset.action === "copy-first-user-links") copyFirstUserLinks();
   if (action?.dataset.action === "copy-signup-checklist") copySignupChecklist();
-  if (action?.dataset.action === "start-service-job") startServiceJob(action.dataset.serviceVertical);
+  if (action?.dataset.action === "start-service-job") startServiceJob(action.dataset.serviceVertical, action.dataset.serviceCategory);
   if (action?.dataset.action === "browse-service-jobs") browseServiceJobs(action.dataset.serviceVertical);
-  if (action?.dataset.action === "join-service-provider") joinServiceProvider(action.dataset.serviceVertical);
+  if (action?.dataset.action === "join-service-provider") joinServiceProvider(action.dataset.serviceVertical, action.dataset.serviceCategory);
   if (action?.dataset.action === "choose-service-category") browseServiceCategory(action.dataset.serviceCategory);
   if (action?.dataset.action === "copy-creative-brief") copyCreativeBrief();
   if (action?.dataset.action === "copy-creative-queue") copyCreativeQueue();
@@ -8685,6 +9283,14 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-flex-outreach") copyFlexOutreach(action.dataset.flexId);
   if (action?.dataset.action === "open-flex-referral") openFlexReferral(action.dataset.flexLeadId);
   if (action?.dataset.action === "create-flex-upsell-task") createFlexUpsellTask(action.dataset.flexId);
+  if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
+  if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");
+  if (action?.dataset.action === "copy-manufacturing-brief") copyManufacturingBrief();
+  if (action?.dataset.action === "copy-manufacturing-queue") copyManufacturingQueue();
+  if (action?.dataset.action === "copy-manufacturing-rfq") copyManufacturingRfq(action.dataset.manufacturingRfqId);
+  if (action?.dataset.action === "copy-manufacturing-supplier") copyManufacturingSupplier(action.dataset.manufacturingSupplierId);
+  if (action?.dataset.action === "mark-manufacturing-contacted") markManufacturingContacted(action.dataset.manufacturingRfqId);
+  if (action?.dataset.action === "move-manufacturing-forward") moveManufacturingForward(action.dataset.manufacturingRfqId);
   if (action?.dataset.action === "copy-auto-market-brief") copyAutoMarketBrief();
   if (action?.dataset.action === "copy-auto-dealer-plan") copyAutoDealerPlan();
   if (action?.dataset.action === "copy-auto-dealer-setup") copyAutoDealerSetup();
@@ -8821,6 +9427,10 @@ document.addEventListener("change", (event) => {
   if (event.target.closest("#jobCategory")) renderServiceJobFields();
   if (event.target.closest("#workerServiceVertical")) renderProviderServiceFields();
   if (event.target.closest("#providerVerticalFilter") || event.target.closest("input[name='providerFilter']")) renderProviderDirectory();
+  if (event.target.closest("#adminTradeCategoryFilter")) {
+    renderDashboards();
+    renderLeadPipelines();
+  }
   if (event.target.closest("#homebuildingIntakeForm")) renderHomebuildingRoutePreview();
   if (event.target.closest("#projectIntakeForm")) renderProjectRoutePreview();
   if (event.target.closest("#buildingLeadForm")) {
@@ -8924,6 +9534,20 @@ document.addEventListener("change", (event) => {
     showToast("Flex status updated.");
   }
 
+  if (event.target.closest("#manufacturingProductFilter") || event.target.closest("#manufacturingSupplierFilter") || event.target.closest("#manufacturingDosageFilter") || event.target.closest("#manufacturingMoqFilter") || event.target.closest("#manufacturingCertificationFilter") || event.target.closest("input[name='manufacturingFilterFlag']")) {
+    renderManufacturingPage();
+  }
+
+  const manufacturingStatus = event.target.closest("[data-manufacturing-status]");
+  if (manufacturingStatus) {
+    const lead = (state.manufacturingRfqs || []).find((item) => item.id === manufacturingStatus.dataset.manufacturingStatus);
+    if (lead) lead.status = manufacturingStatus.value;
+    addActivity(`Manufacturing RFQ status changed: ${lead?.brandName || "RFQ"} -> ${manufacturingStatus.value}.`);
+    saveState();
+    render();
+    showToast("Manufacturing RFQ status updated.");
+  }
+
   const referralStatus = event.target.closest("[data-referral-status]");
   if (referralStatus) {
     const referral = state.referrals.find((item) => item.id === referralStatus.dataset.referralStatus);
@@ -8983,6 +9607,7 @@ document.addEventListener("input", (event) => {
     renderBuildingConditionalSections();
   }
   if (event.target.closest("#flexIndustryFilter") || event.target.closest("#flexCityFilter") || event.target.closest("#flexStateFilter")) renderFlexLeadsAdmin();
+  if (event.target.closest("#manufacturingLocationFilter")) renderManufacturingPage();
   if (event.target.closest("#buildingStateFilter")) renderAdminBuildingLeadsPage();
   if (event.target.closest("#operationsVaultSearch")) renderOperationsVault();
 
@@ -8992,6 +9617,7 @@ document.addEventListener("input", (event) => {
   const northstarNotes = event.target.closest("[data-northstar-notes]");
   const roadRescueNotes = event.target.closest("[data-road-rescue-notes]");
   const flexNotes = event.target.closest("[data-flex-notes]");
+  const manufacturingNotes = event.target.closest("[data-manufacturing-notes]");
   const referralNotes = event.target.closest("[data-referral-notes]");
   const homebuildingNotes = event.target.closest("[data-homebuilding-notes]");
   const buildingNotes = event.target.closest("[data-building-notes]");
@@ -9031,6 +9657,12 @@ document.addEventListener("input", (event) => {
     if (!lead) return;
     lead.notes = flexNotes.value;
     lead.updated_at = "Today";
+    saveState();
+  }
+  if (manufacturingNotes) {
+    const lead = (state.manufacturingRfqs || []).find((item) => item.id === manufacturingNotes.dataset.manufacturingNotes);
+    if (!lead) return;
+    lead.notes = manufacturingNotes.value;
     saveState();
   }
   if (referralNotes) {
@@ -9105,6 +9737,16 @@ document.querySelector("#northstarLeadForm").addEventListener("submit", (event) 
 document.querySelector("#flexLeadForm").addEventListener("submit", (event) => {
   event.preventDefault();
   submitFlexLead();
+});
+
+document.querySelector("#manufacturingRfqForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitManufacturingRfq();
+});
+
+document.querySelector("#manufacturingSupplierForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitManufacturingSupplierProfile();
 });
 
 document.querySelector("#projectIntakeForm").addEventListener("submit", (event) => {
@@ -9192,6 +9834,7 @@ document.querySelector("#vehicleListingForm").addEventListener("submit", (event)
     secondary: { label: "Back Home", screen: "home" }
   };
   saveState();
+  sendLead("vehicle-seller", vehicle);
   event.target.reset();
   setFieldValue("#vehicleLocation", "Medford, OR");
   showToast("Vehicle seller lead saved.");
@@ -9465,6 +10108,23 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
   const selectedVertical = serviceVerticalById(fieldValue("#workerServiceVertical")) || serviceVerticalForCategory(fieldValue("#workerTrade"));
   const profileDetails = selectedVertical ? collectServiceDetails("data-provider-profile-field") : {};
   const providerTags = Array.from(document.querySelectorAll("input[name='workerTags']:checked")).map((input) => input.value);
+  const selectedTradeCategories = uniqueValues([
+    ...fieldSelectedValues("#workerTradeCategories"),
+    selectedVertical?.categories?.[0],
+    categoryLabel(fieldValue("#workerTrade"))
+  ].filter((category) => forgeTradeCategorySchema.acceptsCategory(category)));
+  const providerValidation = forgeTradeCategorySchema.validateProvider({
+    name: document.querySelector("#workerName").value.trim(),
+    phone: document.querySelector("#workerPhone").value.trim(),
+    email: document.querySelector("#workerEmail").value.trim(),
+    trade: document.querySelector("#workerTrade").value.trim(),
+    serviceVertical: selectedVertical?.id || "",
+    tradeCategories: selectedTradeCategories
+  });
+  if (!providerValidation.ok) {
+    showToast(providerValidation.errors[0]);
+    return;
+  }
   state.worker = {
     name: document.querySelector("#workerName").value.trim(),
     trade: selectedVertical?.title || document.querySelector("#workerTrade").value.trim(),
@@ -9475,9 +10135,16 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     serviceArea: profileDetails.serviceArea || document.querySelector("#workerArea").value,
     businessName: profileDetails.businessName || "",
     ownerName: profileDetails.ownerName || document.querySelector("#workerName").value.trim(),
+    contactMethod: profileDetails.contactMethod || "",
+    availability: profileDetails.availability || "",
+    licenseStatus: profileDetails.licenseStatus || "",
+    insuranceStatus: profileDetails.insuranceStatus || "",
     serviceVertical: selectedVertical?.id || "",
     serviceVerticalTitle: selectedVertical?.title || "",
-    providerCategory: selectedVertical?.id || "",
+    providerCategory: selectedVertical?.id || selectedTradeCategories[0] || "",
+    category: selectedTradeCategories[0] || selectedVertical?.categories?.[0] || "",
+    tradeCategories: selectedTradeCategories,
+    providerCategories: selectedTradeCategories,
     providerType: fieldValue("#workerProviderType") || selectedVertical?.providerTypes?.[0] || "",
     profileDetails,
     tags: providerTags,
@@ -9780,7 +10447,8 @@ async function copyInviteText() {
     "6. Request Road Rescue for pothole impact, roadside, tire, tow, wheel, or mechanic help.",
     "7. Ask NorthStar for marketing, CRM, lead follow-up, job tracking, or business operations help.",
     "8. Check Forge Capital Desk if a business owner wants Flex referral options.",
-    "9. Send one referral: a homeowner, worker, builder, creative, auto customer, career applicant, or business owner who should see Forge.",
+    "9. Request manufacturing help for supplements, vitamins, gummies, powders, beverages, skincare, pet wellness, packaging, labs, or compliance support.",
+    "10. Send one referral: a homeowner, worker, builder, creative, auto customer, manufacturing buyer, supplier, career applicant, or business owner who should see Forge.",
     "",
     `Post a job: ${base}?v=71#post`,
     `Join as worker: ${base}?v=71#signup`,
@@ -9791,6 +10459,7 @@ async function copyInviteText() {
     `Photography & Videography: ${base}/photography?v=71`,
     `NorthStar Creative Co.: ${base}/northstar-creative?v=71`,
     `Forge Capital Desk: ${base}/forge/capital?v=71`,
+    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals?v=71`,
     `See Forge: ${base}?v=71#home`
   ].join("\n\n");
   await copyText(invite, "Launch invite copied.");
@@ -9812,6 +10481,7 @@ async function copyFirstUserLinks() {
     `Book Photography & Videography: ${base}/photography?v=71`,
     `Grow a blue-collar business with NorthStar: ${base}/northstar-creative?v=71`,
     `Check Flex options through Forge Capital Desk: ${base}/forge/capital?v=71`,
+    `Find a manufacturing or nutraceutical partner: ${base}/manufacturing-nutraceuticals?v=71`,
     `Plan a school, union, or AI job path: ${base}?v=71#opportunities`,
     `Check an existing job: ${base}?v=71#status`,
     `Start at Forge home: ${base}?v=71#home`,
@@ -9828,7 +10498,7 @@ async function copySignupChecklist() {
     "",
     "Use Forge with a controlled first-user group today:",
     "",
-    "1. Ask one person to post a real job, join the worker list, request homebuilding review, book a creative, or request NorthStar business help.",
+    "1. Ask one person to post a real job, join the worker list, request homebuilding review, book a creative, request manufacturing help, or request NorthStar business help.",
     "2. Make sure they know this is early access and no payment is collected in the MVP.",
     "3. Save their contact info, follow-up consent, and the next action.",
     "4. Check Admin after each signup and export a backup before wider outreach.",
@@ -9842,6 +10512,7 @@ async function copySignupChecklist() {
     `Road Rescue: ${base}/road-rescue?v=71`,
     `Photography & Videography: ${base}/photography?v=71`,
     `NorthStar Creative Co.: ${base}/northstar-creative?v=71`,
+    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals?v=71`,
     `Training & Careers: ${base}?v=71#opportunities`,
     `Check status: ${base}?v=71#status`,
     `Open admin: ${base}?v=71&demo=admin#admin`
@@ -9871,7 +10542,7 @@ async function copyDemoScript() {
     "3. If you want paid local work, I will open Mike Jones's worker view: jobs, bidding, messages, and readiness.",
     "4. If you are building or improving a home, I will open Homebuilding and the Build Tracker demo: timeline, budget, updates, documents, and change orders.",
     "5. If you are helping operate or refer people, I will open Admin: leads, follow-up queue, reports, and quick capture.",
-    "6. The ask is simple: post one real job, request homebuilding review, join as a worker, or introduce one person who should see Forge.",
+    "6. The ask is simple: post one real job, request homebuilding review, request manufacturing help, join as a worker, or introduce one person who should see Forge.",
     "",
     location.href.replace(/#.*$/, "#perspective")
   ].join("\n");
@@ -9914,12 +10585,13 @@ async function copyDemoPack() {
     `Road Rescue: ${roleDemoLink("customer", "road-rescue")}`,
     `Photography & Videography: ${roleDemoLink("customer", "creative")}`,
     `NorthStar Creative Co.: ${roleDemoLink("customer", "northstar")}`,
+    `Manufacturing + Nutraceuticals: ${roleDemoLink("customer", "manufacturing")}`,
     "",
     "Demo order:",
     "1. Open Perspective Demo and ask who they are: job poster, worker, or operator.",
     "2. Show their Profile Status so they understand where they stand.",
     "3. Show the core action: post/check job, browse/bid, or follow up/admin.",
-    "4. End with one ask: post a job, join as a worker, request homebuilding review, request auto service, get Road Rescue help, book creative work, request NorthStar help, save career interest, or give one referral.",
+    "4. End with one ask: post a job, join as a worker, request homebuilding review, request manufacturing help, request auto service, get Road Rescue help, book creative work, request NorthStar help, save career interest, or give one referral.",
     "",
     "Cue cards:",
     ...demoCueCards.map((cue) => `- ${cue.audience}: ${cue.opener} Proof: ${cue.proof} Ask: ${cue.ask}`),
@@ -9931,6 +10603,8 @@ async function copyDemoPack() {
     `Jobs: ${state.jobs.length}`,
     `Workers: ${state.workers.length}`,
     `NorthStar Leads: ${(state.northstarLeads || []).length}`,
+    `Manufacturing RFQs: ${(state.manufacturingRfqs || []).length}`,
+    `Manufacturing Suppliers: ${(state.manufacturingSuppliers || []).length}`,
     `Road Rescue Requests: ${(state.roadRescueRequests || []).length}`,
     `Homebuilding Leads: ${(state.homebuildingLeads || []).length}`,
     `Project Leads: ${(state.projectLeads || []).length}`,
@@ -9956,6 +10630,7 @@ async function copyFirst200Plan() {
     `Workers: ${state.workers.length}/60`,
     `NorthStar leads: ${(state.northstarLeads || []).length}/20`,
     `Capital Desk leads: ${(state.flexLeads || []).length}/20`,
+    `Manufacturing RFQs and suppliers: ${((state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length)}/30`,
     `Homebuilding leads: ${(state.homebuildingLeads || []).length}/25`,
     `Project leads: ${(state.projectLeads || []).length}/25`,
     `Career leads: ${(state.opportunityLeads || []).length}/25`,
@@ -9968,8 +10643,9 @@ async function copyFirst200Plan() {
     "4. Ask 3 people about home projects, major builds, multifamily, mixed-use, commercial, land, or investment-backed opportunities.",
     "5. Ask 3 service businesses whether NorthStar can help with websites, branding, CRM, lead follow-up, job tracking, or operations.",
     "6. Ask 3 business owners whether they need breathing room around cash flow, bill pay, vendor payments, employee cards, or working capital.",
-    "7. Ask 3 people about trade school, union, apprenticeship, or AI field work.",
-    "8. Ask every interested person for one referral.",
+    "7. Ask 3 founders, retailers, health stores, gyms, brands, suppliers, labs, formulators, packaging providers, or compliance consultants about manufacturing and nutraceutical opportunities.",
+    "8. Ask 3 people about trade school, union, apprenticeship, or AI field work.",
+    "9. Ask every interested person for one referral.",
     "",
     "Use this link to start demos:",
     roleDemoLink("admin", "perspective")
@@ -9988,8 +10664,9 @@ function closeAskText() {
     "5. Request Road Rescue for pothole impact, flat tire, tow, wheel, alignment, or mechanic help.",
     "6. Request NorthStar help for a website, brand, social media, ads, CRM, lead follow-up, job tracking, or business operations.",
     "7. Check Capital Desk options if your business needs breathing room around cash flow, vendor payments, cards, bill pay, or growth capital.",
-    "8. Save your training, union, apprenticeship, or AI field-job goal.",
-    "9. Send me one person who needs jobs done, wants work, needs road help, needs a homebuilding path, has a project opportunity, needs Capital Desk, needs NorthStar, or needs a career path.",
+    "8. Request manufacturing or supplier matching for supplements, vitamins, gummies, powders, beverages, skincare, pet wellness, packaging, labs, or compliance support.",
+    "9. Save your training, union, apprenticeship, or AI field-job goal.",
+    "10. Send me one person who needs jobs done, wants work, needs road help, needs a homebuilding path, has a project opportunity, needs Capital Desk, needs NorthStar, needs manufacturing help, or needs a career path.",
     "I will follow up with the right Forge link for your side."
   ].join("\n");
 }
@@ -10090,10 +10767,11 @@ function workerTemplate(worker) {
   if (isCreativeProvider(worker)) {
     return `Hi ${worker.name}, this is Forge. Thanks for applying as a ${worker.discipline || "photography and videography"} provider in ${worker.area}. Can you confirm your availability, portfolio link, and the types of shoots you want Forge to route to you?`;
   }
+  const tradeList = (worker.tradeCategories || worker.providerCategories || [worker.trade]).filter(Boolean).join(", ");
   if (isServiceVerticalProvider(worker)) {
-    return `Hi ${worker.name}, this is Forge. Thanks for joining as a ${worker.providerType || worker.trade} for ${worker.serviceVerticalTitle || worker.trade} in ${worker.area}. Can you confirm your availability, minimum price, service area, insurance/licensing if applicable, and which jobs you want to bid on first?`;
+    return `Hi ${worker.name}, this is Forge. Thanks for joining as a ${worker.providerType || worker.trade} for ${tradeList || worker.serviceVerticalTitle || worker.trade} in ${worker.area || worker.serviceArea}. Can you confirm your availability, service area, portfolio photos, insurance/licensing if applicable, and which jobs you want to bid on first?`;
   }
-  return `Hi ${worker.name}, this is Forge. Thanks for joining the early worker list as a ${worker.trade}. We are onboarding local pros in ${worker.area}. Are you available for paid jobs this week?`;
+  return `Hi ${worker.name}, this is Forge. Thanks for joining the early provider list for ${tradeList || worker.trade} work. We help customers find local workers, crews, and businesses in ${worker.area || worker.serviceArea}. Are you available to build your profile and bid on paid jobs this week?`;
 }
 
 function creativeLeadLines(lead) {
@@ -11040,6 +11718,132 @@ function copyBuildingQueue() {
   copyText(lines.join("\n"), "Building queue copied.");
 }
 
+function manufacturingRfqLines(lead) {
+  const normalized = normalizeManufacturingRfq(lead);
+  return [
+    `${normalized.brandName || "Manufacturing RFQ"} - ${normalized.productType}`,
+    `Status: ${normalized.status}`,
+    `Contact: ${normalized.contactName} · ${normalized.contactPhone} · ${normalized.contactEmail}`,
+    `Formula status: ${normalized.formulaStatus}`,
+    `Dosage form: ${normalized.dosageForm}`,
+    `Target quantity / MOQ: ${normalized.targetQuantity}`,
+    `Packaging: ${normalized.desiredPackaging}`,
+    `Ingredient requirements: ${normalized.ingredientRequirements}`,
+    `Clean-label requirements: ${(normalized.cleanLabelRequirements || []).join(", ") || "None listed"}`,
+    `CBD/hemp involved: ${normalized.cbdHemp}`,
+    `Testing needs: ${normalized.testingNeeds || "Not listed"}`,
+    `Certifications: ${(normalized.certificationsRequired || []).join(", ") || "Not listed"}`,
+    `Target launch date: ${normalized.targetLaunchDate || "Not listed"}`,
+    `Budget range: ${normalized.budgetRange}`,
+    `Location preference: ${normalized.locationPreference}`,
+    `Upload: ${normalized.specUpload || "0 files selected"}`,
+    `Notes: ${normalized.notes || "None"}`,
+    `Compliance: ${MANUFACTURING_COMPLIANCE_COPY}`
+  ];
+}
+
+function manufacturingSupplierLines(supplier) {
+  const normalized = normalizeManufacturingSupplier(supplier);
+  return [
+    `${normalized.companyName} - ${normalized.supplierType}`,
+    `Status: ${normalized.status}`,
+    `Verified by Forge: ${normalized.verifiedByForge || "Placeholder only"}`,
+    `Contact: ${normalized.contactPerson} · ${normalized.phoneEmail}`,
+    `Location: ${normalized.location}`,
+    `Service area: ${normalized.serviceArea}`,
+    `Capabilities: ${normalized.capabilities}`,
+    `Product categories: ${(normalized.productCategories || []).join(", ") || "Not listed"}`,
+    `Dosage forms: ${(normalized.dosageForms || []).join(", ") || "Not listed"}`,
+    `MOQ: ${normalized.minimumOrderQuantity}`,
+    `Certifications: ${(normalized.certifications || []).join(", ") || "Not listed"}`,
+    `Facility type: ${normalized.facilityType}`,
+    `Turnaround: ${normalized.turnaroundTime}`,
+    `Packaging: ${normalized.packagingOptions}`,
+    `Support: ingredient sourcing ${normalized.ingredientSourcingSupport ? "yes" : "no"}, formulation ${normalized.formulationSupport ? "yes" : "no"}, testing ${normalized.testingLabSupport ? "yes" : "no"}, compliance ${normalized.complianceSupport ? "yes" : "no"}, private-label ${normalized.privateLabelSupport ? "yes" : "no"}, fulfillment ${normalized.fulfillmentSupport ? "yes" : "no"}`,
+    `Website: ${normalized.website || "Not listed"}`,
+    `Notes: ${normalized.notes || "None"}`,
+    "Directory boundary: Supplier profiles must be original, company-created, or company-approved. Do not copy external supplier directory data."
+  ];
+}
+
+function manufacturingRfqText(lead) {
+  return manufacturingRfqLines(lead).join("\n");
+}
+
+function manufacturingSupplierText(supplier) {
+  return manufacturingSupplierLines(supplier).join("\n");
+}
+
+function manufacturingSupplierPhone(supplier) {
+  const value = String(supplier?.phoneEmail || "");
+  return value.includes("@") ? "" : value;
+}
+
+function manufacturingSupplierEmail(supplier) {
+  const value = String(supplier?.phoneEmail || "");
+  const match = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return match?.[0] || "";
+}
+
+function copyManufacturingRfq(id) {
+  const lead = (state.manufacturingRfqs || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(manufacturingRfqLines(lead).join("\n"), "Manufacturing RFQ copied.");
+}
+
+function copyManufacturingSupplier(id) {
+  const supplier = (state.manufacturingSuppliers || []).find((item) => item.id === id);
+  if (!supplier) return;
+  copyText(manufacturingSupplierLines(supplier).join("\n"), "Manufacturing supplier copied.");
+}
+
+function copyManufacturingQueue() {
+  const rfqs = state.manufacturingRfqs || [];
+  const suppliers = state.manufacturingSuppliers || [];
+  const lines = [
+    "Forge Manufacturing + Nutraceuticals queue",
+    "",
+    `RFQs: ${rfqs.length}`,
+    `Supplier profiles: ${suppliers.length}`,
+    "",
+    "RFQs:",
+    ...(rfqs.length ? rfqs.flatMap((lead) => [...manufacturingRfqLines(lead), ""]) : ["No RFQs yet.", ""]),
+    "Suppliers:",
+    ...(suppliers.length ? suppliers.flatMap((supplier) => [...manufacturingSupplierLines(supplier), ""]) : ["No supplier profiles yet.", ""]),
+    "Thomasnet boundary:",
+    MANUFACTURING_DIRECTORY_BOUNDARY_COPY
+  ];
+  copyText(lines.join("\n"), "Manufacturing queue copied.");
+}
+
+function copyManufacturingBrief() {
+  const lines = [
+    "Forge Manufacturing + Nutraceuticals brief",
+    "",
+    "Forge Manufacturing + Nutraceuticals helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs find trusted partners to manufacture vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other compliant health products.",
+    "",
+    "Core paths:",
+    "1. Find a Manufacturer",
+    "2. Create Supplier Profile",
+    "3. Request Manufacturing Quote",
+    "4. Compare Suppliers",
+    "5. Join Forge Manufacturing Network",
+    "",
+    "Supplier types:",
+    ...manufacturingSupplierTypes.map((type) => `- ${type}`),
+    "",
+    "Documents:",
+    ...manufacturingDocumentTemplates.map((title) => `- ${title}`),
+    "",
+    "Boundary:",
+    MANUFACTURING_DIRECTORY_BOUNDARY_COPY,
+    "",
+    "Compliance:",
+    MANUFACTURING_COMPLIANCE_COPY
+  ];
+  copyText(lines.join("\n"), "Manufacturing brief copied.");
+}
+
 function markJobContacted(jobId) {
   const job = state.jobs.find((item) => item.id === jobId);
   if (!job) return;
@@ -11375,6 +12179,27 @@ function moveFlexForward(id) {
   saveState();
   render();
   showToast(`Flex lead marked ${flexStatusLabel(lead.status)}.`);
+}
+
+function markManufacturingContacted(id) {
+  const lead = (state.manufacturingRfqs || []).find((item) => item.id === id);
+  if (!lead) return;
+  lead.status = "Needs Review";
+  addActivity(`Manufacturing RFQ needs review: ${lead.brandName || lead.productType}.`);
+  saveState();
+  render();
+  showToast("Manufacturing RFQ marked Needs Review.");
+}
+
+function moveManufacturingForward(id) {
+  const lead = (state.manufacturingRfqs || []).find((item) => item.id === id);
+  if (!lead) return;
+  const index = manufacturingLeadStatuses.indexOf(lead.status);
+  lead.status = index >= 0 ? manufacturingLeadStatuses[Math.min(index + 1, manufacturingLeadStatuses.length - 1)] : "Supplier Matching";
+  addActivity(`Manufacturing RFQ moved forward: ${lead.brandName || lead.productType} is ${lead.status}.`);
+  saveState();
+  render();
+  showToast(`Manufacturing RFQ marked ${lead.status}.`);
 }
 
 function openFlexReferral(leadId) {

@@ -36,6 +36,17 @@ This registry lists existing and planned features, business sections, and operat
 - Admin dashboard includes NorthStar leads, CSV export, pipeline status review, notes, copy actions, and follow-up queue integration.
 - Still requires production backend delivery, credential-safe operations workflow, service agreement, ad/account access policy, and final legal review before broad public launch.
 
+## Forge Manufacturing + Nutraceuticals
+
+- Implemented / Live in UI for vitamin, supplement, nutraceutical, private-label, contract-manufacturing, packaging, ingredient, formulation, lab, compliance, and fulfillment opportunities.
+- Dedicated route/page exists through `/manufacturing-nutraceuticals` with `/forge/manufacturing` as an alias.
+- Buyer RFQ form exists for product type, brand, formula status, dosage form, MOQ, packaging, ingredients, clean-label requirements, CBD/hemp flag, testing, certifications, launch date, budget, location preference, contact info, and spec upload placeholder.
+- Supplier profile form exists for company/contact, location, service area, supplier type, capabilities, dosage forms, MOQ, certifications, facility type, turnaround, packaging, sourcing/formulation/testing/compliance/private-label/fulfillment support, website/contact, notes, and Verified by Forge placeholder.
+- Admin dashboard includes Manufacturing RFQs and supplier profiles, CSV exports, status pipeline review, notes, copy actions, messages, reports, and follow-up queue integration.
+- Operations Vault includes manufacturing onboarding, RFQ, vendor verification, quote comparison, launch, GMP/FDA, label/claims, COA/testing, packaging, PO, production, 3PL, scorecard, CRM follow-up, NDA, and non-circumvention placeholders.
+- Thomasnet may be used only as a benchmark for supplier-discovery workflows. Do not scrape, copy, import, or reproduce proprietary Thomasnet listings, descriptions, profiles, categories, images, or data.
+- Still requires production backend delivery, file storage, supplier verification workflow, legal/compliance review, insurance review, and final regulatory review before broad public launch.
+
 ## Stitch
 
 - Planned/active app and business section for Stitch-related product, revenue, market, operational, and deployment work.

@@ -9,10 +9,11 @@ Last checkpoint: June 26, 2026
 - Perspective demo: http://127.0.0.1:4174/#perspective
 - Profile status: http://127.0.0.1:4174/#profile
 - Best demo start: http://127.0.0.1:4174/#perspective
-- Homeowner direct demo: http://127.0.0.1:4174/?v=69&demo=customer#status
-- Worker direct demo: http://127.0.0.1:4174/?v=69&demo=worker#worker
-- Admin direct demo: http://127.0.0.1:4174/?v=69&demo=admin#admin
-- Training & Careers: http://127.0.0.1:4174/?v=69#opportunities
+- Homeowner direct demo: http://127.0.0.1:4174/?v=71&demo=customer#status
+- Worker direct demo: http://127.0.0.1:4174/?v=71&demo=worker#worker
+- Admin direct demo: http://127.0.0.1:4174/?v=71&demo=admin#admin
+- Training & Careers: http://127.0.0.1:4174/?v=71#opportunities
+- Forge Auto & Transport: http://127.0.0.1:4174/auto?v=71
 
 ## Demo Accounts
 
@@ -23,6 +24,13 @@ Last checkpoint: June 26, 2026
 ## Current MVP Features
 
 - Wireframe-style Forge homepage
+- Forge Auto & Transport now includes Sell My Car on Forge, List My Vehicle, Consign My Vehicle, Request a Vehicle, Transport My Vehicle, Book Executive Transport, Forge Platinum Auto Concierge, and Auction Vehicle Sourcing paths.
+- Sell My Car on Forge now captures richer vehicle seller intake: title/lien/payoff status, private lowest price, condition, running status, accident/service details, photo notes, replacement-vehicle interest, partner consent, routing tags, lead score, and admin route.
+- Forge Platinum Auto Concierge is the public premium auto brand. The private Portland luxury auto partner record stays internal/admin-only and is not public branding.
+- Admin now includes Auto Ops with Vehicle Seller Leads, Vehicle Listing Review, Forge Platinum Deal Desk, Auction Deal Desk, and revenue review cards.
+- Admin now includes Forge Operations Vault with internal SOP/checklist/template documents and copy actions. Legal templates are marked as requiring attorney review before use.
+- `SUPABASE_SCHEMA.sql` now includes `forge_vehicle_seller_leads`, `forge_operations_vault_documents`, and a private admin-only luxury auto partner seed.
+- `WEBHOOK_PAYLOADS.md` now documents `vehicle-seller` and `auto-service` payloads and privacy rules.
 - Forge Autos buy/sell vehicle marketplace with local listings, sell form, seller contact handoff, and dealer partners: JoCo Auto Sales, Chevelles Auto Sales, and Shasta Lake Auto Sales
 - Training & Careers screen for trade school, union/apprenticeship, and blue-collar AI job interest
 - Career interest form, career lead queue, copyable application plan, and copyable career lead handoff
@@ -56,7 +64,7 @@ Last checkpoint: June 26, 2026
 - Admin Soft Launch Tomorrow panel with copyable controlled-launch plan for tomorrow
 - Admin Soft Launch Invite Kit with copyable homeowner, worker, Careers, Autos, and referral messages
 - Admin Launch Day Run Sheet with copyable before-sharing, first-5-asks, midday, evening, and stop-rule steps
-- Browser verification confirmed the v69 Training & Careers screen renders without console errors and without mobile horizontal overflow.
+- Browser verification previously confirmed the Training & Careers screen renders without console errors and without mobile horizontal overflow.
 - Admin Backend Handoff panel with copyable backend connection instructions
 - `SUPABASE_SCHEMA.sql` and `WEBHOOK_PAYLOADS.md` for turning the static MVP into backend-backed public beta intake
 - Admin Auth Handoff panel with copyable production-auth plan
@@ -117,7 +125,7 @@ Last checkpoint: June 26, 2026
 - Copy Close Ask action for the final thirty seconds of a live demo
 - Copy Link actions for John, Mike, and Admin that open the right perspective automatically
 - Choosing a bid now creates a confirmation, moves the job to In Progress, and saves a message trail
-- Service worker cache version: forge-mvp-v69
+- Service worker cache version: forge-mvp-v71
 
 ## Verification Commands
 
@@ -132,10 +140,10 @@ curl -I http://127.0.0.1:4174/
 
 ## Notes
 
-- The workspace is not a git repository, so this checkpoint file is the handoff record.
+- The workspace is a git repository. A checkpoint commit was created before this Auto/Ops Vault work: `e725ed0` (`checkpoint before forge auto and operations vault`).
 - A dedicated next-chat handoff was also saved as `FORGE_NEXT_CHAT_HANDOFF.md`.
 - A tomorrow-start handoff was saved as `FORGE_START_TOMORROW.md`.
 - A cloud backup plan was saved as `CLOUD_HARDDRIVE_PLAN.md`.
-- A local zip snapshot was saved as `saved-checkpoints/forge-v69-2026-06-26-opportunities-snapshot.zip`.
+- A local zip snapshot was saved as `saved-checkpoints/forge-v71-2026-06-26-auto-ops-vault-snapshot.zip`.
 - The local server was running on port 4174 when this checkpoint was written.
 - If the browser shows an older version, refresh the page. The service worker cache has been bumped to force newer assets.

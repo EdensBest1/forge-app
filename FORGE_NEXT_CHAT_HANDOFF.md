@@ -25,32 +25,39 @@ Main app files:
 - `FORGE_START_TOMORROW.md`
 - `CLOUD_HARDDRIVE_PLAN.md`
 
-This workspace is not a git repository. The checkpoint and this handoff file are the saved project record.
+This workspace is a git repository. A checkpoint commit was created before the Auto/Ops Vault changes: `e725ed0` (`checkpoint before forge auto and operations vault`).
 
 For tomorrow, start with `FORGE_START_TOMORROW.md`.
 
 Current local snapshot:
 
-`saved-checkpoints/forge-v69-2026-06-26-opportunities-snapshot.zip`
+`saved-checkpoints/forge-v71-2026-06-26-auto-ops-vault-snapshot.zip`
 
 ## Current build
 
-Forge is at `v69`.
+Forge is at `v71`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=69#home`
-- Best demo start: `http://127.0.0.1:4174/?v=69#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=69&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=69&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=69#opportunities`
-- Admin demo: `http://127.0.0.1:4174/?v=69&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=71#home`
+- Best demo start: `http://127.0.0.1:4174/?v=71#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=71&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=71&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=71#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=71`
+- Admin demo: `http://127.0.0.1:4174/?v=71&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v69`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v71`.
 
 ## What has been built
 
 - Wireframe-style Forge homepage matching the white/orange/Facebook-blue mockup direction.
+- v71 adds Forge Auto & Transport paths for Sell My Car on Forge, List My Vehicle, Consign My Vehicle, Request a Vehicle, Transport My Vehicle, Book Executive Transport, Forge Platinum Auto Concierge, and Auction Vehicle Sourcing.
+- v71 adds a much stronger Sell My Car on Forge intake with title/lien/payoff, private lowest price, condition/running status, accident/service details, photo notes, replacement-vehicle interest, consent, routing tags, lead score, and admin route.
+- v71 adds Forge Platinum Auto Concierge as the public premium auto brand while keeping the private Portland luxury auto partner record internal/admin-only.
+- v71 adds Admin Auto Ops: Vehicle Seller Leads, Vehicle Listing Review, Forge Platinum Deal Desk, Auction Deal Desk, and auto revenue review cards.
+- v71 adds Forge Operations Vault: admin-only SOPs, checklists, templates, search/filter, and copy actions. Legal templates are marked as requiring attorney review before use.
+- v71 updates `SUPABASE_SCHEMA.sql`, `WEBHOOK_PAYLOADS.md`, smoke tests, security/release checks, and service worker cache to match the new Auto/Ops work.
 - Forge Autos buy/sell vehicle marketplace with local listings, sell form, buyer inquiry queue, buyer safety note, seller contact handoff, and dealer partner handoffs.
 - First-user Start Here path chooser for job posters, workers, and returning job posters.
 - Copy First User Links action for sharing post, worker, status, and home routes.
@@ -109,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v69:
+These passed after v71:
 
 ```bash
 node --check app.js

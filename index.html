@@ -42,7 +42,7 @@
         <section class="home-hero">
           <div class="hero-copy">
             <h1>Post the job.<span>Get the crew.</span></h1>
-            <p>Forge connects homeowners and businesses with local workers, handymen, crews, and contractors.</p>
+            <p>Forge helps customers find local workers, crews, and businesses, and helps providers build profiles and bid on jobs.</p>
             <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
             <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
@@ -83,7 +83,7 @@
           <article>
             <span class="split-label">I need work</span>
             <h2>Create a worker profile for early access.</h2>
-            <p>Friends, crews, and local pros can join the first worker list before payments and accounts go live.</p>
+            <p>Friends, crews, and local businesses can build early provider profiles before payments and accounts go live.</p>
             <button class="btn blue" type="button" data-nav="signup">Join the Worker List</button>
           </article>
           <article>
@@ -274,13 +274,20 @@
               <button class="btn ghost small" type="button" data-nav="manufacturing">Compare Suppliers</button>
             </article>
           </div>
+          <div class="section-title compact">
+            <div>
+              <span class="split-label">Required trades</span>
+              <h2>Blue-collar categories for job posts and provider profiles.</h2>
+            </div>
+          </div>
+          <div class="service-category-cards" id="requiredTradeCategoryGrid"></div>
         </section>
 
         <section class="forge-positioning-panel">
           <div>
             <span class="split-label">Community work marketplace</span>
             <h2>Forge helps the community get real work done.</h2>
-            <p>From cleaning homes and turning over Airbnbs to hauling debris, pouring concrete, fixing driveways, installing pavers, and building hardscapes, Forge connects customers with local blue-collar service providers who can bid on real jobs. Customers get options. Workers get opportunities. The community gets served.</p>
+            <p>From cleaning homes and turning over Airbnbs to hauling debris, pouring concrete, fixing driveways, installing pavers, and building hardscapes, Forge connects customers with local workers, crews, and businesses who can build profiles and bid on real jobs.</p>
           </div>
           <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
@@ -540,10 +547,11 @@
           <div class="services-page-heading">
             <span class="split-label">Browse Forge Services</span>
             <h1>Post jobs and get bids from local service providers.</h1>
-            <p>Forge supports the core local job marketplace plus new cleaning, Airbnb turnover, hauling, dump truck, asphalt, concrete, driveway, masonry, paver, and hardscaping verticals.</p>
+            <p>Forge supports local job posting and provider profiles across cleaning, hauling, construction services, auto work, creative services, manufacturing, and the required blue-collar trade categories.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-nav="post">Post a Job</button>
               <button class="btn blue" type="button" data-nav="signup">Join as a Provider</button>
+              <button class="btn ghost" type="button" data-nav="manufacturing">Manufacturing + Nutraceuticals</button>
               <button class="btn ghost" type="button" data-nav="jobs">See Available Jobs</button>
             </div>
           </div>
@@ -551,7 +559,7 @@
             <div>
               <span class="split-label">Forge purpose</span>
               <h2>Forge helps the community get real work done.</h2>
-              <p>From cleaning homes and turning over Airbnbs to hauling debris, pouring concrete, fixing driveways, installing pavers, and building hardscapes, Forge connects customers with local blue-collar service providers who can bid on real jobs. Customers get options. Workers get opportunities. The community gets served.</p>
+              <p>Forge connects customers with local workers, crews, and businesses who can show experience, service areas, availability, portfolio photos, and licensing or insurance notes before bidding on real jobs.</p>
             </div>
           </section>
           <section class="service-verticals-panel compact">
@@ -2432,11 +2440,12 @@
           <figure class="signup-photo"><img src="./assets/forge-hero.png" alt="Worker ready for local jobs" /></figure>
           <form class="signup-form" id="workerSignupForm">
             <button class="back-link" type="button" data-nav="home">← Home</button>
-            <h1>Join Forge as a Worker</h1>
-            <p class="muted">Create your profile and start getting jobs.</p>
+            <h1>Join Forge as a Provider</h1>
+            <p class="muted">Build a profile as a local worker, crew, or business and bid on jobs.</p>
             <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
             <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
             <label>Service vertical<select id="workerServiceVertical"></select></label>
+            <label>Trade categories<select id="workerTradeCategories" multiple size="6"></select></label>
             <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
             <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
             <div class="field-row">
@@ -2484,6 +2493,7 @@
             <button type="button" data-nav="jobs">Jobs</button>
             <button type="button" data-nav="signup">Workers</button>
             <button type="button" data-nav="capital">Flex Leads</button>
+            <button type="button" data-nav="manufacturing">Manufacturing</button>
             <button type="button" data-nav="admin-building-leads">Building Leads</button>
             <button type="button" data-nav="admin-projects">Projects</button>
             <button type="button" data-nav="bid">Bids</button>
@@ -2699,6 +2709,7 @@
                   <option>Master Business Operations</option>
                   <option>Customer Operations</option>
                   <option>Auto Operations</option>
+                  <option>Manufacturing Operations</option>
                   <option>Partner Routing</option>
                   <option>Legal / Contracts</option>
                 </select>
@@ -2757,6 +2768,7 @@
                   <option>Projects</option>
                   <option>NorthStar</option>
                   <option>Capital Desk</option>
+                  <option>Manufacturing</option>
                   <option>Road Rescue</option>
                   <option>Jobs</option>
                   <option>Workers</option>
@@ -2778,6 +2790,18 @@
                   <option>contacted</option>
                   <option>qualified</option>
                   <option>flex_link_sent</option>
+                  <option>New RFQ</option>
+                  <option>Supplier Matching</option>
+                  <option>Quote Requested</option>
+                  <option>Quote Received</option>
+                  <option>Sample Requested</option>
+                  <option>Compliance Review</option>
+                  <option>PO Pending</option>
+                  <option>Production Started</option>
+                  <option>Production Complete</option>
+                  <option>Fulfillment / Shipping</option>
+                  <option>Closed Won</option>
+                  <option>Closed Lost</option>
                   <option>Matching</option>
                   <option>Ready</option>
                   <option>Hot</option>
@@ -2827,6 +2851,9 @@
               <h2>New Job Leads</h2>
               <button class="btn ghost small" type="button" data-action="export-jobs">Export Jobs CSV</button>
             </div>
+            <div class="filter-row">
+              <select id="adminTradeCategoryFilter"></select>
+            </div>
             <div class="table-card"><table id="adminLeadsTable"></table></div>
             <div class="lead-board" id="adminJobPipeline"></div>
             <div class="admin-heading">
@@ -2859,6 +2886,22 @@
             </div>
             <div class="table-card"><table id="adminRoadRescueTable"></table></div>
             <div class="lead-board" id="adminRoadRescuePipeline"></div>
+            <div class="admin-heading">
+              <h2>Manufacturing RFQs</h2>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue">Copy Queue</button>
+                <button class="btn ghost small" type="button" data-action="export-manufacturing-rfqs">Export RFQs CSV</button>
+                <button class="btn blue small" type="button" data-nav="manufacturing">Open Manufacturing</button>
+              </div>
+            </div>
+            <div class="table-card"><table id="adminManufacturingRfqsTable"></table></div>
+            <div class="lead-board" id="adminManufacturingRfqsPipeline"></div>
+            <div class="admin-heading">
+              <h2>Manufacturing Suppliers</h2>
+              <button class="btn ghost small" type="button" data-action="export-manufacturing-suppliers">Export Suppliers CSV</button>
+            </div>
+            <div class="table-card"><table id="adminManufacturingSuppliersTable"></table></div>
+            <div class="lead-board" id="adminManufacturingSuppliersPipeline"></div>
             <section class="settings-card flex-admin-section">
               <div class="admin-heading compact">
                 <div>

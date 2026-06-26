@@ -5,6 +5,7 @@
 -- Photography & Videography customer requests should use forge_job_leads.category = 'photography_videography'.
 -- Photography & Videography provider applications should use forge_worker_leads.trade/category metadata value 'photography_videography' in the incoming payload.
 -- NorthStar Creative Co. requests should use category = 'northstar_creative' and secondary_category = 'northstar_marketing_operations'.
+-- Forge Manufacturing + Nutraceuticals should use original Forge RFQ/profile data only. Do not import copied supplier-directory listings.
 
 create extension if not exists pgcrypto;
 
@@ -106,6 +107,75 @@ create table if not exists public.forge_opportunity_leads (
   location text,
   note text,
   status text not null default 'New',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.forge_vehicle_seller_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  seller_name text not null,
+  phone text,
+  email text,
+  preferred_contact text,
+  intent text,
+  vehicle_year text,
+  make text,
+  model text,
+  trim text,
+  asking_price text,
+  private_lowest_price text,
+  mileage text,
+  vin_or_last_six text,
+  exterior_color text,
+  interior_color text,
+  fuel_type text,
+  drivetrain text,
+  transmission text,
+  plate_state text,
+  vehicle_location text,
+  sell_timeline text,
+  condition text,
+  running_status text,
+  title_status text,
+  loan_lien_status text,
+  payoff_amount text,
+  accident_history text,
+  service_records text,
+  smog_status text,
+  keys_status text,
+  description text,
+  mechanical_issues text,
+  cosmetic_issues text,
+  photo_notes text,
+  wants_replacement boolean not null default false,
+  consent_to_partner_contact boolean not null default false,
+  tags text[] not null default '{}',
+  assigned_partner_path text,
+  route text,
+  lead_score integer default 0,
+  review_status text not null default 'New Lead',
+  estimated_forge_revenue text,
+  admin_notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.forge_operations_vault_documents (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  category text not null,
+  title text not null,
+  document_type text not null,
+  owner text,
+  status text not null default 'Draft',
+  version text,
+  last_reviewed date,
+  tags text[] not null default '{}',
+  checklist jsonb not null default '[]'::jsonb,
+  body text not null,
+  attorney_review_required boolean not null default false,
+  internal_only boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -484,6 +554,27 @@ values
     'Flex is being tracked as a potential contractor finance and business-tools partner candidate for builders, contractors, service businesses, and project operators who need business banking, credit, expense management, bill pay, vendor payments, working capital, AP/AR automation, and related business finance tools. No public partnership claim, logo use, customer data sharing, or official language is allowed until written approval is recorded.',
     array['Contractors', 'Builders', 'Remodelers', 'Blue-collar service businesses', 'Project operators', 'Businesses with vendor payments', 'Businesses with cash-flow gaps', 'Businesses needing expense controls', 'Businesses needing AP/AR automation'],
     'Finance partner routing is subject to written approval, consent, eligibility, partner terms, and data-sharing approval. Forge is not a lender, bank, broker-dealer, financial advisor, or credit provider.'
+  ),
+  (
+    'marc-portland-luxury-auto-partner',
+    'Private Luxury Auto Partner',
+    'Luxury Auto Fulfillment Candidate',
+    'Portland, Lake Oswego, Beaverton, Vancouver WA, and broader Oregon by admin approval',
+    'Luxury car sourcing, exotic vehicle selling, premium SUV support, consignment, auction sourcing, and white-glove transport',
+    'Private internal auto partner candidate. Do not publish personal or company branding without written approval.',
+    'luxury_auto_partner',
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    'forgePlatinumAutoConcierge',
+    'Internal candidate record',
+    'Do not publicly display the internal partner name, company name, branding, logo, photos, or services unless written approval and admin branding permission are confirmed. Forge Platinum Auto Concierge remains the customer-facing brand.',
+    'Marc is approved as a potential Portland-area luxury automotive fulfillment partner for Forge Platinum Auto Concierge. Do not publicly display Marc''s name, company name, branding, logo, photos, or services unless written approval and admin branding permission are confirmed. Forge Platinum remains the customer-facing brand.',
+    array['Luxury cars', 'Exotic vehicles', 'Premium SUVs', 'Executive transport', 'High-value consignment', 'Auction vehicle sourcing', 'Portland metro auto needs'],
+    'Partner routing is subject to customer consent, partner approval, licensing, written agreement, and admin branding permission.'
   )
 on conflict (slug) do update set
   contact_relationship_note = excluded.contact_relationship_note,
@@ -500,15 +591,79 @@ on conflict (slug) do update set
   best_fit = excluded.best_fit,
   updated_at = now();
 
+-- Safe schema suggestions for Forge Manufacturing + Nutraceuticals.
+-- These tables are additive only and should be written through a server route, Zapier action, or Supabase Edge Function.
+create table if not exists public.manufacturing_nutraceutical_rfqs (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  product_type text not null,
+  brand_name text not null,
+  formula_status text,
+  dosage_form text,
+  target_quantity text,
+  desired_packaging text,
+  ingredient_requirements text,
+  clean_label_requirements text[],
+  cbd_hemp_involved text,
+  testing_needs text,
+  certifications_required text[],
+  target_launch_date date,
+  budget_range text,
+  location_preference text,
+  contact_name text not null,
+  contact_email text not null,
+  contact_phone text,
+  spec_upload_summary text,
+  status text not null default 'New RFQ',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.manufacturing_supplier_profiles (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  company_name text not null,
+  contact_person text,
+  location text,
+  service_area text,
+  supplier_type text not null,
+  capabilities text,
+  product_categories text[],
+  dosage_forms text[],
+  minimum_order_quantity text,
+  certifications text[],
+  facility_type text,
+  turnaround_time text,
+  packaging_options text,
+  ingredient_sourcing_support boolean not null default false,
+  formulation_support boolean not null default false,
+  testing_lab_support boolean not null default false,
+  compliance_support boolean not null default false,
+  private_label_support boolean not null default false,
+  fulfillment_support boolean not null default false,
+  website text,
+  phone_email text,
+  notes text,
+  verified_by_forge text not null default 'Placeholder only',
+  status text not null default 'Needs Review',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.forge_job_leads enable row level security;
 alter table public.forge_worker_leads enable row level security;
 alter table public.forge_referral_leads enable row level security;
 alter table public.forge_opportunity_leads enable row level security;
+alter table public.forge_vehicle_seller_leads enable row level security;
+alter table public.forge_operations_vault_documents enable row level security;
 alter table public.forge_bids enable row level security;
 alter table public.forge_messages enable row level security;
 alter table public.forge_delivery_events enable row level security;
 alter table public.forge_activity_events enable row level security;
 alter table public.forge_flex_leads enable row level security;
+alter table public.manufacturing_nutraceutical_rfqs enable row level security;
+alter table public.manufacturing_supplier_profiles enable row level security;
 alter table public.creative_service_requests enable row level security;
 alter table public.creative_provider_applications enable row level security;
 alter table public.northstar_marketing_operations_leads enable row level security;

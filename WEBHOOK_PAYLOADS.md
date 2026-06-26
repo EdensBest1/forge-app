@@ -20,6 +20,8 @@ Forge sends webhook payloads from `sendLead(type, payload)` as JSON:
 - `northstar`: NorthStar Creative Co. marketing and business-operations request from `/northstar-creative`.
 - `forge-flex`: Forge Capital Desk lead for Flex referral follow-up from `/forge/capital`, `/forge/flex`, or `/partners/flex`.
 - `opportunity`: Trade school, union/apprenticeship, or blue-collar AI job interest.
+- `vehicle-seller`: Sell My Car on Forge, List My Vehicle, Consign My Vehicle, Wholesale Offer, Auction Vehicle Sourcing, or Forge Platinum Auto Concierge seller lead from `/auto`.
+- `auto-service`: Forge Auto & Transport service, buyer request, transport, executive transport, repair, detailing, inspection, or auction sourcing request from `/auto`.
 - `building`: Forge Building intake for home projects, major builds, or contractor finance review from `/building`.
 - `building-seneca-review`: Building lead sent to Seneca Review only after admin status gate, customer consent, partner approval, and data-sharing approval.
 - `building-flex-review`: Building finance lead sent to Flex Review only after finance eligibility, customer consent, partner approval, and data-sharing approval.
@@ -72,6 +74,24 @@ Do not send SSNs, bank logins, full account numbers, personal credit score field
 Expected fields: `id`, `name`, `phone`, `email`, `goal`, `experience`, `location`, `note`, `status`, `created`.
 
 Map to `forge_opportunity_leads`.
+
+## Vehicle Seller Payload
+
+Expected fields: `id`, `intent`, `seller`, `phone`, `email`, `preferredContact`, `year`, `make`, `model`, `trim`, `price`, `privateLowestPrice`, `mileage`, `vin`, `exteriorColor`, `interiorColor`, `fuelType`, `drivetrain`, `transmission`, `plateState`, `location`, `sellTimeline`, `condition`, `running`, `titleStatus`, `loanLien`, `payoffAmount`, `accidentHistory`, `serviceRecords`, `smogStatus`, `keys`, `description`, `mechanicalIssues`, `cosmeticIssues`, `photoNotes`, `wantsReplacement`, `consentToPartnerContact`, `tags`, `assignedPartner`, `route`, `leadScore`, `reviewStatus`, `estimatedForgeRevenue`, and `adminNotes`.
+
+Map to `forge_vehicle_seller_leads`.
+
+Privacy rule: `privateLowestPrice`, `vin`, `loanLien`, `payoffAmount`, private partner routing, and admin notes are admin-only. Do not publish them on vehicle listing pages or send them to partners without customer consent and approved partner terms.
+
+Public premium auto brand: `Forge Platinum Auto Concierge`. Do not include private partner names, company names, branding, logos, photos, or service claims in customer-facing payloads unless written approval and admin branding permission are confirmed.
+
+## Auto Service Payload
+
+Expected fields: `id`, `name`, `phone`, `email`, `vehicle`, `mileage`, `urgency`, `service`, `location`, `photoCount`, `notes`, `status`, and `created`.
+
+Map to the current Forge Auto request queue or a future `forge_auto_service_requests` table.
+
+Transport, executive transport, auction sourcing, repairs, inspections, and detailing must be routed to properly licensed or qualified partners where required.
 
 ## Project Payload
 

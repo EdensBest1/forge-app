@@ -13,6 +13,10 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 ## Working screens
 
 - Homepage: "Post the job. Get the crew."
+- Forge Auto & Transport now includes Sell My Car on Forge, List My Vehicle, Consign My Vehicle, Request a Vehicle, Transport My Vehicle, Book Executive Transport, Forge Platinum Auto Concierge, and Auction Vehicle Sourcing.
+- Sell My Car on Forge captures richer vehicle seller intake, private admin fields, routing tags, lead score, title/lien/payoff flags, partner consent, and safe public-listing review boundaries.
+- Admin Auto Ops includes Vehicle Seller Leads, Vehicle Listing Review, Forge Platinum Deal Desk, Auction Deal Desk, and auto revenue review cards.
+- Forge Operations Vault gives Admin an internal SOP/checklist/template library with search, copy actions, and attorney-review warnings for legal templates.
 - Forge Autos screen for buying and selling local cars with dealer partners, including JoCo Auto Sales, Chevelles Auto Sales, and Shasta Lake Auto Sales
 - Forge Autos soft-launch lead route for buyer inquiry, dealer handoff, safety boundary, and follow-up
 - Auto dealer setup checklist and `AUTO_DEALER_INTEGRATION.md` for approved dealer contact, inventory, terms, and compliance setup
