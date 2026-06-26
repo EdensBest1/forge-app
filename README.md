@@ -18,6 +18,8 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Auto dealer setup checklist and `AUTO_DEALER_INTEGRATION.md` for approved dealer contact, inventory, terms, and compliance setup
 - Auto buyer inquiry form and queue for routing vehicle interest to dealer partners
 - Photography & Videography routes at `/photography`, `/photography/request`, and `/photography/apply` for customer creative requests and approved local creative provider applications
+- NorthStar Creative Co. route at `/northstar-creative` for blue-collar business marketing, websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations requests
+- NorthStar admin lane, CSV export, follow-up queue integration, and webhook/schema mapping with `northstar_creative` and `northstar_marketing_operations`
 - Demo login screen with worker, job poster, and admin roles
 - Perspective Demo screen for showing Forge as John, Mike, or Admin
 - Perspective Demo now includes an Auto marketplace proof path, Autos cue card, and shareable Autos link
@@ -52,7 +54,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Admin Lead Delivery Status panel showing local-only, webhook-ready, last delivery, and public beta delivery readiness
 - Copyable Lead Delivery Status summary
 - Admin Soft Launch Tomorrow panel with copyable controlled-launch plan
-- Admin Soft Launch Invite Kit with copyable homeowner, worker, Autos, and referral messages
+- Admin Soft Launch Invite Kit with copyable homeowner, worker, Autos, Photography & Videography, NorthStar, Careers, and referral messages
 - Admin Launch Day Run Sheet with copyable before-sharing, first-5-asks, midday, evening, and stop-rule steps
 - Admin Backend Handoff panel with copyable backend connection instructions
 - `SUPABASE_SCHEMA.sql` and `WEBHOOK_PAYLOADS.md` for turning the static MVP into backend-backed public beta intake
@@ -99,7 +101,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - In-app demo script for showing Forge quickly
 - Quick Capture screen for saving friend/referral leads in the moment
 - Early access and follow-up consent notes on job, worker, and quick capture forms
-- First 200 launch tracker for job posters, workers, career leads, referrals, and total early network progress
+- First 200 launch tracker for job posters, workers, NorthStar leads, career leads, referrals, and total early network progress
 - Copyable first-200 launch invite with progress, asks, and direct start links
 - Public onboarding panel explaining what happens after someone posts, joins, or sends a referral
 - Referral lead table, pipeline, copy text, and export

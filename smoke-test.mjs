@@ -74,6 +74,16 @@ const requiredHtml = [
   "Photography & Videography Booking Notes",
   "Built for trust and quality.",
   "Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.",
+  "NorthStar Creative Co.",
+  "Grow Your Blue-Collar Business With NorthStar Creative Co.",
+  "Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and business operations built for local service businesses.",
+  "Grow My Business",
+  "Build My Business System",
+  "northstarLeadForm",
+  "northstarServices",
+  "northstarBudget",
+  "adminNorthstarTable",
+  "adminNorthstarPipeline",
   "Start here",
   "Choose the path that matches why you came to Forge.",
   "startPathGrid",
@@ -250,6 +260,22 @@ const requiredJs = [
   "copyCreativeQueue",
   "Forge creative lead",
   "Forge creative provider application",
+  "NORTHSTAR_CATEGORY_VALUE",
+  "NORTHSTAR_OPERATIONS_CATEGORY_VALUE",
+  "northstarMarketingServices",
+  "northstarOperationsServices",
+  "northstarPackages",
+  "northstarStatuses",
+  "renderNorthStarPage",
+  "submitNorthStarLead",
+  "northstarLeadText",
+  "northstarLeadLines",
+  "copyNorthStarBrief",
+  "copyNorthStarQueue",
+  "copyNorthStarLead",
+  "markNorthStarContacted",
+  "moveNorthStarForward",
+  "northstar_marketing_operations",
   "BuildTrackerDashboard",
   "ProjectSummaryCard",
   "GanttTimeline",
@@ -447,6 +473,7 @@ const photographyRoute = await readFile("photography/index.html", "utf8");
 const photographyRequestRoute = await readFile("photography/request/index.html", "utf8");
 const photographyApplyRoute = await readFile("photography/apply/index.html", "utf8");
 const creativeRoute = await readFile("photography-videography/index.html", "utf8");
+const northstarRoute = await readFile("northstar-creative/index.html", "utf8");
 
 const missingHtml = requiredHtml.filter((text) => !html.includes(text));
 const missingJs = requiredJs.filter((text) => !js.includes(text));
@@ -461,6 +488,8 @@ const missingCss = [
   ["auto lead route", css.includes(".auto-route-grid") && css.includes(".auto-route")],
   ["photography videography page", css.includes(".creative-layout") && css.includes(".creative-service-grid") && css.includes(".creative-provider-panel")],
   ["photography quality notes", css.includes(".creative-quality") && css.includes(".creative-booking-notes") && css.includes(".creative-disclaimer")],
+  ["northstar creative page", css.includes(".northstar-layout") && css.includes(".northstar-package-grid") && css.includes(".northstar-intake-panel")],
+  ["northstar lead cards", css.includes(".northstar-chip-grid") && css.includes(".northstar-lead-list")],
   ["homebuilding page", css.includes(".homebuilding-layout") && css.includes(".tracker-feature-card")],
   ["build tracker dashboard", css.includes(".build-tracker-dashboard") && css.includes(".tracker-card")],
   ["build tracker gantt", css.includes(".gantt-scroll") && css.includes(".gantt-bar")],
@@ -506,12 +535,12 @@ const missingDeploy = [
   ["vercel rewrite", vercel.includes("\"rewrites\"") && vercel.includes("\"/index.html\"")],
   ["robots present", robots.includes("User-agent: *")],
   ["security review checklist", securityReview.includes("Forge Security Review Checklist") && securityReview.includes("Launch Decision")],
-  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("enable row level security")],
-  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("Public Beta Safety")],
+  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("northstar_marketing_operations_leads") && supabaseSchema.includes("enable row level security")],
+  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("northstar") && webhookPayloads.includes("Public Beta Safety")],
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography?v=70") && releaseManifest.includes("/photography/request?v=70") && releaseManifest.includes("/photography/apply?v=70") && releaseManifest.includes("/photography-videography?v=70")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography?v=70") && releaseManifest.includes("/photography/request?v=70") && releaseManifest.includes("/photography/apply?v=70") && releaseManifest.includes("/photography-videography?v=70") && releaseManifest.includes("/northstar-creative?v=70")],
   ["release candidate notes", releaseCandidate.includes("Forge Public Beta Release Candidate") && releaseCandidate.includes("Human Gates Still Required")],
   ["release check script", releaseCheck.includes("Forge release check passed.") && releaseCheck.includes("service worker version")],
   ["package scripts", packageJson.includes("\"check\"") && packageJson.includes("check:release")],
@@ -521,7 +550,8 @@ const missingDeploy = [
   ["photography route", photographyRoute.includes("Forge Photography & Videography") && photographyRoute.includes("/route-loader.js")],
   ["photography request route", photographyRequestRoute.includes("Forge Photography & Videography Request") && photographyRequestRoute.includes("/route-loader.js")],
   ["photography apply route", photographyApplyRoute.includes("Forge Photography & Videography Provider Application") && photographyApplyRoute.includes("/route-loader.js")],
-  ["photography videography alias route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")]
+  ["photography videography alias route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")],
+  ["northstar creative route", northstarRoute.includes("Forge NorthStar Creative Co.") && northstarRoute.includes("/route-loader.js")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 

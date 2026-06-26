@@ -23,6 +23,7 @@
           <div class="top-actions">
             <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
             <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
+            <button class="btn ghost small" type="button" data-nav="road-rescue">Road Rescue</button>
             <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
@@ -86,6 +87,12 @@
             <h2>Buy, sell, repair, transport, or customize a vehicle.</h2>
             <p>Forge Auto routes vehicle needs through trusted mechanics, detailers, transport providers, and dealer partners.</p>
             <button class="btn ghost" type="button" data-nav="auto">Open Forge Auto</button>
+          </article>
+          <article>
+            <span class="split-label">I hit a pothole</span>
+            <h2>Road Rescue</h2>
+            <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge connects you with trusted local roadside and auto-service providers.</p>
+            <button class="btn orange" type="button" data-nav="road-rescue">Get Road Help</button>
           </article>
           <article>
             <span class="split-label">I need creative work</span>
@@ -220,9 +227,16 @@
             <button type="button" data-nav="jobs">Moving</button>
             <button type="button" data-nav="jobs">Painting</button>
             <button type="button" data-nav="creative">Photography & Videography</button>
+            <button type="button" data-nav="road-rescue">Road Rescue</button>
             <button type="button" data-nav="northstar">NorthStar Creative Co.</button>
           </div>
           <div class="service-category-cards">
+            <article class="service-category-card">
+              <span class="split-label">Community service</span>
+              <h3>Road Rescue</h3>
+              <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge connects you with trusted local roadside and auto-service providers.</p>
+              <button class="btn ghost small" type="button" data-nav="road-rescue">Get Road Help</button>
+            </article>
             <article class="service-category-card">
               <span class="split-label">Creative services</span>
               <h3>Photography & Videography</h3>
@@ -905,6 +919,7 @@
             <p>Trusted auto services powered by the Forge Blue Collar Marketplace.</p>
             <div class="hero-actions">
               <button class="btn gold" type="button" data-action="focus-auto-request">Request Auto Service</button>
+              <button class="btn orange" type="button" data-nav="road-rescue">Road Rescue</button>
               <button class="btn ghost light" type="button" data-action="focus-vehicle-listing">List a Vehicle</button>
               <button class="btn ghost light" type="button" data-action="focus-auto-partners">Partner With Forge Auto</button>
             </div>
@@ -927,6 +942,7 @@
                   <span class="split-label">Auto services</span>
                   <h2>One intake path for the vehicle work customers actually need.</h2>
                 </div>
+                <button class="btn ghost small" type="button" data-nav="road-rescue">Open Road Rescue</button>
               </div>
               <div class="auto-service-grid" id="autoServiceGrid"></div>
             </section>
@@ -1039,6 +1055,165 @@
             <p class="trust-note"><strong>Auto safety:</strong> Forge does not verify title, financing, mechanical condition, insurance, or payment in this MVP. Meet safely, inspect the vehicle, verify ownership, and keep payment outside Forge.</p>
             <button class="btn orange" type="submit">Post Vehicle</button>
           </form>
+        </section>
+      </section>
+
+      <section class="screen road-rescue-screen" id="road-rescue-screen" data-screen="road-rescue">
+        <header class="blue-bar road-rescue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons">
+            <a href="tel:" aria-label="Call now">Call Now</a>
+            <button type="button" data-action="focus-road-rescue-request">Request</button>
+          </div>
+        </header>
+        <section class="road-rescue-hero">
+          <div class="road-rescue-hero-copy">
+            <span class="split-label">Faith in action. Help when it matters. Service that gives glory to Jesus.</span>
+            <h1>Forge Road Rescue</h1>
+            <p>When the road damages your vehicle, Forge helps you find trusted local help fast.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-road-rescue-request">Request Road Rescue</button>
+              <button class="btn blue" type="button" data-action="focus-road-hazard">Report a Road Hazard</button>
+              <a class="btn ghost light" href="tel:">Call Now</a>
+            </div>
+          </div>
+        </section>
+        <section class="road-rescue-layout">
+          <div class="road-rescue-main">
+            <section class="road-rescue-alert">
+              <strong>Emergency? Call 911 first.</strong>
+              <p>If anyone is injured, your vehicle is blocking active traffic, or there is an immediate danger, call 911 before submitting a Forge request.</p>
+            </section>
+            <section class="road-rescue-intro">
+              <div>
+                <span class="split-label">Community service</span>
+                <h2>Road Rescue connects people with local roadside and auto-service help.</h2>
+                <p>Hit a pothole, blow a tire, bend a rim, or feel your car pulling after impact? Submit a Road Rescue request and Forge will help connect you with local providers for towing, tire help, wheel repair, alignment checks, mechanic inspections, and damage documentation.</p>
+              </div>
+              <p>Forge exists to serve the community in practical ways - not only when people need a big project done, but also when they are stuck, stressed, or dealing with an unexpected problem on the road. Road Rescue is built to help neighbors get connected quickly, safely, and honestly, while giving glory to Jesus through service, excellence, and care for people.</p>
+            </section>
+            <section class="road-rescue-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Service options</span>
+                  <h2>The first Road Rescue path is Pothole Impact Help.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-road-rescue-queue">Copy Queue</button>
+              </div>
+              <div class="road-rescue-service-grid" id="roadRescueServiceGrid"></div>
+            </section>
+            <section class="road-rescue-pothole">
+              <div>
+                <span class="split-label">Pothole Impact Help</span>
+                <h2>Pothole Impact Help</h2>
+                <p><strong>Hit a pothole?</strong> Forge can help you get connected to roadside, tire, wheel, tow, and repair support.</p>
+                <p>Pothole damage can cause flat tires, bent rims, alignment problems, suspension damage, steering issues, undercarriage damage, and unsafe driving conditions. Forge helps you quickly submit the issue, upload photos, share your location, and get matched with local providers who may be able to help.</p>
+              </div>
+              <div class="road-rescue-list-panel">
+                <h3>What Forge can help with</h3>
+                <ul id="roadRescueHelpList"></ul>
+              </div>
+            </section>
+            <section class="road-rescue-form-section" id="roadRescueRequestSection">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Road Rescue request</span>
+                  <h2>Request roadside, tire, tow, wheel, or mechanic help.</h2>
+                </div>
+              </div>
+              <form class="road-rescue-form" id="roadRescueForm">
+                <div class="field-row">
+                  <label>Full name<input id="roadRescueName" required placeholder="Full name" /></label>
+                  <label>Phone number<input id="roadRescuePhone" required placeholder="(541) 555-0000" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Email address<input id="roadRescueEmail" type="email" placeholder="optional@email.com" /></label>
+                  <label>Preferred contact method<select id="roadRescuePreferredContact"><option>Call</option><option>Text</option><option>Email</option></select></label>
+                </div>
+                <div class="field-row">
+                  <label>Is this an emergency?<select id="roadRescueEmergency"><option>No</option><option>Yes</option></select></label>
+                  <label>Is the vehicle safe/off the road?<select id="roadRescueSafe"><option>Not sure</option><option>Yes</option><option>No</option></select></label>
+                </div>
+                <label>Current location<input id="roadRescueLocation" required placeholder="Road, address, mile marker, or pinned location" /></label>
+                <div class="field-row">
+                  <label>Cross street or nearest landmark<input id="roadRescueLandmark" placeholder="Nearest exit, business, cross street, or landmark" /></label>
+                  <label>City<input id="roadRescueCity" required value="Medford" /></label>
+                </div>
+                <div class="field-row">
+                  <label>State<input id="roadRescueState" required value="OR" /></label>
+                  <label>Zip<input id="roadRescueZip" inputmode="numeric" placeholder="97501" /></label>
+                </div>
+                <label class="check-row"><input id="roadRescueLiveLocation" type="checkbox" /> Share live location toggle</label>
+                <div class="field-row">
+                  <label>Year<input id="roadRescueYear" placeholder="2018" /></label>
+                  <label>Make<input id="roadRescueMake" placeholder="Toyota" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Model<input id="roadRescueModel" placeholder="Camry" /></label>
+                  <label>Color<input id="roadRescueColor" placeholder="Silver" /></label>
+                </div>
+                <div class="field-row">
+                  <label>License plate optional<input id="roadRescuePlate" placeholder="Optional" /></label>
+                  <label>Vehicle type<select id="roadRescueVehicleType"><option>Car</option><option>Truck</option><option>SUV</option><option>Van</option><option>Motorcycle</option><option>Trailer</option><option>Other</option></select></label>
+                </div>
+                <fieldset class="road-rescue-fieldset">
+                  <legend>Issue type</legend>
+                  <div class="road-rescue-check-grid" id="roadRescueIssueGrid"></div>
+                  <p class="form-error hidden" id="roadRescueIssueError">Choose at least one issue type.</p>
+                </fieldset>
+                <div class="field-row">
+                  <label>Approximate time of impact<input id="roadRescueImpactTime" placeholder="Example: Today around 4:30 PM" /></label>
+                  <label>Road name<input id="roadRescueRoadName" placeholder="Road or highway name" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Direction of travel<input id="roadRescueDirection" placeholder="Northbound, toward downtown, etc." /></label>
+                  <label>Lane, if known<input id="roadRescueLane" placeholder="Right lane, shoulder, unknown" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Weather/visibility<input id="roadRescueWeather" placeholder="Clear, rain, dark, low visibility" /></label>
+                  <label>Did the vehicle become unsafe to drive?<select id="roadRescueUnsafeToDrive"><option>Not sure</option><option>Yes</option><option>No</option></select></label>
+                </div>
+                <label>Did the vehicle need to be towed?<select id="roadRescueTowed"><option>Not sure</option><option>Yes</option><option>No</option></select></label>
+                <div class="road-rescue-upload-grid">
+                  <label class="file-button btn ghost full">Photos of pothole<input id="roadRescuePotholePhotos" type="file" multiple accept="image/*" /></label>
+                  <label class="file-button btn ghost full">Photos of tire/wheel damage<input id="roadRescueDamagePhotos" type="file" multiple accept="image/*" /></label>
+                  <label class="file-button btn ghost full">Photos of vehicle position<input id="roadRescuePositionPhotos" type="file" multiple accept="image/*" /></label>
+                  <label class="file-button btn ghost full">Photos of dashboard warning lights<input id="roadRescueDashboardPhotos" type="file" multiple accept="image/*" /></label>
+                </div>
+                <label>Service requested<select id="roadRescueServiceRequested" required></select></label>
+                <label>Notes<textarea id="roadRescueNotes" rows="4" placeholder="Tell Forge what happened, whether the car can move, and any provider preference."></textarea></label>
+                <p class="trust-note"><strong>Important Safety Notice:</strong> Forge is a community marketplace that helps connect customers with independent local providers. Forge does not provide emergency services, does not guarantee response times, and does not replace 911. If anyone is injured, if your vehicle is blocking traffic, or if there is immediate danger, call 911 first. Providers are independent businesses or individuals responsible for their own licensing, insurance, pricing, work quality, and legal compliance.</p>
+                <button class="btn orange" type="submit">Request Road Rescue</button>
+              </form>
+              <div class="road-rescue-request-list" id="roadRescueRequestList"></div>
+            </section>
+            <section class="road-rescue-providers">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Provider types</span>
+                  <h2>Local help Road Rescue can route toward.</h2>
+                </div>
+              </div>
+              <div class="road-rescue-provider-grid" id="roadRescueProviderGrid"></div>
+            </section>
+            <section class="road-rescue-boundary">
+              <span class="split-label">What Forge does not do</span>
+              <p>Forge does not guarantee emergency response times, does not replace 911, does not provide legal or insurance advice, and does not repair public roads unless a properly authorized provider is assigned. Forge helps connect the community with available service providers.</p>
+            </section>
+            <section class="road-hazard-helper" id="roadHazardHelper">
+              <div>
+                <span class="split-label">Help the Community</span>
+                <h2>Report the Pothole</h2>
+                <p>After you are safe, Forge can help you document and report the pothole so the right public agency can review it. Take photos, note the road name, cross street, lane, direction of travel, time of impact, and any vehicle damage.</p>
+              </div>
+              <div class="hero-actions">
+                <button class="btn ghost" type="button" data-action="copy-road-hazard-city">Report to City</button>
+                <button class="btn ghost" type="button" data-action="copy-road-hazard-county">Report to County</button>
+                <button class="btn ghost" type="button" data-action="copy-road-hazard-state">Report to State / ODOT</button>
+                <button class="btn blue" type="button" data-action="copy-road-damage-checklist">Save Damage Photos</button>
+              </div>
+            </section>
+          </div>
         </section>
       </section>
 
@@ -1907,6 +2082,8 @@
                   <option>All Lead Types</option>
                   <option>Homebuilding</option>
                   <option>Projects</option>
+                  <option>NorthStar</option>
+                  <option>Road Rescue</option>
                   <option>Jobs</option>
                   <option>Workers</option>
                   <option>Referrals</option>
@@ -1917,6 +2094,12 @@
                   <option>All Statuses</option>
                   <option>New</option>
                   <option>Contacted</option>
+                  <option>Scoping</option>
+                  <option>Proposal Needed</option>
+                  <option>Proposal Sent</option>
+                  <option>Active</option>
+                  <option>Paused</option>
+                  <option>Closed</option>
                   <option>Matching</option>
                   <option>Ready</option>
                   <option>Hot</option>
@@ -1983,6 +2166,38 @@
             </div>
             <div class="table-card"><table id="adminNorthstarTable"></table></div>
             <div class="lead-board" id="adminNorthstarPipeline"></div>
+            <div class="admin-heading">
+              <h2>Road Rescue Leads</h2>
+              <button class="btn ghost small" type="button" data-action="export-road-rescue">Export Road Rescue CSV</button>
+            </div>
+            <div class="table-card"><table id="adminRoadRescueTable"></table></div>
+            <div class="lead-board" id="adminRoadRescuePipeline"></div>
+            <section class="settings-card flex-admin-section">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Forge Capital Desk</span>
+                  <h2>Flex Leads</h2>
+                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and the official Flex referral link handoff.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-flex-queue">Copy Queue</button>
+                  <button class="btn orange small" type="button" data-action="export-flex-leads">Export CSV</button>
+                </div>
+              </div>
+              <div class="filter-row flex-filter-row">
+                <select id="flexStatusFilter"></select>
+                <input id="flexIndustryFilter" placeholder="Industry" />
+                <input id="flexCityFilter" placeholder="City" />
+                <input id="flexStateFilter" maxlength="2" placeholder="State" />
+                <select id="flexScoreFilter">
+                  <option value="0">Any score</option>
+                  <option value="20">20+</option>
+                  <option value="40">40+</option>
+                  <option value="60">60+</option>
+                </select>
+              </div>
+              <div class="table-card flex-table-card"><table id="adminFlexLeadsTable"></table></div>
+            </section>
             <div class="admin-heading">
               <h2>Referral / Friend Leads</h2>
               <button class="btn ghost small" type="button" data-action="export-referrals">Export Referrals CSV</button>
@@ -2155,6 +2370,8 @@
       <button type="button" data-nav="post" aria-label="Post a job">Post</button>
       <button type="button" data-nav="jobs" aria-label="Browse jobs">Jobs</button>
       <button type="button" data-nav="auto" aria-label="Open Forge Auto services">Auto</button>
+      <button type="button" data-nav="road-rescue" aria-label="Open Road Rescue">Rescue</button>
+      <button type="button" data-nav="capital" aria-label="Open Capital Desk">Capital</button>
       <button type="button" data-nav="projects" aria-label="Open Forge Projects">Projects</button>
       <button type="button" data-nav="homebuilding" aria-label="Open homebuilding">Build</button>
       <button type="button" data-nav="messages" aria-label="Open messages">Msgs</button>

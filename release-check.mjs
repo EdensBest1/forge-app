@@ -23,6 +23,7 @@ const staticChecks = [
   ["photography request entrypoint", manifest.entrypoints.photographyRequest === "/photography/request?v=70"],
   ["photography apply entrypoint", manifest.entrypoints.photographyApply === "/photography/apply?v=70"],
   ["photography videography alias", manifest.entrypoints.photographyVideography === "/photography-videography?v=70"],
+  ["northstar creative entrypoint", manifest.entrypoints.northstarCreative === "/northstar-creative?v=70"],
   ["homebuilding entrypoint", manifest.entrypoints.homebuilding === "/homebuilding?v=70"],
   ["build tracker entrypoint", manifest.entrypoints.homebuildingTracker === "/homebuilding/tracker?v=70"],
   ["package check script", packageJson.scripts?.check?.includes("check:release")],

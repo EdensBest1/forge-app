@@ -10,6 +10,7 @@ const categories = ["Handyman", "Landscaping", "Junk Removal", "Moving", "Painti
 const jobStatuses = ["New", "Submitted", "Pending", "Contacted", "Matching", "Quoted", "Accepted", "Assigned", "In Progress", "Completed", "Canceled"];
 const workerStatuses = ["New", "Submitted", "Contacted", "Ready", "Approved", "Rejected", "Suspended", "Paused"];
 const referralStatuses = ["New", "Contacted", "Converted", "Later"];
+const roadRescueStatuses = ["New", "Contacted", "Provider Notified", "Matched", "Closed"];
 const creativeRequestStatuses = ["submitted", "reviewing", "quoted", "accepted", "assigned", "completed", "canceled"];
 const creativeProviderStatuses = ["draft", "submitted", "under_review", "approved", "rejected", "suspended"];
 const flexLeadStatuses = [
@@ -26,10 +27,14 @@ const flexLeadStatuses = [
   "forge_client_won",
   "closed_lost"
 ];
+const FORGE_ENV = typeof window !== "undefined" ? window.FORGE_ENV || {} : {};
 const FLEX_REFERRAL_URL_PLACEHOLDER = "https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK";
+const NEXT_PUBLIC_FLEX_REFERRAL_URL = FORGE_ENV.NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
 const FLEX_PARTNER_MODE = "referral";
 const FORGE_CAPITAL_DESK_ENABLED = true;
 const FORGE_LEAD_NOTIFY_EMAIL = "admin@forge.local";
+const FORGE_GHL_WEBHOOK_URL = FORGE_ENV.FORGE_GHL_WEBHOOK_URL || "";
+const FORGE_ZAPIER_WEBHOOK_URL = FORGE_ENV.FORGE_ZAPIER_WEBHOOK_URL || "";
 const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.";
 const flexIndustries = ["Contractor / builder", "Landscaping", "Roofing", "Fencing / iron gates", "Auto shop", "Transport / diesel", "Creative / agency", "Restaurant", "Local service business", "Other"];
 const flexYearsOptions = ["Under 1 year", "1-2 years", "3-5 years", "5+ years"];
@@ -38,17 +43,17 @@ const flexSpendRanges = ["Under $5k", "$5k - $10k", "$10k - $25k", "$25k - $50k"
 const flexEmployeeRanges = ["Just me", "2-5", "6-20", "21-50", "51+"];
 const flexNeedOptions = [
   "Business credit",
-  "Vendor payments / AP",
-  "Payroll timing",
+  "Cash-flow help",
+  "Vendor payments",
   "Employee cards",
-  "Fuel",
-  "Equipment",
-  "Materials",
+  "Business banking tools",
+  "Expense management",
   "Growth capital",
-  "Expense controls",
-  "Cleaner tracking"
+  "Fuel/material/equipment spending",
+  "Payroll timing",
+  "Not sure yet"
 ];
-const flexPrimaryNeedKeywords = ["credit", "vendor payments", "ap", "payroll timing", "employee cards", "fuel", "equipment", "materials", "growth capital"];
+const flexPrimaryNeedKeywords = ["credit", "cash-flow", "cash flow", "vendor payments", "ap", "payroll timing", "employee cards", "fuel", "equipment", "materials", "growth capital"];
 const providerGrowthToolOptions = [
   "I want business credit / cash-flow tools",
   "I want help with vendor bills / AP automation",
@@ -191,6 +196,69 @@ const autoServiceGroups = [
   }
 ];
 const autoServiceOptions = autoServiceGroups.flatMap((group) => group.items);
+const ROAD_RESCUE_SERVICE_TYPE = "road_rescue";
+const roadRescueServices = [
+  {
+    title: "Pothole Impact Help",
+    subtitle: "Hit a pothole? Forge can help you get connected to roadside, tire, wheel, tow, and repair support."
+  },
+  { title: "Flat Tire / Tire Change", subtitle: "Find tire change, mobile tire, or replacement support." },
+  { title: "Tow Truck Needed", subtitle: "Route tow requests to available local towing providers." },
+  { title: "Wheel, Rim, or Alignment Damage", subtitle: "Connect with wheel, rim, alignment, and inspection help." },
+  { title: "Jump Start", subtitle: "Request battery jump support from local roadside providers." },
+  { title: "Lockout Help", subtitle: "Connect with lockout providers where available and appropriate." },
+  { title: "Fuel Delivery", subtitle: "Ask for fuel delivery help when the vehicle is safely stopped." },
+  { title: "Road Hazard Report Help", subtitle: "Document location, photos, lane, direction, and time for public agency reporting." },
+  { title: "Mechanic Inspection", subtitle: "Get connected for diagnostic and safety inspection after roadside damage." },
+  { title: "Insurance / Damage Photo Checklist", subtitle: "Organize photos and notes without legal or insurance advice." }
+];
+const roadRescueHelpItems = [
+  "Tire change or tire replacement",
+  "Tow truck support",
+  "Rim and wheel repair",
+  "Alignment inspection",
+  "Suspension inspection",
+  "Mechanic diagnosis",
+  "Mobile roadside help",
+  "Damage photo checklist",
+  "Road hazard report guidance"
+];
+const roadRescueIssueOptions = [
+  ["pothole", "Hit a pothole"],
+  ["flat_tire", "Flat tire"],
+  ["wheel_damage", "Bent rim"],
+  ["alignment", "Vehicle shaking"],
+  ["alignment", "Steering wheel pulling"],
+  ["wheel_damage", "Suspension noise"],
+  ["mechanic_inspection", "Fluid leak"],
+  ["tow", "Vehicle will not drive"],
+  ["tow", "Need tow"],
+  ["flat_tire", "Need tire change"],
+  ["mechanic_inspection", "Need mechanic inspection"],
+  ["other", "Other"]
+];
+const roadRescueServiceRequestedOptions = [
+  "Call me now",
+  "Send roadside help",
+  "Send tow truck",
+  "Connect me with tire shop",
+  "Connect me with wheel/rim repair",
+  "Connect me with mechanic",
+  "Help me document damage",
+  "Help me report the pothole"
+];
+const roadRescueProviderTypes = [
+  "Tow companies",
+  "Mobile mechanics",
+  "Tire shops",
+  "Wheel/rim repair shops",
+  "Alignment shops",
+  "Auto repair shops",
+  "Mobile tire-change providers",
+  "S&A Auto / partner auto support",
+  "Road hazard documentation helpers",
+  "Insurance claim photo helpers, only if compliant and not giving legal advice"
+];
 const creativeServiceTypes = [
   {
     title: "Wedding Photography",
@@ -394,6 +462,7 @@ const opportunitySteps = [
 ];
 const routeByScreen = {
   autos: "/auto",
+  "road-rescue": "/road-rescue",
   creative: "/photography",
   "creative-request": "/photography/request",
   "creative-apply": "/photography/apply",
@@ -407,6 +476,8 @@ const routeByScreen = {
 const screenByPath = {
   "/auto": "autos",
   "/auto/": "autos",
+  "/road-rescue": "road-rescue",
+  "/road-rescue/": "road-rescue",
   "/photography": "creative",
   "/photography/": "creative",
   "/photography/request": "creative-request",
@@ -1000,9 +1071,10 @@ const seedState = {
       monthly_spend_range: "$25k - $50k",
       employee_count: "6-20",
       primary_need: "Fuel, equipment, materials, employee cards",
-      interested_in_forge_services: true,
+      interested_in_forge_job_leads: true,
       interested_in_north_star_marketing: false,
       interested_in_payment_processing: true,
+      interested_in_website_crm_automation: false,
       consent_to_contact: true,
       consent_to_receive_flex_referral: true,
       referral_source: "demo",
@@ -1567,6 +1639,7 @@ function isCreativeProvider(worker) {
 
 function normalizeScreen(screen) {
   if (screen === "auto" || screen === "autos") return "autos";
+  if (["road-rescue", "road_rescue", "roadrescue", "road-help", "road-help-request", "pothole-help"].includes(screen)) return "road-rescue";
   if (["photo", "photos", "video", "creative", "photography", "photography-videography", CREATIVE_CATEGORY_VALUE, CREATIVE_CATEGORY_SLUG].includes(screen)) return "creative";
   if (["photography/request", "photography-request", "creative-request", "request-shoot"].includes(screen)) return "creative-request";
   if (["photography/apply", "photography-apply", "creative-apply", "apply-photographer"].includes(screen)) return "creative-apply";
@@ -1630,7 +1703,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/auto", "/auto/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/auto", "/auto/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -3635,6 +3708,7 @@ function renderDashboards() {
   const creativeRequests = state.jobs.filter(isCreativeJob);
   const creativeProviders = state.workers.filter(isCreativeProvider);
   const northstarLeads = state.northstarLeads || [];
+  const flexLeads = state.flexLeads || [];
   const hotLeads = state.referrals.filter((lead) => lead.priority === "Hot").length + state.jobs.filter((job) => job.status === "New").length;
 
   const workerTitle = document.querySelector("#workerDashboardTitle");
@@ -3652,6 +3726,7 @@ function renderDashboards() {
     ["Creative Requests", creativeRequests.length],
     ["Creative Providers", creativeProviders.length],
     ["NorthStar", northstarLeads.length],
+    ["Flex Leads", flexLeads.length],
     ["Referrals", referrals],
     ["Career Leads", careerLeads],
     ["Homebuilding", homebuildingLeads],
@@ -3714,6 +3789,8 @@ function renderDashboards() {
     status: lead.status
   })));
 
+  renderFlexLeadsAdmin();
+
   renderTable("#adminReferralsTable", state.referrals.map((lead) => ({
     name: lead.name,
     type: lead.type,
@@ -3773,6 +3850,8 @@ function renderConfirmation() {
                         ? "Creative provider saved"
                         : confirmation.type === "northstar"
                           ? "NorthStar request saved"
+                          : confirmation.type === "flex"
+                            ? "Capital Desk lead saved"
                   : "Forge is ready";
   document.querySelector("#confirmTitle").textContent = confirmation.title;
   document.querySelector("#confirmBody").textContent = confirmation.body;
@@ -3807,6 +3886,7 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can match it with approved local creatives", "Customer contact info stays for booking and provider matching"];
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
   if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
+  if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Continue to the official Flex referral link only when consent is captured", "Flex handles eligibility, approval, onboarding, activation, and product support"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
 }
 
@@ -3824,6 +3904,7 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "creative") return "Tell the customer how Forge creative matching works.";
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
   if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
+  if (confirmation.type === "flex") return "Tell the business owner how the Flex referral handoff works.";
   return "Use this as the next message.";
 }
 
@@ -3869,6 +3950,9 @@ function confirmationHandoffText(confirmation) {
   if (confirmation.type === "northstar") {
     return `Forge saved this NorthStar Creative Co. request${detail}. Admin can review the business, services needed, budget, biggest problem, and 30-90 day goal, then NorthStar can scope the right marketing and operations support.`;
   }
+  if (confirmation.type === "flex") {
+    return `Forge saved this Capital Desk lead${detail}. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex handles eligibility, approval, onboarding, activation, and support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
+  }
   return `Forge is ready for controlled first-user signups. Next: ${steps.join(" ")}`;
 }
 
@@ -3877,8 +3961,13 @@ function configureConfirmButton(selector, config) {
   button.textContent = config.label;
   delete button.dataset.nav;
   delete button.dataset.detail;
+  delete button.dataset.action;
+  delete button.dataset.flexLeadId;
   if (config.jobId) {
     button.dataset.detail = config.jobId;
+  } else if (config.action) {
+    button.dataset.action = config.action;
+    if (config.flexLeadId) button.dataset.flexLeadId = config.flexLeadId;
   } else {
     button.dataset.nav = config.screen || "home";
   }
@@ -4384,7 +4473,7 @@ function safetyChecks() {
 }
 
 function totalLeadCount() {
-  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.opportunityLeads || []).length + (state.homebuildingLeads || []).length + (state.projectLeads || []).length;
+  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.flexLeads || []).length + (state.opportunityLeads || []).length + (state.homebuildingLeads || []).length + (state.projectLeads || []).length;
 }
 
 function renderLaunchCommandCenter() {
@@ -4477,6 +4566,16 @@ function launchCommandRows() {
       next: "Scope marketing and operations needs, then package the right NorthStar build or growth support.",
       screen: "northstar",
       action: "NorthStar"
+    },
+    {
+      label: "Capital Desk",
+      total: (state.flexLeads || []).length,
+      needTouch: (state.flexLeads || []).filter((lead) => ["new", "qualified"].includes(lead.status)).length,
+      contacted: (state.flexLeads || []).filter((lead) => ["contacted", "flex_link_sent"].includes(lead.status)).length,
+      moving: (state.flexLeads || []).filter((lead) => ["application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"].includes(lead.status)).length,
+      next: "Confirm consent, use only the official Flex referral link, and look for Forge or NorthStar upsell fit.",
+      screen: "capital",
+      action: "Capital Desk"
     },
     {
       label: "Referrals",
@@ -4770,6 +4869,75 @@ function renderLeadPipelines() {
   if (adminProjectsPipeline) adminProjectsPipeline.innerHTML = projectLeadCards(state.projectLeads || []);
 }
 
+function filteredFlexLeads() {
+  const status = document.querySelector("#flexStatusFilter")?.value || "All Statuses";
+  const industry = normalizeLookup(document.querySelector("#flexIndustryFilter")?.value || "");
+  const city = normalizeLookup(document.querySelector("#flexCityFilter")?.value || "");
+  const leadState = normalizeLookup(document.querySelector("#flexStateFilter")?.value || "");
+  const minScore = Number(document.querySelector("#flexScoreFilter")?.value || 0);
+  return (state.flexLeads || []).filter((lead) => {
+    const statusOk = status === "All Statuses" || lead.status === status;
+    const industryOk = !industry || normalizeLookup(lead.industry).includes(industry);
+    const cityOk = !city || normalizeLookup(lead.city).includes(city);
+    const stateOk = !leadState || normalizeLookup(lead.state).includes(leadState);
+    const scoreOk = Number(lead.lead_score || 0) >= minScore;
+    return statusOk && industryOk && cityOk && stateOk && scoreOk;
+  });
+}
+
+function renderFlexLeadsAdmin() {
+  const table = document.querySelector("#adminFlexLeadsTable");
+  if (!table) return;
+  const leads = filteredFlexLeads();
+  if (!leads.length) {
+    table.innerHTML = "<tbody><tr><td>No Flex leads match these filters.</td></tr></tbody>";
+    return;
+  }
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Lead</th>
+        <th>Need</th>
+        <th>Score</th>
+        <th>Status</th>
+        <th>Notes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${leads.map((lead) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(lead.business_name)}</strong><br />
+            <span>${escapeHtml(lead.owner_name)} · ${escapeHtml(lead.email)}</span><br />
+            <span>${escapeHtml(lead.city || "City pending")}${lead.state ? `, ${escapeHtml(lead.state)}` : ""} · ${escapeHtml(lead.industry)}</span>
+          </td>
+          <td>
+            <span>${escapeHtml(lead.primary_need || "Need pending")}</span><br />
+            <small>${escapeHtml(lead.monthly_spend_range || "Spend pending")} · ${escapeHtml(lead.years_in_business || "Years pending")} · ${escapeHtml(lead.employee_count || "Team pending")}</small>
+          </td>
+          <td><strong>${lead.lead_score}</strong></td>
+          <td>
+            <span class="flex-status ${escapeHtml(lead.status)}">${escapeHtml(flexStatusLabel(lead.status))}</span>
+            <select data-flex-status="${escapeHtml(lead.id)}">
+              ${flexLeadStatuses.map((status) => `<option value="${escapeHtml(status)}" ${status === lead.status ? "selected" : ""}>${escapeHtml(flexStatusLabel(status))}</option>`).join("")}
+            </select>
+          </td>
+          <td><textarea data-flex-notes="${escapeHtml(lead.id)}" rows="3" placeholder="Outreach, consent, Flex handoff, or upsell notes">${escapeHtml(lead.notes || "")}</textarea></td>
+          <td>
+            <div class="lead-actions">
+              ${contactLinks(lead.phone, lead.email, flexOutreachText(lead))}
+              <button class="btn ghost small" type="button" data-action="copy-flex-outreach" data-flex-id="${escapeHtml(lead.id)}">Copy outreach message</button>
+              <button class="btn blue small" type="button" data-action="open-flex-referral" data-flex-lead-id="${escapeHtml(lead.id)}">Open Flex Referral Link</button>
+              <button class="btn ghost small" type="button" data-action="create-flex-upsell-task" data-flex-id="${escapeHtml(lead.id)}">Create Forge Upsell Task</button>
+            </div>
+          </td>
+        </tr>
+      `).join("")}
+    </tbody>
+  `;
+}
+
 function contactLinks(phone, email, message) {
   const cleanPhone = String(phone || "").replace(/[^\d+]/g, "");
   const sms = cleanPhone ? `<a class="btn ghost small" href="sms:${cleanPhone}?&body=${encodeURIComponent(message)}">Text</a>` : "";
@@ -5024,6 +5192,22 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
       copyAction: "copy-northstar-lead",
       dataName: "northstarId"
     })),
+    ...(state.flexLeads || []).map((lead) => ({
+      id: lead.id,
+      kind: "Capital Desk",
+      title: `${lead.business_name} · ${lead.primary_need || "Flex referral"}`,
+      person: lead.owner_name,
+      phone: lead.phone,
+      email: lead.email,
+      status: lead.status,
+      priority: ["new", "qualified"].includes(lead.status) || Number(lead.lead_score || 0) >= 40 ? "Hot" : "Warm",
+      message: flexOutreachText(lead),
+      action: "mark-flex-contacted",
+      forwardAction: "move-flex-forward",
+      forwardLabel: lead.status === "flex_link_sent" ? "Link Sent" : "Move Forward",
+      copyAction: "copy-flex-outreach",
+      dataName: "flexId"
+    })),
     ...(state.opportunityLeads || []).map((lead) => ({
       id: lead.id,
       kind: "Careers",
@@ -5043,7 +5227,7 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
   ].filter((row) => {
     const typeOk = typeFilter === "All Lead Types" || row.kind === typeFilter;
     const statusOk = statusFilter === "All Statuses"
-      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Scoping", "Proposal Needed", "New Project Lead", "Needs More Info", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
+      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
       || row.status === statusFilter
       || row.priority === statusFilter;
     return typeOk && statusOk;
@@ -5480,6 +5664,61 @@ function submitNorthStarLead() {
   showToast("NorthStar request saved.");
   document.querySelector("#northstarLeadForm").reset();
   setFieldValue("#northstarCity", "Medford, OR");
+  navigate("confirm");
+}
+
+function submitFlexLead() {
+  const lead = normalizeFlexLead({
+    id: `flex-${Date.now()}`,
+    created_at: "Today",
+    updated_at: "Today",
+    owner_name: fieldValue("#flexOwnerName"),
+    business_name: fieldValue("#flexBusinessName"),
+    email: fieldValue("#flexEmail"),
+    phone: fieldValue("#flexPhone"),
+    city: fieldValue("#flexCity"),
+    state: fieldValue("#flexState").toUpperCase(),
+    industry: fieldValue("#flexIndustry"),
+    website: fieldValue("#flexWebsite"),
+    years_in_business: fieldValue("#flexYearsInBusiness"),
+    monthly_revenue_range: fieldValue("#flexMonthlyRevenue"),
+    monthly_spend_range: fieldValue("#flexMonthlySpend"),
+    employee_count: fieldValue("#flexEmployeeCount"),
+    primary_need: fieldValue("#flexPrimaryNeed"),
+    interested_in_forge_services: fieldChecked("#flexInterestedForge"),
+    interested_in_north_star_marketing: fieldChecked("#flexInterestedNorthstar"),
+    interested_in_payment_processing: fieldChecked("#flexInterestedPayments"),
+    consent_to_contact: fieldChecked("#flexConsentToContact"),
+    consent_to_receive_flex_referral: fieldChecked("#flexConsentReferral"),
+    referral_source: "forge_capital_desk",
+    flex_referral_url_sent: "",
+    status: "new",
+    notes: fieldValue("#flexNotes")
+  });
+  state.flexLeads.unshift(lead);
+  addActivity(`Flex Capital Desk lead saved: ${lead.business_name} (${lead.industry}) score ${lead.lead_score}.`);
+  state.lastConfirmation = {
+    type: "flex",
+    title: "Forge Capital Desk lead saved.",
+    body: "Forge saved your basic business information and consent. Continue to Flex through the official referral link when you are ready.",
+    details: [
+      `${lead.business_name} · ${lead.industry}`,
+      `${lead.primary_need || "Need pending"} · score ${lead.lead_score}`,
+      lead.consent_to_receive_flex_referral ? "Flex referral consent captured" : "Flex referral consent not captured"
+    ],
+    nextSteps: [
+      "Forge stores the basic lead and consent details",
+      "Use Continue to Flex to open the official Flex referral link",
+      "Flex handles eligibility, approval, onboarding, activation, and product support"
+    ],
+    primary: { label: "Continue to Flex", action: "open-flex-referral", flexLeadId: lead.id },
+    secondary: { label: "Talk to Forge Capital Desk", screen: "capital" }
+  };
+  saveState();
+  sendLead("forge-flex", flexLeadWebhookPayload(lead));
+  showToast("Capital Desk lead saved.");
+  document.querySelector("#flexLeadForm").reset();
+  renderCapitalPage();
   navigate("confirm");
 }
 
@@ -5992,6 +6231,11 @@ document.querySelector("#creativeProviderForm").addEventListener("submit", (even
 document.querySelector("#northstarLeadForm").addEventListener("submit", (event) => {
   event.preventDefault();
   submitNorthStarLead();
+});
+
+document.querySelector("#flexLeadForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitFlexLead();
 });
 
 document.querySelector("#projectIntakeForm").addEventListener("submit", (event) => {
@@ -6992,6 +7236,87 @@ function copyNorthStarBrief() {
     `Open NorthStar: ${roleDemoLink("customer", "northstar")}`
   ];
   copyText(lines.join("\n"), "NorthStar brief copied.");
+}
+
+function flexOutreachText(lead) {
+  if (!lead) return "No Flex leads yet.";
+  return [
+    `Hi ${lead.owner_name || "there"}, this is Forge Capital Desk.`,
+    `I saved your request for ${lead.business_name || "your business"} around ${lead.city || "your area"}.`,
+    `You mentioned ${lead.primary_need || "business finance tools"} and a monthly spend range of ${lead.monthly_spend_range || "not provided"}.`,
+    "Forge is not a bank, lender, broker, underwriter, or credit decision maker. If you still want the Flex option, I can send the official Flex referral link and you apply directly with Flex.",
+    "Can you confirm the best time to talk?"
+  ].join(" ");
+}
+
+function flexLeadLines(lead) {
+  if (!lead) return ["No Flex lead selected."];
+  return [
+    "Forge Capital Desk Flex lead",
+    `${lead.business_name} - ${lead.owner_name}`,
+    `Source: forge_capital_desk`,
+    `Partner: flex`,
+    `Mode: ${FLEX_PARTNER_MODE}`,
+    `Phone: ${lead.phone || "Not provided"}`,
+    `Email: ${lead.email}`,
+    `City/state: ${lead.city || "Not provided"}${lead.state ? `, ${lead.state}` : ""}`,
+    `Industry: ${lead.industry}`,
+    `Website: ${lead.website || "Not provided"}`,
+    `Years in business: ${lead.years_in_business || "Not provided"}`,
+    `Monthly revenue: ${lead.monthly_revenue_range || "Not provided"}`,
+    `Monthly spend: ${lead.monthly_spend_range || "Not provided"}`,
+    `Employees: ${lead.employee_count || "Not provided"}`,
+    `Primary need: ${lead.primary_need || "Not provided"}`,
+    `Lead score: ${lead.lead_score}`,
+    `Status: ${flexStatusLabel(lead.status)}`,
+    `Consent to contact: ${lead.consent_to_contact ? "Yes" : "No"}`,
+    `Consent to receive Flex referral: ${lead.consent_to_receive_flex_referral ? "Yes" : "No"}`,
+    `Interested in Forge services: ${lead.interested_in_forge_services ? "Yes" : "No"}`,
+    `Interested in NorthStar marketing: ${lead.interested_in_north_star_marketing ? "Yes" : "No"}`,
+    `Interested in payment processing: ${lead.interested_in_payment_processing ? "Yes" : "No"}`,
+    `Flex referral URL sent: ${lead.flex_referral_url_sent || "Not sent"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
+    FLEX_COMPLIANCE_COPY
+  ];
+}
+
+function copyFlexOutreach(id) {
+  const lead = (state.flexLeads || []).find((item) => item.id === id) || (state.flexLeads || [])[0];
+  copyText(flexOutreachText(lead), "Flex outreach message copied.");
+}
+
+function copyFlexQueue() {
+  const leads = state.flexLeads || [];
+  const lines = [
+    "Forge Capital Desk Flex queue",
+    "",
+    leads.length ? `${leads.length} Flex lead${leads.length === 1 ? "" : "s"} saved.` : "No Flex leads yet.",
+    "",
+    ...leads.flatMap((lead) => [...flexLeadLines(lead), ""])
+  ];
+  copyText(lines.join("\n"), "Flex queue copied.");
+}
+
+function copyFlexBrief() {
+  const lines = [
+    "Forge Capital Desk brief",
+    "",
+    "Title: Business owners need breathing room.",
+    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators discover modern business finance tools through our Flex referral channel.",
+    "",
+    "How it works:",
+    "1. Tell Forge what your business needs.",
+    "2. Forge checks whether you look like a fit.",
+    "3. Forge sends you the official Flex referral link.",
+    "4. You apply directly with Flex.",
+    "5. Flex handles approval, onboarding, activation, and support.",
+    "6. Forge can also help with leads, marketing, websites, CRM, hiring, and operations.",
+    "",
+    FLEX_COMPLIANCE_COPY,
+    "",
+    `Open Capital Desk: ${roleDemoLink("customer", "capital")}`
+  ];
+  copyText(lines.join("\n"), "Capital Desk brief copied.");
 }
 
 function referralTemplate(lead) {
@@ -8125,6 +8450,17 @@ function copyFollowUpQueue() {
       status: lead.status,
       priority: ["NEW", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(lead.status) ? "Hot" : "Warm",
       message: projectLeadText(lead)
+    })),
+    ...(state.northstarLeads || []).filter((lead) => ["New", "Scoping", "Proposal Needed"].includes(lead.status)).map((lead) => ({
+      kind: "NorthStar",
+      label: "NorthStar",
+      person: lead.name,
+      title: `${lead.businessName} · ${(lead.servicesNeeded || []).join(", ") || "Business growth help"}`,
+      phone: lead.phone,
+      email: lead.email,
+      status: lead.status,
+      priority: ["New", "Proposal Needed"].includes(lead.status) ? "Hot" : "Warm",
+      message: northstarLeadText(lead)
     }))
   ].map((row) => ({
     ...row,

@@ -4,6 +4,7 @@
 -- Recommended intake path: Zapier webhook, API route, or Supabase Edge Function validates input and writes to these tables.
 -- Photography & Videography customer requests should use forge_job_leads.category = 'photography_videography'.
 -- Photography & Videography provider applications should use forge_worker_leads.trade/category metadata value 'photography_videography' in the incoming payload.
+-- NorthStar Creative Co. requests should use category = 'northstar_creative' and secondary_category = 'northstar_marketing_operations'.
 
 create extension if not exists pgcrypto;
 
@@ -228,6 +229,30 @@ create table if not exists public.creative_provider_applications (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.northstar_marketing_operations_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  category text not null default 'northstar_creative',
+  secondary_category text not null default 'northstar_marketing_operations',
+  contact_name text not null,
+  business_name text not null,
+  phone text not null,
+  email text not null,
+  city text,
+  trade text,
+  website text,
+  social_link text,
+  services_needed text[],
+  budget_range text,
+  biggest_problem text,
+  goal_30_90_days text,
+  contact_consent boolean not null default false,
+  status text not null default 'New',
+  admin_notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.forge_job_leads enable row level security;
 alter table public.forge_worker_leads enable row level security;
 alter table public.forge_referral_leads enable row level security;
@@ -238,6 +263,7 @@ alter table public.forge_delivery_events enable row level security;
 alter table public.forge_activity_events enable row level security;
 alter table public.creative_service_requests enable row level security;
 alter table public.creative_provider_applications enable row level security;
+alter table public.northstar_marketing_operations_leads enable row level security;
 
 -- Public beta recommendation:
 -- Do not add anonymous insert policies until server-side validation is ready.

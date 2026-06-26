@@ -29,7 +29,12 @@ This registry lists existing and planned features, business sections, and operat
 
 ## NorthStar Creative Co.
 
-- Planned/active section for creative services, brand work, marketing, websites, CRM, lead generation, job tracking, content, media, and business operations for blue-collar providers and local businesses.
+- Implemented / Live in UI as the Forge-connected business growth section for blue-collar workers, service providers, contractors, and local businesses.
+- Dedicated route/page exists through `/northstar-creative`.
+- Customer/business owner request form exists and saves leads with category value `northstar_creative` and secondary category value `northstar_marketing_operations`.
+- Homepage/service cards include NorthStar Creative Co. with CTA copy for growing a business.
+- Admin dashboard includes NorthStar leads, CSV export, pipeline status review, notes, copy actions, and follow-up queue integration.
+- Still requires production backend delivery, credential-safe operations workflow, service agreement, ad/account access policy, and final legal review before broad public launch.
 
 ## Stitch
 

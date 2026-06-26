@@ -6,6 +6,7 @@ const CORE_ASSETS = [
   "./photography/request/",
   "./photography/apply/",
   "./photography-videography/",
+  "./northstar-creative/",
   "./projects/",
   "./admin/projects/",
   "./index.html",
