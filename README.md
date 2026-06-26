@@ -18,6 +18,9 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Auto dealer setup checklist and `AUTO_DEALER_INTEGRATION.md` for approved dealer contact, inventory, terms, and compliance setup
 - Auto buyer inquiry form and queue for routing vehicle interest to dealer partners
 - Photography & Videography routes at `/photography`, `/photography/request`, and `/photography/apply` for customer creative requests and approved local creative provider applications
+- Forge Building route at `/building` for home projects, major builds, contractor finance review, and consent-gated partner review intake
+- Forge Capital Desk routes at `/forge/capital`, `/forge/flex`, and `/partners/flex` for Flex referral lead capture, consent, scoring, admin follow-up, and approval-gated referral review
+- Optional Business Growth Tools block on worker/provider onboarding that flags finance-related interest for Capital Desk follow-up without sending a Flex link until referral consent is captured
 - NorthStar Creative Co. route at `/northstar-creative` for blue-collar business marketing, websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations requests
 - NorthStar admin lane, CSV export, follow-up queue integration, and webhook/schema mapping with `northstar_creative` and `northstar_marketing_operations`
 - Demo login screen with worker, job poster, and admin roles
@@ -46,6 +49,8 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Worker / contractor signup
 - Worker dashboard
 - Admin dashboard with job leads and worker leads
+- Admin Building Leads table at `/admin/building-leads` with project, budget, state, partner eligibility, consent, routing, and follow-up controls
+- Admin Flex Leads table with status/industry/city/state/score filters, quick status updates, notes, CSV export, outreach copy, approval-gated Flex review actions, and Forge upsell task placeholder
 - Admin Safety Center with backup, consent, webhook, and public-demo checks
 - Admin launch gate for separating controlled first-user beta signups from broad public launch readiness
 - Copyable Launch Gate note for explaining what is safe now and what still needs backend/hosting/trust infrastructure
@@ -74,6 +79,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Admin Next 10 Batch for focused outreach sprints with Complete Sprint logging
 - Admin Session History for reviewing recent completed outreach sprints
 - Optional Zapier/webhook lead forwarding
+- Optional Flex lead forwarding through `/api/forge/flex-leads` when `FORGE_GHL_WEBHOOK_URL` or `FORGE_ZAPIER_WEBHOOK_URL` is configured in a server-backed deployment
 - CSV export for job and worker leads
 - Full JSON backup export
 - Backup freshness tracking before resets and demos
@@ -137,5 +143,7 @@ npm run check
 - `ADMIN_AUTH_PLAN.md`
 - `SUPABASE_SCHEMA.sql`
 - `WEBHOOK_PAYLOADS.md`
+- `docs/forge-capital-desk-readme.md`
+- `docs/forge-flex-capital-desk-outreach.md`
 - `netlify.toml`
 - `vercel.json`

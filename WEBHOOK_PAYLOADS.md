@@ -18,7 +18,11 @@ Forge sends webhook payloads from `sendLead(type, payload)` as JSON:
 - `job` with `payload.category = "photography_videography"`: Photography & Videography customer request from `/photography/request`.
 - `worker` with `payload.providerCategory = "photography_videography"`: Photography & Videography provider application from `/photography/apply`.
 - `northstar`: NorthStar Creative Co. marketing and business-operations request from `/northstar-creative`.
+- `forge-flex`: Forge Capital Desk lead for Flex referral follow-up from `/forge/capital`, `/forge/flex`, or `/partners/flex`.
 - `opportunity`: Trade school, union/apprenticeship, or blue-collar AI job interest.
+- `building`: Forge Building intake for home projects, major builds, or contractor finance review from `/building`.
+- `building-seneca-review`: Building lead sent to Seneca Review only after admin status gate, customer consent, partner approval, and data-sharing approval.
+- `building-flex-review`: Building finance lead sent to Flex Review only after finance eligibility, customer consent, partner approval, and data-sharing approval.
 - `project`: Forge Projects intake for home projects, major renovations, development, commercial, land, or investment-backed opportunities.
 - `project-seneca-review`: Forge-approved project lead sent to Seneca Review after OR/WA check, Forge Qualified status, and user consent.
 - `referral`: Quick Capture referral or friend lead.
@@ -55,6 +59,14 @@ Use `category = "northstar_creative"` and `secondaryCategory = "northstar_market
 
 Do not send payment details, ad-account passwords, CRM credentials, private customer lists, or sensitive business documents through the browser-only MVP.
 
+## Forge Flex Payload
+
+Expected fields: `source`, `partner`, `owner_name`, `business_name`, `email`, `phone`, `industry`, `city`, `state`, `lead_score`, `primary_need`, `interested_in_forge_services`, `interested_in_north_star_marketing`, `interested_in_payment_processing`, and `status`.
+
+Map to `forge_flex_leads`.
+
+Do not send SSNs, bank logins, full account numbers, personal credit score fields, uploads, or sensitive financial documents through Forge.
+
 ## Opportunity Payload
 
 Expected fields: `id`, `name`, `phone`, `email`, `goal`, `experience`, `location`, `note`, `status`, `created`.
@@ -66,6 +78,14 @@ Map to `forge_opportunity_leads`.
 Expected fields: `id`, `contactName`, `phone`, `email`, `projectType`, `projectTitle`, `projectDescription`, `propertyAddress`, `city`, `state`, `county`, `budgetRange`, `timeline`, `projectStage`, `ownsProperty`, `hasPlans`, `hasPermits`, `needsFinancing`, `uploadPhotos`, `uploadDocuments`, `preferredContactMethod`, `consentToShareWithPartner`, `route`, `status`, `adminNote`, `created`.
 
 Map to `project_leads`.
+
+## Building Payload
+
+Expected fields: `id`, `leadType`, `projectType`, `projectTitle`, `projectDescription`, `propertyAddress`, `city`, `county`, `state`, `zip`, `budgetRange`, `timeline`, `projectStage`, `ownsProperty`, `hasPlans`, `hasPermits`, `needsFinancing`, `businessName`, `ownerName`, `email`, `phone`, `website`, `industry`, `monthlyRevenueRange`, `yearsInBusiness`, `numberOfEmployees`, `financeNeed`, `preferredContactMethod`, `consentToReview`, `consentToContact`, `consentToShareWithApprovedPartners`, `status`, `assignedPartnerId`, and `adminNotes`.
+
+Map to `building_leads`.
+
+Do not send Building leads to Seneca, Flex, or any third-party partner unless customer consent is true and the selected partner has `approved = true` and `dataSharingApproved = true`. Do not mark a Building lead commissionable unless the assigned partner has `referralAgreementSigned = true`.
 
 ## Project Seneca Review Payload
 

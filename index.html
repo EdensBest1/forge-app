@@ -28,6 +28,7 @@
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
+            <button class="btn ghost small" type="button" data-nav="building">Building</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
             <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
             <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In</button>
@@ -109,14 +110,20 @@
           <article>
             <span class="split-label">I need breathing room</span>
             <h2>Forge Capital Desk</h2>
-            <p>Basic business-owner intake and consent before continuing through the official Flex referral channel.</p>
-            <button class="btn ghost" type="button" data-nav="capital">Check Flex Options</button>
+            <p>Basic business-owner intake and consent before any approved finance partner review.</p>
+            <button class="btn ghost" type="button" data-nav="capital">Request Finance Review</button>
           </article>
           <article>
             <span class="split-label">I want a path up</span>
             <h2>Apply to schools, unions, and blue-collar AI jobs.</h2>
             <p>Save your goal and build a next-step plan for trade school, apprenticeship, union, and field-tech career paths.</p>
             <button class="btn ghost" type="button" data-nav="opportunities">Explore Career Paths</button>
+          </article>
+          <article>
+            <span class="split-label">I need a project engine</span>
+            <h2>Forge Building</h2>
+            <p>Forge connects home projects, major builds, blue-collar pros, development partners, and business-finance tools into one project engine for Oregon and Washington.</p>
+            <button class="btn ghost" type="button" data-nav="building">Open Building</button>
           </article>
           <article>
             <span class="split-label">I have a project</span>
@@ -779,7 +786,7 @@
               <h2>Request help from NorthStar.</h2>
               <div class="field-row">
                 <label>Name<input id="northstarName" required placeholder="Full name" /></label>
-                <label>Business name<input id="northstarBusinessName" required placeholder="Business name" /></label>
+                <label>Business name<input id="northstarCompanyName" required placeholder="Business name" /></label>
               </div>
               <div class="field-row">
                 <label>Phone<input id="northstarPhone" required placeholder="(541) 555-0000" /></label>
@@ -816,9 +823,9 @@
           <div class="capital-hero-copy">
             <span class="split-label">Forge Capital Desk</span>
             <h1>Business owners need breathing room.</h1>
-            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators discover modern business finance tools through our Flex referral channel.</p>
+            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators request review for modern business finance tools through approved finance partners when available.</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-action="focus-flex-form">Check Flex Options</button>
+              <button class="btn orange" type="button" data-action="focus-flex-form">Request Finance Review</button>
               <button class="btn ghost light" type="button" data-action="copy-flex-outreach">Talk to Forge Capital Desk</button>
             </div>
           </div>
@@ -839,13 +846,13 @@
               <ul id="flexProblemsList"></ul>
             </section>
             <section class="capital-section capital-flex-help">
-              <span class="split-label">What Flex may help with</span>
-              <h2>Modern business finance tools through Flex.</h2>
+              <span class="split-label">What finance review may help with</span>
+              <h2>Modern business finance tools through approved partner review.</h2>
               <ul id="flexMayHelpList"></ul>
             </section>
             <section class="capital-section">
-              <span class="split-label">How Forge referral works</span>
-              <h2>Forge collects consent. Flex handles the product path.</h2>
+              <span class="split-label">How finance review works</span>
+              <h2>Forge collects consent. Approved finance partners handle product decisions.</h2>
               <div class="capital-steps" id="flexHowItWorks"></div>
             </section>
             <section class="capital-section compliance">
@@ -869,10 +876,10 @@
           <aside class="capital-form-panel" id="flexLeadFormSection">
             <form class="capital-form" id="flexLeadForm">
               <span class="split-label">Lead form</span>
-              <h2>Check Flex Options</h2>
-              <p class="muted">Forge only collects basic lead and consent details before sending business owners to the official Flex referral URL.</p>
+              <h2>Request Finance Review</h2>
+              <p class="muted">Forge only collects basic lead and consent details before any approved finance partner review or configured referral URL is used.</p>
               <label>Owner name<input id="flexOwnerName" required autocomplete="name" placeholder="Full name" /></label>
-              <label>Business name<input id="flexBusinessName" required placeholder="Business name" /></label>
+              <label>Business name<input id="flexCompanyName" required placeholder="Business name" /></label>
               <label>Email<input id="flexEmail" required type="email" autocomplete="email" placeholder="owner@example.com" /></label>
               <label>Phone optional<input id="flexPhone" autocomplete="tel" placeholder="(541) 555-0000" /></label>
               <div class="field-row">
@@ -894,12 +901,12 @@
               <div class="capital-checkboxes">
                 <label class="check-row"><input id="flexInterestedForge" type="checkbox" /> Interested in more customer leads through Forge</label>
                 <label class="check-row"><input id="flexInterestedNorthstar" type="checkbox" /> Interested in marketing through NorthStar Creative Co.</label>
-                <label class="check-row"><input id="flexInterestedPayments" type="checkbox" /> Interested in payment processing help</label>
+                <label class="check-row"><input id="flexInterestedProcessorHelp" type="checkbox" /> Interested in payment processing help</label>
               </div>
               <p class="trust-note" data-flex-compliance></p>
               <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
-              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive the official Flex referral link.</label>
-              <button class="btn orange full" type="submit">Check Flex Options</button>
+              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive approved finance partner review information if available.</label>
+              <button class="btn orange full" type="submit">Request Finance Review</button>
             </form>
           </aside>
         </section>
@@ -1202,8 +1209,8 @@
             </section>
             <section class="road-hazard-helper" id="roadHazardHelper">
               <div>
-                <span class="split-label">Help the Community</span>
-                <h2>Report the Pothole</h2>
+                <span class="split-label">Road hazard report helper</span>
+                <h2>Help the Community: Report the Pothole</h2>
                 <p>After you are safe, Forge can help you document and report the pothole so the right public agency can review it. Take photos, note the road name, cross street, lane, direction of travel, time of impact, and any vehicle damage.</p>
               </div>
               <div class="hero-actions">
@@ -1446,6 +1453,202 @@
         </section>
       </section>
 
+      <section class="screen building-screen" id="building-screen" data-screen="building">
+        <header class="blue-bar projects-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons">
+            <button type="button" data-action="focus-building-home">Home Project</button>
+            <button type="button" data-action="focus-building-major">Major Build</button>
+            <button type="button" data-nav="admin-building-leads" data-admin-control>Admin</button>
+          </div>
+        </header>
+
+        <section class="building-hero">
+          <div class="building-hero-copy">
+            <span class="split-label">Forge Building</span>
+            <h1>Build smarter. Fund smarter. Finish with trusted operators.</h1>
+            <p>Forge helps homeowners, property owners, contractors, businesses, and investors organize projects and connect with the right level of support. Small jobs route to verified local pros. Larger projects go through Major Projects Review. Contractor finance requests go through Finance Partner Review.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-building-home">Start a Home Project</button>
+              <button class="btn blue" type="button" data-action="focus-building-major">Submit a Major Build</button>
+              <button class="btn ghost light" type="button" data-action="open-building-finance-review">Request Contractor Finance Review</button>
+            </div>
+          </div>
+          <div class="building-hero-panel">
+            <span>OR / WA project engine</span>
+            <strong>Forge connects home projects, major builds, blue-collar pros, development partners, and business-finance tools into one project engine for Oregon and Washington.</strong>
+            <p>Partner routing stays gated behind project fit, customer consent, written approval, and separate partner agreements.</p>
+          </div>
+        </section>
+
+        <section class="building-layout">
+          <div class="building-main">
+            <section class="building-copy-block">
+              <span class="split-label">Forge Building</span>
+              <h2>Build smarter. Fund smarter. Finish with trusted operators.</h2>
+              <p>Forge helps homeowners, property owners, contractors, businesses, and investors organize projects and connect with the right level of support.</p>
+              <p>For smaller jobs, Forge routes customers to verified local pros.</p>
+              <p>For larger projects, Forge sends the opportunity through Major Projects Review before it is routed to any development, construction, finance, or operating partner.</p>
+            </section>
+
+            <section class="building-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">What Forge Building can help with</span>
+                  <h2>Projects, finance review, and operating support.</h2>
+                </div>
+              </div>
+              <div class="building-chip-grid" id="buildingHelpList"></div>
+            </section>
+
+            <section class="building-card-grid" id="buildingPublicCards"></section>
+
+            <section class="building-review-grid">
+              <article>
+                <span class="split-label">Major Project Review</span>
+                <h2>Some jobs are bigger than a normal contractor request.</h2>
+                <p>If your project involves land, multifamily, mixed-use, commercial improvements, apartment upgrades, investor-backed construction, or a large renovation, Forge can collect your information and route it through Major Projects Review.</p>
+                <p>Qualified projects may be eligible for review by approved construction, development, or operating partners.</p>
+              </article>
+              <article>
+                <span class="split-label">Contractor Finance Review</span>
+                <h2>For builders, service businesses, and project operators.</h2>
+                <p>If you are a contractor, builder, service business, or project operator, Forge can also help you request review for business finance, vendor payments, expense management, bill pay, working capital, and operating tools.</p>
+                <p>Qualified finance requests may be routed to approved finance partners after your consent.</p>
+              </article>
+            </section>
+
+            <section class="building-timeline">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Project review timeline</span>
+                  <h2>Clear routing without public partner claims.</h2>
+                </div>
+              </div>
+              <div class="project-status-timeline" id="buildingStatusTimeline"></div>
+            </section>
+
+            <section class="building-lead-list">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Customer dashboard</span>
+                  <h2>Building requests</h2>
+                  <p class="muted">Submitted Building requests appear here for the current demo and in the admin Building Leads queue.</p>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-building-queue">Copy Building Queue</button>
+              </div>
+              <div class="project-lead-list" id="buildingLeadList"></div>
+            </section>
+
+            <section class="building-compliance">
+              <span class="split-label">Important Notice</span>
+              <p data-building-compliance></p>
+            </section>
+          </div>
+
+          <form class="building-intake-card" id="buildingLeadForm">
+            <span class="split-label">BuildingLead intake</span>
+            <h2>Submit a home project, major build, or finance review.</h2>
+            <p class="muted">Forge collects the right details first, then routes the request inside Forge admin review.</p>
+            <label>leadType<select id="buildingLeadType" required></select></label>
+            <label>projectType<select id="buildingProjectType" required></select></label>
+            <label>projectTitle<input id="buildingProjectTitle" required placeholder="Example: fence and gate, 12-unit review, vendor workflow" /></label>
+            <label>projectDescription<textarea id="buildingProjectDescription" rows="4" required placeholder="Describe the scope, business need, property, documents, timing, and constraints."></textarea></label>
+            <label>propertyAddress<input id="buildingPropertyAddress" placeholder="Street address or parcel reference" /></label>
+            <div class="field-row">
+              <label>city<input id="buildingCity" required placeholder="Medford" /></label>
+              <label>state
+                <select id="buildingState" required>
+                  <option value="OR">OR</option>
+                  <option value="WA">WA</option>
+                  <option value="CA">CA</option>
+                  <option value="ID">ID</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>county<input id="buildingCounty" placeholder="Jackson, Multnomah, Clark" /></label>
+              <label>zip<input id="buildingZip" inputmode="numeric" placeholder="97501" /></label>
+            </div>
+            <div class="field-row">
+              <label>budgetRange<select id="buildingBudgetRange" required></select></label>
+              <label>timeline<input id="buildingTimeline" required placeholder="ASAP, 1-3 months, 6-12 months" /></label>
+            </div>
+            <label>projectStage<select id="buildingProjectStage" required></select></label>
+            <div class="field-row">
+              <label>ownsProperty
+                <select id="buildingOwnsProperty" required>
+                  <option value="not_sure">Not sure</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="under_contract">Under contract</option>
+                </select>
+              </label>
+              <label>hasPlans
+                <select id="buildingHasPlans" required>
+                  <option value="not_sure">Not sure</option>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                  <option value="in_progress">In progress</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>hasPermits
+                <select id="buildingHasPermits" required>
+                  <option value="not_sure">Not sure</option>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                  <option value="in_progress">In progress</option>
+                </select>
+              </label>
+              <label>needsFinancing
+                <select id="buildingNeedsFinancing" required>
+                  <option value="not_sure">Not sure</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+            </div>
+            <section class="building-finance-fields" id="buildingFinanceFields">
+              <span class="split-label">Business finance fields</span>
+              <label>businessName<input id="buildingCompanyName" placeholder="Business name" /></label>
+              <label>ownerName<input id="buildingOwnerName" required placeholder="Owner or contact name" autocomplete="name" /></label>
+              <div class="field-row">
+                <label>email<input id="buildingEmail" type="email" required placeholder="name@email.com" autocomplete="email" /></label>
+                <label>phone<input id="buildingPhone" required placeholder="(541) 555-0000" autocomplete="tel" /></label>
+              </div>
+              <label>website<input id="buildingWebsite" placeholder="https://example.com" /></label>
+              <div class="field-row">
+                <label>industry<input id="buildingIndustry" placeholder="Contractor, builder, landscaping, service business" /></label>
+                <label>monthlyRevenueRange<input id="buildingMonthlyRevenueRange" placeholder="$25k - $75k/month" /></label>
+              </div>
+              <div class="field-row">
+                <label>yearsInBusiness<input id="buildingYearsInBusiness" placeholder="3-5 years" /></label>
+                <label>numberOfEmployees<input id="buildingNumberOfEmployees" placeholder="6-20" /></label>
+              </div>
+              <label>financeNeed<select id="buildingFinanceNeed"></select></label>
+            </section>
+            <label>preferredContactMethod
+              <select id="buildingPreferredContactMethod" required>
+                <option>Phone</option>
+                <option>Text</option>
+                <option>Email</option>
+              </select>
+            </label>
+            <div class="building-consents">
+              <label class="check-row"><input id="buildingConsentReview" type="checkbox" required /> I agree Forge may review my submission.</label>
+              <label class="check-row"><input id="buildingConsentContact" type="checkbox" required /> I agree Forge may contact me about this project.</label>
+              <label class="check-row"><input id="buildingConsentShare" type="checkbox" /> I agree Forge may share my project or business finance request with approved third-party partners only if I choose partner review.</label>
+            </div>
+            <div class="project-route-preview" id="buildingRoutePreview" aria-live="polite"></div>
+            <p class="trust-note" data-building-compliance></p>
+            <button class="btn orange full" type="submit">Submit Building Review</button>
+          </form>
+        </section>
+      </section>
+
       <section class="screen homebuilding-screen" id="homebuilding-screen" data-screen="homebuilding">
         <header class="homebuilding-top">
           <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
@@ -1567,12 +1770,12 @@
           <div class="homebuilding-panel">
             <span class="homebuilding-kicker">Forge Role</span>
             <h2>Qualified lead intake and referral, not contractor of record.</h2>
-            <p>Forge collects qualified project leads, pre-screens scope and readiness, and can send accepted major leads to Seneca for review. Seneca may accept or decline the lead. If Seneca signs the client, Forge may receive an agreed referral or success fee. All construction and development contracts remain between the client and Seneca or the properly licensed contractor. Forge is not the contractor of record.</p>
+            <p>Forge collects qualified project leads, pre-screens scope and readiness, and can send accepted major leads to approved development, construction, finance, or operating partners only after customer consent and written partner approval. Any partner may accept or decline the lead. Any referral or success fee must be governed by a separate written agreement. All construction and development contracts remain between the client and the approved partner or properly licensed contractor. Forge is not the contractor of record.</p>
           </div>
           <div class="homebuilding-role-grid">
             <article><strong>Pre-screen</strong><span>Capture scope, budget, stage, location, timeline, property context, photos, and plans.</span></article>
-            <article><strong>Seneca Review</strong><span>Send accepted major project leads for Seneca to accept, decline, or request more information.</span></article>
-            <article><strong>Contract Boundary</strong><span>Construction and development agreements stay between the client and Seneca or the licensed contractor.</span></article>
+            <article><strong>Partner Review</strong><span>Keep accepted major project leads inside Forge until customer consent, written approval, and data-sharing rules pass.</span></article>
+            <article><strong>Contract Boundary</strong><span>Construction and development agreements stay between the client and the approved partner or licensed contractor.</span></article>
           </div>
         </section>
 
@@ -1689,7 +1892,7 @@
             </div>
             <label>Notes<textarea id="homebuildingNotes" placeholder="Tell Forge about the land, scope, build goals, constraints, partners already involved, or questions."></textarea></label>
             <div class="homebuilding-route-preview" id="homebuildingRoutePreview" aria-live="polite"></div>
-            <p class="homebuilding-boundary">Forge pre-screens qualified project leads and may refer accepted major leads to Seneca. Seneca chooses whether to accept or decline. If Seneca signs the client, Forge may receive an agreed referral or success fee. All construction/development contracts remain between the client and Seneca or the licensed contractor. Forge is not the contractor of record. Do not upload IDs, payment information, passwords, or sensitive official documents into this MVP.</p>
+            <p class="homebuilding-boundary">Forge pre-screens qualified project leads and may refer accepted major leads to approved development, construction, finance, or operating partners only after customer consent and written partner approval. Any partner may accept or decline review. Any referral or success fee must be governed by a separate written agreement. All construction/development contracts remain between the client and the approved partner or licensed contractor. Forge is not the contractor of record. Do not upload IDs, payment information, passwords, or sensitive official documents into this MVP.</p>
             <button class="btn orange full" type="submit">Request Homebuilding Consultation</button>
           </form>
         </section>
@@ -1874,6 +2077,7 @@
             <button type="button" data-nav="jobs">Jobs</button>
             <button type="button" data-nav="signup">Workers</button>
             <button type="button" data-nav="capital">Flex Leads</button>
+            <button type="button" data-nav="admin-building-leads">Building Leads</button>
             <button type="button" data-nav="admin-projects">Projects</button>
             <button type="button" data-nav="bid">Bids</button>
             <button type="button" data-nav="messages">Messages</button>
@@ -2081,8 +2285,10 @@
                 <select id="queueTypeFilter">
                   <option>All Lead Types</option>
                   <option>Homebuilding</option>
+                  <option>Building</option>
                   <option>Projects</option>
                   <option>NorthStar</option>
+                  <option>Capital Desk</option>
                   <option>Road Rescue</option>
                   <option>Jobs</option>
                   <option>Workers</option>
@@ -2100,6 +2306,10 @@
                   <option>Active</option>
                   <option>Paused</option>
                   <option>Closed</option>
+                  <option>new</option>
+                  <option>contacted</option>
+                  <option>qualified</option>
+                  <option>flex_link_sent</option>
                   <option>Matching</option>
                   <option>Ready</option>
                   <option>Hot</option>
@@ -2116,6 +2326,15 @@
                   <option>Lost</option>
                   <option>Not a Fit</option>
                   <option>Routed to Forge Pro</option>
+                  <option>NEW_BUILDING_LEAD</option>
+                  <option>HOME_PROJECT_REVIEW</option>
+                  <option>ROUTED_TO_FORGE_PRO</option>
+                  <option>MAJOR_PROJECT_REVIEW</option>
+                  <option>FORGE_QUALIFIED</option>
+                  <option>CUSTOMER_CONSENT_REQUESTED</option>
+                  <option>CUSTOMER_CONSENT_APPROVED</option>
+                  <option>SENECA_REVIEW_ELIGIBLE</option>
+                  <option>FLEX_REVIEW_ELIGIBLE</option>
                   <option>NEW</option>
                   <option>NEEDS_MORE_INFO</option>
                   <option>FORGE_QUALIFIED</option>
@@ -2177,7 +2396,7 @@
                 <div>
                   <span class="split-label">Forge Capital Desk</span>
                   <h2>Flex Leads</h2>
-                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and the official Flex referral link handoff.</p>
+                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and any configured finance partner handoff.</p>
                 </div>
                 <div class="compact-actions">
                   <button class="btn ghost small" type="button" data-action="copy-flex-queue">Copy Queue</button>
@@ -2210,6 +2429,15 @@
             </div>
             <div class="table-card"><table id="adminHomebuildingTable"></table></div>
             <div class="lead-board" id="adminHomebuildingPipeline"></div>
+            <div class="admin-heading">
+              <h2>Building Leads</h2>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="export-building-leads">Export Building CSV</button>
+                <button class="btn blue small" type="button" data-nav="admin-building-leads">Open Building Queue</button>
+              </div>
+            </div>
+            <div class="table-card"><table id="adminBuildingLeadsTable"></table></div>
+            <div class="lead-board" id="adminBuildingLeadsPipeline"></div>
             <div class="admin-heading">
               <h2>Project Leads</h2>
               <div class="compact-actions">
@@ -2286,6 +2514,76 @@
             </div>
             <div class="table-card"><table id="adminProjectsFullTable"></table></div>
             <div class="lead-board project-admin-board" id="adminProjectsFullPipeline"></div>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="admin-building-leads-screen" data-screen="admin-building-leads">
+        <section class="dashboard-shell">
+          <aside class="side-nav">
+            <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+            <button type="button" data-nav="admin">Admin</button>
+            <button type="button" data-nav="admin-building-leads">Building Leads</button>
+            <button type="button" data-nav="building">Public Building</button>
+            <button type="button" data-nav="capital">Flex Leads</button>
+            <button type="button" data-nav="admin-projects">Projects</button>
+            <button type="button" data-nav="messages">Messages</button>
+            <button type="button" data-nav="reports">Reports</button>
+          </aside>
+          <section class="dashboard-main admin-building-main">
+            <div class="admin-heading">
+              <div>
+                <span class="split-label">/admin/building-leads</span>
+                <h1>Building Leads Admin Queue</h1>
+                <p class="muted">Review home projects, major builds, contractor finance requests, partner consent, Seneca eligibility, and Flex eligibility.</p>
+              </div>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="copy-building-queue">Copy Queue</button>
+                <button class="btn orange small" type="button" data-action="export-building-leads">Export Building CSV</button>
+              </div>
+            </div>
+            <div class="stat-row" id="adminBuildingStats"></div>
+            <section class="settings-card partner-admin-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Draft partner candidates</span>
+                  <h2>Seneca and Flex stay admin-only until approved.</h2>
+                  <p class="muted" id="adminBuildingPartnerSummary"></p>
+                </div>
+                <span class="status-badge" id="adminBuildingPartnerBadge">Draft only</span>
+              </div>
+              <div class="partner-document-grid building-partner-grid" id="adminBuildingPartnerCards"></div>
+            </section>
+            <section class="settings-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Internal sales / CRM copy</span>
+                  <h2>Relationship-driven project network.</h2>
+                </div>
+              </div>
+              <p class="muted" id="buildingInternalSalesCopy"></p>
+              <p class="muted" id="buildingNorthStarConnection"></p>
+            </section>
+            <div class="admin-heading">
+              <h2>Filters</h2>
+              <button class="btn ghost small" type="button" data-nav="building">Open Public Intake</button>
+            </div>
+            <div class="filter-row building-filter-row">
+              <select id="buildingStatusFilter"></select>
+              <select id="buildingLeadTypeFilter"></select>
+              <select id="buildingProjectTypeFilter"></select>
+              <input id="buildingStateFilter" maxlength="5" placeholder="State" />
+              <select id="buildingBudgetFilter"></select>
+              <select id="buildingPartnerEligibilityFilter">
+                <option>All Partner Eligibility</option>
+                <option>Seneca eligible</option>
+                <option>Flex eligible</option>
+                <option>Blocked by approval</option>
+                <option>Consent missing</option>
+              </select>
+            </div>
+            <div class="table-card"><table id="adminBuildingFullTable"></table></div>
+            <div class="lead-board project-admin-board" id="adminBuildingFullPipeline"></div>
           </section>
         </section>
       </section>
@@ -2372,6 +2670,7 @@
       <button type="button" data-nav="auto" aria-label="Open Forge Auto services">Auto</button>
       <button type="button" data-nav="road-rescue" aria-label="Open Road Rescue">Rescue</button>
       <button type="button" data-nav="capital" aria-label="Open Capital Desk">Capital</button>
+      <button type="button" data-nav="building" aria-label="Open Forge Building">Building</button>
       <button type="button" data-nav="projects" aria-label="Open Forge Projects">Projects</button>
       <button type="button" data-nav="homebuilding" aria-label="Open homebuilding">Build</button>
       <button type="button" data-nav="messages" aria-label="Open messages">Msgs</button>
