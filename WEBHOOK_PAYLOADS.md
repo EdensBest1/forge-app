@@ -20,6 +20,11 @@ Forge sends webhook payloads from `sendLead(type, payload)` as JSON:
 - `northstar`: NorthStar Creative Co. marketing and business-operations request from `/northstar-creative`.
 - `forge-flex`: Forge Capital Desk lead for Flex referral follow-up from `/forge/capital`, `/forge/flex`, or `/partners/flex`.
 - `opportunity`: Trade school, union/apprenticeship, or blue-collar AI job interest.
+- `forge-academy`: Forge Academy student/worker career intake from `/forge-academy`.
+- `trade-pathway`: Admitly Trade Pathways intake from `/trade-pathways`.
+- `employer-training-partner`: Employer or contractor partner intake for training, hiring, apprenticeship, or local placement.
+- `school-program-partner`: School, trade program, certification program, or training partner intake.
+- `resume-request`: Future Forge Career+ resume/application support request. The current MVP creates this locally from Academy and Admitly forms.
 - `vehicle-seller`: Sell My Car on Forge, List My Vehicle, Consign My Vehicle, Wholesale Offer, Auction Vehicle Sourcing, or Forge Platinum Auto Concierge seller lead from `/auto`.
 - `auto-service`: Forge Auto & Transport service, buyer request, transport, executive transport, repair, detailing, inspection, or auction sourcing request from `/auto`.
 - `building`: Forge Building intake for home projects, major builds, or contractor finance review from `/building`.
@@ -63,17 +68,55 @@ Do not send payment details, ad-account passwords, CRM credentials, private cust
 
 ## Forge Flex Payload
 
-Expected fields: `source`, `partner`, `owner_name`, `business_name`, `email`, `phone`, `industry`, `city`, `state`, `lead_score`, `primary_need`, `interested_in_forge_services`, `interested_in_north_star_marketing`, `interested_in_payment_processing`, and `status`.
+Expected fields: `source`, `partner`, `owner_name`, `business_name`, `email`, `phone`, `industry`, `city`, `state`, `lead_score`, `primary_need`, `interested_in_forge_job_leads`, `interested_in_north_star_marketing`, `interested_in_payment_processing`, `interested_in_website_crm_automation`, and `status`.
 
 Map to `forge_flex_leads`.
 
 Do not send SSNs, bank logins, full account numbers, personal credit score fields, uploads, or sensitive financial documents through Forge.
+
+If `FORGE_GHL_WEBHOOK_URL` or `FORGE_ZAPIER_WEBHOOK_URL` is configured in `window.FORGE_ENV`, Forge posts this bare payload to those URLs after a Capital Desk form submission. The Admin Lead Capture Setup webhook still receives the wrapped `sendLead("forge-flex", payload)` event when enabled.
 
 ## Opportunity Payload
 
 Expected fields: `id`, `name`, `phone`, `email`, `goal`, `experience`, `location`, `note`, `status`, `created`.
 
 Map to `forge_opportunity_leads`.
+
+## Forge Academy Payload
+
+Expected fields: `id`, `sourceApp`, `leadType`, `fullName`, `phone`, `email`, `city`, `state`, `desiredTrade`, `currentExperience`, `hasTransportation`, `hasDriversLicense`, `needsTraining`, `needsJobNow`, `needsResume`, `interestedCareerPlus`, `consentToContact`, `status`, `priority`, `notes`, and `created`.
+
+Map to `forge_academy_leads`.
+
+Safety rule: Forge Academy supports blue-collar career pathways, resumes, apprenticeships, training, and local job follow-up. Do not guarantee employment, admission, union acceptance, licensure, scholarship approval, financial aid, or placement.
+
+## Admitly Trade Pathways Payload
+
+Expected fields: `id`, `sourceApp`, `leadType`, `fullName`, `phone`, `email`, `city`, `state`, `educationLevel`, `ageRange`, `pathway`, `desiredTrade`, `timeline`, `fundingNeed`, `workExperience`, `resumeText`, `essayHelp`, `scholarshipHelp`, `jobHelp`, `consentToContact`, `status`, `priority`, `notes`, and `created`.
+
+Map to `trade_pathway_leads`.
+
+Safety rule: Admitly organizes education, application, scholarship, essay, school planning, and career pathway support. Applicants must submit through official school, union, apprenticeship, employer, or program channels.
+
+## Academy Partner Payloads
+
+`employer-training-partner` expected fields: `id`, `sourceApp`, `leadType`, `businessName`, `contactName`, `phone`, `email`, `tradeCategory`, `hiringNeeds`, `apprenticeshipAvailability`, `willingToTrain`, `insuranceLicense`, `status`, `priority`, `notes`, and `created`.
+
+Map to `employer_training_partners`.
+
+`school-program-partner` expected fields: `id`, `sourceApp`, `leadType`, `schoolName`, `contactName`, `phone`, `email`, `programTypes`, `location`, `costRange`, `financialAidAvailable`, `enrollmentDeadlines`, `status`, `priority`, `notes`, and `created`.
+
+Map to `school_partners`.
+
+Verify employer license, insurance, pay, safety expectations, written terms, school accreditation, tuition, financial aid, outcomes, and official deadlines before routing users.
+
+## Resume Request Payload
+
+Expected fields: `id`, `sourceApp`, `leadType`, `fullName`, `phone`, `email`, `desiredTrade`, `city`, `state`, `currentExperience`, `resumeText`, `consentToContact`, `status`, `priority`, `notes`, and `created`.
+
+Map to `resume_requests`.
+
+Forge Career+ is a paid placeholder until pricing, billing, secure uploads, account access, and human review are live.
 
 ## Vehicle Seller Payload
 

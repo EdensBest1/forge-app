@@ -399,6 +399,18 @@ const roadRescueStatuses = ["New", "Contacted", "Provider Notified", "Matched", 
 const creativeRequestStatuses = ["submitted", "reviewing", "quoted", "accepted", "assigned", "completed", "canceled"];
 const creativeProviderStatuses = ["draft", "submitted", "under_review", "approved", "rejected", "suspended"];
 const manufacturingLeadStatuses = [
+  "Request received",
+  "Sourcing manufacturers",
+  "Awaiting bids",
+  "Sampling",
+  "Formulation",
+  "Production quote",
+  "Manufacturing selected",
+  "In production",
+  "Testing",
+  "Packaging",
+  "Ready to ship",
+  "Completed",
   "New RFQ",
   "Needs Review",
   "Supplier Matching",
@@ -414,6 +426,27 @@ const manufacturingLeadStatuses = [
   "Closed Lost"
 ];
 const manufacturingSupplierStatuses = ["Needs Review", "Profile Draft", "Verified by Forge - placeholder", "Paused"];
+const manufacturingSupplierLeadSources = ["Thomasnet", "Google", "LinkedIn", "Trade show", "Referral", "Direct website", "Inbound inquiry", "Existing relationship", "Manual research", "CSV import", "Other"];
+const manufacturingSupplierLeadStatuses = ["Not contacted", "Contacted", "Replied", "Qualified", "Not a fit", "Follow-up needed", "Partner", "Customer", "Invited to Join Forge", "Converted to Provider Profile", "Manufacturing Opportunity Created"];
+const manufacturingRelatedVerticals = ["Manufacturing", "Hauling", "Cleaning", "Concrete / Asphalt", "Masonry", "Other"];
+const manufacturingTestingOptions = ["COA", "Heavy metals", "Microbials", "Potency", "Stability", "Allergen", "Third-party lab", "Other"];
+const manufacturingYesNoReviewOptions = ["No", "Yes", "Not sure"];
+const manufacturingBidStatuses = ["Submitted", "Selected", "Declined", "Withdrawn"];
+const manufacturingLegacyStatusMap = {
+  "New RFQ": "Request received",
+  "Needs Review": "Request received",
+  "Supplier Matching": "Sourcing manufacturers",
+  "Quote Requested": "Awaiting bids",
+  "Quote Received": "Production quote",
+  "Sample Requested": "Sampling",
+  "Compliance Review": "Formulation",
+  "PO Pending": "Manufacturing selected",
+  "Production Started": "In production",
+  "Production Complete": "Ready to ship",
+  "Fulfillment / Shipping": "Ready to ship",
+  "Closed Won": "Completed",
+  "Closed Lost": "Completed"
+};
 const flexLeadStatuses = [
   "new",
   "contacted",
@@ -429,7 +462,7 @@ const flexLeadStatuses = [
   "closed_lost"
 ];
 const FORGE_ENV = typeof window !== "undefined" ? window.FORGE_ENV || {} : {};
-const FLEX_REFERRAL_URL_PLACEHOLDER = "https://REPLACE-WITH-APPROVED-FLEX-REFERRAL-LINK";
+const FLEX_REFERRAL_URL_PLACEHOLDER = "https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK";
 const FLEX_APP_URL = FORGE_ENV.FLEX_APP_URL || "";
 const NEXT_PUBLIC_FLEX_REFERRAL_URL = FORGE_ENV.NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
 const FLEX_PARTNER_MODE = "referral";
@@ -437,11 +470,32 @@ const FORGE_CAPITAL_DESK_ENABLED = true;
 const FORGE_LEAD_NOTIFY_EMAIL = "admin@forge.local";
 const FORGE_GHL_WEBHOOK_URL = FORGE_ENV.FORGE_GHL_WEBHOOK_URL || "";
 const FORGE_ZAPIER_WEBHOOK_URL = FORGE_ENV.FORGE_ZAPIER_WEBHOOK_URL || "";
-const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may route eligible business owners to approved finance partner review only when consent, written approval, and data-sharing requirements are in place. Finance products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.";
+const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.";
 const BUILDING_COMPLIANCE_COPY = "Forge is a marketplace and project coordination platform. Forge is not the contractor of record, lender, bank, broker-dealer, financial advisor, or credit provider. Partner routing is subject to project fit, customer consent, licensing, insurance, eligibility, written partner approval, and separate agreements between the customer and the applicable partner. Forge does not publicly claim official partnerships, use partner logos, or share customer information with third-party partners unless the required approvals and consent are in place.";
 const MANUFACTURING_COMPLIANCE_COPY = "Forge does not provide legal, medical, FDA, FTC, tax, or compliance advice. Supplement, nutraceutical, CBD/hemp, food, beverage, cosmetic, and pet wellness products may require specialized legal review, testing, labeling, claims review, insurance, and regulatory compliance before sale. Users are responsible for confirming all applicable federal, state, and local requirements.";
 const MANUFACTURING_DIRECTORY_BOUNDARY_COPY = "Thomasnet-style supplier-discovery workflows may be used only as a benchmark for how buyers search, filter, and request quotes. Forge uses original marketplace structure, user-submitted profiles, demo placeholders, and consent-based relationships. Do not scrape, copy, import, or reproduce proprietary supplier listings, descriptions, profiles, categories, images, or data.";
+const MANUFACTURING_IMPORT_PERMISSION_COPY = "Only import supplier data you have permission to use. Do not scrape, data mine, or copy third-party directories into Forge.";
+const MANUFACTURING_OUTREACH_TEMPLATE = `Subject: Manufacturing partnership opportunity with Forge
+
+Hi {{companyName}}, my name is Andrew with Forge. We are building a service marketplace that helps customers and businesses find qualified manufacturers, contractors, service providers, and blue-collar companies. I'm reaching out because your company may be a fit for vitamin, supplement, nutraceutical, packaging, testing, or fulfillment opportunities. We would love to learn what types of projects you accept, your MOQ, capabilities, certifications, and whether you are open to receiving qualified manufacturing requests through Forge.`;
 const manufacturingSupplierTypes = [
+  "Vitamin Manufacturer",
+  "Supplement Manufacturer",
+  "Nutraceutical Manufacturer",
+  "Contract Manufacturer",
+  "Private Label Manufacturer",
+  "White Label Manufacturer",
+  "Gummy Manufacturer",
+  "Capsule Manufacturer",
+  "Tablet Manufacturer",
+  "Powder Manufacturer",
+  "Sports Nutrition Manufacturer",
+  "Pet Supplement Manufacturer",
+  "Packaging / Labeling Provider",
+  "Fulfillment Provider",
+  "Ingredient Supplier",
+  "Formulation Consultant",
+  "Lab Testing Provider",
   "Vitamin manufacturers",
   "Nutraceutical manufacturers",
   "Supplement contract manufacturers",
@@ -475,6 +529,42 @@ const manufacturingSupplierTypes = [
   "White-label product partners"
 ];
 const manufacturingProductCategories = [
+  "Vitamin Manufacturing",
+  "Supplement Manufacturing",
+  "Nutraceutical Manufacturing",
+  "Private Label Supplements",
+  "Contract Manufacturing",
+  "White Label Vitamins",
+  "Capsule Manufacturing",
+  "Tablet Manufacturing",
+  "Gummy Manufacturing",
+  "Powder Manufacturing",
+  "Protein Powder Manufacturing",
+  "Pre-Workout Manufacturing",
+  "Creatine Product Manufacturing",
+  "Collagen Product Manufacturing",
+  "Electrolyte Product Manufacturing",
+  "Greens Powder Manufacturing",
+  "CBD / Hemp Product Manufacturing, only where legal and compliant",
+  "Pet Supplement Manufacturing",
+  "Sports Nutrition Manufacturing",
+  "Packaging & Labeling",
+  "Bottling",
+  "Pouch Packaging",
+  "Stick Pack Packaging",
+  "Blister Packaging",
+  "Fulfillment",
+  "Formulation Support",
+  "Flavoring Support",
+  "Ingredient Sourcing",
+  "Lab Testing",
+  "COA / Certificate of Analysis Support",
+  "cGMP Manufacturing",
+  "FDA-Registered Facility Support",
+  "Organic-Certified Manufacturing",
+  "Kosher-Certified Manufacturing",
+  "Halal-Certified Manufacturing",
+  "NSF / Informed Sport / third-party testing support",
   "Vitamins",
   "Supplements",
   "Nutraceuticals",
@@ -498,13 +588,45 @@ const manufacturingProductCategories = [
   "Compliance consulting",
   "Fulfillment/3PL"
 ];
-const manufacturingDosageForms = ["Capsule", "Tablet", "Gummy", "Chew", "Powder", "Liquid", "Beverage", "Softgel", "Topical", "Pet product", "Other"];
-const manufacturingFormulaStatuses = ["Idea only", "Existing formula", "Needs formulation", "Ready for production"];
+const manufacturingDosageForms = ["Capsule", "Tablet", "Gummy", "Chew", "Powder", "Liquid", "Beverage", "Softgel", "Stick pack", "Sachet", "Shot", "Tincture", "Topical", "Pet product", "Other"];
+const manufacturingFormulaStatuses = ["Need help creating formula", "Have rough idea", "Have final formula", "Need white label product", "Idea only", "Existing formula", "Needs formulation", "Ready for production"];
 const manufacturingCleanLabelOptions = ["Organic", "Vegan", "Non-GMO", "Gluten-free", "Sugar-free", "Clean-label"];
 const manufacturingCertificationOptions = ["GMP", "NSF", "USDA Organic", "Kosher", "Halal", "FDA-registered facility", "ISO", "SQF", "Third-party COA", "Stability testing"];
 const manufacturingBudgetRanges = ["Not sure yet", "Under $10k", "$10k - $25k", "$25k - $75k", "$75k - $150k", "$150k+"];
 const manufacturingMoqFilterOptions = ["All MOQs", "Low MOQ", "Under 5,000 units", "5,000 - 25,000 units", "25,000+ units"];
 const manufacturingFilterFlags = [
+  "Vitamin manufacturing",
+  "Supplement manufacturing",
+  "Gummies",
+  "Capsules",
+  "Tablets",
+  "Powders",
+  "Liquids",
+  "Protein",
+  "Pre-workout",
+  "Creatine",
+  "Collagen",
+  "Electrolytes",
+  "Greens",
+  "Private label",
+  "Custom formulation",
+  "White label",
+  "Low MOQ",
+  "Packaging",
+  "Fulfillment",
+  "Lab testing",
+  "cGMP",
+  "FDA registered",
+  "Organic",
+  "NSF",
+  "Informed Sport",
+  "Kosher",
+  "Halal",
+  "Vegan",
+  "Ships nationwide",
+  "Accepting new clients",
+  "Lead source",
+  "Outreach status",
   "Private-label available",
   "Formulation available",
   "Packaging available",
@@ -765,9 +887,9 @@ const buildingPublicCards = [
   },
   {
     title: "Contractor Finance & Business Tools",
-    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can collect a finance request and route qualified business owners to approved finance partner review when available.",
+    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can collect a basic request and refer qualified business owners through the Flex referral channel when appropriate.",
     bestFor: ["Contractors", "Builders", "Service businesses", "Blue-collar companies", "Project operators", "Businesses with payroll, invoices, vendors, or material costs"],
-    button: "Request Business Finance Review",
+    button: "Check Flex Options",
     action: "open-building-finance-review"
   },
   {
@@ -2337,6 +2459,38 @@ const seedState = {
       status: "Needs Review"
     }
   ],
+  manufacturingSupplierLeads: [
+    {
+      id: "supplier-lead-demo-manual-research",
+      companyName: "Example Manual Research Supplier",
+      contactName: "Demo Outreach Contact",
+      phone: "(541) 555-4400",
+      email: "demo-supplier-lead@example.com",
+      website: "https://example.com",
+      city: "Medford",
+      state: "OR",
+      country: "USA",
+      supplierCategory: "Supplement Manufacturer",
+      capabilities: "Placeholder capability notes for capsules, powders, packaging, and quote review.",
+      certifications: "cGMP, FDA registered facility support",
+      productTypes: "Vitamins, protein, electrolytes",
+      moq: "5,000 units",
+      leadTime: "8-12 weeks",
+      notes: "Demo CRM lead only. No copied supplier-directory data.",
+      source: "Manual research",
+      sourceUrl: "",
+      dateDiscovered: "Today",
+      addedBy: "Andrew",
+      outreachStatus: "Not contacted",
+      lastContacted: "",
+      nextFollowUpDate: "",
+      followUpNotes: "Use the Forge outreach template before inviting.",
+      potentialOpportunityValue: "$25k - $75k",
+      relatedForgeVertical: "Manufacturing",
+      tags: "private label, low MOQ, cGMP",
+      created: "Today"
+    }
+  ],
   projectLeads: [
     {
       id: "project-demo",
@@ -2796,10 +2950,10 @@ const startPaths = [
   {
     label: "My business needs breathing room",
     title: "Forge Capital Desk.",
-    body: "Tell Forge what your business needs and request approved finance partner review when available.",
-    next: "Forge collects basic contact info and consent, then keeps any partner review behind approval and data-sharing gates.",
+    body: "Tell Forge what your business needs and check whether Flex options may be a fit.",
+    next: "Forge collects basic contact info and consent, then Flex handles applications, approval, onboarding, activation, and support.",
     screen: "capital",
-    action: "Finance Review",
+    action: "Check Flex Options",
     tone: "orange"
   },
   {
@@ -2857,6 +3011,7 @@ function normalizeState(value) {
   next.roadRescueRequests = value?.roadRescueRequests || seedState.roadRescueRequests;
   next.manufacturingRfqs = value?.manufacturingRfqs || seedState.manufacturingRfqs;
   next.manufacturingSuppliers = value?.manufacturingSuppliers || seedState.manufacturingSuppliers;
+  next.manufacturingSupplierLeads = value?.manufacturingSupplierLeads || seedState.manufacturingSupplierLeads;
   next.projectLeads = value?.projectLeads || seedState.projectLeads;
   next.projectLeadNotes = value?.projectLeadNotes || seedState.projectLeadNotes;
   next.partners = value?.partners || seedState.partners;
@@ -2901,6 +3056,7 @@ function normalizeState(value) {
   }));
   next.manufacturingRfqs = next.manufacturingRfqs.map((lead) => normalizeManufacturingRfq(lead));
   next.manufacturingSuppliers = next.manufacturingSuppliers.map((supplier) => normalizeManufacturingSupplier(supplier));
+  next.manufacturingSupplierLeads = next.manufacturingSupplierLeads.map((lead) => normalizeManufacturingSupplierLead(lead));
   next.projectLeads = next.projectLeads.map((lead) => normalizeProjectLead({
     contactName: "Project owner",
     phone: "",
@@ -2997,17 +3153,33 @@ function ensurePartnerDocumentPlaceholders(next) {
 function normalizeManufacturingRfq(lead) {
   const next = {
     id: lead?.id || `manufacturing-rfq-${Date.now()}`,
+    customerCompanyName: "",
+    productIdea: "",
     productType: "",
     brandName: "",
-    formulaStatus: "Idea only",
+    formulaStatus: "Need help creating formula",
     dosageForm: "Other",
+    ingredientsRequested: "",
+    ingredientsToAvoid: "",
+    flavorPreferences: "",
+    sweetenerPreferences: "",
+    servingSize: "",
+    servingsPerContainer: "",
+    targetRetailPrice: "",
+    targetCustomer: "",
+    estimatedFirstOrderQuantity: "",
+    desiredMoq: "",
     targetQuantity: "",
     desiredPackaging: "",
     ingredientRequirements: "",
     cleanLabelRequirements: [],
     cbdHemp: "No",
+    labelDesignNeeded: "Not sure",
+    complianceReviewNeeded: "Not sure",
     testingNeeds: "",
     certificationsRequired: [],
+    fulfillmentNeeded: "Not sure",
+    dropshippingNeeded: "Not sure",
     targetLaunchDate: "",
     budgetRange: "Not sure yet",
     locationPreference: "",
@@ -3015,14 +3187,25 @@ function normalizeManufacturingRfq(lead) {
     contactEmail: "",
     contactPhone: "",
     specUpload: "0 files selected",
-    status: "New RFQ",
+    labelUpload: "0 files selected",
+    ingredientDeckUpload: "0 files selected",
+    productReferenceUpload: "0 files selected",
+    packagingReferenceUpload: "0 files selected",
+    coaUpload: "0 files selected",
+    brandGuideUpload: "0 files selected",
+    status: "Request received",
     created: "Today",
     notes: "",
     ...lead
   };
+  if (!next.ingredientRequirements) {
+    next.ingredientRequirements = [next.ingredientsRequested, next.ingredientsToAvoid, next.flavorPreferences, next.sweetenerPreferences].filter(Boolean).join(" | ");
+  }
+  if (!next.targetQuantity) next.targetQuantity = next.estimatedFirstOrderQuantity || next.desiredMoq;
   next.cleanLabelRequirements = Array.isArray(next.cleanLabelRequirements) ? next.cleanLabelRequirements : String(next.cleanLabelRequirements || "").split(",").map((item) => item.trim()).filter(Boolean);
   next.certificationsRequired = Array.isArray(next.certificationsRequired) ? next.certificationsRequired : String(next.certificationsRequired || "").split(",").map((item) => item.trim()).filter(Boolean);
-  next.status = manufacturingLeadStatuses.includes(next.status) ? next.status : "New RFQ";
+  next.status = manufacturingLegacyStatusMap[next.status] || next.status;
+  next.status = manufacturingLeadStatuses.includes(next.status) ? next.status : "Request received";
   return next;
 }
 
@@ -3033,23 +3216,49 @@ function normalizeManufacturingSupplier(supplier) {
     contactPerson: "",
     location: "",
     serviceArea: "",
+    shipsNationwide: "No",
     supplierType: manufacturingSupplierTypes[0],
+    productsManufactured: "",
     capabilities: "",
     productCategories: [],
     dosageForms: [],
+    customFormulationSupport: false,
+    whiteLabelCatalogSupport: false,
     minimumOrderQuantity: "",
+    estimatedLeadTime: "",
+    startingProjectBudget: "",
     certifications: [],
+    testingOffered: [],
+    currentCapacity: "",
+    acceptingNewClients: "Not sure",
+    sampleDevelopmentSupport: false,
+    ndaAvailable: false,
+    insurance: "Not sure",
     facilityType: "",
     turnaroundTime: "",
     packagingOptions: "",
     ingredientSourcingSupport: false,
     formulationSupport: false,
+    flavoringSupport: false,
+    packagingSupport: false,
+    labelDesignSupport: false,
     testingLabSupport: false,
     complianceSupport: false,
     privateLabelSupport: false,
     fulfillmentSupport: false,
     website: "",
     phoneEmail: "",
+    source: "Supplier inbound",
+    sourceUrl: "",
+    sourceNotes: "",
+    dateAdded: "Today",
+    outreachStatus: "Not contacted",
+    lastContacted: "",
+    nextFollowUpDate: "",
+    relationshipOwner: "",
+    logoUpload: "0 files selected",
+    certificationUpload: "0 files selected",
+    productPhotoUpload: "0 files selected",
     notes: "",
     verifiedByForge: "Placeholder only",
     status: "Needs Review",
@@ -3058,13 +3267,57 @@ function normalizeManufacturingSupplier(supplier) {
   next.productCategories = Array.isArray(next.productCategories) ? next.productCategories : String(next.productCategories || "").split(",").map((item) => item.trim()).filter(Boolean);
   next.dosageForms = Array.isArray(next.dosageForms) ? next.dosageForms : String(next.dosageForms || "").split(",").map((item) => item.trim()).filter(Boolean);
   next.certifications = Array.isArray(next.certifications) ? next.certifications : String(next.certifications || "").split(",").map((item) => item.trim()).filter(Boolean);
+  next.testingOffered = Array.isArray(next.testingOffered) ? next.testingOffered : String(next.testingOffered || "").split(",").map((item) => item.trim()).filter(Boolean);
   next.status = manufacturingSupplierStatuses.includes(next.status) ? next.status : "Needs Review";
   next.ingredientSourcingSupport = Boolean(next.ingredientSourcingSupport);
   next.formulationSupport = Boolean(next.formulationSupport);
+  next.customFormulationSupport = Boolean(next.customFormulationSupport || next.formulationSupport);
+  next.whiteLabelCatalogSupport = Boolean(next.whiteLabelCatalogSupport || next.privateLabelSupport);
+  next.flavoringSupport = Boolean(next.flavoringSupport);
+  next.packagingSupport = Boolean(next.packagingSupport || next.packagingOptions);
+  next.labelDesignSupport = Boolean(next.labelDesignSupport);
   next.testingLabSupport = Boolean(next.testingLabSupport);
   next.complianceSupport = Boolean(next.complianceSupport);
   next.privateLabelSupport = Boolean(next.privateLabelSupport);
   next.fulfillmentSupport = Boolean(next.fulfillmentSupport);
+  return next;
+}
+
+function normalizeManufacturingSupplierLead(lead) {
+  const next = {
+    id: lead?.id || `supplier-lead-${Date.now()}`,
+    companyName: "",
+    contactName: "",
+    phone: "",
+    email: "",
+    website: "",
+    city: "",
+    state: "",
+    country: "USA",
+    supplierCategory: "Supplement Manufacturer",
+    capabilities: "",
+    certifications: "",
+    productTypes: "",
+    moq: "",
+    leadTime: "",
+    notes: "",
+    source: "Manual research",
+    sourceUrl: "",
+    dateDiscovered: "Today",
+    addedBy: "Andrew",
+    outreachStatus: "Not contacted",
+    lastContacted: "",
+    nextFollowUpDate: "",
+    followUpNotes: "",
+    potentialOpportunityValue: "",
+    relatedForgeVertical: "Manufacturing",
+    tags: "",
+    created: "Today",
+    ...lead
+  };
+  next.source = manufacturingSupplierLeadSources.includes(next.source) ? next.source : "Other";
+  next.outreachStatus = manufacturingSupplierLeadStatuses.includes(next.outreachStatus) ? next.outreachStatus : "Not contacted";
+  next.relatedForgeVertical = manufacturingRelatedVerticals.includes(next.relatedForgeVertical) ? next.relatedForgeVertical : "Other";
   return next;
 }
 
@@ -4108,17 +4361,35 @@ function renderSelects() {
   fillSelect("#manufacturingFormulaStatus", manufacturingFormulaStatuses);
   fillSelect("#manufacturingDosageForm", manufacturingDosageForms);
   fillSelect("#manufacturingCbdHemp", yesNoOptions);
+  fillSelect("#manufacturingLabelDesignNeeded", manufacturingYesNoReviewOptions);
+  fillSelect("#manufacturingComplianceReviewNeeded", manufacturingYesNoReviewOptions);
+  fillSelect("#manufacturingFulfillmentNeeded", manufacturingYesNoReviewOptions);
+  fillSelect("#manufacturingDropshippingNeeded", manufacturingYesNoReviewOptions);
   fillSelect("#manufacturingCleanLabelRequirements", manufacturingCleanLabelOptions);
   fillSelect("#manufacturingCertificationsRequired", manufacturingCertificationOptions);
   fillSelect("#manufacturingBudgetRange", manufacturingBudgetRanges);
   fillSelect("#manufacturingSupplierTypeInput", ["", ...manufacturingSupplierTypes], "Select supplier type");
   fillSelect("#manufacturingSupplierDosageForms", manufacturingDosageForms);
   fillSelect("#manufacturingSupplierCertifications", manufacturingCertificationOptions);
+  fillSelect("#manufacturingSupplierTestingOffered", manufacturingTestingOptions);
+  fillSelect("#manufacturingSupplierShipsNationwide", yesNoOptions);
+  fillSelect("#manufacturingSupplierAcceptingClients", ["Not sure", "Yes", "No"]);
+  fillSelect("#manufacturingSupplierInsurance", ["Not sure", "Yes", "No"]);
+  fillSelect("#manufacturingSupplierLeadSource", manufacturingSupplierLeadSources);
+  fillSelect("#manufacturingSupplierOutreachStatus", manufacturingSupplierLeadStatuses);
+  fillSelect("#manufacturingLeadSourceInput", ["", ...manufacturingSupplierLeadSources], "Select source");
+  fillSelect("#manufacturingLeadOutreachStatus", manufacturingSupplierLeadStatuses);
+  fillSelect("#manufacturingLeadRelatedVertical", manufacturingRelatedVerticals);
   fillSelect("#manufacturingProductFilter", ["All Product Categories", ...manufacturingProductCategories]);
   fillSelect("#manufacturingSupplierFilter", ["All Supplier Types", ...manufacturingSupplierTypes]);
   fillSelect("#manufacturingDosageFilter", ["All Dosage Forms", ...manufacturingDosageForms]);
   fillSelect("#manufacturingMoqFilter", manufacturingMoqFilterOptions);
   fillSelect("#manufacturingCertificationFilter", ["All Certifications", ...manufacturingCertificationOptions]);
+  fillSelect("#bidManufacturingFormulationIncluded", ["Not applicable", "No", "Yes"]);
+  fillSelect("#bidManufacturingPackagingIncluded", ["Not applicable", "No", "Yes"]);
+  fillSelect("#bidManufacturingFulfillmentIncluded", ["Not applicable", "No", "Yes"]);
+  fillSelect("#bidManufacturingNdaRequired", ["Not applicable", "No", "Yes"]);
+  fillSelect("#bidStatus", manufacturingBidStatuses);
   fillSelect("#academyDesiredTrade", academyTradeOptions);
   fillSelect("#academyEmployerTrade", academyTradeOptions);
   fillSelect("#admitlyPathway", admitlyPathwayOptions);
@@ -4517,8 +4788,11 @@ function renderManufacturingPage() {
   const docs = document.querySelector("#manufacturingDocumentGrid");
   const statuses = document.querySelector("#manufacturingStatusGrid");
   const rfqList = document.querySelector("#manufacturingRfqList");
+  const supplierLeadList = document.querySelector("#manufacturingSupplierLeadList");
+  const supplierLeadDetail = document.querySelector("#manufacturingSupplierLeadDetail");
+  const outreachTemplate = document.querySelector("#manufacturingOutreachTemplate");
   const compliance = document.querySelectorAll("[data-manufacturing-compliance]");
-  if (!stats || !productGrid || !supplierTypes || !flags || !directory || !eden || !docs || !statuses || !rfqList) return;
+  if (!stats || !productGrid || !supplierTypes || !flags || !directory || !eden || !docs || !statuses || !rfqList || !supplierLeadList || !supplierLeadDetail || !outreachTemplate) return;
 
   compliance.forEach((node) => {
     node.textContent = MANUFACTURING_COMPLIANCE_COPY;
@@ -4526,9 +4800,11 @@ function renderManufacturingPage() {
 
   const suppliers = state.manufacturingSuppliers || [];
   const rfqs = state.manufacturingRfqs || [];
+  const supplierLeads = state.manufacturingSupplierLeads || [];
   stats.innerHTML = statCards([
     ["RFQs", rfqs.length],
     ["Demo Suppliers", suppliers.length],
+    ["Supplier Leads", supplierLeads.length],
     ["Supplier Types", manufacturingSupplierTypes.length],
     ["Documents", manufacturingDocumentTemplates.length],
     ["Open Pipeline", rfqs.filter((lead) => !["Closed Won", "Closed Lost"].includes(lead.status)).length]
@@ -4591,6 +4867,57 @@ function renderManufacturingPage() {
       <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
     </article>
   `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`;
+
+  supplierLeadList.innerHTML = supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`;
+  supplierLeadDetail.innerHTML = manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId);
+  outreachTemplate.textContent = MANUFACTURING_OUTREACH_TEMPLATE;
+}
+
+function manufacturingSupplierLeadCard(lead) {
+  const normalized = normalizeManufacturingSupplierLead(lead);
+  const location = [normalized.city, normalized.state, normalized.country].filter(Boolean).join(", ");
+  return `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(normalized.outreachStatus)} · ${escapeHtml(normalized.source)}</span>
+        <strong>${escapeHtml(normalized.companyName || "Unnamed supplier lead")}</strong>
+        <p>${escapeHtml(normalized.supplierCategory)} · ${escapeHtml(location || "Location pending")} · ${escapeHtml(normalized.moq || "MOQ pending")}</p>
+        <p class="muted">${escapeHtml(normalized.capabilities || "Capabilities pending")}</p>
+      </div>
+      <div class="lead-actions">
+        ${contactLinks(normalized.phone, normalized.email, manufacturingSupplierLeadOutreachText(normalized))}
+        <button class="btn ghost small" type="button" data-action="view-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Detail</button>
+        <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Copy Lead</button>
+      </div>
+    </article>
+  `;
+}
+
+function manufacturingSupplierLeadDetail(id) {
+  const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === id) || (state.manufacturingSupplierLeads || [])[0];
+  if (!lead) return `<p class="muted">Select a supplier lead to see details and conversion actions.</p>`;
+  const normalized = normalizeManufacturingSupplierLead(lead);
+  const location = [normalized.city, normalized.state, normalized.country].filter(Boolean).join(", ");
+  return `
+    <span class="split-label">Lead detail · ${escapeHtml(normalized.outreachStatus)}</span>
+    <h3>${escapeHtml(normalized.companyName)}</h3>
+    <p>${escapeHtml(normalized.supplierCategory)} · ${escapeHtml(location || "Location pending")}</p>
+    <div class="service-detail-grid">
+      <article><span>Source</span><strong>${escapeHtml(normalized.source)}</strong></article>
+      <article><span>Source URL</span><strong>${escapeHtml(normalized.sourceUrl || "Not listed")}</strong></article>
+      <article><span>MOQ</span><strong>${escapeHtml(normalized.moq || "Not listed")}</strong></article>
+      <article><span>Lead time</span><strong>${escapeHtml(normalized.leadTime || "Not listed")}</strong></article>
+      <article><span>Certifications</span><strong>${escapeHtml(normalized.certifications || "Not listed")}</strong></article>
+      <article><span>Next follow-up</span><strong>${escapeHtml(normalized.nextFollowUpDate || "Not scheduled")}</strong></article>
+    </div>
+    <p>${escapeHtml(normalized.notes || normalized.capabilities || "No notes yet.")}</p>
+    <div class="lead-actions">
+      <button class="btn blue small" type="button" data-action="invite-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Invite to Join Forge</button>
+      <button class="btn orange small" type="button" data-action="convert-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Convert Lead to Provider Profile</button>
+      <button class="btn ghost small" type="button" data-action="create-manufacturing-opportunity" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Create Manufacturing Opportunity</button>
+      <button class="btn ghost small" type="button" data-action="create-manufacturing-follow-up" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Create Follow-Up Task</button>
+    </div>
+  `;
 }
 
 function filteredManufacturingSuppliers(activeFlags = []) {
@@ -4622,7 +4949,14 @@ function manufacturingSupplierSearchText(supplier) {
     supplier.supplierType,
     supplier.capabilities,
     supplier.minimumOrderQuantity,
+    supplier.estimatedLeadTime,
+    supplier.startingProjectBudget,
+    supplier.currentCapacity,
+    supplier.acceptingNewClients,
+    supplier.source,
+    supplier.outreachStatus,
     supplier.certifications?.join(" "),
+    supplier.testingOffered?.join(" "),
     supplier.facilityType,
     supplier.turnaroundTime,
     supplier.packagingOptions,
@@ -4649,8 +4983,35 @@ function manufacturingSupplierSupportsFlag(supplier, flag) {
   const normalized = normalizeLookup(flag);
   const text = normalizeLookup(manufacturingSupplierSearchText(supplier));
   if (normalized.includes("private label")) return Boolean(supplier.privateLabelSupport);
-  if (normalized.includes("formulation")) return Boolean(supplier.formulationSupport);
+  if (normalized.includes("formulation")) return Boolean(supplier.formulationSupport || supplier.customFormulationSupport);
   if (normalized.includes("packaging")) return Boolean(supplier.packagingOptions) || supplier.supplierType === "Packaging suppliers";
+  if (normalized.includes("fulfillment")) return Boolean(supplier.fulfillmentSupport) || text.includes("fulfillment");
+  if (normalized.includes("lab testing")) return Boolean(supplier.testingLabSupport) || text.includes("testing") || text.includes("coa");
+  if (normalized.includes("gummies")) return text.includes("gummy");
+  if (normalized.includes("capsules")) return text.includes("capsule");
+  if (normalized.includes("tablets")) return text.includes("tablet");
+  if (normalized.includes("powders")) return text.includes("powder");
+  if (normalized.includes("liquids")) return text.includes("liquid") || text.includes("beverage");
+  if (normalized.includes("protein")) return text.includes("protein");
+  if (normalized.includes("preworkout")) return text.includes("preworkout") || text.includes("pre-workout");
+  if (normalized.includes("creatine")) return text.includes("creatine");
+  if (normalized.includes("collagen")) return text.includes("collagen");
+  if (normalized.includes("electrolytes")) return text.includes("electrolyte");
+  if (normalized.includes("greens")) return text.includes("greens");
+  if (normalized.includes("white label")) return Boolean(supplier.whiteLabelCatalogSupport || supplier.privateLabelSupport);
+  if (normalized.includes("low moq")) return manufacturingMoqMatches(supplier.minimumOrderQuantity, "Low MOQ");
+  if (normalized.includes("cgmp")) return text.includes("gmp") || text.includes("cgmp");
+  if (normalized.includes("fda")) return text.includes("fda");
+  if (normalized.includes("organic")) return text.includes("organic");
+  if (normalized.includes("nsf")) return text.includes("nsf");
+  if (normalized.includes("informed")) return text.includes("informed");
+  if (normalized.includes("kosher")) return text.includes("kosher");
+  if (normalized.includes("halal")) return text.includes("halal");
+  if (normalized.includes("vegan")) return text.includes("vegan");
+  if (normalized.includes("ships nationwide")) return supplier.shipsNationwide === "Yes" || /nationwide|unitedstates|u\.s\./.test(text);
+  if (normalized.includes("accepting new clients")) return supplier.acceptingNewClients === "Yes" || text.includes("accepting");
+  if (normalized.includes("lead source")) return Boolean(supplier.source);
+  if (normalized.includes("outreach status")) return Boolean(supplier.outreachStatus);
   if (normalized.includes("cbd") || normalized.includes("hemp")) return text.includes("cbd") || text.includes("hemp");
   if (normalized.includes("pet")) return text.includes("pet");
   if (normalized.includes("organic") || normalized.includes("vegan") || normalized.includes("clean")) return /organic|vegan|clean|non gmo|non-gmo|gluten|sugar/.test(text);
@@ -6765,6 +7126,7 @@ function renderDashboards() {
   const flexLeads = state.flexLeads || [];
   const manufacturingRfqs = state.manufacturingRfqs || [];
   const manufacturingSuppliers = state.manufacturingSuppliers || [];
+  const manufacturingSupplierLeads = state.manufacturingSupplierLeads || [];
   const hotLeads = state.referrals.filter((lead) => lead.priority === "Hot").length + state.jobs.filter((job) => job.status === "New").length;
   const adminCategory = document.querySelector("#adminTradeCategoryFilter")?.value || "All Categories";
   const adminJobs = state.jobs.filter((job) => categoryMatches(job.categoryLabel || job.category, adminCategory));
@@ -6789,6 +7151,7 @@ function renderDashboards() {
     ["Flex Leads", flexLeads.length],
     ["Manufacturing RFQs", manufacturingRfqs.length],
     ["Mfg Suppliers", manufacturingSuppliers.length],
+    ["Supplier Leads", manufacturingSupplierLeads.length],
     ["Referrals", referrals],
     ["Career Leads", careerLeads],
     ["Homebuilding", homebuildingLeads],
@@ -6881,6 +7244,17 @@ function renderDashboards() {
     certifications: (supplier.certifications || []).join(", "),
     verified: supplier.verifiedByForge,
     status: supplier.status
+  })));
+
+  renderTable("#adminManufacturingSupplierLeadsTable", manufacturingSupplierLeads.map((lead) => ({
+    company: lead.companyName,
+    category: lead.supplierCategory,
+    source: lead.source,
+    outreach: lead.outreachStatus,
+    contact: lead.contactName || lead.email || lead.phone,
+    next: lead.nextFollowUpDate || "",
+    value: lead.potentialOpportunityValue || "",
+    vertical: lead.relatedForgeVertical
   })));
 
   renderFlexLeadsAdmin();
@@ -6986,7 +7360,7 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can match it with approved local creatives", "Customer contact info stays for booking and provider matching"];
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
   if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
-  if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Finance partner routing stays pending until consent and approval gates pass", "Approved finance partners handle eligibility, approval, onboarding, activation, and product support"];
+  if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Forge reviews whether the business looks like a fit", "Flex handles eligibility, approval, onboarding, activation, and product support"];
   if (confirmation.type === "manufacturing-rfq") return ["Forge saves this manufacturing RFQ", "Admin reviews product, formula, dosage, MOQ, packaging, certification, testing, and compliance flags", "Supplier matching uses original Forge profiles and company-created supplier profiles only"];
   if (confirmation.type === "manufacturing-supplier") return ["Forge saves this supplier profile", "Admin reviews capability, MOQ, dosage forms, certifications, support areas, and contact details", "Verified-by-Forge remains a placeholder until manual review and approval"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
@@ -7006,7 +7380,7 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "creative") return "Tell the customer how Forge creative matching works.";
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
   if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
-  if (confirmation.type === "flex") return "Tell the business owner how finance partner review works.";
+  if (confirmation.type === "flex") return "Tell the business owner how the Flex referral channel works.";
   if (confirmation.type === "manufacturing-rfq") return "Tell the buyer how manufacturing supplier matching works.";
   if (confirmation.type === "manufacturing-supplier") return "Tell the supplier how onboarding review works.";
   return "Use this as the next message.";
@@ -7055,7 +7429,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this NorthStar Creative Co. request${detail}. Admin can review the business, services needed, budget, biggest problem, and 30-90 day goal, then NorthStar can scope the right marketing and operations support.`;
   }
   if (confirmation.type === "flex") {
-    return `Forge saved this Capital Desk lead${detail}. Forge may route eligible business owners to approved finance partner review only when consent, written approval, and data-sharing requirements are in place. Finance partners handle eligibility, approval, onboarding, activation, and support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
+    return `Forge saved this Capital Desk lead${detail}. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex handles eligibility, approval, onboarding, activation, and product support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
   }
   if (confirmation.type === "manufacturing-rfq") {
     return `Forge saved this manufacturing RFQ${detail}. The operator can review formula status, dosage form, MOQ, packaging, testing, certifications, CBD/hemp flags, and supplier fit before any quote request. Compliance, legal, label, claims, testing, and insurance review remain the user's responsibility.`;
@@ -7699,7 +8073,7 @@ function launchCommandRows() {
       needTouch: (state.flexLeads || []).filter((lead) => ["new", "qualified"].includes(lead.status)).length,
       contacted: (state.flexLeads || []).filter((lead) => ["contacted", "flex_link_sent"].includes(lead.status)).length,
       moving: (state.flexLeads || []).filter((lead) => ["application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"].includes(lead.status)).length,
-      next: "Confirm consent, keep any finance partner handoff behind approval gates, and look for Forge or NorthStar upsell fit.",
+      next: "Confirm consent, review fit, and look for Forge or NorthStar upsell opportunities before any official Flex referral handoff.",
       screen: "capital",
       action: "Capital Desk"
     },
@@ -8017,6 +8391,38 @@ function renderLeadPipelines() {
         </div>
       </article>
     `).join("") || `<article class="lead-card"><p class="muted">No manufacturing supplier profiles yet.</p></article>`;
+  }
+
+  const manufacturingSupplierLeadsTarget = document.querySelector("#adminManufacturingSupplierLeadsPipeline");
+  if (manufacturingSupplierLeadsTarget) {
+    manufacturingSupplierLeadsTarget.innerHTML = (state.manufacturingSupplierLeads || []).map((lead) => {
+      const normalized = normalizeManufacturingSupplierLead(lead);
+      return `
+        <article class="lead-card">
+          <div>
+            <span class="split-label">${escapeHtml(normalized.outreachStatus)} · ${escapeHtml(normalized.source)}</span>
+            <h3>${escapeHtml(normalized.companyName)}</h3>
+            <p>${escapeHtml(normalized.supplierCategory)} · ${escapeHtml([normalized.city, normalized.state, normalized.country].filter(Boolean).join(", "))}</p>
+          </div>
+          <label>Outreach status
+            <select data-manufacturing-supplier-lead-status="${escapeHtml(normalized.id)}">
+              ${manufacturingSupplierLeadStatuses.map((status) => `<option ${status === normalized.outreachStatus ? "selected" : ""}>${escapeHtml(status)}</option>`).join("")}
+            </select>
+          </label>
+          <label>Follow-up notes
+            <textarea data-manufacturing-supplier-lead-notes="${escapeHtml(normalized.id)}" rows="2" placeholder="Follow-up notes, reply, next action">${escapeHtml(normalized.followUpNotes || "")}</textarea>
+          </label>
+          <div class="lead-actions">
+            ${contactLinks(normalized.phone, normalized.email, manufacturingSupplierLeadOutreachText(normalized))}
+            <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Copy Lead</button>
+            <button class="btn blue small" type="button" data-action="invite-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Invite to Join Forge</button>
+            <button class="btn orange small" type="button" data-action="convert-manufacturing-supplier-lead" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Convert Lead to Provider Profile</button>
+            <button class="btn ghost small" type="button" data-action="create-manufacturing-opportunity" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Create Manufacturing Opportunity</button>
+            <button class="btn ghost small" type="button" data-action="create-manufacturing-follow-up" data-manufacturing-supplier-lead-id="${escapeHtml(normalized.id)}">Create Follow-Up Task</button>
+          </div>
+        </article>
+      `;
+    }).join("") || `<article class="lead-card"><p class="muted">No supplier leads yet.</p></article>`;
   }
 
   document.querySelector("#adminReferralPipeline").innerHTML = state.referrals.map((lead) => `
@@ -9192,12 +9598,12 @@ function submitFlexLead() {
     details: [
       `${lead.business_name} · ${lead.industry}`,
       `${lead.primary_need || "Need pending"} · score ${lead.lead_score}`,
-      lead.consent_to_receive_flex_referral ? "Finance partner review consent captured" : "Finance partner review consent not captured"
+      lead.consent_to_receive_flex_referral ? "Flex referral consent captured" : "Flex referral consent not captured"
     ],
     nextSteps: [
       "Forge stores the basic lead and consent details",
-      "Use admin review before any configured finance partner link is opened",
-      "Approved finance partners handle eligibility, approval, onboarding, activation, and product support"
+      "Use admin review before any official Flex referral link is opened",
+      "Flex handles eligibility, approval, onboarding, activation, and product support"
     ],
     primary: { label: "Open Capital Desk", screen: "capital" },
     secondary: { label: "Talk to Forge Capital Desk", screen: "capital" }
@@ -9234,17 +9640,33 @@ function resetFlexForm() {
 function submitManufacturingRfq() {
   const lead = normalizeManufacturingRfq({
     id: `manufacturing-rfq-${Date.now()}`,
+    customerCompanyName: fieldValue("#manufacturingCustomerCompanyName"),
+    productIdea: fieldValue("#manufacturingProductIdea"),
     productType: fieldValue("#manufacturingProductType"),
     brandName: fieldValue("#manufacturingBrandName"),
     formulaStatus: fieldValue("#manufacturingFormulaStatus"),
     dosageForm: fieldValue("#manufacturingDosageForm"),
+    estimatedFirstOrderQuantity: fieldValue("#manufacturingFirstOrderQuantity"),
+    desiredMoq: fieldValue("#manufacturingDesiredMoq"),
     targetQuantity: fieldValue("#manufacturingTargetQuantity"),
     desiredPackaging: fieldValue("#manufacturingPackaging"),
     ingredientRequirements: fieldValue("#manufacturingIngredients"),
+    ingredientsRequested: fieldValue("#manufacturingIngredientsRequested"),
+    ingredientsToAvoid: fieldValue("#manufacturingIngredientsToAvoid"),
+    flavorPreferences: fieldValue("#manufacturingFlavorPreferences"),
+    sweetenerPreferences: fieldValue("#manufacturingSweetenerPreferences"),
+    servingSize: fieldValue("#manufacturingServingSize"),
+    servingsPerContainer: fieldValue("#manufacturingServingsPerContainer"),
+    targetRetailPrice: fieldValue("#manufacturingTargetRetailPrice"),
+    targetCustomer: fieldValue("#manufacturingTargetCustomer"),
     cleanLabelRequirements: fieldSelectedValues("#manufacturingCleanLabelRequirements"),
     cbdHemp: fieldValue("#manufacturingCbdHemp"),
+    labelDesignNeeded: fieldValue("#manufacturingLabelDesignNeeded"),
+    complianceReviewNeeded: fieldValue("#manufacturingComplianceReviewNeeded"),
     testingNeeds: fieldValue("#manufacturingTestingNeeds"),
     certificationsRequired: fieldSelectedValues("#manufacturingCertificationsRequired"),
+    fulfillmentNeeded: fieldValue("#manufacturingFulfillmentNeeded"),
+    dropshippingNeeded: fieldValue("#manufacturingDropshippingNeeded"),
     targetLaunchDate: fieldValue("#manufacturingLaunchDate"),
     budgetRange: fieldValue("#manufacturingBudgetRange"),
     locationPreference: fieldValue("#manufacturingLocationPreference"),
@@ -9252,9 +9674,15 @@ function submitManufacturingRfq() {
     contactEmail: fieldValue("#manufacturingContactEmail"),
     contactPhone: fieldValue("#manufacturingContactPhone"),
     specUpload: selectedFileSummary("#manufacturingSpecUpload"),
-    status: "New RFQ",
+    labelUpload: selectedFileSummary("#manufacturingReferenceUploads"),
+    ingredientDeckUpload: selectedFileSummary("#manufacturingReferenceUploads"),
+    productReferenceUpload: selectedFileSummary("#manufacturingReferenceUploads"),
+    packagingReferenceUpload: selectedFileSummary("#manufacturingComplianceUploads"),
+    coaUpload: selectedFileSummary("#manufacturingComplianceUploads"),
+    brandGuideUpload: selectedFileSummary("#manufacturingComplianceUploads"),
+    status: "Request received",
     created: "Today",
-    notes: "RFQ captured in Forge Manufacturing + Nutraceuticals. Do not route CBD/hemp, claims, label, or regulated-product details without compliance review."
+    notes: fieldValue("#manufacturingRfqNotes") || "RFQ captured in Forge Manufacturing + Nutraceuticals. Do not route CBD/hemp, claims, label, or regulated-product details without compliance review."
   });
   state.manufacturingRfqs.unshift(lead);
   addActivity(`Manufacturing RFQ saved: ${lead.brandName} (${lead.productType}).`);
@@ -9289,23 +9717,50 @@ function submitManufacturingSupplierProfile() {
     contactPerson: fieldValue("#manufacturingSupplierContact"),
     location: fieldValue("#manufacturingSupplierLocation"),
     serviceArea: fieldValue("#manufacturingSupplierServiceArea"),
+    shipsNationwide: fieldValue("#manufacturingSupplierShipsNationwide"),
     supplierType: fieldValue("#manufacturingSupplierTypeInput"),
+    productsManufactured: fieldValue("#manufacturingSupplierProducts"),
     capabilities: fieldValue("#manufacturingSupplierCapabilities"),
-    productCategories: inferManufacturingSupplierCategories(fieldValue("#manufacturingSupplierTypeInput"), fieldValue("#manufacturingSupplierCapabilities")),
+    productCategories: inferManufacturingSupplierCategories(fieldValue("#manufacturingSupplierTypeInput"), `${fieldValue("#manufacturingSupplierCapabilities")} ${fieldValue("#manufacturingSupplierProducts")}`),
     dosageForms: fieldSelectedValues("#manufacturingSupplierDosageForms"),
     minimumOrderQuantity: fieldValue("#manufacturingSupplierMoq"),
     certifications: fieldSelectedValues("#manufacturingSupplierCertifications"),
+    estimatedLeadTime: fieldValue("#manufacturingSupplierLeadTime"),
+    startingProjectBudget: fieldValue("#manufacturingSupplierStartingBudget"),
+    testingOffered: fieldSelectedValues("#manufacturingSupplierTestingOffered"),
     facilityType: fieldValue("#manufacturingSupplierFacilityType"),
     turnaroundTime: fieldValue("#manufacturingSupplierTurnaround"),
     packagingOptions: fieldValue("#manufacturingSupplierPackagingOptions"),
     ingredientSourcingSupport: fieldChecked("#manufacturingSupplierIngredientSourcing"),
     formulationSupport: fieldChecked("#manufacturingSupplierFormulation"),
+    customFormulationSupport: fieldChecked("#manufacturingSupplierCustomFormulation"),
+    whiteLabelCatalogSupport: fieldChecked("#manufacturingSupplierWhiteLabelCatalog"),
+    flavoringSupport: fieldChecked("#manufacturingSupplierFlavoring"),
+    packagingSupport: fieldChecked("#manufacturingSupplierPackagingSupport"),
+    labelDesignSupport: fieldChecked("#manufacturingSupplierLabelDesign"),
     testingLabSupport: fieldChecked("#manufacturingSupplierTesting"),
     complianceSupport: fieldChecked("#manufacturingSupplierCompliance"),
     privateLabelSupport: fieldChecked("#manufacturingSupplierPrivateLabel"),
     fulfillmentSupport: fieldChecked("#manufacturingSupplierFulfillment"),
+    sampleDevelopmentSupport: fieldChecked("#manufacturingSupplierSampleDevelopment"),
+    ndaAvailable: fieldChecked("#manufacturingSupplierNda"),
+    currentCapacity: fieldValue("#manufacturingSupplierCapacity"),
+    acceptingNewClients: fieldValue("#manufacturingSupplierAcceptingClients"),
+    insurance: fieldValue("#manufacturingSupplierInsurance"),
     website: fieldValue("#manufacturingSupplierWebsite"),
     phoneEmail: fieldValue("#manufacturingSupplierContactInfo"),
+    source: fieldValue("#manufacturingSupplierLeadSource"),
+    sourceUrl: fieldValue("#manufacturingSupplierSourceUrl"),
+    sourceNotes: fieldValue("#manufacturingSupplierSourceNotes"),
+    dateAdded: fieldValue("#manufacturingSupplierDateAdded") || "Today",
+    outreachStatus: fieldValue("#manufacturingSupplierOutreachStatus"),
+    lastContacted: fieldValue("#manufacturingSupplierLastContacted"),
+    nextFollowUpDate: fieldValue("#manufacturingSupplierNextFollowUp"),
+    relationshipOwner: fieldValue("#manufacturingSupplierRelationshipOwner"),
+    logoUpload: selectedFileSummary("#manufacturingSupplierUploads"),
+    certificationUpload: selectedFileSummary("#manufacturingSupplierUploads"),
+    productPhotoUpload: selectedFileSummary("#manufacturingSupplierUploads"),
+    bio: fieldValue("#manufacturingSupplierBio"),
     notes: fieldValue("#manufacturingSupplierNotes"),
     verifiedByForge: "Placeholder only",
     status: "Needs Review"
@@ -9333,6 +9788,64 @@ function submitManufacturingSupplierProfile() {
   sendLead("manufacturing-supplier", supplier);
   showToast("Supplier profile saved.");
   document.querySelector("#manufacturingSupplierForm").reset();
+  navigate("confirm");
+}
+
+function submitManufacturingSupplierLead() {
+  const lead = normalizeManufacturingSupplierLead({
+    id: `supplier-lead-${Date.now()}`,
+    companyName: fieldValue("#manufacturingLeadCompany"),
+    contactName: fieldValue("#manufacturingLeadContact"),
+    phone: fieldValue("#manufacturingLeadPhone"),
+    email: fieldValue("#manufacturingLeadEmail"),
+    website: fieldValue("#manufacturingLeadWebsite"),
+    city: fieldValue("#manufacturingLeadCity"),
+    state: fieldValue("#manufacturingLeadState"),
+    country: fieldValue("#manufacturingLeadCountry"),
+    supplierCategory: fieldValue("#manufacturingLeadCategory"),
+    capabilities: fieldValue("#manufacturingLeadCapabilities"),
+    certifications: fieldValue("#manufacturingLeadCertifications"),
+    productTypes: fieldValue("#manufacturingLeadProductTypes"),
+    moq: fieldValue("#manufacturingLeadMoq"),
+    leadTime: fieldValue("#manufacturingLeadLeadTime"),
+    notes: fieldValue("#manufacturingLeadNotes"),
+    source: fieldValue("#manufacturingLeadSourceInput"),
+    sourceUrl: fieldValue("#manufacturingLeadSourceUrl"),
+    dateDiscovered: fieldValue("#manufacturingLeadDateDiscovered") || "Today",
+    addedBy: fieldValue("#manufacturingLeadAddedBy") || "Andrew",
+    outreachStatus: fieldValue("#manufacturingLeadOutreachStatus"),
+    lastContacted: fieldValue("#manufacturingLeadLastContacted"),
+    nextFollowUpDate: fieldValue("#manufacturingLeadNextFollowUp"),
+    followUpNotes: fieldValue("#manufacturingLeadFollowUpNotes"),
+    potentialOpportunityValue: fieldValue("#manufacturingLeadOpportunityValue"),
+    relatedForgeVertical: fieldValue("#manufacturingLeadRelatedVertical"),
+    tags: fieldValue("#manufacturingLeadTags"),
+    created: "Today"
+  });
+  state.manufacturingSupplierLeads.unshift(lead);
+  state.activeManufacturingSupplierLeadId = lead.id;
+  addActivity(`Manufacturing supplier lead saved: ${lead.companyName} (${lead.source}).`);
+  state.lastConfirmation = {
+    type: "manufacturing-supplier-lead",
+    title: "Supplier lead saved.",
+    body: "Forge saved this supplier lead for lawful outreach, follow-up, and possible supplier profile conversion.",
+    details: [
+      `${lead.companyName} · ${lead.supplierCategory}`,
+      `Source: ${lead.source}`,
+      `Outreach: ${lead.outreachStatus}`
+    ],
+    nextSteps: [
+      "Use the outreach template or contact links for manual outreach",
+      "Track last contacted and next follow-up date",
+      "Convert only company-approved or lawfully obtained information into a provider profile"
+    ],
+    primary: { label: "Open Manufacturing CRM", screen: "manufacturing" },
+    secondary: { label: "Open Admin Leads", screen: "admin" }
+  };
+  saveState();
+  sendLead("manufacturing-supplier-lead", lead);
+  showToast("Supplier lead saved.");
+  document.querySelector("#manufacturingSupplierLeadForm").reset();
   navigate("confirm");
 }
 
@@ -9366,9 +9879,10 @@ function maybeCreateProviderFlexLead(worker, selectedTools) {
     years_in_business: worker.experience === "New" ? "Under 1 year" : worker.experience,
     employee_count: "Just me",
     primary_need: financeTools.join(", "),
-    interested_in_forge_services: selectedTools.includes("I want more customer leads through Forge"),
+    interested_in_forge_job_leads: selectedTools.includes("I want more customer leads through Forge"),
     interested_in_north_star_marketing: selectedTools.includes("I want marketing through North Star Creative Co."),
     interested_in_payment_processing: selectedTools.includes("I want payment processing help"),
+    interested_in_website_crm_automation: selectedTools.includes("I want website / CRM / automation setup"),
     consent_to_contact: true,
     consent_to_receive_flex_referral: false,
     referral_source: "provider_onboarding",
@@ -10200,6 +10714,11 @@ document.querySelector("#manufacturingSupplierForm").addEventListener("submit", 
   submitManufacturingSupplierProfile();
 });
 
+document.querySelector("#manufacturingSupplierLeadForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitManufacturingSupplierLead();
+});
+
 document.querySelector("#projectIntakeForm").addEventListener("submit", (event) => {
   event.preventDefault();
   submitProjectLead();
@@ -11014,6 +11533,41 @@ async function sendLead(type, payload) {
   }
 }
 
+function sendConfiguredFlexWebhooks(lead) {
+  const payload = flexLeadWebhookPayload(lead);
+  [
+    ["FORGE_GHL_WEBHOOK_URL", FORGE_GHL_WEBHOOK_URL],
+    ["FORGE_ZAPIER_WEBHOOK_URL", FORGE_ZAPIER_WEBHOOK_URL]
+  ].forEach(([label, url]) => {
+    if (!url) return;
+    postConfiguredLeadWebhook(label, url, payload);
+  });
+}
+
+async function postConfiguredLeadWebhook(label, url, payload) {
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    addActivity(`Capital Desk lead sent to ${label}.`);
+    updateWebhookDelivery("Sent", label);
+    saveState();
+  } catch {
+    try {
+      await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+      addActivity(`Capital Desk lead attempted via ${label}.`);
+      updateWebhookDelivery("Attempted", label);
+      saveState();
+    } catch {
+      addActivity(`Capital Desk lead saved locally; ${label} failed.`);
+      updateWebhookDelivery("Failed", label);
+      saveState();
+    }
+  }
+}
+
 function updateWebhookDelivery(status, type) {
   state.settings.webhookLastStatus = status;
   state.settings.webhookLastType = humanize(type || "lead");
@@ -11563,7 +12117,7 @@ function flexOutreachText(lead) {
     `Hi ${lead.owner_name || "there"}, this is Forge Capital Desk.`,
     `I saved your request for ${lead.business_name || "your business"} around ${lead.city || "your area"}.`,
     `You mentioned ${lead.primary_need || "business finance tools"} and a monthly spend range of ${lead.monthly_spend_range || "not provided"}.`,
-    "Forge is not a bank, lender, broker, underwriter, or credit decision maker. If you still want finance partner review, Forge must confirm consent and approval gates before any configured handoff.",
+    "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Flex handles eligibility, approval, onboarding, activation, and product support.",
     "Can you confirm the best time to talk?"
   ].join(" ");
 }
@@ -11590,9 +12144,10 @@ function flexLeadLines(lead) {
     `Status: ${flexStatusLabel(lead.status)}`,
     `Consent to contact: ${lead.consent_to_contact ? "Yes" : "No"}`,
     `Consent to receive Flex referral: ${lead.consent_to_receive_flex_referral ? "Yes" : "No"}`,
-    `Interested in Forge services: ${lead.interested_in_forge_services ? "Yes" : "No"}`,
+    `Interested in Forge job leads: ${lead.interested_in_forge_job_leads ? "Yes" : "No"}`,
     `Interested in NorthStar marketing: ${lead.interested_in_north_star_marketing ? "Yes" : "No"}`,
     `Interested in payment processing: ${lead.interested_in_payment_processing ? "Yes" : "No"}`,
+    `Interested in website / CRM / automation setup: ${lead.interested_in_website_crm_automation ? "Yes" : "No"}`,
     `Flex referral URL sent: ${lead.flex_referral_url_sent || "Not sent"}`,
     `Notes: ${lead.notes || "No notes saved."}`,
     FLEX_COMPLIANCE_COPY
@@ -11607,7 +12162,7 @@ function copyFlexOutreach(id) {
       "",
       "Business owners need breathing room. If your business is juggling cash flow, bill pay, vendor payments, employee cards, materials, equipment, payroll timing, or working capital, Forge can collect the request and help determine whether a Flex referral is a fit.",
       "",
-      "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Approved finance partners handle eligibility, approval, fees, terms, onboarding, activation, and support."
+      "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions."
     ].join("\n"), "Capital Desk message copied.");
     return;
   }
@@ -11631,15 +12186,15 @@ function copyFlexBrief() {
     "Forge Capital Desk brief",
     "",
     "Title: Business owners need breathing room.",
-    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators request review for modern business finance tools through approved finance partners when available.",
+    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.",
     "",
     "How it works:",
     "1. Tell Forge what your business needs.",
     "2. Forge checks whether you look like a fit.",
-    "3. Forge confirms consent, partner approval, and data-sharing approval before any configured handoff.",
+    "3. Forge sends you the official Flex referral link if appropriate.",
     "4. You apply directly with Flex.",
-    "5. Approved finance partners handle approval, onboarding, activation, and support.",
-    "6. Forge can also help with leads, marketing, websites, CRM, hiring, and operations.",
+    "5. Flex handles approval, onboarding, activation, and product support.",
+    "6. Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations.",
     "",
     FLEX_COMPLIANCE_COPY,
     "",

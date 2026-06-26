@@ -133,3 +133,276 @@ function normalizeState(value?: string) {
   if (["OR", "WA", "CA", "ID"].includes(upper)) return upper as ProjectLead["state"];
   return "OTHER";
 }
+
+export const PATHWAY_STATUSES = [
+  "New Lead",
+  "Contacted",
+  "Intake Complete",
+  "Application Started",
+  "Documents Needed",
+  "Submitted",
+  "Interview / Placement",
+  "Accepted",
+  "Hired / Placed",
+  "Not Qualified",
+  "Paused"
+] as const;
+
+export const ADMITLY_PATHWAYS = [
+  "College",
+  "Trade School",
+  "Apprenticeship",
+  "Union Program",
+  "Certification",
+  "CDL / Driving",
+  "Healthcare Certificate",
+  "Construction Career",
+  "Automotive / Diesel",
+  "Creative / Media / Photography / Videography",
+  "Entrepreneurship",
+  "Other"
+] as const;
+
+export const FORGE_ACADEMY_TRADES = [
+  "Electrical",
+  "Welding",
+  "HVAC",
+  "Plumbing",
+  "Roofing / construction",
+  "CDL / logistics",
+  "Diesel / automotive",
+  "Heavy equipment",
+  "Fire / EMS",
+  "CNA / medical assistant",
+  "Agriculture / farm advancement",
+  "Creative media",
+  "Blue-collar AI field tech",
+  "Other"
+] as const;
+
+export type PathwayStatus = typeof PATHWAY_STATUSES[number];
+export type AdmitlyPathway = typeof ADMITLY_PATHWAYS[number];
+export type ForgeAcademyTrade = typeof FORGE_ACADEMY_TRADES[number];
+
+export interface CareerValidationResult<T = Record<string, unknown>> {
+  ok: boolean;
+  errors: string[];
+  normalized?: T;
+}
+
+export interface TradePathwayLeadInput {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  city?: string;
+  state?: string;
+  educationLevel?: string;
+  ageRange?: string;
+  pathway?: string;
+  desiredTrade?: string;
+  timeline?: string;
+  fundingNeed?: string;
+  workExperience?: string;
+  resumeText?: string;
+  essayHelp?: boolean | string;
+  scholarshipHelp?: boolean | string;
+  jobHelp?: boolean | string;
+  consentToContact?: boolean | string;
+  status?: string;
+  priority?: string;
+  notes?: string;
+}
+
+export interface ForgeAcademyLeadInput {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  city?: string;
+  state?: string;
+  desiredTrade?: string;
+  currentExperience?: string;
+  hasTransportation?: string;
+  hasDriversLicense?: string;
+  needsTraining?: boolean | string;
+  needsJobNow?: boolean | string;
+  needsResume?: boolean | string;
+  interestedCareerPlus?: boolean | string;
+  consentToContact?: boolean | string;
+  status?: string;
+  priority?: string;
+  notes?: string;
+}
+
+export interface EmployerTrainingPartnerInput {
+  businessName?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  tradeCategory?: string;
+  hiringNeeds?: string;
+  apprenticeshipAvailability?: string;
+  willingToTrain?: string;
+  insuranceLicense?: string;
+  writtenPartnerTerms?: boolean | string;
+  status?: string;
+  notes?: string;
+}
+
+export interface SchoolPartnerInput {
+  schoolName?: string;
+  contactName?: string;
+  phone?: string;
+  email?: string;
+  programTypes?: string;
+  location?: string;
+  costRange?: string;
+  financialAidAvailable?: string;
+  enrollmentDeadlines?: string;
+  accreditationNotes?: string;
+  status?: string;
+  notes?: string;
+}
+
+export interface ResumeRequestInput {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  city?: string;
+  state?: string;
+  desiredTrade?: string;
+  currentExperience?: string;
+  resumeText?: string;
+  consentToContact?: boolean | string;
+  careerPlusStatus?: string;
+  status?: string;
+  notes?: string;
+}
+
+export const careerBridgeCompliance = [
+  "Admitly is the education, admissions, scholarship, essay, school planning, and application platform.",
+  "Forge Academy is the Forge-facing blue-collar career, training, apprenticeship, resume, and local job pathway.",
+  "Do not guarantee admission, employment, union acceptance, licensure, scholarship approval, financial aid, or placement.",
+  "Do not collect IDs, Social Security numbers, payment information, passwords, transcripts, or official documents in the browser MVP.",
+  "Require consent before contacting users or sharing any details with schools, employers, partners, unions, or programs."
+] as const;
+
+export function validateTradePathwayLead(input: TradePathwayLeadInput): CareerValidationResult {
+  const errors = requiredCareerErrors(input, ["fullName", "phone", "email", "pathway", "consentToContact"]);
+  if (input.pathway && !ADMITLY_PATHWAYS.includes(input.pathway as AdmitlyPathway)) errors.push("pathway is not supported.");
+  if (input.status && !PATHWAY_STATUSES.includes(input.status as PathwayStatus)) errors.push("status is not supported.");
+  if (!toBoolean(input.consentToContact)) errors.push("consentToContact is required.");
+  if (errors.length) return { ok: false, errors };
+  return {
+    ok: true,
+    errors: [],
+    normalized: {
+      ...input,
+      sourceApp: "admitly",
+      leadType: "Admitly Trade Pathways",
+      state: normalizeCareerState(input.state),
+      essayHelp: toBoolean(input.essayHelp),
+      scholarshipHelp: toBoolean(input.scholarshipHelp),
+      jobHelp: toBoolean(input.jobHelp),
+      consentToContact: true,
+      status: input.status || "New Lead",
+      priority: input.priority || "Warm"
+    }
+  };
+}
+
+export function validateForgeAcademyLead(input: ForgeAcademyLeadInput): CareerValidationResult {
+  const errors = requiredCareerErrors(input, ["fullName", "phone", "desiredTrade", "consentToContact"]);
+  if (input.desiredTrade && !FORGE_ACADEMY_TRADES.includes(input.desiredTrade as ForgeAcademyTrade)) errors.push("desiredTrade is not supported.");
+  if (input.status && !PATHWAY_STATUSES.includes(input.status as PathwayStatus)) errors.push("status is not supported.");
+  if (!toBoolean(input.consentToContact)) errors.push("consentToContact is required.");
+  if (errors.length) return { ok: false, errors };
+  return {
+    ok: true,
+    errors: [],
+    normalized: {
+      ...input,
+      sourceApp: "forge",
+      leadType: "Student / Worker Career Intake",
+      state: normalizeCareerState(input.state),
+      needsTraining: toBoolean(input.needsTraining),
+      needsJobNow: toBoolean(input.needsJobNow),
+      needsResume: toBoolean(input.needsResume),
+      interestedCareerPlus: toBoolean(input.interestedCareerPlus),
+      consentToContact: true,
+      status: input.status || "New Lead",
+      priority: input.priority || "Warm"
+    }
+  };
+}
+
+export function validateEmployerTrainingPartner(input: EmployerTrainingPartnerInput): CareerValidationResult {
+  const errors = requiredCareerErrors(input, ["businessName", "contactName", "phone", "tradeCategory"]);
+  if (input.tradeCategory && !FORGE_ACADEMY_TRADES.includes(input.tradeCategory as ForgeAcademyTrade)) errors.push("tradeCategory is not supported.");
+  if (input.status && !PATHWAY_STATUSES.includes(input.status as PathwayStatus)) errors.push("status is not supported.");
+  if (errors.length) return { ok: false, errors };
+  return {
+    ok: true,
+    errors: [],
+    normalized: {
+      ...input,
+      sourceApp: "forge",
+      leadType: "Employer Training Partner",
+      writtenPartnerTerms: toBoolean(input.writtenPartnerTerms),
+      status: input.status || "New Lead"
+    }
+  };
+}
+
+export function validateSchoolPartner(input: SchoolPartnerInput): CareerValidationResult {
+  const errors = requiredCareerErrors(input, ["schoolName", "contactName", "phone", "programTypes"]);
+  if (input.status && !PATHWAY_STATUSES.includes(input.status as PathwayStatus)) errors.push("status is not supported.");
+  if (errors.length) return { ok: false, errors };
+  return {
+    ok: true,
+    errors: [],
+    normalized: {
+      ...input,
+      sourceApp: "admitly",
+      leadType: "School / Program Partner",
+      status: input.status || "New Lead"
+    }
+  };
+}
+
+export function validateResumeRequest(input: ResumeRequestInput): CareerValidationResult {
+  const errors = requiredCareerErrors(input, ["fullName", "phone", "desiredTrade", "consentToContact"]);
+  if (input.status && !PATHWAY_STATUSES.includes(input.status as PathwayStatus)) errors.push("status is not supported.");
+  if (!toBoolean(input.consentToContact)) errors.push("consentToContact is required.");
+  if (errors.length) return { ok: false, errors };
+  return {
+    ok: true,
+    errors: [],
+    normalized: {
+      ...input,
+      sourceApp: "forge",
+      leadType: "Forge Career+ Resume Request",
+      state: normalizeCareerState(input.state),
+      consentToContact: true,
+      careerPlusStatus: input.careerPlusStatus || "Placeholder",
+      status: input.status || "New Lead"
+    }
+  };
+}
+
+function requiredCareerErrors(input: Record<string, unknown>, fields: string[]) {
+  return fields
+    .filter((field) => input[field] === undefined || input[field] === "")
+    .map((field) => `${field} is required.`);
+}
+
+function toBoolean(value: unknown) {
+  if (value === true) return true;
+  if (typeof value === "string") return ["true", "yes", "on", "1"].includes(value.trim().toLowerCase());
+  return false;
+}
+
+function normalizeCareerState(value?: string) {
+  const upper = String(value || "OR").trim().toUpperCase();
+  if (["OR", "WA", "CA", "ID"].includes(upper)) return upper;
+  return "OTHER";
+}

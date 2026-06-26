@@ -15,7 +15,7 @@ Forge Capital Desk collects basic business-owner lead/contact information and co
 ## Environment Variables
 
 ```env
-NEXT_PUBLIC_FLEX_REFERRAL_URL="https://REPLACE-WITH-APPROVED-FLEX-REFERRAL-LINK"
+NEXT_PUBLIC_FLEX_REFERRAL_URL="https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK"
 FLEX_APP_URL=""
 FLEX_PARTNER_MODE="referral"
 FORGE_CAPITAL_DESK_ENABLED="true"
@@ -40,4 +40,4 @@ The current static MVP stores leads in localStorage first and can also use the e
 
 ## Replacing The Placeholder Flex Link
 
-Replace `https://REPLACE-WITH-APPROVED-FLEX-REFERRAL-LINK` in `.env.example` and the deployed environment with the approved Flex referral URL. Do not publish broad outreach until the URL is approved and tested.
+Replace `https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK` in `.env.example` and the deployed environment with the approved Flex referral URL. Do not publish broad outreach until the URL is approved and tested.

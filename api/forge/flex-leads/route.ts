@@ -12,9 +12,10 @@ type FlexLeadInput = {
   monthly_spend_range?: string;
   employee_count?: string;
   primary_need?: string;
-  interested_in_forge_services?: boolean;
+  interested_in_forge_job_leads?: boolean;
   interested_in_north_star_marketing?: boolean;
   interested_in_payment_processing?: boolean;
+  interested_in_website_crm_automation?: boolean;
   consent_to_contact?: boolean;
   consent_to_receive_flex_referral?: boolean;
   referral_source?: string;
@@ -31,7 +32,7 @@ const requiredFields = [
 ] as const;
 
 const forbiddenFieldPattern = /(ssn|social_security|bank_login|bank_password|account_number|routing_number|credit_score|financial_document|upload)/i;
-const primaryNeedKeywords = ["credit", "vendor payments", "ap", "payroll timing", "employee cards", "fuel", "equipment", "materials", "growth capital"];
+const primaryNeedKeywords = ["credit", "cash-flow", "cash flow", "vendor payments", "ap", "payroll timing", "employee cards", "fuel", "equipment", "materials", "growth capital"];
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -50,9 +51,10 @@ function calculateLeadScore(lead: FlexLeadInput) {
   if (/1-2|3-5|5\+|10\+/.test(years)) score += 10;
   if (/2-5|6-20|21-50|51\+/.test(employees)) score += 10;
   if (primaryNeedKeywords.some((keyword) => primaryNeed.includes(keyword))) score += 10;
-  if (lead.interested_in_forge_services) score += 10;
+  if (lead.interested_in_forge_job_leads) score += 10;
   if (lead.interested_in_north_star_marketing) score += 10;
   if (lead.interested_in_payment_processing) score += 10;
+  if (lead.interested_in_website_crm_automation) score += 10;
   return score;
 }
 
@@ -97,9 +99,10 @@ export async function POST(request: Request) {
     state: lead.state,
     lead_score: lead.lead_score,
     primary_need: lead.primary_need,
-    interested_in_forge_services: Boolean(lead.interested_in_forge_services),
+    interested_in_forge_job_leads: Boolean(lead.interested_in_forge_job_leads),
     interested_in_north_star_marketing: Boolean(lead.interested_in_north_star_marketing),
     interested_in_payment_processing: Boolean(lead.interested_in_payment_processing),
+    interested_in_website_crm_automation: Boolean(lead.interested_in_website_crm_automation),
     status: lead.status
   };
 

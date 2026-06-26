@@ -22,9 +22,10 @@ create table if not exists public.forge_flex_leads (
   monthly_spend_range text,
   employee_count text,
   primary_need text,
-  interested_in_forge_services boolean default false,
+  interested_in_forge_job_leads boolean default false,
   interested_in_north_star_marketing boolean default false,
   interested_in_payment_processing boolean default false,
+  interested_in_website_crm_automation boolean default false,
   consent_to_contact boolean not null default false,
   consent_to_receive_flex_referral boolean not null default false,
   referral_source text,
@@ -46,6 +47,10 @@ create table if not exists public.forge_flex_leads (
   )),
   notes text
 );
+
+alter table public.forge_flex_leads
+  add column if not exists interested_in_forge_job_leads boolean default false,
+  add column if not exists interested_in_website_crm_automation boolean default false;
 
 create index if not exists forge_flex_leads_status_idx on public.forge_flex_leads(status);
 create index if not exists forge_flex_leads_score_idx on public.forge_flex_leads(lead_score);

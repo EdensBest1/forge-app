@@ -3596,6 +3596,230 @@ textarea:focus {
   text-transform: none;
 }
 
+.capital-screen {
+  background: #f4f7fb;
+}
+
+.capital-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.75fr);
+  gap: 28px;
+  align-items: center;
+  padding: 54px 32px 34px;
+  background: linear-gradient(120deg, #063b93, #0d6a5b);
+  color: white;
+}
+
+.capital-hero-copy {
+  display: grid;
+  gap: 18px;
+  max-width: 900px;
+}
+
+.capital-hero-copy .split-label {
+  color: #ffd38a;
+}
+
+.capital-hero-copy h1 {
+  max-width: 860px;
+  margin: 0;
+  font-size: clamp(2.4rem, 5.6vw, 5.2rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.capital-hero-copy p {
+  max-width: 760px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.capital-hero-photo {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 46px rgba(0, 20, 60, 0.28);
+}
+
+.capital-hero-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.capital-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+  gap: 22px;
+  align-items: start;
+  padding: 28px;
+}
+
+.capital-main,
+.capital-form,
+.capital-success {
+  display: grid;
+  gap: 16px;
+}
+
+.capital-section,
+.capital-form-panel,
+.capital-success {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.capital-section h2,
+.capital-form h2,
+.capital-success h2 {
+  margin: 0;
+  color: var(--blue);
+}
+
+.capital-section p,
+.capital-section li,
+.capital-success p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.capital-problems ul,
+.capital-flex-help ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.capital-steps {
+  display: grid;
+  gap: 10px;
+}
+
+.capital-steps article {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.capital-steps strong {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: white;
+}
+
+.capital-form-panel {
+  position: sticky;
+  top: 18px;
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  border-color: rgba(6, 72, 183, 0.2);
+}
+
+.capital-form label,
+.capital-form .trust-note {
+  display: grid;
+  gap: 6px;
+  color: #26364f;
+  font-size: 0.85rem;
+  font-weight: 850;
+}
+
+.capital-form input,
+.capital-form select,
+.capital-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 11px;
+  background: white;
+  color: var(--ink);
+}
+
+.capital-checkboxes {
+  display: grid;
+  gap: 8px;
+}
+
+.capital-form .check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.capital-form .check-row input {
+  width: auto;
+  margin-top: 3px;
+}
+
+.capital-recent-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.capital-recent-grid article {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.flex-status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.flex-status.qualified,
+.flex-status.activated,
+.flex-status.forge_client_won {
+  background: #e7f7ef;
+  color: #08633e;
+}
+
+.flex-status.not_qualified,
+.flex-status.closed_lost {
+  background: #fff0ed;
+  color: #a6361d;
+}
+
+.flex-status.flex_link_sent,
+.flex-status.application_started,
+.flex-status.forge_upsell_offered {
+  background: #fff7df;
+  color: #8a5c00;
+}
+
+.flex-admin-section .lead-actions {
+  align-items: flex-start;
+}
+
 .customer-tabs {
   display: flex;
   gap: 8px;
@@ -6916,6 +7140,8 @@ td {
   .creative-layout,
   .creative-intro,
   .creative-quality,
+  .capital-hero,
+  .capital-layout,
   .northstar-layout,
   .northstar-intro,
   .signup-layout,
@@ -6946,6 +7172,11 @@ td {
 
   .hero-photo {
     min-height: 260px;
+  }
+
+  .capital-form-panel {
+    position: static;
+    max-height: none;
   }
 
   .feature-strip,
@@ -7254,6 +7485,21 @@ td {
 
   .hero-copy h1 {
     font-size: 2.35rem;
+  }
+
+  .capital-hero {
+    padding: 30px 16px 20px;
+  }
+
+  .capital-hero-copy h1 {
+    font-size: 2.35rem;
+  }
+
+  .capital-layout,
+  .capital-section,
+  .capital-form-panel,
+  .capital-success {
+    padding: 16px;
   }
 
   .hero-actions,

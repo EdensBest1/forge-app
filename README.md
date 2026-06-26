@@ -54,6 +54,9 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Worker dashboard
 - Admin dashboard with job leads and worker leads
 - Admin Building Leads table at `/admin/building-leads` with project, budget, state, partner eligibility, consent, routing, and follow-up controls
+- Forge Academy at `/forge-academy` for blue-collar career intake, trade-school help, apprenticeships, resumes, employer partners, school/program partners, and Forge Career+ placeholder capture
+- Admitly Trade Pathways at `/trade-pathways` for college, trade school, union, apprenticeship, certification, scholarship, essay, resume, and education pathway planning
+- Admin Academy section for Forge Academy leads, Admitly Trade Pathways leads, school partners, employer training partners, resume requests, status updates, notes, and copyable handoffs
 - Admin Flex Leads table with status/industry/city/state/score filters, quick status updates, notes, CSV export, outreach copy, approval-gated Flex review actions, and Forge upsell task placeholder
 - Admin Safety Center with backup, consent, webhook, and public-demo checks
 - Admin launch gate for separating controlled first-user beta signups from broad public launch readiness
@@ -139,6 +142,10 @@ npm run check
 - `PUBLIC_BETA_DEPLOY_RUNBOOK.md`
 - `FINAL_PUBLIC_GATE.md`
 - `AUTO_DEALER_INTEGRATION.md`
+- `docs/admitly-trade-pathways.md`
+- `docs/forge-academy.md`
+- `docs/admitly-forge-career-bridge.md`
+- `docs/forge-career-plus.md`
 - `RELEASE_CANDIDATE.md`
 - `release-manifest.json`
 - `release-check.mjs`

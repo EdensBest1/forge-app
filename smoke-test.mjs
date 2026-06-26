@@ -56,6 +56,25 @@ const requiredHtml = [
   "Copy Application Plan",
   "Copy Career Leads",
   "Save Career Interest",
+  "Forge Academy",
+  "Blue-collar career pathways, trade-school help, apprenticeships, resumes, and local job placement powered by Admitly.",
+  "forgeAcademyStudentForm",
+  "academyOptionGrid",
+  "careerPlusFeatureGrid",
+  "Save Career Intake",
+  "Employer / contractor partner",
+  "academyEmployerForm",
+  "School / program partner",
+  "academySchoolForm",
+  "Admitly Trade Pathways",
+  "Your Future. Admitted.",
+  "admitlyTradePathwayForm",
+  "admitlyPathwayGrid",
+  "admitlyDashboardGrid",
+  "Save Trade Pathway Lead",
+  "adminForgeAcademyTable",
+  "adminTradePathwaysTable",
+  "Copy Academy Queue",
   "Copy Auto Brief",
   "Dealer network",
   "Dealer setup checklist",
@@ -99,12 +118,16 @@ const requiredHtml = [
   "adminNorthstarPipeline",
   "Forge Capital Desk",
   "Business owners need breathing room.",
-  "request review for modern business finance tools through approved finance partners when available.",
+  "discover modern business finance tools through our Flex referral channel.",
+  "Forge Capital Desk Lead Form",
+  "Continue to Flex",
   "flexLeadForm",
   "flexConsentToContact",
   "flexConsentReferral",
+  "flexInterestedWebsiteCrm",
   "providerGrowthTools",
   "adminFlexLeadsTable",
+  "flex_link_sent",
   "Copy Queue",
   "Talk to Forge Capital Desk",
   "Start here",
@@ -231,6 +254,16 @@ const requiredJs = [
   "Copy Flow Brief",
   "Where this job stands now",
   "Message / schedule",
+  "renderForgeAcademy",
+  "renderAdmitlyTradePathways",
+  "renderAcademyAdmin",
+  "copyAcademyBrief",
+  "copyAcademyAdminQueue",
+  "resumeRequestFromAcademyLead",
+  "resumeRequestFromTradePathwayLead",
+  "academyConfirmation",
+  "tradePathwayLeads",
+  "forgeAcademyLeads",
   "adminBidsTable",
   "statusLookupForm",
   "renderStatusResults",
@@ -549,12 +582,26 @@ const creativeRoute = await readFile("photography-videography/index.html", "utf8
 const northstarRoute = await readFile("northstar-creative/index.html", "utf8");
 const buildingRoute = await readFile("building/index.html", "utf8");
 const adminBuildingRoute = await readFile("admin/building-leads/index.html", "utf8");
+const forgeAcademyRoute = await readFile("forge-academy/index.html", "utf8");
+const forgeAcademyApplyRoute = await readFile("forge-academy/apply/index.html", "utf8");
+const forgeAcademyEmployersRoute = await readFile("forge-academy/employers/index.html", "utf8");
+const forgeAcademySchoolsRoute = await readFile("forge-academy/schools/index.html", "utf8");
+const forgeCareerDashboardRoute = await readFile("dashboard/career/index.html", "utf8");
+const admitlyTradePathwaysRoute = await readFile("trade-pathways/index.html", "utf8");
+const admitlyTradePathwaysApplyRoute = await readFile("trade-pathways/apply/index.html", "utf8");
+const admitlyTradePathwaysDashboardRoute = await readFile("dashboard/trade-pathways/index.html", "utf8");
+const adminForgeAcademyRoute = await readFile("admin/forge-academy/index.html", "utf8");
+const adminTradePathwaysRoute = await readFile("admin/trade-pathways/index.html", "utf8");
 const forgeCapitalRoute = await readFile("forge/capital/index.html", "utf8");
 const forgeFlexRoute = await readFile("forge/flex/index.html", "utf8");
 const partnersFlexRoute = await readFile("partners/flex/index.html", "utf8");
 const flexMigration = await readFile("migrations/20260626_forge_flex_leads.sql", "utf8");
 const flexReadme = await readFile("docs/forge-capital-desk-readme.md", "utf8");
 const flexOutreach = await readFile("docs/forge-flex-capital-desk-outreach.md", "utf8");
+const admitlyTradePathwaysDoc = await readFile("docs/admitly-trade-pathways.md", "utf8");
+const forgeAcademyDoc = await readFile("docs/forge-academy.md", "utf8");
+const admitlyForgeBridgeDoc = await readFile("docs/admitly-forge-career-bridge.md", "utf8");
+const forgeCareerPlusDoc = await readFile("docs/forge-career-plus.md", "utf8");
 const flexApiRoute = await readFile("api/forge/flex-leads/route.ts", "utf8");
 const envExample = await readFile(".env.example", "utf8");
 const requiredTradeLabels = [
@@ -619,6 +666,8 @@ const missingCss = [
   ["build tracker gantt", css.includes(".gantt-scroll") && css.includes(".gantt-bar")],
   ["build tracker budget", css.includes(".budget-category-grid") && css.includes(".budget-alerts")],
   ["training careers hub", css.includes(".opportunity-layout") && css.includes(".opportunity-track-grid") && css.includes(".opportunity-lead-list")],
+  ["forge academy and admitly pages", css.includes(".academy-layout") && css.includes(".academy-option-grid") && css.includes(".admitly-layout") && css.includes(".admitly-path-grid")],
+  ["academy admin grids", css.includes(".academy-admin-stats") && css.includes(".academy-partner-grid")],
   ["soft launch plan", css.includes(".soft-launch-grid") && css.includes(".soft-launch")],
   ["first user start path", css.includes(".start-path-grid") && css.includes(".start-path-card")],
   ["first user path heading", css.includes(".start-path-heading")],
@@ -659,14 +708,18 @@ const missingDeploy = [
   ["vercel rewrite", vercel.includes("\"rewrites\"") && vercel.includes("\"/index.html\"")],
   ["robots present", robots.includes("User-agent: *")],
   ["security review checklist", securityReview.includes("Forge Security Review Checklist") && securityReview.includes("Launch Decision")],
-  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("northstar_marketing_operations_leads") && supabaseSchema.includes("forge_flex_leads") && supabaseSchema.includes("building_leads") && supabaseSchema.includes("forge_vehicle_seller_leads") && supabaseSchema.includes("forge_operations_vault_documents") && supabaseSchema.includes("enable row level security")],
-  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("northstar") && webhookPayloads.includes("forge-flex") && webhookPayloads.includes("vehicle-seller") && webhookPayloads.includes("Public Beta Safety")],
+  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("trade_pathway_leads") && supabaseSchema.includes("forge_academy_leads") && supabaseSchema.includes("forge_career_profiles") && supabaseSchema.includes("school_partners") && supabaseSchema.includes("employer_training_partners") && supabaseSchema.includes("resume_requests") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("northstar_marketing_operations_leads") && supabaseSchema.includes("forge_flex_leads") && supabaseSchema.includes("building_leads") && supabaseSchema.includes("forge_vehicle_seller_leads") && supabaseSchema.includes("forge_operations_vault_documents") && supabaseSchema.includes("enable row level security")],
+  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("northstar") && webhookPayloads.includes("forge-flex") && webhookPayloads.includes("vehicle-seller") && webhookPayloads.includes("forge-academy") && webhookPayloads.includes("trade-pathway") && webhookPayloads.includes("employer-training-partner") && webhookPayloads.includes("school-program-partner") && webhookPayloads.includes("resume-request") && webhookPayloads.includes("Public Beta Safety")],
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v71\"") && releaseManifest.includes("/photography?v=71") && releaseManifest.includes("/photography/request?v=71") && releaseManifest.includes("/photography/apply?v=71") && releaseManifest.includes("/photography-videography?v=71") && releaseManifest.includes("/northstar-creative?v=71") && releaseManifest.includes("/forge/capital?v=71") && releaseManifest.includes("/forge/flex?v=71") && releaseManifest.includes("/partners/flex?v=71") && releaseManifest.includes("/building?v=71") && releaseManifest.includes("/admin/building-leads?v=71")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v71\"") && releaseManifest.includes("/photography?v=71") && releaseManifest.includes("/photography/request?v=71") && releaseManifest.includes("/photography/apply?v=71") && releaseManifest.includes("/photography-videography?v=71") && releaseManifest.includes("/northstar-creative?v=71") && releaseManifest.includes("/forge/capital?v=71") && releaseManifest.includes("/forge/flex?v=71") && releaseManifest.includes("/partners/flex?v=71") && releaseManifest.includes("/building?v=71") && releaseManifest.includes("/admin/building-leads?v=71") && releaseManifest.includes("/forge-academy?v=71") && releaseManifest.includes("/trade-pathways?v=71") && releaseManifest.includes("/admin/forge-academy?v=71")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["building cached routes", serviceWorker.includes("./building/") && serviceWorker.includes("./admin/building-leads/")],
+  ["academy cached routes", serviceWorker.includes("./forge-academy/") && serviceWorker.includes("./trade-pathways/") && serviceWorker.includes("./admin/forge-academy/")],
+  ["academy route aliases", forgeAcademyRoute.includes("route-loader.js") && forgeAcademyApplyRoute.includes("route-loader.js") && forgeAcademyEmployersRoute.includes("route-loader.js") && forgeAcademySchoolsRoute.includes("route-loader.js") && forgeCareerDashboardRoute.includes("route-loader.js")],
+  ["admitly route aliases", admitlyTradePathwaysRoute.includes("route-loader.js") && admitlyTradePathwaysApplyRoute.includes("route-loader.js") && admitlyTradePathwaysDashboardRoute.includes("route-loader.js") && adminForgeAcademyRoute.includes("route-loader.js") && adminTradePathwaysRoute.includes("route-loader.js")],
+  ["academy docs", admitlyTradePathwaysDoc.includes("Admitly Trade Pathways") && forgeAcademyDoc.includes("Forge Academy") && admitlyForgeBridgeDoc.includes("Brand Separation") && forgeCareerPlusDoc.includes("Forge Career+")],
   ["release candidate notes", releaseCandidate.includes("Forge Public Beta Release Candidate") && releaseCandidate.includes("Human Gates Still Required")],
   ["release check script", releaseCheck.includes("Forge release check passed.") && releaseCheck.includes("service worker version")],
   ["package scripts", packageJson.includes("\"check\"") && packageJson.includes("check:release")],
@@ -683,10 +736,10 @@ const missingDeploy = [
   ["partners flex route", partnersFlexRoute.includes("Forge Partner: Flex") && partnersFlexRoute.includes("/route-loader.js")],
   ["building route", buildingRoute.includes("Forge Building") && buildingRoute.includes("/route-loader.js")],
   ["admin building route", adminBuildingRoute.includes("Forge Building Leads Admin") && adminBuildingRoute.includes("/route-loader.js")],
-  ["flex lead migration", flexMigration.includes("public.forge_flex_leads") && flexMigration.includes("consent_to_receive_flex_referral") && flexMigration.includes("status in")],
+  ["flex lead migration", flexMigration.includes("public.forge_flex_leads") && flexMigration.includes("interested_in_forge_job_leads") && flexMigration.includes("interested_in_website_crm_automation") && flexMigration.includes("consent_to_receive_flex_referral") && flexMigration.includes("status in")],
   ["flex docs", flexReadme.includes("Forge Capital Desk") && flexReadme.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && flexOutreach.includes("Forge Capital Desk") && flexOutreach.includes("Compliance")],
   ["flex api route", flexApiRoute.includes("FORGE_GHL_WEBHOOK_URL") && flexApiRoute.includes("FORGE_ZAPIER_WEBHOOK_URL") && flexApiRoute.includes("forbiddenFieldPattern")],
-  ["flex env example", envExample.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && envExample.includes("FLEX_APP_URL") && envExample.includes("FLEX_PARTNER_MODE") && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
+  ["flex env example", envExample.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && envExample.includes("https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK") && envExample.includes("FLEX_APP_URL") && envExample.includes("FLEX_PARTNER_MODE") && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 

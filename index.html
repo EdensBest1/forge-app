@@ -114,8 +114,8 @@
           <article>
             <span class="split-label">I need breathing room</span>
             <h2>Forge Capital Desk</h2>
-            <p>Basic business-owner intake and consent before any approved finance partner review.</p>
-            <button class="btn ghost" type="button" data-nav="capital">Request Finance Review</button>
+            <p>Basic business-owner intake and consent before continuing through the official Flex referral channel.</p>
+            <button class="btn ghost" type="button" data-nav="capital">Check Flex Options</button>
           </article>
           <article>
             <span class="split-label">I need a product made</span>
@@ -1069,6 +1069,7 @@
           <div class="bar-icons">
             <button type="button" data-action="focus-manufacturing-rfq">RFQ</button>
             <button type="button" data-action="focus-manufacturing-supplier">Supplier</button>
+            <button type="button" data-action="focus-manufacturing-lead">Lead CRM</button>
             <button type="button" data-action="copy-manufacturing-brief">Brief</button>
           </div>
         </header>
@@ -1135,6 +1136,29 @@
               <div class="manufacturing-filter-flags" id="manufacturingFilterFlags"></div>
               <div class="manufacturing-directory-grid" id="manufacturingSupplierDirectory"></div>
             </section>
+            <section class="manufacturing-directory" id="manufacturingLeadSourceCrm">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Lead-source CRM</span>
+                  <h2>Track lawful supplier research, outreach, follow-ups, and provider conversion.</h2>
+                  <p class="muted">Thomasnet can be marked only as a lead source. Forge does not scrape, data mine, copy, or recreate third-party supplier directories.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-manufacturing-outreach-template">Copy Outreach</button>
+                  <button class="btn ghost small" type="button" data-action="export-manufacturing-supplier-leads">Export Leads CSV</button>
+                </div>
+              </div>
+              <div class="manufacturing-filters">
+                <label class="file-button btn ghost full">Import Supplier CSV<input id="manufacturingSupplierCsvInput" type="file" accept=".csv,text/csv" /></label>
+                <p class="trust-note"><strong>CSV import rule:</strong> Only import supplier data you have permission to use.</p>
+              </div>
+              <div class="manufacturing-rfq-list" id="manufacturingSupplierLeadList"></div>
+              <div class="manufacturing-supplier-card" id="manufacturingSupplierLeadDetail"></div>
+              <article class="manufacturing-supplier-card">
+                <span class="split-label">Outreach template</span>
+                <pre class="copy-block" id="manufacturingOutreachTemplate"></pre>
+              </article>
+            </section>
             <section class="manufacturing-eden">
               <div>
                 <span class="split-label">Eden's Best / The Health Center</span>
@@ -1172,6 +1196,10 @@
               <span class="split-label">Request Manufacturing Quote</span>
               <h2>Request Manufacturing Quote</h2>
               <div class="field-row">
+                <label>Customer / company name<input id="manufacturingCustomerCompanyName" required placeholder="Company, founder, gym, clinic, retailer" /></label>
+                <label>Product idea<input id="manufacturingProductIdea" required placeholder="Private label vitamin, gummy, powder, pet supplement" /></label>
+              </div>
+              <div class="field-row">
                 <label>Product type<select id="manufacturingProductType" required></select></label>
                 <label>Brand name<input id="manufacturingBrandName" required placeholder="Brand or project name" /></label>
               </div>
@@ -1183,11 +1211,37 @@
                 <label>Target quantity / MOQ<input id="manufacturingTargetQuantity" required placeholder="Example: 5,000 bottles" /></label>
                 <label>Desired packaging<input id="manufacturingPackaging" required placeholder="Bottles, pouches, sticks, jars" /></label>
               </div>
+              <div class="field-row">
+                <label>Estimated first order quantity<input id="manufacturingFirstOrderQuantity" placeholder="Example: 2,500 units" /></label>
+                <label>Desired MOQ<input id="manufacturingDesiredMoq" placeholder="Low MOQ, 5,000 bottles, pilot run" /></label>
+              </div>
               <label>Ingredient requirements<textarea id="manufacturingIngredients" rows="3" required placeholder="Active ingredients, exclusions, flavors, allergens, sourcing needs"></textarea></label>
+              <label>Ingredients requested<textarea id="manufacturingIngredientsRequested" rows="2" placeholder="Creatine, collagen, electrolytes, greens, vitamins, minerals"></textarea></label>
+              <label>Ingredients to avoid<textarea id="manufacturingIngredientsToAvoid" rows="2" placeholder="Allergens, colors, sugar alcohols, banned substances, ingredients not wanted"></textarea></label>
+              <div class="field-row">
+                <label>Flavor preferences<input id="manufacturingFlavorPreferences" placeholder="Fruit punch, vanilla, unflavored" /></label>
+                <label>Sweetener preferences<input id="manufacturingSweetenerPreferences" placeholder="Stevia, monk fruit, cane sugar, no artificial" /></label>
+              </div>
+              <div class="field-row">
+                <label>Serving size<input id="manufacturingServingSize" placeholder="2 gummies, 1 scoop, 2 capsules" /></label>
+                <label>Servings per container<input id="manufacturingServingsPerContainer" placeholder="30, 60, 90" /></label>
+              </div>
+              <div class="field-row">
+                <label>Target retail price<input id="manufacturingTargetRetailPrice" placeholder="$29.99, $49.99" /></label>
+                <label>Target customer<input id="manufacturingTargetCustomer" placeholder="Athletes, moms, pets, gyms, clinics" /></label>
+              </div>
               <label>Organic / vegan / non-GMO / gluten-free / sugar-free / clean-label requirements<select id="manufacturingCleanLabelRequirements" multiple></select></label>
               <div class="field-row">
                 <label>CBD/hemp involved?<select id="manufacturingCbdHemp" required></select></label>
                 <label>Testing needs<input id="manufacturingTestingNeeds" placeholder="COA, micro, heavy metals, stability, potency" /></label>
+              </div>
+              <div class="field-row">
+                <label>Label design needed?<select id="manufacturingLabelDesignNeeded"></select></label>
+                <label>Compliance review needed?<select id="manufacturingComplianceReviewNeeded"></select></label>
+              </div>
+              <div class="field-row">
+                <label>Fulfillment needed?<select id="manufacturingFulfillmentNeeded"></select></label>
+                <label>Dropshipping needed?<select id="manufacturingDropshippingNeeded"></select></label>
               </div>
               <p class="trust-note"><strong>CBD/hemp notice:</strong> CBD/hemp projects require legal-state compliance review before any supplier routing.</p>
               <label>Certifications required<select id="manufacturingCertificationsRequired" multiple></select></label>
@@ -1201,8 +1255,11 @@
                 <label>Contact email<input id="manufacturingContactEmail" required type="email" placeholder="name@example.com" /></label>
               </div>
               <label>Contact phone<input id="manufacturingContactPhone" required placeholder="(555) 000-0000" /></label>
+              <label>Notes<textarea id="manufacturingRfqNotes" rows="3" placeholder="Budget context, launch constraints, references, questions, or regulatory concerns"></textarea></label>
               <!-- TODO: connect formula/spec-sheet uploads to backend object storage before public launch. -->
               <label class="file-button btn ghost full">Upload formula/spec sheet<input id="manufacturingSpecUpload" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*" /></label>
+              <label class="file-button btn ghost full">Upload label / ingredient deck / product reference<input id="manufacturingReferenceUploads" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*" /></label>
+              <label class="file-button btn ghost full">Upload packaging reference / COA / brand guide<input id="manufacturingComplianceUploads" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*" /></label>
               <label class="check-row"><input id="manufacturingRfqConsent" required type="checkbox" /> I agree to be contacted by Forge about this manufacturing request.</label>
               <button class="btn orange full" type="submit">Request Manufacturing Quote</button>
             </form>
@@ -1217,13 +1274,20 @@
                 <label>Location<input id="manufacturingSupplierLocation" required placeholder="City, state, country" /></label>
                 <label>Service area<input id="manufacturingSupplierServiceArea" required placeholder="U.S., global, regional" /></label>
               </div>
+              <label>Ships nationwide?<select id="manufacturingSupplierShipsNationwide"></select></label>
               <label>Supplier type<select id="manufacturingSupplierTypeInput" required></select></label>
+              <label>Products manufactured<textarea id="manufacturingSupplierProducts" rows="2" placeholder="Vitamins, minerals, pre-workout, protein, pet supplements, packaging, testing"></textarea></label>
               <label>Capabilities<textarea id="manufacturingSupplierCapabilities" rows="3" required placeholder="Products, processes, batch sizes, specialties"></textarea></label>
               <label>Dosage forms supported<select id="manufacturingSupplierDosageForms" multiple required></select></label>
               <div class="field-row">
                 <label>Minimum order quantity<input id="manufacturingSupplierMoq" required placeholder="Example: 2,500 units" /></label>
                 <label>Certifications<select id="manufacturingSupplierCertifications" multiple></select></label>
               </div>
+              <div class="field-row">
+                <label>Estimated lead time<input id="manufacturingSupplierLeadTime" placeholder="Example: 8-12 weeks" /></label>
+                <label>Starting project budget<input id="manufacturingSupplierStartingBudget" placeholder="$10k minimum, project-based" /></label>
+              </div>
+              <label>Testing offered<select id="manufacturingSupplierTestingOffered" multiple></select></label>
               <div class="field-row">
                 <label>Facility type<input id="manufacturingSupplierFacilityType" required placeholder="GMP facility, co-packer, lab, warehouse" /></label>
                 <label>Turnaround time<input id="manufacturingSupplierTurnaround" required placeholder="Example: 8-12 weeks" /></label>
@@ -1232,19 +1296,91 @@
               <div class="manufacturing-support-grid">
                 <label class="check-row"><input id="manufacturingSupplierIngredientSourcing" type="checkbox" /> Ingredient sourcing support</label>
                 <label class="check-row"><input id="manufacturingSupplierFormulation" type="checkbox" /> Formulation support</label>
+                <label class="check-row"><input id="manufacturingSupplierCustomFormulation" type="checkbox" /> Custom formulation support</label>
+                <label class="check-row"><input id="manufacturingSupplierWhiteLabelCatalog" type="checkbox" /> White-label catalog</label>
+                <label class="check-row"><input id="manufacturingSupplierFlavoring" type="checkbox" /> Flavoring support</label>
+                <label class="check-row"><input id="manufacturingSupplierPackagingSupport" type="checkbox" /> Packaging support</label>
+                <label class="check-row"><input id="manufacturingSupplierLabelDesign" type="checkbox" /> Label design support</label>
                 <label class="check-row"><input id="manufacturingSupplierTesting" type="checkbox" /> Testing/lab support</label>
                 <label class="check-row"><input id="manufacturingSupplierCompliance" type="checkbox" /> Compliance support</label>
                 <label class="check-row"><input id="manufacturingSupplierPrivateLabel" type="checkbox" /> White-label/private-label support</label>
                 <label class="check-row"><input id="manufacturingSupplierFulfillment" type="checkbox" /> Fulfillment support</label>
+                <label class="check-row"><input id="manufacturingSupplierSampleDevelopment" type="checkbox" /> Sample development support</label>
+                <label class="check-row"><input id="manufacturingSupplierNda" type="checkbox" /> NDA available</label>
               </div>
+              <div class="field-row">
+                <label>Current capacity<input id="manufacturingSupplierCapacity" placeholder="Accepting 3 new projects/month, waitlist, pilot only" /></label>
+                <label>Accepting new clients?<select id="manufacturingSupplierAcceptingClients"></select></label>
+              </div>
+              <label>Insurance?<select id="manufacturingSupplierInsurance"></select></label>
               <div class="field-row">
                 <label>Website<input id="manufacturingSupplierWebsite" type="url" placeholder="https://example.com" /></label>
                 <label>Phone/email<input id="manufacturingSupplierContactInfo" required placeholder="Phone or email" /></label>
               </div>
+              <div class="field-row">
+                <label>Lead source<select id="manufacturingSupplierLeadSource"></select></label>
+                <label>Source URL<input id="manufacturingSupplierSourceUrl" type="url" placeholder="https://example.com/source" /></label>
+              </div>
+              <label>Source notes<textarea id="manufacturingSupplierSourceNotes" rows="2" placeholder="Supplier inbound, referral, existing relationship, manual research notes"></textarea></label>
+              <div class="field-row">
+                <label>Date added<input id="manufacturingSupplierDateAdded" type="date" /></label>
+                <label>Outreach status<select id="manufacturingSupplierOutreachStatus"></select></label>
+              </div>
+              <div class="field-row">
+                <label>Last contacted<input id="manufacturingSupplierLastContacted" type="date" /></label>
+                <label>Next follow-up<input id="manufacturingSupplierNextFollowUp" type="date" /></label>
+              </div>
+              <label>Relationship owner<input id="manufacturingSupplierRelationshipOwner" placeholder="Andrew, Forge admin, supplier inbound" /></label>
               <label>Notes<textarea id="manufacturingSupplierNotes" rows="3" placeholder="Capacity, lead times, compliance notes, ideal customer fit"></textarea></label>
+              <label>Bio / company description<textarea id="manufacturingSupplierBio" rows="3" placeholder="Company story, ideal projects, quality standards, capabilities"></textarea></label>
+              <label class="file-button btn ghost full">Upload logo / certifications / product photos<input id="manufacturingSupplierUploads" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,image/*" /></label>
               <p class="trust-note"><strong>Verified by Forge:</strong> Placeholder status only. Public verified claims require manual review, documents, and approval.</p>
               <label class="check-row"><input id="manufacturingSupplierConsent" required type="checkbox" /> I agree to be contacted by Forge about supplier onboarding.</label>
               <button class="btn blue full" type="submit">Join Forge Manufacturing Network</button>
+            </form>
+            <form class="manufacturing-form supplier" id="manufacturingSupplierLeadForm">
+              <span class="split-label">Manual Supplier Lead</span>
+              <h2>Add Supplier Lead</h2>
+              <div class="field-row">
+                <label>Company name<input id="manufacturingLeadCompany" required placeholder="Company name" /></label>
+                <label>Contact name<input id="manufacturingLeadContact" placeholder="Contact name" /></label>
+              </div>
+              <div class="field-row">
+                <label>Phone<input id="manufacturingLeadPhone" placeholder="(555) 000-0000" /></label>
+                <label>Email<input id="manufacturingLeadEmail" type="email" placeholder="name@example.com" /></label>
+              </div>
+              <label>Website<input id="manufacturingLeadWebsite" type="url" placeholder="https://supplier.example.com" /></label>
+              <div class="field-row">
+                <label>City<input id="manufacturingLeadCity" placeholder="City" /></label>
+                <label>State<input id="manufacturingLeadState" placeholder="State" /></label>
+              </div>
+              <label>Country<input id="manufacturingLeadCountry" value="USA" /></label>
+              <label>Supplier category<input id="manufacturingLeadCategory" required placeholder="Vitamin manufacturer, packaging, lab testing" /></label>
+              <label>Capabilities<textarea id="manufacturingLeadCapabilities" rows="2" placeholder="Capabilities, dosage forms, equipment, services"></textarea></label>
+              <label>Certifications<input id="manufacturingLeadCertifications" placeholder="cGMP, FDA registered, NSF, Organic, Kosher" /></label>
+              <label>Product types<input id="manufacturingLeadProductTypes" placeholder="Vitamins, gummies, powders, packaging, fulfillment" /></label>
+              <div class="field-row">
+                <label>MOQ<input id="manufacturingLeadMoq" placeholder="Example: 5,000 units" /></label>
+                <label>Lead time<input id="manufacturingLeadLeadTime" placeholder="Example: 8-12 weeks" /></label>
+              </div>
+              <label>Source<select id="manufacturingLeadSourceInput" required></select></label>
+              <label>Source URL<input id="manufacturingLeadSourceUrl" type="url" placeholder="Lawful source URL if available" /></label>
+              <div class="field-row">
+                <label>Date discovered<input id="manufacturingLeadDateDiscovered" type="date" /></label>
+                <label>Added by<input id="manufacturingLeadAddedBy" placeholder="Andrew" /></label>
+              </div>
+              <label>Outreach status<select id="manufacturingLeadOutreachStatus"></select></label>
+              <div class="field-row">
+                <label>Last contacted<input id="manufacturingLeadLastContacted" type="date" /></label>
+                <label>Next follow-up date<input id="manufacturingLeadNextFollowUp" type="date" /></label>
+              </div>
+              <label>Follow-up notes<textarea id="manufacturingLeadFollowUpNotes" rows="2" placeholder="Call notes, reply, next task, questions"></textarea></label>
+              <label>Potential opportunity value<input id="manufacturingLeadOpportunityValue" placeholder="$25k - $75k, strategic partner, TBD" /></label>
+              <label>Related Forge vertical<select id="manufacturingLeadRelatedVertical"></select></label>
+              <label>Tags<input id="manufacturingLeadTags" placeholder="private label, gummies, low MOQ, cGMP" /></label>
+              <label>Notes<textarea id="manufacturingLeadNotes" rows="3" placeholder="Supplier notes, relationship context, lawful-source context"></textarea></label>
+              <p class="trust-note"><strong>Source rule:</strong> Supplier leads must be entered, imported, or stored only when you have permission to use the data.</p>
+              <button class="btn blue full" type="submit">Save Supplier Lead</button>
             </form>
           </aside>
         </section>
@@ -2128,7 +2264,7 @@
               <article>
                 <span class="split-label">Contractor Finance Review</span>
                 <h2>For builders, service businesses, and project operators.</h2>
-                <p>If you are a contractor, builder, service business, or project operator, Forge can also help you request review for business finance, vendor payments, expense management, bill pay, working capital, and operating tools.</p>
+                <p>If you are a contractor, builder, service business, or project operator, Forge can also help you request review for modern business finance tools through approved finance partners when available.</p>
                 <p>Qualified finance requests may be routed to approved finance partners after your consent.</p>
               </article>
             </section>
@@ -2577,6 +2713,39 @@
               <label>Restocking included<select id="bidRestockingIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
             </div>
             <label>Recurring work available<select id="bidRecurringAvailable"><option>No</option><option>Yes</option><option>Open to discuss</option></select></label>
+            <section class="manufacturing-form embedded">
+              <span class="split-label">Manufacturing bid details</span>
+              <div class="field-row">
+                <label>MOQ<input id="bidManufacturingMoq" placeholder="5,000 units, pilot run, not applicable" /></label>
+                <label>Unit cost estimate<input id="bidManufacturingUnitCost" placeholder="$2.15/unit, TBD" /></label>
+              </div>
+              <div class="field-row">
+                <label>Setup fee<input id="bidManufacturingSetupFee" placeholder="$1,500, waived, TBD" /></label>
+                <label>Sample fee<input id="bidManufacturingSampleFee" placeholder="$500 sample run" /></label>
+              </div>
+              <div class="field-row">
+                <label>Packaging cost estimate<input id="bidManufacturingPackagingCost" placeholder="$0.45/unit, TBD" /></label>
+                <label>Labeling cost estimate<input id="bidManufacturingLabelingCost" placeholder="$0.18/unit, TBD" /></label>
+              </div>
+              <div class="field-row">
+                <label>Testing cost estimate<input id="bidManufacturingTestingCost" placeholder="COA included, $900 panel" /></label>
+                <label>Estimated lead time<input id="bidManufacturingLeadTime" placeholder="8-12 weeks" /></label>
+              </div>
+              <label>Production timeline<textarea id="bidManufacturingProductionTimeline" rows="2" placeholder="Formula, sample, approval, production, testing, packaging, ship"></textarea></label>
+              <label>Bid terms<input id="bidManufacturingTerms" placeholder="50% deposit, balance before ship" /></label>
+              <label>Certifications included<input id="bidManufacturingCertifications" placeholder="cGMP, FDA registered, COA, NSF by request" /></label>
+              <label>Testing included<input id="bidManufacturingTestingIncluded" placeholder="COA, heavy metals, microbials, potency" /></label>
+              <div class="field-row">
+                <label>Formulation included?<select id="bidManufacturingFormulationIncluded"></select></label>
+                <label>Packaging included?<select id="bidManufacturingPackagingIncluded"></select></label>
+              </div>
+              <div class="field-row">
+                <label>Fulfillment included?<select id="bidManufacturingFulfillmentIncluded"></select></label>
+                <label>NDA required?<select id="bidManufacturingNdaRequired"></select></label>
+              </div>
+              <label>Questions for customer<textarea id="bidManufacturingQuestions" rows="2" placeholder="Formula status, label claims, allergens, launch timeline, purchase order questions"></textarea></label>
+              <label>Bid status<select id="bidStatus"></select></label>
+            </section>
             <label>Experience note<textarea id="bidExperienceNote" rows="3" placeholder="Relevant cleaning, hauling, concrete, asphalt, masonry, paver, or hardscape experience."></textarea></label>
             <label>Message<textarea id="bidMessage" rows="4" placeholder="Tell the customer when you can arrive, what is included, and anything they need to know."></textarea></label>
             <button class="btn orange" type="submit">Submit Bid</button>
@@ -3161,12 +3330,22 @@
             </div>
             <div class="table-card"><table id="adminManufacturingSuppliersTable"></table></div>
             <div class="lead-board" id="adminManufacturingSuppliersPipeline"></div>
+            <div class="admin-heading">
+              <h2>Manufacturing Supplier Lead Source CRM</h2>
+              <div class="compact-actions">
+                <button class="btn ghost small" type="button" data-action="copy-manufacturing-outreach-template">Copy Outreach</button>
+                <button class="btn ghost small" type="button" data-action="export-manufacturing-supplier-leads">Export Supplier Leads CSV</button>
+                <button class="btn blue small" type="button" data-nav="manufacturing">Open Lead CRM</button>
+              </div>
+            </div>
+            <div class="table-card"><table id="adminManufacturingSupplierLeadsTable"></table></div>
+            <div class="lead-board" id="adminManufacturingSupplierLeadsPipeline"></div>
             <section class="settings-card flex-admin-section">
               <div class="admin-heading compact">
                 <div>
                   <span class="split-label">Forge Capital Desk</span>
                   <h2>Flex Leads</h2>
-                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and any configured finance partner handoff.</p>
+                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and the official Flex referral link handoff.</p>
                 </div>
                 <div class="compact-actions">
                   <button class="btn ghost small" type="button" data-action="copy-flex-queue">Copy Queue</button>
