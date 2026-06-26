@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-06-26 - Launch reconciliation checkpoint
+
+- Created pre-edit checkpoint commit before launch reconciliation work.
+
 Track every change Codex makes in this repository.
 
 ## 2026-06-26

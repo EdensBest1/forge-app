@@ -9,9 +9,92 @@ const NORTHSTAR_CATEGORY_LABEL = "NorthStar Creative Co.";
 const MANUFACTURING_CATEGORY_VALUE = "manufacturing_nutraceuticals";
 const MANUFACTURING_CATEGORY_LABEL = "Manufacturing + Nutraceuticals";
 const MANUFACTURING_CATEGORY_SLUG = "manufacturing-nutraceuticals";
+const PERSONAL_DRIVER_CATEGORY_VALUE = "personal_driver_services";
+const PERSONAL_DRIVER_CATEGORY_LABEL = "Personal Driver / Private Driver Services";
+const FORGE_PAYMENTS_CATEGORY_VALUE = "forge_payments_merchant_services";
+const FORGE_PAYMENTS_CATEGORY_LABEL = "Forge Payments / Merchant Services";
+const LOCAL_PRODUCTS_CATEGORY_VALUE = "local_products_makers";
+const LOCAL_PRODUCTS_CATEGORY_LABEL = "Local Products / Makers";
+const workerTrustTiers = [
+  { tier: "Green", meaning: "novice/helper track", steps: ["Helper 1", "Helper 2", "Job Shadow", "Tool-Ready Helper", "Reliable Helper"] },
+  { tier: "Silver", meaning: "pro/reliable worker track", steps: ["Pro 1", "Pro 2", "Reliable Pro", "Independent Pro", "Preferred Pro"] },
+  { tier: "Gold", meaning: "expert/crew lead/business track", steps: ["Crew Lead 1", "Crew Lead 2", "Expert Operator", "Business Ready", "Master Lead"] }
+];
+const dispatchDecisionLabels = ["Ready to Invite", "Crew-Lead Ready", "Mentor-Only", "Supervised Helper", "Admin Review"];
 const yesNoOptions = ["No", "Yes"];
 const serviceJobStatusLabels = ["Open for bids", "Bid submitted", "Provider selected", "Scheduled", "In progress", "Completed", "Cancelled"];
 const serviceVerticals = [
+  {
+    id: "personal_driver",
+    title: PERSONAL_DRIVER_CATEGORY_LABEL,
+    shortTitle: "Personal Driver",
+    publicHeadline: "Hire a local driver for scheduled personal rides.",
+    publicSubheadline: "Errands, appointments, airport rides, event rides, sober rides, executive rides, and recurring scheduled rides.",
+    publicBody: "Forge collects driver-service leads and routes them for manual review. Drivers must meet legal, insurance, licensing, background, vehicle, and local requirements where applicable.",
+    ctas: ["Request a Personal Driver", "Apply as a Driver", "Review Driver Safety"],
+    categories: ["Personal Driver / Private Driver Services", "Errand Driver", "Appointment Ride", "Airport Ride", "Event Ride", "Sober Ride", "Executive Ride", "Recurring Scheduled Ride", "Senior Ride Support", "Local Chauffeur Request"],
+    providerTypes: ["Private Driver", "Executive Driver", "Chauffeur Candidate", "Errand Driver", "Sober Ride Driver", "Scheduled Ride Provider"],
+    tags: ["scheduled rides", "airport", "executive", "sober ride", "recurring", "privacy-aware"],
+    filters: ["Scheduled rides", "Airport rides", "Executive rides", "Sober rides", "Recurring rides", "Insurance reviewed", "Vehicle reviewed", "Background check pending", "Service area"],
+    checklist: ["Confirm legal driving requirements", "Confirm insurance and vehicle readiness", "Keep sensitive route details private", "Confirm pickup/drop-off outside public notes", "Emergency situations require 911"],
+    providerFields: [
+      { name: "businessName", label: "Driver / business profile name" },
+      { name: "ownerName", label: "Driver contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "vehicleType", label: "Vehicle type" },
+      { name: "driverLicenseStatus", label: "Driver license status", type: "select", options: ["Current", "Pending review", "Not provided"] },
+      { name: "insurance", label: "Commercial/ride insurance review", type: "select", options: ["Needs review", "Provided", "Not applicable / unsure"] },
+      { name: "backgroundCheck", label: "Background check status", type: "select", options: ["Not started", "Willing to complete", "Completed elsewhere"] },
+      { name: "availability", label: "Availability" },
+      { name: "recurringRides", label: "Recurring rides offered", type: "select", options: yesNoOptions },
+      { name: "bio", label: "Safety, driving, and customer-service notes", type: "textarea" }
+    ],
+    jobFields: [
+      { name: "rideType", label: "Ride type", type: "select", options: ["Errands", "Appointment", "Airport", "Event", "Sober ride", "Executive ride", "Recurring scheduled ride", "Other"] },
+      { name: "pickupArea", label: "Pickup area only - do not enter sensitive exact details publicly" },
+      { name: "dropoffArea", label: "Drop-off area only - do not enter sensitive exact details publicly" },
+      { name: "rideDate", label: "Ride date", type: "date" },
+      { name: "rideTimeWindow", label: "Time window" },
+      { name: "recurring", label: "One-time or recurring", type: "select", options: ["One-time", "Recurring", "Not sure"] },
+      { name: "passengers", label: "Number of passengers" },
+      { name: "accessibilityNeeds", label: "Accessibility or assistance notes", type: "textarea" },
+      { name: "privacyNotes", label: "Private follow-up notes placeholder", type: "textarea" }
+    ]
+  },
+  {
+    id: "fencing_iron_gates",
+    title: "Fencing & Custom Iron Gates",
+    shortTitle: "Fencing & Gates",
+    publicHeadline: "Fencing, gates, custom iron gates, and gate repair.",
+    publicSubheadline: "Privacy fencing, ranch/farm fencing, security gates, custom iron gates, welding tie-ins, and gate repair.",
+    publicBody: "Forge helps customers post fencing and custom gate jobs while keeping licensed/insured contractor requirements clear where required.",
+    ctas: ["Post a Fence or Gate Job", "Join as a Fence/Gate Provider", "Review measurements"],
+    categories: ["Fencing & Custom Iron Gates", "Fencing", "Fence Repair", "Custom Iron Gates", "Gate Repair", "Ranch / Farm Fencing", "Privacy Fencing", "Security Gates", "Welding Tie-In", "Chain Link Fence", "Wood Fence", "Vinyl Fence", "Driveway Gate", "Access Gate"],
+    providerTypes: ["Fence Contractor", "Gate Installer", "Custom Iron Gate Fabricator", "Welding Contractor", "Ranch/Farm Fencing Crew", "Gate Repair Provider"],
+    tags: ["fencing", "custom iron gates", "gate repair", "ranch fencing", "privacy fence", "welding", "security gates"],
+    filters: ["Fence repair", "Custom iron gates", "Gate repair", "Ranch fencing", "Privacy fencing", "Security gates", "Welding", "Licensed", "Insured", "Measurements ready"],
+    checklist: ["Confirm property lines", "Confirm measurements", "Confirm material", "Confirm posts/footings", "Confirm gate swing/power", "Confirm permits and contractor licensing where required"],
+    providerFields: [
+      { name: "businessName", label: "Business / profile name" },
+      { name: "ownerName", label: "Owner / contact name" },
+      { name: "serviceArea", label: "Service area" },
+      { name: "servicesOffered", label: "Fencing and gate services offered", type: "textarea" },
+      { name: "weldingTieIn", label: "Welding/custom iron capability", type: "select", options: yesNoOptions },
+      { name: "licensed", label: "Licensed where required", type: "select", options: yesNoOptions },
+      { name: "insurance", label: "Insurance", type: "select", options: yesNoOptions },
+      { name: "portfolioPhotos", label: "Project photo/link placeholder", type: "file", accept: "image/*" },
+      { name: "bio", label: "Experience and safety notes", type: "textarea" }
+    ],
+    jobFields: [
+      { name: "fenceGateType", label: "Fence/gate type", type: "select", options: ["Fence repair", "New fence", "Custom iron gate", "Gate repair", "Ranch/farm fencing", "Privacy fencing", "Security gate", "Welding tie-in", "Other"] },
+      { name: "materials", label: "Preferred materials" },
+      { name: "linearFeet", label: "Approximate linear feet / measurements" },
+      { name: "gateCount", label: "Number of gates" },
+      { name: "propertyLineKnown", label: "Property line confirmed?", type: "select", options: ["Yes", "No", "Not sure"] },
+      { name: "repairOrInstall", label: "Repair or new install?", type: "select", options: ["Repair", "New install", "Both", "Not sure"] },
+      { name: "accessNotes", label: "Access, slope, animals, utilities, or welding notes", type: "textarea" }
+    ]
+  },
   {
     id: "cleaning",
     title: "Home Cleaning & Airbnb Turnovers",
@@ -1604,6 +1687,9 @@ const routeByScreen = {
   northstar: "/northstar-creative",
   capital: "/forge/capital",
   manufacturing: "/manufacturing-nutraceuticals",
+  "personal-driver": "/personal-driver",
+  payments: "/forge-payments",
+  "local-products": "/local-products",
   building: "/building",
   "admin-building-leads": "/admin/building-leads",
   projects: "/projects",
@@ -1656,6 +1742,18 @@ const screenByPath = {
   "/manufacturing-nutraceuticals/": "manufacturing",
   "/forge/manufacturing": "manufacturing",
   "/forge/manufacturing/": "manufacturing",
+  "/personal-driver": "personal-driver",
+  "/personal-driver/": "personal-driver",
+  "/private-driver": "personal-driver",
+  "/private-driver/": "personal-driver",
+  "/forge-payments": "payments",
+  "/forge-payments/": "payments",
+  "/merchant-services": "payments",
+  "/merchant-services/": "payments",
+  "/local-products": "local-products",
+  "/local-products/": "local-products",
+  "/makers": "local-products",
+  "/makers/": "local-products",
   "/building": "building",
   "/building/": "building",
   "/admin/building-leads": "admin-building-leads",
@@ -2269,6 +2367,84 @@ const seedState = {
     }
   ],
   roadRescueRequests: [],
+  personalDriverRequests: [
+    {
+      id: "personal-driver-request-demo",
+      name: "Demo Rider",
+      phone: "(541) 555-0134",
+      email: "rider@example.com",
+      rideType: "Appointment",
+      pickupArea: "Medford, OR",
+      dropoffArea: "Central Point, OR",
+      rideDate: "",
+      rideTimeWindow: "Weekday morning",
+      recurring: "One-time",
+      passengers: "1",
+      accessibilityNeeds: "Needs a calm, punctual driver and help confirming pickup details by phone.",
+      privacyNotes: "Exact pickup/drop-off details stay private until manual provider review.",
+      safetyStatus: "Admin review required",
+      status: "New",
+      created: "Today"
+    }
+  ],
+  personalDriverProviders: [
+    {
+      id: "personal-driver-provider-demo",
+      businessName: "Example Private Driver",
+      ownerName: "Demo Driver",
+      phone: "(541) 555-0911",
+      email: "driver@example.com",
+      serviceArea: "Medford, Ashland, Central Point",
+      vehicleType: "Clean sedan",
+      driverLicenseStatus: "Current",
+      insurance: "Needs review",
+      backgroundCheck: "Willing to complete",
+      availability: "Weekdays, airport rides by appointment",
+      recurringRides: "Yes",
+      bio: "Demo private-driver lead only. Admin must confirm license, insurance, vehicle, background-check path, and local legal requirements before any match.",
+      dispatchDecision: "Admin Review",
+      trustTier: "Green",
+      trustRank: "Helper 1",
+      status: "Needs Review",
+      created: "Today"
+    }
+  ],
+  merchantServiceLeads: [
+    {
+      id: "merchant-services-demo",
+      businessName: "Demo Contractor Co.",
+      ownerName: "Demo Owner",
+      phone: "(541) 555-0182",
+      email: "owner@example.com",
+      industry: "Construction / services",
+      city: "Medford",
+      currentProcessor: "Unknown",
+      monthlyVolume: "$10k - $50k",
+      needs: ["Card payments", "Invoices", "Deposits", "Recurring billing"],
+      notes: "Public intake only. Partner routing requires private admin review and signed/approved relationship language.",
+      adminOnlyPartnerNote: "Dennis & Abe / USAG-style payment partner review stays private until an approved agreement exists.",
+      status: "New Lead",
+      created: "Today"
+    }
+  ],
+  localProductVendors: [
+    {
+      id: "local-product-demo",
+      makerName: "Demo Local Maker",
+      contactName: "Demo Contact",
+      phone: "(541) 555-0194",
+      email: "maker@example.com",
+      category: "Custom wood products",
+      products: "Cutting boards, small-batch gifts, shop-made local goods",
+      city: "Medford",
+      fulfillment: "Local pickup / delivery review",
+      wholesaleInterest: "Yes",
+      photos: "0 files selected",
+      notes: "Demo maker lead only. Public marketplace claims require product photos, pricing, fulfillment, tax, and refund policy review.",
+      status: "Needs Review",
+      created: "Today"
+    }
+  ],
   manufacturingRfqs: [
     {
       id: "manufacturing-rfq-demo",
@@ -2966,6 +3142,33 @@ const startPaths = [
     tone: "blue"
   },
   {
+    label: "I need a scheduled driver",
+    title: "Personal Driver / Private Driver Services.",
+    body: "Request airport rides, appointment rides, errands, executive rides, sober rides, senior support, or recurring scheduled rides.",
+    next: "Forge saves public-safe ride areas and keeps exact details private until manual driver-safety review.",
+    screen: "personal-driver",
+    action: "Personal Driver",
+    tone: "ghost"
+  },
+  {
+    label: "I need payment help",
+    title: "Forge Payments / Merchant Services.",
+    body: "Save interest in card payments, invoices, deposits, recurring billing, and merchant-service review.",
+    next: "Forge captures the lead only. No payment processing, bank logins, SSNs, or sensitive documents are collected in the MVP.",
+    screen: "payments",
+    action: "Payments",
+    tone: "blue"
+  },
+  {
+    label: "I sell local products",
+    title: "Local Products / Makers.",
+    body: "Capture custom products, woodwork, handmade goods, local brands, and maker/vendor leads.",
+    next: "Forge saves the maker lead for photos, pricing, fulfillment, policy, and public-listing review.",
+    screen: "local-products",
+    action: "Makers",
+    tone: "orange"
+  },
+  {
     label: "I want training or a better job",
     title: "Plan a blue-collar career move.",
     body: "Save interest in trade school, union apprenticeship, or blue-collar AI field work.",
@@ -3009,6 +3212,10 @@ function normalizeState(value) {
   next.autoInquiries = value?.autoInquiries || seedState.autoInquiries;
   next.autoRequests = value?.autoRequests || seedState.autoRequests;
   next.roadRescueRequests = value?.roadRescueRequests || seedState.roadRescueRequests;
+  next.personalDriverRequests = value?.personalDriverRequests || seedState.personalDriverRequests;
+  next.personalDriverProviders = value?.personalDriverProviders || seedState.personalDriverProviders;
+  next.merchantServiceLeads = value?.merchantServiceLeads || seedState.merchantServiceLeads;
+  next.localProductVendors = value?.localProductVendors || seedState.localProductVendors;
   next.manufacturingRfqs = value?.manufacturingRfqs || seedState.manufacturingRfqs;
   next.manufacturingSuppliers = value?.manufacturingSuppliers || seedState.manufacturingSuppliers;
   next.manufacturingSupplierLeads = value?.manufacturingSupplierLeads || seedState.manufacturingSupplierLeads;
@@ -3053,6 +3260,62 @@ function normalizeState(value) {
     photos: "0 photos selected",
     providerNotification: "",
     ...request
+  }));
+  next.personalDriverRequests = next.personalDriverRequests.map((request) => ({
+    status: "New",
+    created: "Today",
+    email: "",
+    rideType: "Other",
+    pickupArea: "",
+    dropoffArea: "",
+    recurring: "Not sure",
+    passengers: "",
+    accessibilityNeeds: "",
+    privacyNotes: "",
+    safetyStatus: "Admin review required",
+    ...request
+  }));
+  next.personalDriverProviders = next.personalDriverProviders.map((provider) => ({
+    status: "Needs Review",
+    created: "Today",
+    email: "",
+    serviceArea: "",
+    vehicleType: "",
+    driverLicenseStatus: "Not provided",
+    insurance: "Needs review",
+    backgroundCheck: "Not started",
+    availability: "",
+    recurringRides: "No",
+    dispatchDecision: "Admin Review",
+    trustTier: "Green",
+    trustRank: "Helper 1",
+    ...provider
+  }));
+  next.merchantServiceLeads = next.merchantServiceLeads.map((lead) => ({
+    status: "New Lead",
+    created: "Today",
+    email: "",
+    industry: "",
+    city: "",
+    currentProcessor: "",
+    monthlyVolume: "",
+    needs: [],
+    notes: "",
+    adminOnlyPartnerNote: "",
+    ...lead
+  }));
+  next.localProductVendors = next.localProductVendors.map((lead) => ({
+    status: "Needs Review",
+    created: "Today",
+    email: "",
+    category: "",
+    products: "",
+    city: "",
+    fulfillment: "",
+    wholesaleInterest: "Not sure",
+    photos: "0 files selected",
+    notes: "",
+    ...lead
   }));
   next.manufacturingRfqs = next.manufacturingRfqs.map((lead) => normalizeManufacturingRfq(lead));
   next.manufacturingSuppliers = next.manufacturingSuppliers.map((supplier) => normalizeManufacturingSupplier(supplier));
@@ -3908,6 +4171,9 @@ function normalizeScreen(screen) {
   if (["northstar", "northstar-creative", "northstar-creative-co", "business-growth", "marketing", NORTHSTAR_CATEGORY_VALUE, NORTHSTAR_OPERATIONS_CATEGORY_VALUE].includes(screen)) return "northstar";
   if (["capital", "forge/capital", "forge-flex", "forge/flex", "partners/flex", "flex", "capital-desk"].includes(screen)) return "capital";
   if (["manufacturing", "manufacturing-nutraceuticals", "forge/manufacturing", "nutraceuticals", "supplements", "vitamins", MANUFACTURING_CATEGORY_VALUE, MANUFACTURING_CATEGORY_SLUG].includes(screen)) return "manufacturing";
+  if (["personal-driver", "private-driver", "driver", "drivers", PERSONAL_DRIVER_CATEGORY_VALUE].includes(screen)) return "personal-driver";
+  if (["payments", "forge-payments", "merchant-services", "merchant", FORGE_PAYMENTS_CATEGORY_VALUE].includes(screen)) return "payments";
+  if (["local-products", "makers", "local-makers", "products", LOCAL_PRODUCTS_CATEGORY_VALUE].includes(screen)) return "local-products";
   if (["academy", "forge-academy", "forge/academy", "dashboard/career", "career-plus", "forge-career-plus"].includes(screen)) return "forge-academy";
   if (["admitly", "trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
   if (["building", "forge-building", "buildings"].includes(screen)) return "building";
@@ -3970,7 +4236,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -3995,6 +4261,9 @@ function render() {
   renderNorthStarPage();
   renderCapitalPage();
   renderManufacturingPage();
+  renderPersonalDriverPage();
+  renderPaymentsPage();
+  renderLocalProductsPage();
   renderForgeAcademy();
   renderAdmitlyTradePathways();
   renderProviderGrowthTools();
@@ -5093,6 +5362,86 @@ function manufacturingSupplierSupportsFlag(supplier, flag) {
   return text.includes(normalized);
 }
 
+function renderPersonalDriverPage() {
+  const stats = document.querySelector("#personalDriverStats");
+  const requestList = document.querySelector("#personalDriverRequestList");
+  const providerList = document.querySelector("#personalDriverProviderList");
+  if (!stats || !requestList || !providerList) return;
+  const requests = state.personalDriverRequests || [];
+  const providers = state.personalDriverProviders || [];
+  stats.innerHTML = statCards([
+    ["Ride Requests", requests.length],
+    ["Driver Leads", providers.length],
+    ["Safety Gate", "Manual"],
+    ["Emergency Rule", "911 first"]
+  ]);
+  requestList.innerHTML = requests.slice(0, 6).map((request) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(request.status)} · ${escapeHtml(request.rideType)}</span>
+        <strong>${escapeHtml(request.name)} · ${escapeHtml(request.pickupArea || "Pickup area pending")}</strong>
+        <p>${escapeHtml(request.dropoffArea || "Drop-off area pending")} · ${escapeHtml(request.rideTimeWindow || "Time pending")} · ${escapeHtml(request.safetyStatus || "Admin review required")}</p>
+      </div>
+    </article>
+  `).join("") || `<article><p class="muted">No personal driver requests yet.</p></article>`;
+  providerList.innerHTML = providers.slice(0, 6).map((provider) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(provider.status)} · ${escapeHtml(provider.dispatchDecision || "Admin Review")}</span>
+        <strong>${escapeHtml(provider.businessName || provider.ownerName)}</strong>
+        <p>${escapeHtml(provider.serviceArea || "Service area pending")} · ${escapeHtml(provider.vehicleType || "Vehicle pending")} · ${escapeHtml(provider.insurance || "Insurance review pending")}</p>
+      </div>
+    </article>
+  `).join("") || `<article><p class="muted">No driver provider leads yet.</p></article>`;
+}
+
+function renderPaymentsPage() {
+  const stats = document.querySelector("#merchantServicesStats");
+  const list = document.querySelector("#merchantServicesLeadList");
+  const compliance = document.querySelector("#merchantServicesCompliance");
+  if (!stats || !list || !compliance) return;
+  const leads = state.merchantServiceLeads || [];
+  stats.innerHTML = statCards([
+    ["Merchant Leads", leads.length],
+    ["Public Processing", "Off"],
+    ["Private Review", "Required"],
+    ["Partner Claims", "Admin-only"]
+  ]);
+  compliance.textContent = "Forge collects merchant-service interest only. Forge is not a bank, payment processor, ISO, underwriter, broker-dealer, lender, or escrow provider in this MVP. No card processing, deposits, bank logins, SSNs, full account numbers, or sensitive documents should be submitted here.";
+  list.innerHTML = leads.slice(0, 6).map((lead) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.monthlyVolume || "Volume pending")}</span>
+        <strong>${escapeHtml(lead.businessName)}</strong>
+        <p>${escapeHtml(lead.industry || "Industry pending")} · ${escapeHtml(lead.city || "City pending")} · ${escapeHtml((lead.needs || []).join(", ") || "Needs pending")}</p>
+      </div>
+    </article>
+  `).join("") || `<article><p class="muted">No merchant service leads yet.</p></article>`;
+}
+
+function renderLocalProductsPage() {
+  const stats = document.querySelector("#localProductsStats");
+  const list = document.querySelector("#localProductsVendorList");
+  if (!stats || !list) return;
+  const vendors = state.localProductVendors || [];
+  stats.innerHTML = statCards([
+    ["Maker Leads", vendors.length],
+    ["Product Photos", "Review"],
+    ["Fulfillment", "Manual"],
+    ["Marketplace", "Preview"]
+  ]);
+  list.innerHTML = vendors.slice(0, 8).map((vendor) => `
+    <article>
+      <div>
+        <span class="split-label">${escapeHtml(vendor.status)} · ${escapeHtml(vendor.category || "Category pending")}</span>
+        <strong>${escapeHtml(vendor.makerName || vendor.contactName)}</strong>
+        <p>${escapeHtml(vendor.city || "City pending")} · ${escapeHtml(vendor.fulfillment || "Fulfillment pending")} · ${escapeHtml(vendor.wholesaleInterest || "Wholesale pending")}</p>
+        <p class="muted">${escapeHtml(vendor.products || "Products pending")}</p>
+      </div>
+    </article>
+  `).join("") || `<article><p class="muted">No local product vendors yet.</p></article>`;
+}
+
 function renderProviderGrowthTools() {
   const target = document.querySelector("#providerGrowthTools");
   if (!target) return;
@@ -5276,12 +5625,14 @@ function renderProviderDirectory() {
     const vertical = serviceVerticalForProvider(worker);
     const details = worker.profileDetails || {};
     const tradeList = (worker.tradeCategories || worker.providerCategories || [worker.trade]).filter(Boolean).slice(0, 5);
+    const trust = workerTrustProfile(worker);
     return `
       <article class="provider-directory-card">
         <div>
           <span class="split-label">${escapeHtml(vertical?.title || worker.trade || "Forge worker")}</span>
           <h3>${escapeHtml(worker.businessName || worker.name)}</h3>
           <p>${escapeHtml(worker.providerType || worker.trade)} · ${escapeHtml(worker.area || worker.serviceArea || "Service area pending")}</p>
+          ${workerTrustLedgerHtml(worker, trust)}
           <div class="service-category-mini">
             ${tradeList.map((category) => `<span>${escapeHtml(category)}</span>`).join("")}
             ${(worker.tags || []).slice(0, 6).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
@@ -5298,6 +5649,89 @@ function renderProviderDirectory() {
     `;
   }).join("") || `<article class="provider-directory-card"><div><h3>No providers match these filters.</h3><p>Clear filters or invite the first provider for this service.</p></div></article>`;
 }
+
+function workerTrustProfile(worker = {}) {
+  const text = normalizeLookup([
+    worker.status,
+    worker.experience,
+    worker.licenseStatus,
+    worker.insuranceStatus,
+    worker.driverLicenseStatus,
+    worker.insurance,
+    worker.backgroundCheck,
+    worker.referenceStatus,
+    worker.toolsReady,
+    worker.safetyPpeReady,
+    worker.workProofLink,
+    worker.portfolioLink,
+    worker.bio
+  ].join(" "));
+  if (worker.trustTier && worker.trustRank && worker.dispatchDecision) {
+    return { tier: worker.trustTier, rank: worker.trustRank, decision: worker.dispatchDecision };
+  }
+  if (text.includes("licensed") || text.includes("insured") || text.includes("5+ years") || text.includes("approved") || text.includes("portfolio")) {
+    return { tier: "Gold", rank: "Crew Lead 1", decision: "Crew-Lead Ready" };
+  }
+  if (text.includes("ready") || text.includes("2-4 years") || text.includes("current") || text.includes("provided")) {
+    return { tier: "Silver", rank: "Reliable Pro", decision: "Ready to Invite" };
+  }
+  if (text.includes("willing") || text.includes("needs review") || text.includes("pending")) {
+    return { tier: "Green", rank: "Tool-Ready Helper", decision: "Supervised Helper" };
+  }
+  return { tier: "Green", rank: "Helper 1", decision: "Admin Review" };
+}
+
+function workerProofSignals(worker = {}) {
+  const signals = [
+    ["Reference", worker.referenceStatus || worker.reviews ? "Present" : "Needed"],
+    ["Work Proof", worker.workProofLink || worker.portfolioLink || worker.sampleGalleryLinks ? "Present" : "Needed"],
+    ["Tools / Vehicle", worker.toolsReady || worker.vehicleType || worker.equipmentNotes ? "Present" : "Review"],
+    ["Safety / PPE", worker.safetyPpeReady || worker.insuranceStatus || worker.insurance ? "Review" : "Needed"],
+    ["License / Insurance", worker.licenseStatus || worker.driverLicenseStatus || worker.insuranceStatus || worker.insurance || "Review"],
+    ["Paid Trial", worker.paidTrialReadiness || "Optional"]
+  ];
+  return signals;
+}
+
+function workerTrustLedgerHtml(worker, trust = workerTrustProfile(worker)) {
+  return `
+    <section class="worker-proof-ledger">
+      <span class="split-label">Worker Trust / Proof Ledger</span>
+      <div class="service-category-mini">
+        <span>${escapeHtml(trust.tier)} tier</span>
+        <span>${escapeHtml(trust.rank)}</span>
+        <span>${escapeHtml(trust.decision)}</span>
+      </div>
+      <div class="bid-detail-meta">
+        ${workerProofSignals(worker).map(([label, value]) => `<span><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function jobSafetyGateHtml(job) {
+  const vertical = serviceVerticalById(job.serviceVertical) || serviceVerticalForCategory(job.category);
+  const items = [
+    "No payment, deposit, bank login, SSN, or full account number is collected in this MVP.",
+    "Confirm licensing, insurance, scope, price, schedule, and permits before work starts.",
+    vertical?.id === "personal_driver" ? "Personal Driver requests require manual review of license, insurance, vehicle, background-check path, privacy, and local legal requirements before matching." : "",
+    vertical?.id === "fencing_iron_gates" ? "Fencing and custom iron gate work may require property-line, utility, permit, welding, licensing, and insurance checks." : "",
+    isManufacturingJob(job) ? "Manufacturing bids require supplier verification, compliance review, specs, labels, testing, claims, terms, and purchase-order review before production." : ""
+  ].filter(Boolean);
+  return `
+    <section class="service-detail-panel">
+      <div>
+        <span class="split-label">Safety Gate</span>
+        <h2>Before this job moves forward</h2>
+        <p>Forge shows the work and proof signals, then keeps high-risk decisions in admin review.</p>
+      </div>
+      <div class="service-detail-grid">
+        ${items.map((item, index) => `<article><span>Gate ${index + 1}</span><strong>${escapeHtml(item)}</strong></article>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
 
 function providerSearchText(worker) {
   return [
@@ -6679,6 +7113,7 @@ function renderDetail() {
     <h2>Job Description</h2>
     <p>${escapeHtml(job.description)}</p>
     ${serviceJobDetailPanel(job)}
+    ${jobSafetyGateHtml(job)}
     <div class="detail-meta">
       <div><span>Category</span><strong>${escapeHtml(categoryLabel(job.category))}</strong></div>
       <div><span>Posted</span><strong>${escapeHtml(job.posted)}</strong></div>
@@ -7213,6 +7648,10 @@ function renderDashboards() {
   const creativeProviders = state.workers.filter(isCreativeProvider);
   const northstarLeads = state.northstarLeads || [];
   const roadRescueRequests = state.roadRescueRequests || [];
+  const personalDriverRequests = state.personalDriverRequests || [];
+  const personalDriverProviders = state.personalDriverProviders || [];
+  const merchantServiceLeads = state.merchantServiceLeads || [];
+  const localProductVendors = state.localProductVendors || [];
   const flexLeads = state.flexLeads || [];
   const manufacturingRfqs = state.manufacturingRfqs || [];
   const manufacturingSuppliers = state.manufacturingSuppliers || [];
@@ -7238,6 +7677,9 @@ function renderDashboards() {
     ["Creative Providers", creativeProviders.length],
     ["NorthStar", northstarLeads.length],
     ["Road Rescue", roadRescueRequests.length],
+    ["Driver Requests", personalDriverRequests.length],
+    ["Merchant Services", merchantServiceLeads.length],
+    ["Local Makers", localProductVendors.length],
     ["Flex Leads", flexLeads.length],
     ["Manufacturing RFQs", manufacturingRfqs.length],
     ["Mfg Suppliers", manufacturingSuppliers.length],
@@ -7276,6 +7718,9 @@ function renderDashboards() {
     categories: (worker.tradeCategories || worker.providerCategories || [worker.trade]).join(", "),
     phone: worker.phone,
     area: worker.area,
+    tier: workerTrustProfile(worker).tier,
+    rank: workerTrustProfile(worker).rank,
+    dispatch: workerTrustProfile(worker).decision,
     status: worker.status
   })));
 
@@ -7314,6 +7759,47 @@ function renderDashboards() {
     location: request.location,
     safe: request.vehicleSafe,
     status: request.status
+  })));
+
+  renderTable("#adminPersonalDriverRequestsTable", personalDriverRequests.map((request) => ({
+    customer: request.name,
+    ride: request.rideType,
+    pickup: request.pickupArea,
+    dropoff: request.dropoffArea,
+    time: request.rideTimeWindow,
+    safe: request.safetyStatus,
+    status: request.status
+  })));
+
+  renderTable("#adminPersonalDriverProvidersTable", personalDriverProviders.map((provider) => ({
+    driver: provider.businessName || provider.ownerName,
+    area: provider.serviceArea,
+    license: provider.driverLicenseStatus,
+    insurance: provider.insurance,
+    background: provider.backgroundCheck,
+    tier: provider.trustTier || workerTrustProfile(provider).tier,
+    dispatch: provider.dispatchDecision || workerTrustProfile(provider).decision,
+    status: provider.status
+  })));
+
+  renderTable("#adminMerchantServicesTable", merchantServiceLeads.map((lead) => ({
+    business: lead.businessName,
+    owner: lead.ownerName,
+    industry: lead.industry,
+    city: lead.city,
+    volume: lead.monthlyVolume,
+    needs: (lead.needs || []).join(", "),
+    status: lead.status
+  })));
+
+  renderTable("#adminLocalProductsTable", localProductVendors.map((vendor) => ({
+    maker: vendor.makerName,
+    contact: vendor.contactName,
+    category: vendor.category,
+    products: vendor.products,
+    city: vendor.city,
+    fulfillment: vendor.fulfillment,
+    status: vendor.status
   })));
 
   renderTable("#adminManufacturingRfqsTable", manufacturingRfqs.map((lead) => ({
@@ -9760,6 +10246,186 @@ function resetFlexForm() {
   focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
 }
 
+function submitPersonalDriverRequest() {
+  const request = {
+    id: `personal-driver-request-${Date.now()}`,
+    name: fieldValue("#personalDriverName"),
+    phone: fieldValue("#personalDriverPhone"),
+    email: fieldValue("#personalDriverEmail"),
+    rideType: fieldValue("#personalDriverRideType"),
+    pickupArea: fieldValue("#personalDriverPickupArea"),
+    dropoffArea: fieldValue("#personalDriverDropoffArea"),
+    rideDate: fieldValue("#personalDriverDate"),
+    rideTimeWindow: fieldValue("#personalDriverTimeWindow"),
+    recurring: fieldValue("#personalDriverRecurring"),
+    passengers: fieldValue("#personalDriverPassengers"),
+    accessibilityNeeds: fieldValue("#personalDriverAccessibility"),
+    privacyNotes: fieldValue("#personalDriverPrivacyNotes"),
+    safetyStatus: "Admin review required",
+    status: "New",
+    created: "Today"
+  };
+  state.personalDriverRequests.unshift(request);
+  addActivity(`Personal Driver request saved: ${request.name} needs ${request.rideType} from ${request.pickupArea}.`);
+  state.lastConfirmation = {
+    type: "personal-driver-request",
+    title: "Personal Driver request saved.",
+    body: "Forge saved this scheduled ride request for manual safety review before any provider match.",
+    details: [
+      `${request.name} · ${request.rideType}`,
+      `${request.pickupArea} to ${request.dropoffArea}`,
+      `${request.rideDate || "Date pending"} · ${request.rideTimeWindow || "Time pending"}`
+    ],
+    nextSteps: [
+      "Emergency or immediate danger means call 911 first",
+      "Forge keeps exact pickup/drop-off details private until manual review",
+      "Admin verifies license, insurance, vehicle, background-check path, local requirements, and driver fit before matching"
+    ],
+    primary: { label: "Open Personal Driver", screen: "personal-driver" },
+    secondary: { label: "Open Admin", screen: "admin" }
+  };
+  saveState();
+  sendLead("personal-driver-request", request);
+  document.querySelector("#personalDriverRequestForm")?.reset();
+  showToast("Personal Driver request saved.");
+  navigate("confirm");
+}
+
+function submitPersonalDriverProvider() {
+  const provider = {
+    id: `personal-driver-provider-${Date.now()}`,
+    businessName: fieldValue("#personalDriverBusinessName"),
+    ownerName: fieldValue("#personalDriverOwnerName"),
+    phone: fieldValue("#personalDriverProviderPhone"),
+    email: fieldValue("#personalDriverProviderEmail"),
+    serviceArea: fieldValue("#personalDriverProviderArea"),
+    vehicleType: fieldValue("#personalDriverVehicleType"),
+    driverLicenseStatus: fieldValue("#personalDriverLicenseStatus"),
+    insurance: fieldValue("#personalDriverInsurance"),
+    backgroundCheck: fieldValue("#personalDriverBackgroundCheck"),
+    availability: fieldValue("#personalDriverAvailability"),
+    recurringRides: fieldValue("#personalDriverRecurringRides"),
+    bio: fieldValue("#personalDriverBio"),
+    dispatchDecision: "Admin Review",
+    trustTier: "Green",
+    trustRank: "Helper 1",
+    status: "Needs Review",
+    created: "Today"
+  };
+  state.personalDriverProviders.unshift(provider);
+  addActivity(`Personal Driver provider lead saved: ${provider.businessName || provider.ownerName}.`);
+  state.lastConfirmation = {
+    type: "personal-driver-provider",
+    title: "Driver provider lead saved.",
+    body: "Forge saved this driver application for license, insurance, vehicle, background, and local legal review.",
+    details: [
+      `${provider.businessName || provider.ownerName} · ${provider.serviceArea}`,
+      `${provider.driverLicenseStatus} license · ${provider.insurance}`,
+      `${provider.backgroundCheck} background check`
+    ],
+    nextSteps: [
+      "Admin reviews all driver requirements before any customer match",
+      "Driver remains hidden from public dispatch until approved",
+      "Forge does not guarantee suitability, legal compliance, insurance coverage, or response time in this MVP"
+    ],
+    primary: { label: "Open Personal Driver", screen: "personal-driver" },
+    secondary: { label: "Open Admin", screen: "admin" }
+  };
+  saveState();
+  sendLead("personal-driver-provider", provider);
+  document.querySelector("#personalDriverProviderForm")?.reset();
+  showToast("Driver provider lead saved.");
+  navigate("confirm");
+}
+
+function submitMerchantServicesLead() {
+  const lead = {
+    id: `merchant-services-${Date.now()}`,
+    businessName: fieldValue("#merchantBusinessName"),
+    ownerName: fieldValue("#merchantOwnerName"),
+    phone: fieldValue("#merchantPhone"),
+    email: fieldValue("#merchantEmail"),
+    industry: fieldValue("#merchantIndustry"),
+    city: fieldValue("#merchantCity"),
+    currentProcessor: fieldValue("#merchantCurrentProcessor"),
+    monthlyVolume: fieldValue("#merchantMonthlyVolume"),
+    needs: fieldSelectedValues("#merchantNeeds"),
+    notes: fieldValue("#merchantNotes"),
+    adminOnlyPartnerNote: "Potential payment/merchant-service partner language remains private until relationship, licensing, and compliance approvals are documented.",
+    status: "New Lead",
+    created: "Today"
+  };
+  state.merchantServiceLeads.unshift(lead);
+  addActivity(`Merchant Services lead saved: ${lead.businessName} in ${lead.city}.`);
+  state.lastConfirmation = {
+    type: "merchant-services",
+    title: "Merchant services interest saved.",
+    body: "Forge saved this business-owner interest for private admin review. No payment processing is active in the MVP.",
+    details: [
+      `${lead.businessName} · ${lead.industry}`,
+      `${lead.city} · ${lead.monthlyVolume}`,
+      (lead.needs || []).join(", ") || "Needs pending"
+    ],
+    nextSteps: [
+      "Forge collects interest only and does not process payments here",
+      "Do not submit bank logins, SSNs, full account numbers, card data, or sensitive documents",
+      "Any partner handoff requires approved relationship language and compliance review"
+    ],
+    primary: { label: "Open Forge Payments", screen: "payments" },
+    secondary: { label: "Open Admin", screen: "admin" }
+  };
+  saveState();
+  sendLead("forge-merchant-services", lead);
+  document.querySelector("#merchantServicesLeadForm")?.reset();
+  setFieldValue("#merchantCity", "Medford, OR");
+  showToast("Merchant services lead saved.");
+  navigate("confirm");
+}
+
+function submitLocalProductVendor() {
+  const lead = {
+    id: `local-product-${Date.now()}`,
+    makerName: fieldValue("#localProductMakerName"),
+    contactName: fieldValue("#localProductContactName"),
+    phone: fieldValue("#localProductPhone"),
+    email: fieldValue("#localProductEmail"),
+    category: fieldValue("#localProductCategory"),
+    products: fieldValue("#localProductProducts"),
+    city: fieldValue("#localProductCity"),
+    fulfillment: fieldValue("#localProductFulfillment"),
+    wholesaleInterest: fieldValue("#localProductWholesale"),
+    photos: selectedFileSummary("#localProductPhotos"),
+    notes: fieldValue("#localProductNotes"),
+    status: "Needs Review",
+    created: "Today"
+  };
+  state.localProductVendors.unshift(lead);
+  addActivity(`Local Products maker lead saved: ${lead.makerName} (${lead.category}).`);
+  state.lastConfirmation = {
+    type: "local-product-vendor",
+    title: "Local maker lead saved.",
+    body: "Forge saved this local-products vendor lead for product, photo, pricing, fulfillment, tax, and refund-policy review.",
+    details: [
+      `${lead.makerName} · ${lead.category}`,
+      `${lead.city} · ${lead.fulfillment}`,
+      `${lead.wholesaleInterest} wholesale interest`
+    ],
+    nextSteps: [
+      "Admin reviews product photos, pricing, fulfillment, tax, returns, and local delivery requirements",
+      "Public marketplace listing stays in preview until approved",
+      "Custom product and maker sales are separate from job bidding"
+    ],
+    primary: { label: "Open Local Products", screen: "local-products" },
+    secondary: { label: "Open Admin", screen: "admin" }
+  };
+  saveState();
+  sendLead("local-product-vendor", lead);
+  document.querySelector("#localProductVendorForm")?.reset();
+  setFieldValue("#localProductCity", "Medford, OR");
+  showToast("Local maker lead saved.");
+  navigate("confirm");
+}
+
 function submitManufacturingRfq() {
   const lead = normalizeManufacturingRfq({
     id: `manufacturing-rfq-${Date.now()}`,
@@ -10264,6 +10930,10 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-creative-providers") exportCsv("forge-creative-providers.csv", state.workers.filter(isCreativeProvider));
   if (action?.dataset.action === "export-northstar") exportCsv("forge-northstar-leads.csv", state.northstarLeads || []);
   if (action?.dataset.action === "export-road-rescue") exportCsv("forge-road-rescue-leads.csv", state.roadRescueRequests || []);
+  if (action?.dataset.action === "export-personal-driver-requests") exportCsv("forge-personal-driver-requests.csv", state.personalDriverRequests || []);
+  if (action?.dataset.action === "export-personal-driver-providers") exportCsv("forge-personal-driver-providers.csv", state.personalDriverProviders || []);
+  if (action?.dataset.action === "export-merchant-services") exportCsv("forge-merchant-services.csv", state.merchantServiceLeads || []);
+  if (action?.dataset.action === "export-local-products") exportCsv("forge-local-products-makers.csv", state.localProductVendors || []);
   if (action?.dataset.action === "export-flex-leads") exportCsv("forge-flex-leads.csv", state.flexLeads || []);
   if (action?.dataset.action === "export-manufacturing-rfqs") exportCsv("forge-manufacturing-rfqs.csv", state.manufacturingRfqs || []);
   if (action?.dataset.action === "export-manufacturing-suppliers") exportCsv("forge-manufacturing-suppliers.csv", state.manufacturingSuppliers || []);
@@ -10875,6 +11545,26 @@ document.querySelector("#manufacturingSupplierForm").addEventListener("submit", 
 document.querySelector("#manufacturingSupplierLeadForm").addEventListener("submit", (event) => {
   event.preventDefault();
   submitManufacturingSupplierLead();
+});
+
+document.querySelector("#personalDriverRequestForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitPersonalDriverRequest();
+});
+
+document.querySelector("#personalDriverProviderForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitPersonalDriverProvider();
+});
+
+document.querySelector("#merchantServicesLeadForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitMerchantServicesLead();
+});
+
+document.querySelector("#localProductVendorForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitLocalProductVendor();
 });
 
 document.querySelector("#projectIntakeForm").addEventListener("submit", (event) => {
@@ -11954,6 +12644,9 @@ async function copySignupChecklist() {
     `Photography & Videography: ${base}/photography?v=71`,
     `NorthStar Creative Co.: ${base}/northstar-creative?v=71`,
     `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals?v=71`,
+    `Personal Driver: ${base}/personal-driver?v=71`,
+    `Forge Payments / Merchant Services: ${base}/forge-payments?v=71`,
+    `Local Products / Makers: ${base}/local-products?v=71`,
     `Training & Careers: ${base}?v=71#opportunities`,
     `Check status: ${base}?v=71#status`,
     `Open admin: ${base}?v=71&demo=admin#admin`

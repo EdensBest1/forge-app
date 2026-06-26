@@ -907,6 +907,106 @@ create table if not exists public.manufacturing_supplier_leads (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.personal_driver_requests (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  name text not null,
+  phone text not null,
+  email text,
+  ride_type text,
+  pickup_area text,
+  dropoff_area text,
+  ride_date date,
+  ride_time_window text,
+  recurring text,
+  passengers text,
+  accessibility_needs text,
+  privacy_notes text,
+  safety_status text not null default 'Admin review required',
+  status text not null default 'New',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.personal_driver_provider_applications (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  business_name text,
+  owner_name text not null,
+  phone text not null,
+  email text,
+  service_area text,
+  vehicle_type text,
+  driver_license_status text,
+  insurance text,
+  background_check text,
+  availability text,
+  recurring_rides text,
+  bio text,
+  trust_tier text not null default 'Green',
+  trust_rank text not null default 'Helper 1',
+  dispatch_decision text not null default 'Admin Review',
+  status text not null default 'Needs Review',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.forge_merchant_service_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  business_name text not null,
+  owner_name text not null,
+  phone text not null,
+  email text,
+  industry text,
+  city text,
+  current_processor text,
+  monthly_volume text,
+  needs text[],
+  notes text,
+  admin_only_partner_note text,
+  status text not null default 'New Lead',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.local_product_vendor_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  maker_name text not null,
+  contact_name text not null,
+  phone text not null,
+  email text,
+  category text,
+  products text,
+  city text,
+  fulfillment text,
+  wholesale_interest text,
+  photos_summary text,
+  notes text,
+  status text not null default 'Needs Review',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.worker_trust_proof_ledger (
+  id uuid primary key default gen_random_uuid(),
+  worker_source_id text,
+  worker_name text,
+  trust_tier text not null default 'Green',
+  trust_rank text not null default 'Helper 1',
+  dispatch_decision text not null default 'Admin Review',
+  reference_status text,
+  work_proof_status text,
+  tools_vehicle_status text,
+  safety_ppe_status text,
+  license_insurance_status text,
+  paid_trial_status text,
+  admin_notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.forge_job_leads enable row level security;
 alter table public.forge_worker_leads enable row level security;
 alter table public.forge_referral_leads enable row level security;
@@ -927,6 +1027,11 @@ alter table public.forge_flex_leads enable row level security;
 alter table public.manufacturing_nutraceutical_rfqs enable row level security;
 alter table public.manufacturing_supplier_profiles enable row level security;
 alter table public.manufacturing_supplier_leads enable row level security;
+alter table public.personal_driver_requests enable row level security;
+alter table public.personal_driver_provider_applications enable row level security;
+alter table public.forge_merchant_service_leads enable row level security;
+alter table public.local_product_vendor_leads enable row level security;
+alter table public.worker_trust_proof_ledger enable row level security;
 alter table public.creative_service_requests enable row level security;
 alter table public.creative_provider_applications enable row level security;
 alter table public.northstar_marketing_operations_leads enable row level security;

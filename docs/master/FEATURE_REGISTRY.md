@@ -47,6 +47,35 @@ This registry lists existing and planned features, business sections, and operat
 - Thomasnet may be used only as a benchmark for supplier-discovery workflows. Do not scrape, copy, import, or reproduce proprietary Thomasnet listings, descriptions, profiles, categories, images, or data.
 - Still requires production backend delivery, file storage, supplier verification workflow, legal/compliance review, insurance review, and final regulatory review before broad public launch.
 
+## Personal Driver / Private Driver Services
+
+- Implemented / Live in UI for scheduled personal rides, errands, appointments, airport rides, event rides, sober rides, executive rides, senior ride support, and recurring scheduled rides.
+- Dedicated route/page exists through `/personal-driver` with `/private-driver` as an alias.
+- Customer request form saves public-safe pickup/drop-off areas, date/time window, recurring status, passenger count, accessibility notes, private follow-up notes, and safety status.
+- Driver provider form saves business/contact, service area, vehicle type, license status, insurance review, background-check status, availability, recurring rides, and safety notes.
+- Admin dashboard includes Personal Driver request/provider tables and CSV exports.
+- Safety boundary: Forge collects leads only. Emergency situations require 911. Driver matching stays manual until license, insurance, vehicle, background-check path, privacy, local legal requirements, and provider fit are reviewed.
+
+## Forge Payments / Merchant Services
+
+- Implemented / Live in UI for merchant-service interest capture at `/forge-payments` with `/merchant-services` as an alias.
+- Business-owner form saves company/contact, industry, city, current processor, monthly volume, payment-operation needs, notes, and admin-only partner review notes.
+- Admin dashboard includes merchant-services table and CSV export.
+- Safety boundary: Forge is not a bank, payment processor, ISO, underwriter, broker-dealer, lender, escrow provider, or payment facilitator in this MVP. Do not collect bank logins, SSNs, full account numbers, card data, or sensitive financial documents in browser forms.
+
+## Local Products / Makers
+
+- Implemented / Live in UI for custom products, woodwork, handmade goods, local brands, blue-collar shop products, and maker/vendor leads at `/local-products` with `/makers` as an alias.
+- Maker form saves brand/contact, product category, product description, city, fulfillment, wholesale interest, product photo summary, notes, and review status.
+- Admin dashboard includes Local Products / Makers table and CSV export.
+- Safety boundary: public listings remain preview-only until product photos, pricing, fulfillment, taxes, returns/refunds, and customer communication policies are reviewed.
+
+## Worker Trust / Proof Ledger
+
+- Implemented / Live in UI on provider directory cards and admin worker rows.
+- Uses Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decision labels: Ready to Invite, Crew-Lead Ready, Mentor-Only, Supervised Helper, and Admin Review.
+- This is a lightweight launch triage system, not a guarantee of safety, licensing, insurance, quality, or job outcome.
+
 ## Stitch
 
 - Planned/active app and business section for Stitch-related product, revenue, market, operational, and deployment work.

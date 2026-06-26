@@ -27,6 +27,10 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Optional Business Growth Tools block on worker/provider onboarding that flags finance-related interest for Capital Desk follow-up without sending a Flex link until referral consent is captured
 - NorthStar Creative Co. route at `/northstar-creative` for blue-collar business marketing, websites, branding, social media, ads, CRM, lead follow-up, job tracking, and operations requests
 - NorthStar admin lane, CSV export, follow-up queue integration, and webhook/schema mapping with `northstar_creative` and `northstar_marketing_operations`
+- Personal Driver / Private Driver Services routes at `/personal-driver` and `/private-driver` for scheduled ride requests and driver applications with manual license, insurance, vehicle, background, privacy, emergency, and local-rule review.
+- Forge Payments / Merchant Services routes at `/forge-payments` and `/merchant-services` for business-owner interest in card payments, invoices, deposits, recurring billing, and merchant-service review without active payment processing in the MVP.
+- Local Products / Makers routes at `/local-products` and `/makers` for custom products, woodwork, handmade goods, local brands, and maker/vendor lead review.
+- Worker Trust / Proof Ledger on provider cards and admin worker rows with Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decisions.
 - Demo login screen with worker, job poster, and admin roles
 - Perspective Demo screen for showing Forge as John, Mike, or Admin
 - Perspective Demo now includes an Auto marketplace proof path, Autos cue card, and shareable Autos link
@@ -94,6 +98,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Copyable invite text for sharing with early users
 - First-user signup readiness panel that explains controlled beta use, what is safe to collect, and what still needs public-launch infrastructure
 - Copyable signup checklist for inviting the first controlled group without collecting payments
+- Copyable signup checklist includes Personal Driver, Forge Payments / Merchant Services, and Local Products / Makers route links for tomorrow's soft launch.
 - Admin follow-up templates, lead statuses, notes, and activity log
 - Public View / Operator View toggle
 - Unified follow-up queue with call, text, and email actions

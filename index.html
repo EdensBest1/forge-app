@@ -29,6 +29,9 @@
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
             <button class="btn ghost small" type="button" data-nav="manufacturing">Manufacturing</button>
+            <button class="btn ghost small" type="button" data-nav="personal-driver">Personal Driver</button>
+            <button class="btn ghost small" type="button" data-nav="payments">Payments</button>
+            <button class="btn ghost small" type="button" data-nav="local-products">Products</button>
             <button class="btn ghost small" type="button" data-nav="forge-academy">Academy</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="building">Building</button>
@@ -122,6 +125,24 @@
             <h2>Forge Manufacturing + Nutraceuticals</h2>
             <p>Find supplement, vitamin, gummy, powder, beverage, skincare, pet wellness, packaging, lab, and compliance partners.</p>
             <button class="btn ghost" type="button" data-nav="manufacturing">Find a Manufacturer</button>
+          </article>
+          <article>
+            <span class="split-label">I need a driver</span>
+            <h2>Personal Driver / Private Driver Services</h2>
+            <p>Scheduled personal rides, airport rides, appointment rides, errands, executive rides, sober rides, and recurring rides with manual safety review.</p>
+            <button class="btn ghost" type="button" data-nav="personal-driver">Request a Driver</button>
+          </article>
+          <article>
+            <span class="split-label">I take payments</span>
+            <h2>Forge Payments / Merchant Services</h2>
+            <p>Collect business-owner interest for card payments, invoices, deposits, recurring billing, and merchant-service review without processing payments in the MVP.</p>
+            <button class="btn ghost" type="button" data-nav="payments">Review Merchant Services</button>
+          </article>
+          <article>
+            <span class="split-label">I make local products</span>
+            <h2>Local Products / Makers</h2>
+            <p>Capture custom products, woodwork, handmade goods, local brands, and wholesale maker interest for admin review.</p>
+            <button class="btn ghost" type="button" data-nav="local-products">Join Makers List</button>
           </article>
           <article>
             <span class="split-label">I want a path up</span>
@@ -253,6 +274,9 @@
             <button type="button" data-nav="road-rescue">Road Rescue</button>
             <button type="button" data-nav="northstar">NorthStar Creative Co.</button>
             <button type="button" data-nav="manufacturing">Manufacturing + Nutraceuticals</button>
+            <button type="button" data-nav="personal-driver">Personal Driver</button>
+            <button type="button" data-nav="payments">Merchant Services</button>
+            <button type="button" data-nav="local-products">Local Products</button>
           </div>
           <div class="chips service-chips" data-service-category-chips></div>
           <div class="service-category-cards">
@@ -279,6 +303,24 @@
               <h3>Manufacturing + Nutraceuticals</h3>
               <p>Original Forge supplier profiles, quote requests, and pipelines for compliant vitamins, supplements, wellness products, packaging, labs, and fulfillment.</p>
               <button class="btn ghost small" type="button" data-nav="manufacturing">Compare Suppliers</button>
+            </article>
+            <article class="service-category-card">
+              <span class="split-label">Scheduled rides</span>
+              <h3>Personal Driver / Private Driver Services</h3>
+              <p>Private-driver requests and driver provider leads with license, insurance, vehicle, privacy, background, and local-rule review before matching.</p>
+              <button class="btn ghost small" type="button" data-nav="personal-driver">Open Driver Lane</button>
+            </article>
+            <article class="service-category-card">
+              <span class="split-label">Business payments</span>
+              <h3>Forge Payments / Merchant Services</h3>
+              <p>Merchant-services interest capture for businesses that need invoices, card payments, deposits, recurring billing, or better processing review.</p>
+              <button class="btn ghost small" type="button" data-nav="payments">Open Payments Lane</button>
+            </article>
+            <article class="service-category-card">
+              <span class="split-label">Local makers</span>
+              <h3>Local Products / Makers</h3>
+              <p>Custom products, cutting boards, small-batch goods, handmade products, local brands, and supplier-style maker leads.</p>
+              <button class="btn ghost small" type="button" data-nav="local-products">Open Makers Lane</button>
             </article>
           </div>
           <div class="section-title compact">
@@ -1381,6 +1423,193 @@
               <label>Notes<textarea id="manufacturingLeadNotes" rows="3" placeholder="Supplier notes, relationship context, lawful-source context"></textarea></label>
               <p class="trust-note"><strong>Source rule:</strong> Supplier leads must be entered, imported, or stored only when you have permission to use the data.</p>
               <button class="btn blue full" type="submit">Save Supplier Lead</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen personal-driver-screen" id="personal-driver-screen" data-screen="personal-driver">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="admin">Admin</button></div>
+        </header>
+        <section class="opportunity-layout">
+          <div class="opportunity-main">
+            <div class="section-title">
+              <div>
+                <span class="split-label">Personal Driver / Private Driver Services</span>
+                <h1>Request or apply for scheduled personal rides.</h1>
+                <p class="muted">Errands, appointments, airport rides, event rides, sober rides, executive rides, senior ride support, and recurring scheduled rides. Forge collects leads only and requires manual safety review before any match.</p>
+              </div>
+            </div>
+            <div class="opportunity-stats" id="personalDriverStats"></div>
+            <section class="road-rescue-alert">
+              <strong>Emergency or immediate danger? Call 911 first.</strong>
+              <p>Do not use Forge for emergency transport, medical emergencies, active danger, or situations requiring police, ambulance, fire, or licensed medical transport.</p>
+            </section>
+            <section class="opportunity-steps">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Safety gates</span>
+                  <h2>Driver matching stays manual.</h2>
+                </div>
+              </div>
+              <div class="opportunity-step-grid">
+                <article><strong>1</strong><span>Collect public-safe ride areas, not exact sensitive details.</span></article>
+                <article><strong>2</strong><span>Review driver license, insurance, vehicle, background-check path, and local requirements.</span></article>
+                <article><strong>3</strong><span>Confirm customer consent, privacy, price, schedule, and provider fit before matching.</span></article>
+              </div>
+            </section>
+            <section class="manufacturing-rfq-list" id="personalDriverRequestList"></section>
+            <section class="manufacturing-rfq-list" id="personalDriverProviderList"></section>
+          </div>
+          <aside class="manufacturing-sidebar">
+            <form class="manufacturing-form" id="personalDriverRequestForm">
+              <span class="split-label">Request a Personal Driver</span>
+              <h2>Request a Personal Driver</h2>
+              <div class="field-row">
+                <label>Full name<input id="personalDriverName" required placeholder="Full name" /></label>
+                <label>Phone<input id="personalDriverPhone" required placeholder="(541) 555-0000" /></label>
+              </div>
+              <label>Email<input id="personalDriverEmail" type="email" placeholder="optional@email.com" /></label>
+              <label>Ride type<select id="personalDriverRideType"><option>Errands</option><option>Appointment</option><option>Airport</option><option>Event</option><option>Sober ride</option><option>Executive ride</option><option>Recurring scheduled ride</option><option>Senior ride support</option><option>Other</option></select></label>
+              <div class="field-row">
+                <label>Pickup area<input id="personalDriverPickupArea" required placeholder="Medford area, not exact address publicly" /></label>
+                <label>Drop-off area<input id="personalDriverDropoffArea" required placeholder="City or area" /></label>
+              </div>
+              <div class="field-row">
+                <label>Ride date<input id="personalDriverDate" type="date" /></label>
+                <label>Time window<input id="personalDriverTimeWindow" placeholder="Morning, 2-4 PM, flexible" /></label>
+              </div>
+              <div class="field-row">
+                <label>One-time or recurring<select id="personalDriverRecurring"><option>One-time</option><option>Recurring</option><option>Not sure</option></select></label>
+                <label>Passengers<input id="personalDriverPassengers" placeholder="1" /></label>
+              </div>
+              <label>Accessibility or assistance notes<textarea id="personalDriverAccessibility" rows="3"></textarea></label>
+              <label>Private follow-up notes<textarea id="personalDriverPrivacyNotes" rows="3" placeholder="Exact pickup/drop-off details stay private until admin review."></textarea></label>
+              <p class="trust-note"><strong>Driver safety:</strong> Forge collects leads only. Drivers must meet legal, insurance, licensing, background, vehicle, and local requirements where applicable.</p>
+              <button class="btn orange full" type="submit">Save Driver Request</button>
+            </form>
+            <form class="manufacturing-form supplier" id="personalDriverProviderForm">
+              <span class="split-label">Apply as a Driver</span>
+              <h2>Apply as a Driver</h2>
+              <div class="field-row">
+                <label>Driver / business profile name<input id="personalDriverBusinessName" required /></label>
+                <label>Driver contact name<input id="personalDriverOwnerName" required /></label>
+              </div>
+              <div class="field-row">
+                <label>Phone<input id="personalDriverProviderPhone" required /></label>
+                <label>Email<input id="personalDriverProviderEmail" type="email" /></label>
+              </div>
+              <label>Service area<input id="personalDriverProviderArea" required placeholder="Medford, Ashland, airport, etc." /></label>
+              <label>Vehicle type<input id="personalDriverVehicleType" required placeholder="Sedan, SUV, van" /></label>
+              <label>Driver license status<select id="personalDriverLicenseStatus"><option>Current</option><option>Pending review</option><option>Not provided</option></select></label>
+              <label>Commercial/ride insurance review<select id="personalDriverInsurance"><option>Needs review</option><option>Provided</option><option>Not applicable / unsure</option></select></label>
+              <label>Background check status<select id="personalDriverBackgroundCheck"><option>Not started</option><option>Willing to complete</option><option>Completed elsewhere</option></select></label>
+              <label>Availability<input id="personalDriverAvailability" placeholder="Weekdays, weekends, airport rides" /></label>
+              <label>Recurring rides offered<select id="personalDriverRecurringRides"><option>No</option><option>Yes</option></select></label>
+              <label>Safety, driving, and customer-service notes<textarea id="personalDriverBio" rows="4"></textarea></label>
+              <p class="trust-note"><strong>Manual review:</strong> Driver leads remain admin-review only until Forge confirms requirements and local legal boundaries.</p>
+              <button class="btn blue full" type="submit">Apply as Driver</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen payments-screen" id="payments-screen" data-screen="payments">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="capital">Capital</button></div>
+        </header>
+        <section class="opportunity-layout">
+          <div class="opportunity-main">
+            <div class="section-title">
+              <div>
+                <span class="split-label">Forge Payments / Merchant Services</span>
+                <h1>Capture merchant-service interest safely.</h1>
+                <p class="muted">For contractors, builders, auto shops, local services, makers, restaurants, and blue-collar businesses that need card payments, invoices, deposits, recurring billing, and cleaner payment operations.</p>
+              </div>
+            </div>
+            <div class="opportunity-stats" id="merchantServicesStats"></div>
+            <section class="manufacturing-compliance">
+              <span class="split-label">Compliance boundary</span>
+              <p id="merchantServicesCompliance"></p>
+            </section>
+            <section class="manufacturing-rfq-list" id="merchantServicesLeadList"></section>
+          </div>
+          <aside class="manufacturing-sidebar">
+            <form class="manufacturing-form" id="merchantServicesLeadForm">
+              <span class="split-label">Merchant Services Interest</span>
+              <h2>Merchant Services Interest</h2>
+              <div class="field-row">
+                <label>Business name<input id="merchantBusinessName" required /></label>
+                <label>Owner / contact<input id="merchantOwnerName" required /></label>
+              </div>
+              <div class="field-row">
+                <label>Phone<input id="merchantPhone" required /></label>
+                <label>Email<input id="merchantEmail" type="email" /></label>
+              </div>
+              <div class="field-row">
+                <label>Industry<input id="merchantIndustry" required placeholder="Contractor, auto shop, maker, restaurant" /></label>
+                <label>City<input id="merchantCity" value="Medford, OR" /></label>
+              </div>
+              <label>Current processor<input id="merchantCurrentProcessor" placeholder="Unknown, Square, Stripe, bank, etc." /></label>
+              <label>Monthly card/payment volume<select id="merchantMonthlyVolume"><option>Unknown</option><option>Under $10k</option><option>$10k - $50k</option><option>$50k - $150k</option><option>$150k+</option></select></label>
+              <label>Needs<select id="merchantNeeds" multiple><option>Card payments</option><option>Invoices</option><option>Deposits</option><option>Recurring billing</option><option>Mobile payments</option><option>Online checkout</option><option>Business banking tools</option><option>Expense cards</option></select></label>
+              <label>Notes<textarea id="merchantNotes" rows="4" placeholder="What problem are they trying to solve?"></textarea></label>
+              <p class="trust-note"><strong>Do not submit sensitive financial info:</strong> No bank logins, SSNs, full account numbers, card numbers, or processing statements in this MVP form.</p>
+              <button class="btn blue full" type="submit">Save Merchant Services Lead</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen local-products-screen" id="local-products-screen" data-screen="local-products">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="services">Services</button></div>
+        </header>
+        <section class="opportunity-layout">
+          <div class="opportunity-main">
+            <div class="section-title">
+              <div>
+                <span class="split-label">Local Products / Makers</span>
+                <h1>Build the local products and maker lane.</h1>
+                <p class="muted">Custom products, cutting boards, woodwork, handmade goods, blue-collar shop products, local brands, and maker/vendor leads. Product sales stay separate from job bidding until policies, pricing, tax, fulfillment, and refund rules are approved.</p>
+              </div>
+            </div>
+            <div class="opportunity-stats" id="localProductsStats"></div>
+            <section class="opportunity-steps">
+              <div class="opportunity-step-grid">
+                <article><strong>Product proof</strong><span>Photos, descriptions, pricing, materials, variants, and production limits.</span></article>
+                <article><strong>Fulfillment proof</strong><span>Pickup, delivery, shipping, packaging, lead time, returns, and customer communication.</span></article>
+                <article><strong>Public approval</strong><span>Admin review before public marketplace claims, featured products, or wholesale routing.</span></article>
+              </div>
+            </section>
+            <section class="manufacturing-rfq-list" id="localProductsVendorList"></section>
+          </div>
+          <aside class="manufacturing-sidebar">
+            <form class="manufacturing-form" id="localProductVendorForm">
+              <span class="split-label">Join Makers List</span>
+              <h2>Local Maker / Product Lead</h2>
+              <div class="field-row">
+                <label>Maker / brand name<input id="localProductMakerName" required /></label>
+                <label>Contact name<input id="localProductContactName" required /></label>
+              </div>
+              <div class="field-row">
+                <label>Phone<input id="localProductPhone" required /></label>
+                <label>Email<input id="localProductEmail" type="email" /></label>
+              </div>
+              <label>Category<input id="localProductCategory" required placeholder="Custom wood products, metalwork, apparel, gifts" /></label>
+              <label>Products<textarea id="localProductProducts" rows="3" required placeholder="Cutting boards, gates, signs, furniture, shop products, handmade goods"></textarea></label>
+              <div class="field-row">
+                <label>City<input id="localProductCity" value="Medford, OR" /></label>
+                <label>Fulfillment<input id="localProductFulfillment" placeholder="Pickup, delivery, shipping, TBD" /></label>
+              </div>
+              <label>Wholesale interest<select id="localProductWholesale"><option>Not sure</option><option>Yes</option><option>No</option></select></label>
+              <label class="file-button btn ghost full">Upload product photos<input id="localProductPhotos" type="file" multiple accept="image/*" /></label>
+              <label>Notes<textarea id="localProductNotes" rows="4" placeholder="Materials, price range, turnaround time, custom order limits, story."></textarea></label>
+              <button class="btn orange full" type="submit">Save Maker Lead</button>
             </form>
           </aside>
         </section>
@@ -3294,6 +3523,41 @@
             </div>
             <div class="table-card"><table id="adminRoadRescueTable"></table></div>
             <div class="lead-board" id="adminRoadRescuePipeline"></div>
+            <section class="settings-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Personal Driver</span>
+                  <h2>Driver requests and provider applications.</h2>
+                  <p class="muted">Manual review for license, insurance, vehicle, background-check path, privacy, local rules, and emergency boundaries.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="export-personal-driver-requests">Export Requests CSV</button>
+                  <button class="btn ghost small" type="button" data-action="export-personal-driver-providers">Export Drivers CSV</button>
+                  <button class="btn blue small" type="button" data-nav="personal-driver">Open Driver Lane</button>
+                </div>
+              </div>
+              <div class="admin-heading compact"><h2>Personal Driver Requests</h2></div>
+              <div class="table-card"><table id="adminPersonalDriverRequestsTable"></table></div>
+              <div class="admin-heading compact"><h2>Driver Provider Leads</h2></div>
+              <div class="table-card"><table id="adminPersonalDriverProvidersTable"></table></div>
+            </section>
+            <section class="settings-card">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Payments + Products</span>
+                  <h2>Merchant-service and local-maker leads.</h2>
+                  <p class="muted">Keep partner claims, payment processing, product marketplace listings, pricing, fulfillment, and policy details in admin review until approved.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="export-merchant-services">Export Merchant CSV</button>
+                  <button class="btn ghost small" type="button" data-action="export-local-products">Export Makers CSV</button>
+                </div>
+              </div>
+              <div class="admin-heading compact"><h2>Forge Payments / Merchant Services</h2></div>
+              <div class="table-card"><table id="adminMerchantServicesTable"></table></div>
+              <div class="admin-heading compact"><h2>Local Products / Makers</h2></div>
+              <div class="table-card"><table id="adminLocalProductsTable"></table></div>
+            </section>
             <section class="settings-card academy-admin-section" id="adminForgeAcademy">
               <div class="admin-heading compact">
                 <div>

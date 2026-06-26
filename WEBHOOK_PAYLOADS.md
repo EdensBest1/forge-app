@@ -19,6 +19,10 @@ Forge sends webhook payloads from `sendLead(type, payload)` as JSON:
 - `worker` with `payload.providerCategory = "photography_videography"`: Photography & Videography provider application from `/photography/apply`.
 - `northstar`: NorthStar Creative Co. marketing and business-operations request from `/northstar-creative`.
 - `forge-flex`: Forge Capital Desk lead for Flex referral follow-up from `/forge/capital`, `/forge/flex`, or `/partners/flex`.
+- `personal-driver-request`: Scheduled ride request from `/personal-driver` or `/private-driver`.
+- `personal-driver-provider`: Driver provider application from `/personal-driver` or `/private-driver`.
+- `forge-merchant-services`: Merchant-service interest lead from `/forge-payments` or `/merchant-services`.
+- `local-product-vendor`: Local product maker/vendor lead from `/local-products` or `/makers`.
 - `opportunity`: Trade school, union/apprenticeship, or blue-collar AI job interest.
 - `forge-academy`: Forge Academy student/worker career intake from `/forge-academy`.
 - `trade-pathway`: Admitly Trade Pathways intake from `/trade-pathways`.
@@ -75,6 +79,34 @@ Map to `forge_flex_leads`.
 Do not send SSNs, bank logins, full account numbers, personal credit score fields, uploads, or sensitive financial documents through Forge.
 
 If `FORGE_GHL_WEBHOOK_URL` or `FORGE_ZAPIER_WEBHOOK_URL` is configured in `window.FORGE_ENV`, Forge posts this bare payload to those URLs after a Capital Desk form submission. The Admin Lead Capture Setup webhook still receives the wrapped `sendLead("forge-flex", payload)` event when enabled.
+
+## Personal Driver Payloads
+
+`personal-driver-request` expected fields: `id`, `name`, `phone`, `email`, `rideType`, `pickupArea`, `dropoffArea`, `rideDate`, `rideTimeWindow`, `recurring`, `passengers`, `accessibilityNeeds`, `privacyNotes`, `safetyStatus`, `status`, and `created`.
+
+Map to `personal_driver_requests`.
+
+`personal-driver-provider` expected fields: `id`, `businessName`, `ownerName`, `phone`, `email`, `serviceArea`, `vehicleType`, `driverLicenseStatus`, `insurance`, `backgroundCheck`, `availability`, `recurringRides`, `bio`, `dispatchDecision`, `trustTier`, `trustRank`, `status`, and `created`.
+
+Map to `personal_driver_provider_applications`.
+
+Safety rule: emergency situations require 911. Driver matching stays manual until license, insurance, vehicle, background-check path, privacy, local legal requirements, and provider fit are reviewed.
+
+## Merchant Services Payload
+
+`forge-merchant-services` expected fields: `id`, `businessName`, `ownerName`, `phone`, `email`, `industry`, `city`, `currentProcessor`, `monthlyVolume`, `needs`, `notes`, `adminOnlyPartnerNote`, `status`, and `created`.
+
+Map to `forge_merchant_service_leads`.
+
+Do not send bank logins, SSNs, full account numbers, card numbers, processing statements, sensitive financial documents, or public partner claims through the browser-only MVP.
+
+## Local Product Vendor Payload
+
+`local-product-vendor` expected fields: `id`, `makerName`, `contactName`, `phone`, `email`, `category`, `products`, `city`, `fulfillment`, `wholesaleInterest`, `photos`, `notes`, `status`, and `created`.
+
+Map to `local_product_vendor_leads`.
+
+Public listings remain preview-only until product photos, pricing, fulfillment, tax, returns/refunds, and customer communication policies are reviewed.
 
 ## Opportunity Payload
 
