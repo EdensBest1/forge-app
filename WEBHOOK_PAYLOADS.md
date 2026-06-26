@@ -52,7 +52,7 @@ Map creative requests to `forge_job_leads` for the current MVP or to `creative_s
 
 ## Worker Payload
 
-Expected fields: `name`, `trade`, `phone`, `email`, `experience`, `area`, `status`.
+Expected fields: `name`, `trade`, `phone`, `email`, `experience`, `area`, `businessSize`, `northStarMarketingNeed`, `businessGrowthTools`, and `status`.
 
 Map to `forge_worker_leads`.
 
@@ -62,11 +62,19 @@ Map creative providers to `forge_worker_leads` for the current MVP or to `creati
 
 ## NorthStar Payload
 
-Expected fields: `id`, `category`, `secondaryCategory`, `name`, `businessName`, `phone`, `email`, `city`, `trade`, `website`, `social`, `servicesNeeded`, `budget`, `problem`, `goal`, `consent`, `status`, `created`, and `adminNotes`.
+Expected fields: `id`, `category`, `secondaryCategory`, `name`, `businessName`, `phone`, `email`, `city`, `trade`, `website`, `googleBusinessUrl`, `social`, `serviceCategories`, `serviceAreas`, `yearsInBusiness`, `numberOfEmployees`, `numberOfCrews`, `businessSize`, `marketingNeed`, `servicesNeeded`, `budget`, `currentAdSpend`, `currentMonthlyLeadVolume`, `problem`, `mainBusinessProblem`, `answerEveryCall`, `hasCrm`, `hiringHelp`, `residentialCommercial`, `needsPhotosVideos`, `wantsMarketingAudit`, `notes`, `marketingScore`, `score`, `leadClassification`, `urgency`, `assignedOwner`, `goal`, `consent`, `status`, `created`, and `adminNotes`.
 
 Map to `northstar_marketing_operations_leads`.
 
 Use `category = "northstar_creative"` and `secondaryCategory = "northstar_marketing_operations"` so NorthStar leads stay separate from general job leads and Photography & Videography requests.
+
+Lead classifications are `Small Provider`, `Growth Client`, `Trade Pro Client`, `Enterprise Prospect`, and `Urgent Follow-Up`.
+
+North Star statuses are `New`, `Needs Review`, `Contacted`, `Audit Scheduled`, `Proposal Needed`, `Proposal Sent`, `Won`, `Lost`, and `Nurture Later`.
+
+Forge Marketing Score fields total 100 points: website 0-20, Google Business 0-20, reviews 0-20, photos/videos 0-10, lead response speed 0-10, social proof 0-10, and CRM/follow-up 0-10.
+
+Provider signup may create a `northstar` webhook when `northStarMarketingNeed` is anything other than `No, just list me on Forge` or when provider growth tools include Forge leads, North Star marketing, or website/CRM/automation help.
 
 Do not send payment details, ad-account passwords, CRM credentials, private customer lists, or sensitive business documents through the browser-only MVP.
 

@@ -31,9 +31,16 @@ This registry lists existing and planned features, business sections, and operat
 
 - Implemented / Live in UI as the Forge-connected business growth section for blue-collar workers, service providers, contractors, and local businesses.
 - Dedicated route/page exists through `/northstar-creative`.
+- Page positioning: `Forge helps you find work. North Star Creative Co. helps your business win more of it.`
 - Customer/business owner request form exists and saves leads with category value `northstar_creative` and secondary category value `northstar_marketing_operations`.
-- Homepage/service cards include NorthStar Creative Co. with CTA copy for growing a business.
-- Admin dashboard includes NorthStar leads, CSV export, pipeline status review, notes, copy actions, and follow-up queue integration.
+- Provider signup asks whether North Star should help the provider get more jobs and grow the business, captures business-size classification, and can create a separate North Star lead without disrupting normal Forge provider signup.
+- Lead classification exists for Small Provider, Growth Client, Trade Pro Client, Enterprise Prospect, and Urgent Follow-Up.
+- Forge Marketing Score exists with website, Google Business, reviews, photos/videos, lead response speed, social proof, and CRM/follow-up categories totaling 100 points.
+- Service packages exist for Forge Starter Presence, Forge Local Growth, North Star Trade Pro, and North Star Enterprise Growth Partner.
+- Roofing is a priority vertical with dedicated services and recommended landing page templates.
+- Homepage/service cards include North Star Creative Co. with CTA copy for growing a business.
+- Admin dashboard includes North Star leads, CSV export, pipeline status review, notes, assigned owner, score, urgency, copy actions, and follow-up queue integration.
+- North Star leads should be tracked separately from normal Forge job requests.
 - Still requires production backend delivery, credential-safe operations workflow, service agreement, ad/account access policy, and final legal review before broad public launch.
 
 ## Forge Manufacturing + Nutraceuticals
