@@ -8264,6 +8264,20 @@ td {
   min-height: 112px;
 }
 
+.manufacturing-form.embedded {
+  margin: 4px 0;
+  border-color: #d4e3e3;
+  box-shadow: none;
+}
+
+.copy-block {
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  color: var(--ink);
+  font: 0.84rem/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
 @media (max-width: 900px) {
   .capital-hero,
   .capital-layout,

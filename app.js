@@ -3057,6 +3057,7 @@ function normalizeState(value) {
   next.manufacturingRfqs = next.manufacturingRfqs.map((lead) => normalizeManufacturingRfq(lead));
   next.manufacturingSuppliers = next.manufacturingSuppliers.map((supplier) => normalizeManufacturingSupplier(supplier));
   next.manufacturingSupplierLeads = next.manufacturingSupplierLeads.map((lead) => normalizeManufacturingSupplierLead(lead));
+  ensureManufacturingJobs(next);
   next.projectLeads = next.projectLeads.map((lead) => normalizeProjectLead({
     contactName: "Project owner",
     phone: "",
@@ -3765,8 +3766,63 @@ function isServiceVerticalJob(job) {
   return Boolean(serviceVerticalById(job?.serviceVertical) || serviceVerticalForCategory(job?.category));
 }
 
+function isManufacturingJob(job) {
+  return categoryValue(job?.category) === MANUFACTURING_CATEGORY_VALUE || Boolean(job?.manufacturingRfqId);
+}
+
 function isServiceVerticalProvider(worker) {
   return Boolean(serviceVerticalForProvider(worker));
+}
+
+function ensureManufacturingJobs(next) {
+  for (const rfq of next.manufacturingRfqs || []) {
+    const jobId = `manufacturing-job-${rfq.id}`;
+    const existing = next.jobs.find((job) => job.id === jobId || job.manufacturingRfqId === rfq.id);
+    const generated = manufacturingJobFromRfq(rfq, existing);
+    if (existing) {
+      Object.assign(existing, generated, {
+        bids: existing.bids ?? generated.bids,
+        status: existing.status || generated.status,
+        notes: existing.notes || generated.notes
+      });
+    } else {
+      next.jobs.unshift(generated);
+    }
+  }
+}
+
+function manufacturingJobFromRfq(rfq, existing = {}) {
+  const title = `Manufacturing Request: ${rfq.brandName || rfq.productType || "Supplement Product"}`;
+  return {
+    id: existing.id || `manufacturing-job-${rfq.id}`,
+    title,
+    category: MANUFACTURING_CATEGORY_VALUE,
+    categoryLabel: MANUFACTURING_CATEGORY_LABEL,
+    location: rfq.locationPreference || "Nationwide",
+    urgency: rfq.targetLaunchDate || "Launch date pending",
+    budget: rfq.budgetRange || "Budget pending",
+    bids: existing.bids || 0,
+    status: existing.status || "Open for bids",
+    posted: rfq.created || "Today",
+    description: `${rfq.productType || "Manufacturing request"} · ${rfq.dosageForm || "form pending"} · ${rfq.targetQuantity || rfq.desiredMoq || "quantity pending"} · ${rfq.desiredPackaging || "packaging pending"}`,
+    customer: rfq.contactName || rfq.customerCompanyName || "Manufacturing customer",
+    phone: rfq.contactPhone || "",
+    email: rfq.contactEmail || "",
+    notes: existing.notes || rfq.notes || "",
+    manufacturingRfqId: rfq.id,
+    serviceDetails: {
+      productIdea: rfq.productIdea,
+      formulaStatus: rfq.formulaStatus,
+      dosageForm: rfq.dosageForm,
+      targetQuantity: rfq.targetQuantity,
+      desiredMoq: rfq.desiredMoq,
+      desiredPackaging: rfq.desiredPackaging,
+      testingNeeds: rfq.testingNeeds,
+      certificationsRequired: (rfq.certificationsRequired || []).join(", "),
+      fulfillmentNeeded: rfq.fulfillmentNeeded,
+      complianceReviewNeeded: rfq.complianceReviewNeeded
+    }
+  };
 }
 
 function normalizeServiceJob(job) {
@@ -9752,6 +9808,7 @@ function submitManufacturingRfq() {
     notes: fieldValue("#manufacturingRfqNotes") || "RFQ captured in Forge Manufacturing + Nutraceuticals. Do not route CBD/hemp, claims, label, or regulated-product details without compliance review."
   });
   state.manufacturingRfqs.unshift(lead);
+  state.jobs.unshift(manufacturingJobFromRfq(lead));
   addActivity(`Manufacturing RFQ saved: ${lead.brandName} (${lead.productType}).`);
   state.lastConfirmation = {
     type: "manufacturing-rfq",
@@ -10404,7 +10461,11 @@ document.addEventListener("click", (event) => {
     bids.forEach((bid) => bid.chosen = false);
     selectedBid.chosen = true;
     selectedBid.status = "Selected";
-    job.status = isServiceVerticalJob(job) ? "Provider selected" : "In Progress";
+    job.status = (isServiceVerticalJob(job) || isManufacturingJob(job)) ? "Provider selected" : "In Progress";
+    if (job.manufacturingRfqId) {
+      const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === job.manufacturingRfqId);
+      if (rfq) rfq.status = "Manufacturing selected";
+    }
     state.activeMessageThreadId = `job-${job.id}`;
     state.messages.unshift({
       id: `${Date.now()}`,
@@ -11434,8 +11495,12 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
   };
   state.bids.unshift(bid);
   selectedJob.bids += 1;
-  if (isServiceVerticalJob(selectedJob) && ["Open for bids", "New"].includes(selectedJob.status)) selectedJob.status = "Bid submitted";
+  if ((isServiceVerticalJob(selectedJob) || isManufacturingJob(selectedJob)) && ["Open for bids", "New"].includes(selectedJob.status)) selectedJob.status = "Bid submitted";
   else if (selectedJob.status === "New") selectedJob.status = "Matching";
+  if (selectedJob.manufacturingRfqId) {
+    const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === selectedJob.manufacturingRfqId);
+    if (rfq && ["Request received", "Sourcing manufacturers"].includes(rfq.status)) rfq.status = "Awaiting bids";
+  }
   state.activeJobId = selectedJob.id;
   addActivity(`New bid submitted by ${bid.worker} for ${selectedJob.title}: ${bid.amount}.`);
   state.lastConfirmation = {
@@ -13337,20 +13402,38 @@ function manufacturingRfqLines(lead) {
   return [
     `${normalized.brandName || "Manufacturing RFQ"} - ${normalized.productType}`,
     `Status: ${normalized.status}`,
+    `Customer / company: ${normalized.customerCompanyName || "Not listed"}`,
     `Contact: ${normalized.contactName} · ${normalized.contactPhone} · ${normalized.contactEmail}`,
+    `Product idea: ${normalized.productIdea || "Not listed"}`,
     `Formula status: ${normalized.formulaStatus}`,
     `Dosage form: ${normalized.dosageForm}`,
+    `Ingredients requested: ${normalized.ingredientsRequested || "Not listed"}`,
+    `Ingredients to avoid: ${normalized.ingredientsToAvoid || "Not listed"}`,
+    `Flavor preferences: ${normalized.flavorPreferences || "Not listed"}`,
+    `Sweetener preferences: ${normalized.sweetenerPreferences || "Not listed"}`,
+    `Serving size: ${normalized.servingSize || "Not listed"}`,
+    `Servings per container: ${normalized.servingsPerContainer || "Not listed"}`,
+    `Target retail price: ${normalized.targetRetailPrice || "Not listed"}`,
+    `Target customer: ${normalized.targetCustomer || "Not listed"}`,
+    `Estimated first order quantity: ${normalized.estimatedFirstOrderQuantity || "Not listed"}`,
+    `Desired MOQ: ${normalized.desiredMoq || "Not listed"}`,
     `Target quantity / MOQ: ${normalized.targetQuantity}`,
     `Packaging: ${normalized.desiredPackaging}`,
     `Ingredient requirements: ${normalized.ingredientRequirements}`,
     `Clean-label requirements: ${(normalized.cleanLabelRequirements || []).join(", ") || "None listed"}`,
     `CBD/hemp involved: ${normalized.cbdHemp}`,
+    `Label design needed: ${normalized.labelDesignNeeded}`,
+    `Compliance review needed: ${normalized.complianceReviewNeeded}`,
     `Testing needs: ${normalized.testingNeeds || "Not listed"}`,
     `Certifications: ${(normalized.certificationsRequired || []).join(", ") || "Not listed"}`,
+    `Fulfillment needed: ${normalized.fulfillmentNeeded}`,
+    `Dropshipping needed: ${normalized.dropshippingNeeded}`,
     `Target launch date: ${normalized.targetLaunchDate || "Not listed"}`,
     `Budget range: ${normalized.budgetRange}`,
     `Location preference: ${normalized.locationPreference}`,
     `Upload: ${normalized.specUpload || "0 files selected"}`,
+    `Reference uploads: ${normalized.labelUpload || "0 files selected"}`,
+    `Compliance uploads: ${normalized.packagingReferenceUpload || "0 files selected"}`,
     `Notes: ${normalized.notes || "None"}`,
     `Compliance: ${MANUFACTURING_COMPLIANCE_COPY}`
   ];
@@ -13365,16 +13448,33 @@ function manufacturingSupplierLines(supplier) {
     `Contact: ${normalized.contactPerson} · ${normalized.phoneEmail}`,
     `Location: ${normalized.location}`,
     `Service area: ${normalized.serviceArea}`,
+    `Ships nationwide: ${normalized.shipsNationwide}`,
+    `Products manufactured: ${normalized.productsManufactured || "Not listed"}`,
     `Capabilities: ${normalized.capabilities}`,
     `Product categories: ${(normalized.productCategories || []).join(", ") || "Not listed"}`,
     `Dosage forms: ${(normalized.dosageForms || []).join(", ") || "Not listed"}`,
     `MOQ: ${normalized.minimumOrderQuantity}`,
+    `Estimated lead time: ${normalized.estimatedLeadTime || normalized.turnaroundTime || "Not listed"}`,
+    `Starting project budget: ${normalized.startingProjectBudget || "Not listed"}`,
     `Certifications: ${(normalized.certifications || []).join(", ") || "Not listed"}`,
+    `Testing offered: ${(normalized.testingOffered || []).join(", ") || "Not listed"}`,
+    `Current capacity: ${normalized.currentCapacity || "Not listed"}`,
+    `Accepting new clients: ${normalized.acceptingNewClients}`,
+    `Sample development: ${normalized.sampleDevelopmentSupport ? "yes" : "no"}`,
+    `NDA available: ${normalized.ndaAvailable ? "yes" : "no"}`,
+    `Insurance: ${normalized.insurance}`,
     `Facility type: ${normalized.facilityType}`,
     `Turnaround: ${normalized.turnaroundTime}`,
     `Packaging: ${normalized.packagingOptions}`,
-    `Support: ingredient sourcing ${normalized.ingredientSourcingSupport ? "yes" : "no"}, formulation ${normalized.formulationSupport ? "yes" : "no"}, testing ${normalized.testingLabSupport ? "yes" : "no"}, compliance ${normalized.complianceSupport ? "yes" : "no"}, private-label ${normalized.privateLabelSupport ? "yes" : "no"}, fulfillment ${normalized.fulfillmentSupport ? "yes" : "no"}`,
+    `Support: ingredient sourcing ${normalized.ingredientSourcingSupport ? "yes" : "no"}, formulation ${normalized.formulationSupport ? "yes" : "no"}, custom formulation ${normalized.customFormulationSupport ? "yes" : "no"}, flavoring ${normalized.flavoringSupport ? "yes" : "no"}, packaging ${normalized.packagingSupport ? "yes" : "no"}, label design ${normalized.labelDesignSupport ? "yes" : "no"}, testing ${normalized.testingLabSupport ? "yes" : "no"}, compliance ${normalized.complianceSupport ? "yes" : "no"}, private-label ${normalized.privateLabelSupport ? "yes" : "no"}, white-label catalog ${normalized.whiteLabelCatalogSupport ? "yes" : "no"}, fulfillment ${normalized.fulfillmentSupport ? "yes" : "no"}`,
     `Website: ${normalized.website || "Not listed"}`,
+    `Source: ${normalized.source}`,
+    `Source URL: ${normalized.sourceUrl || "Not listed"}`,
+    `Outreach status: ${normalized.outreachStatus}`,
+    `Last contacted: ${normalized.lastContacted || "Not listed"}`,
+    `Next follow-up: ${normalized.nextFollowUpDate || "Not listed"}`,
+    `Relationship owner: ${normalized.relationshipOwner || "Not listed"}`,
+    `Bio: ${normalized.bio || "Not listed"}`,
     `Notes: ${normalized.notes || "None"}`,
     "Directory boundary: Supplier profiles must be original, company-created, or company-approved. Do not copy external supplier directory data."
   ];
@@ -13613,12 +13713,20 @@ function copyManufacturingBrief() {
     "3. Request Manufacturing Quote",
     "4. Compare Suppliers",
     "5. Join Forge Manufacturing Network",
+    "6. Track lawful supplier leads and outreach",
+    "7. Import only supplier CSVs the user has permission to use",
     "",
     "Supplier types:",
     ...manufacturingSupplierTypes.map((type) => `- ${type}`),
     "",
     "Documents:",
     ...manufacturingDocumentTemplates.map((title) => `- ${title}`),
+    "",
+    "Lead sources:",
+    ...manufacturingSupplierLeadSources.map((source) => `- ${source}`),
+    "",
+    "Outreach template:",
+    MANUFACTURING_OUTREACH_TEMPLATE,
     "",
     "Boundary:",
     MANUFACTURING_DIRECTORY_BOUNDARY_COPY,
