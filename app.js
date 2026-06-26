@@ -6,6 +6,9 @@ const CREATIVE_CATEGORY_SLUG = "photography-videography";
 const NORTHSTAR_CATEGORY_VALUE = "northstar_creative";
 const NORTHSTAR_OPERATIONS_CATEGORY_VALUE = "northstar_marketing_operations";
 const NORTHSTAR_CATEGORY_LABEL = "NorthStar Creative Co.";
+const NORTH_STAR_DISPLAY_NAME = "North Star Creative Co.";
+const NORTH_STAR_GROWTH_PAGE_TITLE = "Grow Your Business with North Star Creative Co.";
+const NORTH_STAR_POSITIONING_COPY = "Forge helps you find work. North Star Creative Co. helps your business win more of it.";
 const MANUFACTURING_CATEGORY_VALUE = "manufacturing_nutraceuticals";
 const MANUFACTURING_CATEGORY_LABEL = "Manufacturing + Nutraceuticals";
 const MANUFACTURING_CATEGORY_SLUG = "manufacturing-nutraceuticals";
@@ -783,6 +786,24 @@ const providerGrowthToolOptions = [
   "I want payment processing help"
 ];
 const providerFinanceToolLabels = providerGrowthToolOptions.slice(0, 5);
+const providerBusinessSizeOptions = [
+  "Solo Operator",
+  "Small Local Business",
+  "Established Trade Company",
+  "Enterprise / Anchor Contractor"
+];
+const providerNorthStarHelpOptions = [
+  "No, just list me on Forge",
+  "Yes, I need more leads",
+  "Yes, I need a website",
+  "Yes, I need Google Business help",
+  "Yes, I need ads",
+  "Yes, I need social media",
+  "Yes, I need photos/videos",
+  "Yes, I need a CRM and follow-up system",
+  "Yes, I need full-scale marketing",
+  "Yes, I am a larger company and want a growth consultation"
+];
 const homebuildingStatuses = [
   "New Project Lead",
   "Needs More Info",
@@ -1488,8 +1509,31 @@ const creativeNeedOptions = ["Not sure", "Yes", "No"];
 const creativeProviderDroneOptions = ["No", "Yes - FAA Part 107 / qualified", "Yes - pending approval", "Not sure"];
 const creativeProviderDisciplines = ["Photography", "Videography", "Both photography and videography"];
 const creativeProviderExperienceOptions = ["New provider", "1-2 years", "3-5 years", "5+ years", "10+ years"];
+const northstarBlueCollarCategories = [
+  "Roofing",
+  "Construction",
+  "HVAC",
+  "Plumbing",
+  "Electrical",
+  "Concrete",
+  "Asphalt",
+  "Masonry",
+  "Auto",
+  "Hauling",
+  "Cleaning",
+  "Photography/Videography",
+  "Manufacturing",
+  "Landscaping",
+  "Tree service",
+  "Fencing",
+  "Welding",
+  "Diesel / fleet",
+  "General contracting",
+  "Other blue-collar business"
+];
 const northstarMarketingServices = [
   "Website design",
+  "Website improvement",
   "Landing pages",
   "Logo and brand refresh",
   "Social media posts",
@@ -1497,12 +1541,20 @@ const northstarMarketingServices = [
   "Short-form video content",
   "Photography/video coordination",
   "Google Business Profile setup",
+  "Google Business Profile optimization",
   "Local SEO",
+  "Google Ads",
+  "Local Service Ads",
   "Paid ads",
   "Lead generation campaigns",
   "Email/SMS follow-up",
   "Review generation",
+  "Reputation management",
   "Before/after project showcases",
+  "Call tracking",
+  "Missed-call text-back",
+  "AI lead follow-up",
+  "Recruiting campaigns",
   "Flyers and print materials",
   "Business cards",
   "Canva templates",
@@ -1521,6 +1573,8 @@ const northstarOperationsServices = [
   "Customer service scripts",
   "Sales scripts",
   "Admin dashboard planning",
+  "Monthly reporting",
+  "Executive dashboard",
   "Provider onboarding",
   "Appointment scheduling",
   "Operations cleanup",
@@ -1539,37 +1593,86 @@ const northstarServiceOptions = [
   "Job tracking",
   "SOPs",
   "Business operations",
+  "More leads",
+  "Full-scale marketing",
+  "Marketing audit",
+  "Hiring/recruiting",
+  "Missed-call text-back",
+  "AI receptionist",
   "Not sure / need help deciding"
 ];
 const northstarBudgetOptions = ["Not sure yet", "Under $500/month", "$500 - $1,500/month", "$1,500 - $3,000/month", "$3,000 - $7,500/month", "$7,500+/month", "Project-based quote"];
+const northstarAdSpendOptions = ["None", "Under $500/month", "$500 - $1,500/month", "$1,500 - $5,000/month", "$5,000 - $15,000/month", "$15,000+/month", "Not sure"];
+const northstarLeadVolumeOptions = ["Not sure", "0-5 leads/month", "6-20 leads/month", "21-50 leads/month", "51-150 leads/month", "150+ leads/month"];
+const northstarResidentialCommercialOptions = ["Residential jobs", "Commercial jobs", "Both residential and commercial", "Not sure"];
+const northstarUrgencyOptions = ["Normal", "Urgent Follow-Up", "High-value consultation", "Nurture"];
+const northstarLeadClassifications = ["Small Provider", "Growth Client", "Trade Pro Client", "Enterprise Prospect", "Urgent Follow-Up"];
+const northstarMarketingScoreCategories = [
+  ["website", "Website score", 20],
+  ["googleBusiness", "Google Business score", 20],
+  ["reviews", "Reviews score", 20],
+  ["photosVideos", "Photos/videos score", 10],
+  ["leadResponse", "Lead response speed score", 10],
+  ["socialProof", "Social proof score", 10],
+  ["crmFollowup", "CRM/follow-up score", 10]
+];
 const northstarPackages = [
   {
-    name: "Starter Presence",
-    fit: "For a business that needs to look real online.",
-    includes: ["Simple landing page", "Basic branding cleanup", "Google Business Profile checklist", "Lead form", "Basic social profile cleanup"]
+    name: "Forge Starter Presence",
+    fit: "For solo providers and brand-new businesses.",
+    includes: ["Provider profile optimization", "Business bio", "Service list", "Before/after photo guidance", "Review request template", "Simple social media starter posts", "Google Business recommendations", "Lead response script"]
   },
   {
-    name: "Lead Engine",
-    fit: "For a business that wants more jobs.",
-    includes: ["Landing page", "Ads/funnel setup", "Social content plan", "Lead form", "Follow-up automation", "CRM pipeline"]
+    name: "Forge Local Growth",
+    fit: "For small blue-collar companies.",
+    includes: ["Website/landing page", "Google Business optimization", "Local SEO pages", "Social media posts", "Review generation", "Lead form setup", "CRM pipeline", "Follow-up texts/emails", "Monthly content calendar", "Basic ad setup"]
   },
   {
-    name: "Authority Builder",
-    fit: "For a business that wants to become known locally.",
-    includes: ["Full website", "Brand kit", "Content calendar", "Before/after project content", "Review system", "Local SEO", "Email/SMS follow-up"]
+    name: "North Star Trade Pro",
+    fit: "For established trade companies.",
+    includes: ["Website improvement", "Google Ads", "Local SEO city pages", "Google Business posting", "Call tracking", "CRM setup", "AI lead follow-up", "Reputation management", "Photo/video content plan", "Landing pages by service", "Monthly reporting", "Hiring/recruiting campaigns", "Forge premium placement"]
   },
   {
-    name: "Operations OS",
-    fit: "For a business that needs systems.",
-    includes: ["CRM", "Job tracking", "Intake forms", "Estimate/invoice workflow", "SOPs", "Hiring/onboarding documents", "Admin dashboard planning", "Follow-up automations"]
-  },
-  {
-    name: "Full-Service Growth Partner",
-    fit: "For businesses that want NorthStar to help run marketing and operations together.",
-    includes: ["Website", "Ads", "Content", "CRM", "Follow-up", "Job tracking", "Reporting"]
+    name: "North Star Enterprise Growth Partner",
+    fit: "For large roofing companies, commercial contractors, regional service companies, and high-volume trade companies.",
+    includes: ["Growth audit", "Website rebuild/conversion optimization", "Google Ads/Local Service Ads management", "Commercial landing pages", "Residential landing pages", "Emergency service campaigns", "HOA/property manager outreach", "Multi-city SEO", "Review system", "AI receptionist", "Missed-call text-back", "CRM/job pipeline", "Sales follow-up workflows", "Recruiting ads", "Fleet/truck branding review", "Content plan", "Monthly executive dashboard", "Quarterly strategy meeting"]
   }
 ];
-const northstarStatuses = ["New", "Contacted", "Scoping", "Proposal Needed", "Proposal Sent", "Active", "Paused", "Closed"];
+const roofingMarketingServices = [
+  "Roof replacement lead generation",
+  "Roof repair lead generation",
+  "Emergency leak repair ads",
+  "Commercial roofing SEO",
+  "Metal roofing pages",
+  "TPO membrane commercial pages",
+  "Gutter installation campaigns",
+  "Storm damage inspection campaigns",
+  "Roof maintenance plans",
+  "HOA and property manager outreach",
+  "Apartment and multi-family roofing campaigns",
+  "Google Business review system",
+  "Before/after project gallery",
+  "Drone/photo/video content plan",
+  "Recruiting campaign for roofers/laborers",
+  "Missed-call text-back system",
+  "Estimate follow-up automation",
+  "Seasonal campaigns before rain, snow, heat, and fire season"
+];
+const roofingLandingPageTemplates = [
+  "Roof Replacement Medford OR",
+  "Roof Repair Medford OR",
+  "Commercial Roofing Medford OR",
+  "Metal Roofing Medford OR",
+  "Emergency Roof Leak Repair Medford OR",
+  "Gutter Installation Medford OR",
+  "Roofing Contractor Grants Pass OR",
+  "Roofing Contractor Ashland OR",
+  "Roofing Contractor Central Point OR",
+  "HOA Roofing Southern Oregon",
+  "Multi-Family Roofing Southern Oregon",
+  "Commercial Flat Roof Repair Southern Oregon"
+];
+const northstarStatuses = ["New", "Needs Review", "Contacted", "Audit Scheduled", "Proposal Needed", "Proposal Sent", "Won", "Lost", "Nurture Later"];
 const autoDealers = [
   {
     id: "s-and-a-auto",
@@ -2805,13 +2908,32 @@ const seedState = {
       city: "Medford, OR",
       trade: "Remodeling contractor",
       website: "",
+      googleBusinessUrl: "",
       social: "",
-      servicesNeeded: ["Website", "CRM", "Job tracking", "Review generation"],
+      serviceCategories: ["Construction", "General contracting"],
+      serviceAreas: "Medford, Ashland, Central Point",
+      yearsInBusiness: "6",
+      numberOfEmployees: "8",
+      numberOfCrews: "2",
+      businessSize: "Established Trade Company",
+      marketingNeed: "Yes, I need a CRM and follow-up system",
+      servicesNeeded: ["Website", "CRM", "Job tracking", "Review generation", "More leads"],
       budget: "$1,500 - $3,000/month",
+      currentAdSpend: "$500 - $1,500/month",
+      currentMonthlyLeadVolume: "6-20 leads/month",
       problem: "Leads come from referrals but follow-up is inconsistent and there is no job pipeline.",
+      mainBusinessProblem: "Leads come from referrals but follow-up is inconsistent and there is no job pipeline.",
       goal: "Look professional online, capture more remodel leads, and track estimates over the next 90 days.",
+      answerEveryCall: "No",
+      hasCrm: "No",
+      hiringHelp: "Not sure",
+      residentialCommercial: "Both residential and commercial",
+      needsPhotosVideos: "Yes",
+      wantsMarketingAudit: "Yes",
+      notes: "Demo North Star growth lead for the expanded client acquisition workflow.",
       consent: true,
       status: "New",
+      assignedOwner: "North Star Intake",
       created: "Today",
       adminNotes: ""
     }
@@ -3356,7 +3478,7 @@ function normalizeState(value) {
   ensurePartnerDocumentPlaceholders(next);
   next.buildingLeads = next.buildingLeads.map((lead) => normalizeBuildingLead(lead));
   next.homebuildingLeads = next.homebuildingLeads.map((lead) => normalizeHomebuildingLead({ status: "New", created: "Today", email: "", notes: "", uploads: "0 files selected", ...lead }));
-  next.northstarLeads = next.northstarLeads.map((lead) => ({ status: "New", created: "Today", email: "", adminNotes: "", servicesNeeded: [], category: NORTHSTAR_CATEGORY_VALUE, secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE, ...lead }));
+  next.northstarLeads = next.northstarLeads.map((lead) => normalizeNorthStarLead(lead));
   next.flexLeads = next.flexLeads.map((lead) => normalizeFlexLead(lead));
   next.opportunityLeads = next.opportunityLeads.map((lead) => ({ status: "New", created: "Today", email: "", note: "", location: "Medford, OR", ...lead }));
   next.tradePathwayLeads = next.tradePathwayLeads.map((lead) => ({ sourceApp: "admitly", leadType: "Admitly Trade Pathways", status: "New Lead", priority: "Warm", created: "Today", consentToContact: false, notes: "", ...lead }));
@@ -3368,6 +3490,147 @@ function normalizeState(value) {
   next.activity = value?.activity || seedState.activity;
   next.lastConfirmation = value?.lastConfirmation || seedState.lastConfirmation;
   return next;
+}
+
+function normalizeNorthStarLead(lead = {}) {
+  const normalized = {
+    id: `northstar-${Date.now()}`,
+    category: NORTHSTAR_CATEGORY_VALUE,
+    secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE,
+    name: "",
+    businessName: "",
+    phone: "",
+    email: "",
+    city: "Medford, OR",
+    trade: "",
+    website: "",
+    social: "",
+    googleBusinessUrl: "",
+    serviceCategories: [],
+    serviceAreas: "",
+    yearsInBusiness: "",
+    numberOfEmployees: "",
+    numberOfCrews: "",
+    businessSize: "Solo Operator",
+    marketingNeed: "No, just list me on Forge",
+    servicesNeeded: [],
+    budget: "Not sure yet",
+    currentAdSpend: "Not sure",
+    currentMonthlyLeadVolume: "Not sure",
+    problem: "",
+    mainBusinessProblem: "",
+    goal: "",
+    answerEveryCall: "Not sure",
+    hasCrm: "Not sure",
+    hiringHelp: "Not sure",
+    residentialCommercial: "Not sure",
+    needsPhotosVideos: "Not sure",
+    wantsMarketingAudit: "Yes",
+    notes: "",
+    consent: false,
+    status: "New",
+    leadClassification: "",
+    urgency: "",
+    assignedOwner: "North Star Intake",
+    created: "Today",
+    adminNotes: "",
+    ...lead
+  };
+  normalized.servicesNeeded = listValue(normalized.servicesNeeded);
+  normalized.serviceCategories = listValue(normalized.serviceCategories);
+  normalized.mainBusinessProblem = normalized.mainBusinessProblem || normalized.problem || "";
+  normalized.marketingNeed = normalized.marketingNeed || normalized.servicesNeeded[0] || "No, just list me on Forge";
+  normalized.businessSize = providerBusinessSizeOptions.includes(normalized.businessSize) ? normalized.businessSize : "Solo Operator";
+  normalized.marketingScore = normalized.marketingScore && typeof normalized.marketingScore === "object"
+    ? normalizeNorthStarMarketingScore(normalized.marketingScore)
+    : calculateNorthStarMarketingScore(normalized);
+  normalized.score = normalized.marketingScore.total;
+  normalized.leadClassification = northstarLeadClassifications.includes(normalized.leadClassification)
+    ? normalized.leadClassification
+    : classifyNorthStarLead(normalized);
+  normalized.urgency = normalized.urgency || inferNorthStarUrgency(normalized);
+  normalized.status = northstarStatuses.includes(normalized.status) ? normalized.status : normalized.status === "Scoping" ? "Needs Review" : normalized.status === "Active" ? "Won" : "New";
+  return normalized;
+}
+
+function listValue(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (!value) return [];
+  return String(value).split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+function normalizeNorthStarMarketingScore(score = {}) {
+  const normalized = {};
+  for (const [key, , max] of northstarMarketingScoreCategories) {
+    normalized[key] = clampNumber(Number(score[key] ?? 0), 0, max);
+  }
+  normalized.total = northstarMarketingScoreCategories.reduce((sum, [key]) => sum + normalized[key], 0);
+  return normalized;
+}
+
+function calculateNorthStarMarketingScore(lead = {}) {
+  const text = normalizeLookup([
+    lead.problem,
+    lead.mainBusinessProblem,
+    lead.goal,
+    lead.notes,
+    (lead.servicesNeeded || []).join(" "),
+    lead.marketingNeed
+  ].join(" "));
+  const score = {
+    website: lead.website ? 16 : 4,
+    googleBusiness: lead.googleBusinessUrl ? 17 : text.includes("google business") ? 6 : 9,
+    reviews: text.includes("review") || text.includes("reputation") ? 7 : 13,
+    photosVideos: lead.needsPhotosVideos === "Yes" || text.includes("photo") || text.includes("video") ? 4 : 8,
+    leadResponse: lead.answerEveryCall === "Yes" ? 10 : lead.answerEveryCall === "No" ? 3 : 6,
+    socialProof: lead.social || text.includes("social") ? 7 : 5,
+    crmFollowup: lead.hasCrm === "Yes" ? 10 : lead.hasCrm === "No" || text.includes("crm") || text.includes("follow-up") ? 3 : 6
+  };
+  if (lead.website && !text.includes("website")) score.website = 18;
+  if (text.includes("need a website")) score.website = Math.min(score.website, 6);
+  if (text.includes("full-scale marketing") || text.includes("growth consultation")) score.leadResponse = Math.min(10, score.leadResponse + 1);
+  return normalizeNorthStarMarketingScore(score);
+}
+
+function classifyNorthStarLead(lead = {}) {
+  const text = normalizeLookup([
+    lead.businessSize,
+    lead.marketingNeed,
+    lead.problem,
+    lead.mainBusinessProblem,
+    lead.trade,
+    lead.budget,
+    lead.currentAdSpend,
+    lead.numberOfEmployees,
+    lead.numberOfCrews
+  ].join(" "));
+  const employees = Number(String(lead.numberOfEmployees || "").match(/\d+/)?.[0] || 0);
+  const crews = Number(String(lead.numberOfCrews || "").match(/\d+/)?.[0] || 0);
+  if (inferNorthStarUrgency(lead) === "Urgent Follow-Up") return "Urgent Follow-Up";
+  if (lead.businessSize === "Enterprise / Anchor Contractor" || employees >= 50 || crews >= 6 || text.includes("7500+") || text.includes("15000+")) return "Enterprise Prospect";
+  if (lead.businessSize === "Established Trade Company" || employees >= 10 || crews >= 2 || text.includes("google ads") || text.includes("full-scale marketing")) return "Trade Pro Client";
+  if (lead.businessSize === "Small Local Business" || text.includes("more leads") || text.includes("website") || text.includes("google business")) return "Growth Client";
+  return "Small Provider";
+}
+
+function inferNorthStarUrgency(lead = {}) {
+  const text = normalizeLookup([
+    lead.marketingNeed,
+    lead.problem,
+    lead.mainBusinessProblem,
+    lead.notes,
+    lead.answerEveryCall,
+    lead.currentMonthlyLeadVolume
+  ].join(" "));
+  if (lead.answerEveryCall === "No" || text.includes("urgent") || text.includes("emergency") || text.includes("missed-call") || text.includes("larger company")) return "Urgent Follow-Up";
+  if (lead.businessSize === "Enterprise / Anchor Contractor" || text.includes("full-scale marketing")) return "High-value consultation";
+  if (lead.marketingNeed === "No, just list me on Forge") return "Nurture";
+  return "Normal";
+}
+
+function clampNumber(value, min, max) {
+  if (!Number.isFinite(value)) return min;
+  return Math.max(min, Math.min(max, value));
 }
 
 function normalizePartner(partner) {
@@ -4675,6 +4938,8 @@ function renderSelects() {
   fillSelect("#listingCategory", ["All Categories", ...categories]);
   fillSelect("#workerServiceVertical", [["", "General Forge worker"], ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
   fillSelect("#workerTradeCategories", categories);
+  fillSelect("#workerBusinessSize", providerBusinessSizeOptions);
+  fillSelect("#workerNorthStarMarketingNeed", providerNorthStarHelpOptions);
   fillSelect("#providerVerticalFilter", ["All Provider Types", ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
   fillSelect("#adminTradeCategoryFilter", ["All Categories", ...categories]);
   fillSelect("#creativeProjectType", ["", ...creativeProjectTypes], "Select a service type");
@@ -4691,7 +4956,18 @@ function renderSelects() {
   fillSelect("#creativeProviderExperience", creativeProviderExperienceOptions);
   fillSelect("#creativeProviderDroneCapability", creativeProviderDroneOptions);
   fillSelect("#northstarServices", northstarServiceOptions);
+  fillSelect("#northstarServiceCategories", northstarBlueCollarCategories);
   fillSelect("#northstarBudget", northstarBudgetOptions);
+  fillSelect("#northstarBusinessSize", providerBusinessSizeOptions);
+  fillSelect("#northstarMarketingNeed", providerNorthStarHelpOptions);
+  fillSelect("#northstarCurrentAdSpend", northstarAdSpendOptions);
+  fillSelect("#northstarLeadVolume", northstarLeadVolumeOptions);
+  fillSelect("#northstarAnswerEveryCall", ["Not sure", "Yes", "No"]);
+  fillSelect("#northstarHasCrm", ["Not sure", "Yes", "No"]);
+  fillSelect("#northstarHiringHelp", ["Not sure", "Yes", "No"]);
+  fillSelect("#northstarResidentialCommercial", northstarResidentialCommercialOptions);
+  fillSelect("#northstarNeedsMedia", ["Not sure", "Yes", "No"]);
+  fillSelect("#northstarAuditRequested", ["Yes", "No", "Not sure"]);
   fillSelect("#flexIndustry", ["", ...flexIndustries], "Select an industry");
   fillSelect("#flexYearsInBusiness", ["", ...flexYearsOptions], "Select years");
   fillSelect("#flexMonthlyRevenue", ["", ...flexRevenueRanges], "Select revenue");
@@ -5035,11 +5311,24 @@ function renderNorthStarPage() {
   const marketingGrid = document.querySelector("#northstarMarketingGrid");
   const operationsGrid = document.querySelector("#northstarOperationsGrid");
   const packageGrid = document.querySelector("#northstarPackageGrid");
+  const scoreGrid = document.querySelector("#northstarScoreGrid");
+  const roofingServices = document.querySelector("#northstarRoofingServices");
+  const roofingTemplates = document.querySelector("#northstarRoofingTemplates");
+  const acquisitionCopy = document.querySelector("#northstarAcquisitionCopy");
   const leadList = document.querySelector("#northstarLeadList");
   if (!marketingGrid || !operationsGrid || !packageGrid || !leadList) return;
 
+  if (acquisitionCopy) acquisitionCopy.textContent = NORTH_STAR_POSITIONING_COPY;
   marketingGrid.innerHTML = northstarMarketingServices.map((service) => `<span>${escapeHtml(service)}</span>`).join("");
   operationsGrid.innerHTML = northstarOperationsServices.map((service) => `<span>${escapeHtml(service)}</span>`).join("");
+  if (scoreGrid) {
+    scoreGrid.innerHTML = northstarMarketingScoreCategories.map(([, label, max]) => `
+      <article>
+        <strong>${escapeHtml(label)}</strong>
+        <span>0-${max}</span>
+      </article>
+    `).join("");
+  }
   packageGrid.innerHTML = northstarPackages.map((item) => `
     <article>
       <span class="split-label">${escapeHtml(item.fit)}</span>
@@ -5047,12 +5336,18 @@ function renderNorthStarPage() {
       <ul>${item.includes.map((detail) => `<li>${escapeHtml(detail)}</li>`).join("")}</ul>
     </article>
   `).join("");
-  leadList.innerHTML = (state.northstarLeads || []).slice(0, 4).map((lead) => `
+  if (roofingServices) {
+    roofingServices.innerHTML = roofingMarketingServices.map((service) => `<span>${escapeHtml(service)}</span>`).join("");
+  }
+  if (roofingTemplates) {
+    roofingTemplates.innerHTML = roofingLandingPageTemplates.map((template) => `<li>${escapeHtml(template)}</li>`).join("");
+  }
+  leadList.innerHTML = (state.northstarLeads || []).map(normalizeNorthStarLead).slice(0, 4).map((lead) => `
     <article>
       <div>
-        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.budget || "Budget pending")}</span>
+        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.leadClassification)} · Score ${escapeHtml(String(lead.score))}</span>
         <strong>${escapeHtml(lead.businessName)} · ${escapeHtml(lead.trade)}</strong>
-        <p>${escapeHtml(lead.city)} · ${escapeHtml((lead.servicesNeeded || []).join(", ") || "Services pending")}</p>
+        <p>${escapeHtml(lead.city)} · ${escapeHtml(lead.businessSize)} · ${escapeHtml((lead.servicesNeeded || []).join(", ") || "Services pending")}</p>
       </div>
       <button class="btn ghost small" type="button" data-action="copy-northstar-lead" data-northstar-id="${escapeHtml(lead.id)}">Copy Lead</button>
     </article>
@@ -5466,6 +5761,7 @@ function renderRequiredTradeCategories() {
         <div class="hero-actions">
           <button class="btn orange small" type="button" data-action="start-service-job" data-service-vertical="${escapeHtml(vertical?.id || category.id)}" data-service-category="${escapeHtml(category.label)}">Post Job</button>
           <button class="btn blue small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(vertical?.id || category.id)}" data-service-category="${escapeHtml(category.label)}">Provider Profile</button>
+          <button class="btn ghost small" type="button" data-nav="northstar">Grow My Business</button>
         </div>
       </article>
     `;
@@ -5493,6 +5789,7 @@ function renderServiceVerticals() {
           <button class="btn orange small" type="button" data-action="start-service-job" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[0])}</button>
           <button class="btn ghost small" type="button" data-action="browse-service-jobs" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[1])}</button>
           <button class="btn blue small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(vertical.id)}">${escapeHtml(vertical.ctas[2])}</button>
+          <button class="btn ghost small" type="button" data-nav="northstar">Request a Free Marketing Audit</button>
         </div>
       </article>
     `).join("");
@@ -7670,6 +7967,7 @@ function renderDashboards() {
     ["Jobs Won", chosenBids.length],
     ["Earnings", chosenBids.length ? "$2,450" : "$0"]
   ]);
+  renderProviderNorthStarDashboard();
   document.querySelector("#adminStats").innerHTML = statCards([
     ["New Jobs", newJobs],
     ["Workers", workers],
@@ -7742,13 +8040,19 @@ function renderDashboards() {
     status: creativeStatusText(provider.providerStatus || provider.status)
   })));
 
-  renderTable("#adminNorthstarTable", northstarLeads.map((lead) => ({
-    business: lead.businessName,
-    owner: lead.name,
-    trade: lead.trade,
-    services: (lead.servicesNeeded || []).join(", "),
+  renderTable("#adminNorthstarTable", northstarLeads.map(normalizeNorthStarLead).map((lead) => ({
+    "lead name": lead.name,
+    company: lead.businessName,
+    "service category": (lead.serviceCategories || []).join(", ") || lead.trade,
+    "business size": lead.businessSize,
+    "marketing need": lead.marketingNeed,
+    score: `${lead.score}/100`,
     budget: lead.budget,
-    status: lead.status
+    urgency: lead.urgency,
+    status: lead.status,
+    "assigned owner": lead.assignedOwner,
+    notes: lead.adminNotes || lead.notes || "",
+    "created date": lead.created
   })));
 
   renderTable("#adminRoadRescueTable", roadRescueRequests.map((request) => ({
@@ -7866,6 +8170,53 @@ function renderDashboards() {
     status: bid.chosen ? "Chosen" : bid.status
   })));
   renderLeadPipelines();
+}
+
+function renderProviderNorthStarDashboard() {
+  const target = document.querySelector("#providerNorthstarPanel");
+  if (!target) return;
+  const sessionWorkerName = state.session.role === "worker" ? state.session.name : state.worker.name;
+  const worker = state.workers.find((item) => samePerson(item.name, sessionWorkerName) || samePerson(item.email, state.worker.email)) || state.worker;
+  const lead = (state.northstarLeads || []).map(normalizeNorthStarLead).find((item) => samePerson(item.email, worker.email));
+  const inferred = lead || normalizeNorthStarLead({
+    name: worker.ownerName || worker.name,
+    businessName: worker.businessName || `${worker.name} / ${worker.trade}`,
+    phone: worker.phone,
+    email: worker.email,
+    trade: worker.trade,
+    serviceCategories: worker.providerCategories || worker.tradeCategories || [worker.trade],
+    serviceAreas: worker.serviceArea || worker.area || "",
+    businessSize: worker.businessSize || "Solo Operator",
+    marketingNeed: worker.northStarMarketingNeed || "No, just list me on Forge",
+    servicesNeeded: servicesFromNorthStarNeed(worker.northStarMarketingNeed),
+    problem: "Provider dashboard growth review placeholder.",
+    hasCrm: "Not sure",
+    answerEveryCall: "Not sure"
+  });
+  const scoreRows = northstarMarketingScoreCategories.map(([key, label, max]) => {
+    const value = inferred.marketingScore?.[key] ?? 0;
+    return `<span>${escapeHtml(label.replace(" score", ""))}: ${escapeHtml(String(value))}/${max}</span>`;
+  }).join("");
+  target.innerHTML = `
+    <div>
+      <span class="split-label">${escapeHtml(NORTH_STAR_GROWTH_PAGE_TITLE)}</span>
+      <h2>${escapeHtml(NORTH_STAR_POSITIONING_COPY)}</h2>
+      <p class="muted">Your business has a Forge Marketing Score. North Star Creative Co. can help improve your visibility, leads, reviews, and follow-up.</p>
+    </div>
+    <div class="provider-growth-score">
+      <strong>${escapeHtml(String(inferred.score))}/100</strong>
+      <span>${escapeHtml(inferred.leadClassification)} · ${escapeHtml(inferred.urgency)}</span>
+      <div>${scoreRows}</div>
+    </div>
+    <div class="hero-actions">
+      <button class="btn orange small" type="button" data-nav="northstar">Grow My Business</button>
+      <button class="btn blue small" type="button" data-nav="northstar">Get More Jobs</button>
+      <button class="btn ghost small" type="button" data-nav="northstar">Request a Free Marketing Audit</button>
+      <button class="btn ghost small" type="button" data-nav="signup">Upgrade My Forge Profile</button>
+      <button class="btn ghost small" type="button" data-nav="northstar">Talk to North Star Creative Co.</button>
+      <button class="btn ghost small" type="button" data-nav="northstar">Get Help with My Website, Google, Ads, and Follow-Up</button>
+    </div>
+  `;
 }
 
 function renderConfirmation() {
@@ -8872,21 +9223,28 @@ function renderLeadPipelines() {
 
   const northstarTarget = document.querySelector("#adminNorthstarPipeline");
   if (northstarTarget) {
-    northstarTarget.innerHTML = (state.northstarLeads || []).map((lead) => `
+    northstarTarget.innerHTML = (state.northstarLeads || []).map(normalizeNorthStarLead).map((lead) => `
       <article class="lead-card">
         <div>
-          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(NORTHSTAR_OPERATIONS_CATEGORY_VALUE)}</span>
+          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.leadClassification)} · ${escapeHtml(lead.urgency)}</span>
           <h3>${escapeHtml(lead.businessName)}</h3>
           <p>${escapeHtml(lead.name)} · ${escapeHtml(lead.trade)} · ${escapeHtml(lead.phone || "No phone yet")}</p>
+          <p class="muted">${escapeHtml(lead.businessSize)} · ${escapeHtml(lead.marketingNeed)} · Score ${escapeHtml(String(lead.score))}/100 · ${escapeHtml(lead.budget)}</p>
         </div>
         <label>Status
           <select data-northstar-status="${escapeHtml(lead.id)}">
             ${northstarStatuses.map((status) => `<option ${status === lead.status ? "selected" : ""}>${status}</option>`).join("")}
           </select>
         </label>
+        <label>Assigned owner
+          <input data-northstar-owner="${escapeHtml(lead.id)}" value="${escapeHtml(lead.assignedOwner || "")}" placeholder="North Star Intake" />
+        </label>
         <label>Admin notes
           <textarea data-northstar-notes="${escapeHtml(lead.id)}" rows="2" placeholder="Scope, package, proposal, CRM, or follow-up notes">${escapeHtml(lead.adminNotes || "")}</textarea>
         </label>
+        <div class="score-chip-row">
+          ${northstarMarketingScoreCategories.map(([key, label, max]) => `<span>${escapeHtml(label.replace(" score", ""))}: ${escapeHtml(String(lead.marketingScore?.[key] ?? 0))}/${max}</span>`).join("")}
+        </div>
         <div class="lead-actions">
           ${contactLinks(lead.phone, lead.email, northstarLeadText(lead))}
           <button class="btn ghost small" type="button" data-action="copy-northstar-lead" data-northstar-id="${escapeHtml(lead.id)}">Copy Lead</button>
@@ -9698,7 +10056,7 @@ function renderReports() {
   const openJobs = state.jobs.filter((job) => !["Completed"].includes(job.status));
   const readyWorkers = state.workers.filter((worker) => ["Ready", "Contacted"].includes(worker.status));
   const hotReferrals = state.referrals.filter((lead) => lead.priority === "Hot" || lead.status === "New");
-  const activeNorthStar = (state.northstarLeads || []).filter((lead) => !["Closed"].includes(lead.status));
+  const activeNorthStar = (state.northstarLeads || []).filter((lead) => !["Won", "Lost", "Nurture Later"].includes(lead.status));
   const activeFlex = (state.flexLeads || []).filter((lead) => !["closed_lost", "commission_paid"].includes(lead.status));
   const activeManufacturing = (state.manufacturingRfqs || []).filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status));
   const activeSupplierLeads = (state.manufacturingSupplierLeads || []).filter((lead) => !["Converted to Provider Profile", "Not a fit", "Partner", "Customer"].includes(lead.outreachStatus));
@@ -10121,7 +10479,7 @@ function submitCreativeProvider() {
 }
 
 function submitNorthStarLead() {
-  const lead = {
+  const lead = normalizeNorthStarLead({
     id: `northstar-${Date.now()}`,
     category: NORTHSTAR_CATEGORY_VALUE,
     secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE,
@@ -10132,16 +10490,34 @@ function submitNorthStarLead() {
     city: fieldValue("#northstarCity"),
     trade: fieldValue("#northstarTrade"),
     website: fieldValue("#northstarWebsite"),
+    googleBusinessUrl: fieldValue("#northstarGoogleBusiness"),
     social: fieldValue("#northstarSocial"),
+    serviceCategories: fieldSelectedValues("#northstarServiceCategories"),
+    serviceAreas: fieldValue("#northstarServiceAreas"),
+    yearsInBusiness: fieldValue("#northstarYearsInBusiness"),
+    numberOfEmployees: fieldValue("#northstarEmployees"),
+    numberOfCrews: fieldValue("#northstarCrews"),
+    businessSize: fieldValue("#northstarBusinessSize"),
+    marketingNeed: fieldValue("#northstarMarketingNeed"),
     servicesNeeded: fieldSelectedValues("#northstarServices"),
     budget: fieldValue("#northstarBudget"),
+    currentAdSpend: fieldValue("#northstarCurrentAdSpend"),
+    currentMonthlyLeadVolume: fieldValue("#northstarLeadVolume"),
     problem: fieldValue("#northstarProblem"),
+    mainBusinessProblem: fieldValue("#northstarProblem"),
     goal: fieldValue("#northstarGoal"),
+    answerEveryCall: fieldValue("#northstarAnswerEveryCall"),
+    hasCrm: fieldValue("#northstarHasCrm"),
+    hiringHelp: fieldValue("#northstarHiringHelp"),
+    residentialCommercial: fieldValue("#northstarResidentialCommercial"),
+    needsPhotosVideos: fieldValue("#northstarNeedsMedia"),
+    wantsMarketingAudit: fieldValue("#northstarAuditRequested"),
+    notes: fieldValue("#northstarNotes"),
     consent: fieldChecked("#northstarConsent"),
     status: "New",
     created: "Today",
     adminNotes: ""
-  };
+  });
   state.northstarLeads.unshift(lead);
   addActivity(`NorthStar lead saved: ${lead.businessName} needs ${lead.servicesNeeded.join(", ") || "business growth help"}.`);
   state.lastConfirmation = {
@@ -10150,12 +10526,13 @@ function submitNorthStarLead() {
     body: "Forge saved this marketing and business-operations request for NorthStar review.",
     details: [
       `${lead.businessName} · ${lead.trade}`,
-      `${lead.city} · ${lead.budget}`,
+      `${lead.city} · ${lead.businessSize} · ${lead.budget}`,
+      `${lead.leadClassification} · Forge Marketing Score ${lead.score}/100`,
       (lead.servicesNeeded || []).join(", ") || "Services to scope"
     ],
     nextSteps: [
       "Forge routes this as a northstar_marketing_operations lead",
-      "Admin reviews the business, current bottleneck, budget, and 30-90 day goal",
+      "Admin reviews the business size, marketing need, score, budget, urgency, and audit request",
       "NorthStar can scope the right website, marketing, CRM, lead follow-up, job tracking, or operations package"
     ],
     primary: { label: "Open Admin Leads", screen: "admin" },
@@ -10294,7 +10671,7 @@ function submitPersonalDriverRequest() {
 function submitPersonalDriverProvider() {
   const provider = {
     id: `personal-driver-provider-${Date.now()}`,
-    businessName: fieldValue("#personalDriverBusinessName"),
+    businessName: fieldValue("#personalDriverCompanyProfile"),
     ownerName: fieldValue("#personalDriverOwnerName"),
     phone: fieldValue("#personalDriverProviderPhone"),
     email: fieldValue("#personalDriverProviderEmail"),
@@ -10341,7 +10718,7 @@ function submitPersonalDriverProvider() {
 function submitMerchantServicesLead() {
   const lead = {
     id: `merchant-services-${Date.now()}`,
-    businessName: fieldValue("#merchantBusinessName"),
+    businessName: fieldValue("#merchantCompanyName"),
     ownerName: fieldValue("#merchantOwnerName"),
     phone: fieldValue("#merchantPhone"),
     email: fieldValue("#merchantEmail"),
@@ -10687,6 +11064,74 @@ function maybeCreateProviderFlexLead(worker, selectedTools) {
   }
   addActivity(`Provider finance interest flagged for Capital Desk: ${worker.name}.`);
   return lead;
+}
+
+function maybeCreateProviderNorthStarLead(worker, selectedTools, marketingNeed, businessSize) {
+  const wantsNorthStar = marketingNeed && marketingNeed !== "No, just list me on Forge";
+  const wantsGrowthTools = selectedTools.some((tool) => [
+    "I want more customer leads through Forge",
+    "I want marketing through North Star Creative Co.",
+    "I want website / CRM / automation setup"
+  ].includes(tool));
+  if (!wantsNorthStar && !wantsGrowthTools) return null;
+  const servicesNeeded = uniqueValues([
+    ...servicesFromNorthStarNeed(marketingNeed),
+    selectedTools.includes("I want more customer leads through Forge") ? "More leads" : "",
+    selectedTools.includes("I want marketing through North Star Creative Co.") ? "Full-scale marketing" : "",
+    selectedTools.includes("I want website / CRM / automation setup") ? "CRM" : ""
+  ].filter(Boolean));
+  const cityState = String(worker.area || worker.serviceArea || "").split(",").map((part) => part.trim());
+  const lead = normalizeNorthStarLead({
+    id: `northstar-provider-${Date.now()}`,
+    source: "provider_onboarding",
+    category: NORTHSTAR_CATEGORY_VALUE,
+    secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE,
+    name: worker.ownerName || worker.name,
+    businessName: worker.businessName || `${worker.name} / ${worker.trade}`,
+    phone: worker.phone,
+    email: worker.email,
+    city: worker.area || worker.serviceArea || [cityState[0], cityState[1]].filter(Boolean).join(", "),
+    trade: worker.trade,
+    serviceCategories: worker.providerCategories || worker.tradeCategories || [worker.trade],
+    serviceAreas: worker.serviceArea || worker.area || "",
+    yearsInBusiness: worker.experience,
+    businessSize,
+    marketingNeed: marketingNeed || "Yes, I need more leads",
+    servicesNeeded,
+    budget: "Not sure yet",
+    problem: "Provider signup requested help getting more jobs and improving marketing follow-up.",
+    mainBusinessProblem: "Provider signup requested help getting more jobs and improving marketing follow-up.",
+    answerEveryCall: "Not sure",
+    hasCrm: selectedTools.includes("I want website / CRM / automation setup") ? "No" : "Not sure",
+    wantsMarketingAudit: "Yes",
+    status: "New",
+    created: "Today",
+    notes: "Created automatically from Forge provider signup. Keep separate from normal Forge job requests.",
+    consent: true
+  });
+  const existingIndex = (state.northstarLeads || []).findIndex((item) => item.source === "provider_onboarding" && item.email.toLowerCase() === worker.email.toLowerCase());
+  if (existingIndex >= 0) {
+    state.northstarLeads[existingIndex] = { ...state.northstarLeads[existingIndex], ...lead, id: state.northstarLeads[existingIndex].id, created: state.northstarLeads[existingIndex].created };
+  } else {
+    state.northstarLeads.unshift(lead);
+  }
+  addActivity(`Provider growth interest routed to North Star: ${lead.businessName}.`);
+  return lead;
+}
+
+function servicesFromNorthStarNeed(marketingNeed) {
+  const map = {
+    "Yes, I need more leads": ["More leads", "Lead generation campaigns", "Review generation"],
+    "Yes, I need a website": ["Website", "Landing pages", "Google Business Profile"],
+    "Yes, I need Google Business help": ["Google Business Profile", "Review generation", "Local SEO"],
+    "Yes, I need ads": ["Ads", "Google Ads", "Lead generation campaigns"],
+    "Yes, I need social media": ["Social media", "Photography/video", "Content calendar"],
+    "Yes, I need photos/videos": ["Photography/video", "Before/after project showcases"],
+    "Yes, I need a CRM and follow-up system": ["CRM", "Email/SMS follow-up", "Missed-call text-back"],
+    "Yes, I need full-scale marketing": ["Full-scale marketing", "Website", "Ads", "CRM"],
+    "Yes, I am a larger company and want a growth consultation": ["Marketing audit", "Full-scale marketing", "Growth consultation"]
+  };
+  return map[marketingNeed] || [];
 }
 
 function currentStepValid() {
@@ -11389,6 +11834,7 @@ document.addEventListener("input", (event) => {
   const creativeRequestNotes = event.target.closest("[data-creative-request-notes]");
   const creativeProviderNotes = event.target.closest("[data-creative-provider-notes]");
   const northstarNotes = event.target.closest("[data-northstar-notes]");
+  const northstarOwner = event.target.closest("[data-northstar-owner]");
   const roadRescueNotes = event.target.closest("[data-road-rescue-notes]");
   const flexNotes = event.target.closest("[data-flex-notes]");
   const manufacturingNotes = event.target.closest("[data-manufacturing-notes]");
@@ -11421,6 +11867,12 @@ document.addEventListener("input", (event) => {
     const lead = (state.northstarLeads || []).find((item) => item.id === northstarNotes.dataset.northstarNotes);
     if (!lead) return;
     lead.adminNotes = northstarNotes.value;
+    saveState();
+  }
+  if (northstarOwner) {
+    const lead = (state.northstarLeads || []).find((item) => item.id === northstarOwner.dataset.northstarOwner);
+    if (!lead) return;
+    lead.assignedOwner = northstarOwner.value;
     saveState();
   }
   if (roadRescueNotes) {
@@ -12061,6 +12513,8 @@ document.querySelector("#admitlyTradePathwayForm")?.addEventListener("submit", (
 document.querySelector("#workerSignupForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const businessGrowthTools = selectedProviderGrowthTools();
+  const businessSize = fieldValue("#workerBusinessSize") || "Solo Operator";
+  const northStarMarketingNeed = fieldValue("#workerNorthStarMarketingNeed") || "No, just list me on Forge";
   const selectedVertical = serviceVerticalById(fieldValue("#workerServiceVertical")) || serviceVerticalForCategory(fieldValue("#workerTrade"));
   const profileDetails = selectedVertical ? collectServiceDetails("data-provider-profile-field") : {};
   const providerTags = Array.from(document.querySelectorAll("input[name='workerTags']:checked")).map((input) => input.value);
@@ -12104,6 +12558,8 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     providerType: fieldValue("#workerProviderType") || selectedVertical?.providerTypes?.[0] || "",
     profileDetails,
     tags: providerTags,
+    businessSize,
+    northStarMarketingNeed,
     businessGrowthTools,
     status: "New"
   };
@@ -12114,6 +12570,7 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     state.workers.unshift(state.worker);
   }
   const providerFlexLead = maybeCreateProviderFlexLead(state.worker, businessGrowthTools);
+  const providerNorthStarLead = maybeCreateProviderNorthStarLead(state.worker, businessGrowthTools, northStarMarketingNeed, businessSize);
   addActivity(`New worker lead saved: ${state.worker.name} (${state.worker.trade}).`);
   state.lastConfirmation = {
     type: "worker",
@@ -12124,11 +12581,14 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       `${state.worker.area} service area`,
       `${state.worker.experience} experience`,
       selectedVertical ? `${selectedVertical.title} · ${state.worker.providerType || "Provider"}` : "General Forge worker",
+      `${businessSize} · ${northStarMarketingNeed}`,
+      providerNorthStarLead ? `North Star lead classified ${providerNorthStarLead.leadClassification} · Score ${providerNorthStarLead.score}/100` : "No North Star growth follow-up selected",
       providerFlexLead ? "Capital Desk follow-up flagged" : "No Capital Desk follow-up selected"
     ],
     nextSteps: [
       "Forge saves your worker profile for early access",
       "Admin can follow up when local jobs fit your trade",
+      providerNorthStarLead ? "North Star Creative Co. can review your website, Google, ads, CRM, and follow-up needs" : "Use the provider dashboard if you want North Star growth help later",
       providerFlexLead ? "Forge Capital Desk can follow up before any Flex referral link is sent" : "Open Worker Dashboard to browse jobs and submit bids"
     ],
     primary: { label: "Open Worker Dashboard", screen: "worker" },
@@ -12136,6 +12596,7 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
   };
   saveState();
   sendLead("worker", state.worker);
+  if (providerNorthStarLead) sendLead("northstar", providerNorthStarLead);
   showToast("Worker profile created.");
   navigate("confirm");
 });
@@ -13025,11 +13486,12 @@ function copyCreativeBrief() {
 
 function northstarLeadText(lead) {
   if (!lead) return "No NorthStar leads yet.";
+  lead = normalizeNorthStarLead(lead);
   const services = (lead.servicesNeeded || []).join(", ") || "marketing and operations help";
   return [
-    `Hi ${lead.name || "there"}, this is NorthStar Creative Co. through Forge.`,
+    `Hi ${lead.name || "there"}, this is North Star Creative Co. through Forge.`,
     `I saved your request for ${lead.businessName || "your business"} around ${lead.city || "your area"}.`,
-    `You mentioned ${services} with a ${lead.budget || "not sure yet"} budget.`,
+    `You mentioned ${services} with a ${lead.budget || "not sure yet"} budget and a Forge Marketing Score of ${lead.score}/100.`,
     `Next step: scope the biggest problem (${lead.problem || "not provided"}) and the 30-90 day goal (${lead.goal || "not provided"}), then recommend the right website, branding, CRM, lead follow-up, job tracking, or operations package.`,
     "Can you confirm the best time to talk through it?"
   ].join(" ");
@@ -13037,25 +13499,49 @@ function northstarLeadText(lead) {
 
 function northstarLeadLines(lead) {
   if (!lead) return ["No NorthStar lead selected."];
+  lead = normalizeNorthStarLead(lead);
   return [
-    "Forge NorthStar Creative Co. lead",
+    "Forge North Star Creative Co. lead",
     `${lead.businessName} - ${lead.trade}`,
     `Lead category: ${lead.category || NORTHSTAR_CATEGORY_VALUE}`,
     `Operations category: ${lead.secondaryCategory || NORTHSTAR_OPERATIONS_CATEGORY_VALUE}`,
+    `Lead classification: ${lead.leadClassification}`,
+    `Urgency: ${lead.urgency}`,
+    `Forge Marketing Score: ${lead.score}/100`,
+    ...northstarMarketingScoreCategories.map(([key, label, max]) => `${label}: ${lead.marketingScore?.[key] ?? 0}/${max}`),
     `Owner/contact: ${lead.name}`,
     `Phone: ${lead.phone}`,
     lead.email ? `Email: ${lead.email}` : "Email: Not provided",
     `City: ${lead.city || "Not provided"}`,
+    `Business size: ${lead.businessSize || "Not provided"}`,
+    `Marketing need: ${lead.marketingNeed || "Not provided"}`,
+    `Service categories: ${(lead.serviceCategories || []).join(", ") || lead.trade || "Not provided"}`,
+    `Service areas: ${lead.serviceAreas || "Not provided"}`,
+    `Years in business: ${lead.yearsInBusiness || "Not provided"}`,
+    `Employees: ${lead.numberOfEmployees || "Not provided"}`,
+    `Crews: ${lead.numberOfCrews || "Not provided"}`,
     `Website: ${lead.website || "Not provided"}`,
+    `Google Business profile: ${lead.googleBusinessUrl || "Not provided"}`,
     `Social: ${lead.social || "Not provided"}`,
     `Services needed: ${(lead.servicesNeeded || []).join(", ") || "Not provided"}`,
     `Budget: ${lead.budget || "Not provided"}`,
+    `Current ad spend: ${lead.currentAdSpend || "Not provided"}`,
+    `Current monthly lead volume: ${lead.currentMonthlyLeadVolume || "Not provided"}`,
     `Problem: ${lead.problem || "Not provided"}`,
+    `Answers every call: ${lead.answerEveryCall || "Not provided"}`,
+    `Has CRM: ${lead.hasCrm || "Not provided"}`,
+    `Needs hiring/recruiting help: ${lead.hiringHelp || "Not provided"}`,
+    `Residential/commercial: ${lead.residentialCommercial || "Not provided"}`,
+    `Needs photos/videos: ${lead.needsPhotosVideos || "Not provided"}`,
+    `Wants marketing audit: ${lead.wantsMarketingAudit || "Not provided"}`,
     `30-90 day goal: ${lead.goal || "Not provided"}`,
     `Status: ${lead.status || "New"}`,
+    `Assigned owner: ${lead.assignedOwner || "North Star Intake"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
     `Consent captured: ${lead.consent ? "Yes" : "No"}`,
     `Admin notes: ${lead.adminNotes || "No admin notes saved."}`,
-    "Route: NorthStar Creative Co. reviews marketing and operations needs, then scopes websites, branding, social, ads, CRM, lead follow-up, job tracking, or business-system support.",
+    "Route: North Star Creative Co. reviews marketing and operations needs, then scopes websites, branding, social, ads, CRM, lead follow-up, job tracking, or business-system support.",
+    "Separation: North Star leads are tracked separately from normal Forge job requests.",
     "Boundary: keep payment details, ad-account passwords, CRM credentials, and private customer lists outside this browser-only MVP."
   ];
 }
@@ -13079,13 +13565,15 @@ function copyNorthStarQueue() {
 
 function copyNorthStarBrief() {
   const lines = [
-    "NorthStar Creative Co. brief",
+    "North Star Creative Co. brief",
     "",
-    "Headline: Grow Your Blue-Collar Business With NorthStar Creative Co.",
-    "Subheadline: Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and business operations built for local service businesses.",
-    "Positioning: Forge can send leads, and NorthStar helps local service businesses capture those leads, follow up, book the work, collect reviews, and build a professional brand.",
+    `Headline: ${NORTH_STAR_GROWTH_PAGE_TITLE}`,
+    "Subheadline: Websites, Google Business, ads, photos/videos, CRM, lead follow-up, reviews, recruiting, and growth systems for blue-collar businesses.",
+    `Positioning: ${NORTH_STAR_POSITIONING_COPY}`,
     `Primary category: ${NORTHSTAR_CATEGORY_VALUE}`,
     `Operations category: ${NORTHSTAR_OPERATIONS_CATEGORY_VALUE}`,
+    "Lead classifications: Small Provider, Growth Client, Trade Pro Client, Enterprise Prospect, Urgent Follow-Up",
+    "Forge Marketing Score: Website 0-20, Google Business 0-20, Reviews 0-20, Photos/videos 0-10, Lead response 0-10, Social proof 0-10, CRM/follow-up 0-10.",
     "",
     "Marketing services:",
     ...northstarMarketingServices.map((service) => `- ${service}`),
@@ -13095,6 +13583,9 @@ function copyNorthStarBrief() {
     "",
     "Packages:",
     ...northstarPackages.map((item) => `- ${item.name}: ${item.fit}`),
+    "",
+    "Priority roofing vertical:",
+    ...roofingMarketingServices.map((service) => `- ${service}`),
     "",
     `NorthStar leads: ${(state.northstarLeads || []).length}`,
     `Open NorthStar: ${roleDemoLink("customer", "northstar")}`
@@ -14722,9 +15213,9 @@ function moveOpportunityForward(id) {
 function moveNorthStarForward(id) {
   const lead = (state.northstarLeads || []).find((item) => item.id === id);
   if (!lead) return;
-  const order = ["New", "Contacted", "Scoping", "Proposal Needed", "Proposal Sent", "Active"];
+  const order = ["New", "Needs Review", "Contacted", "Audit Scheduled", "Proposal Needed", "Proposal Sent", "Won"];
   const index = order.indexOf(lead.status);
-  lead.status = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "Scoping";
+  lead.status = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "Needs Review";
   addActivity(`NorthStar lead moved forward: ${lead.businessName} is ${lead.status}.`);
   saveState();
   render();

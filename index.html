@@ -909,12 +909,13 @@
         </header>
         <section class="northstar-hero">
           <div class="northstar-hero-copy">
-            <span class="split-label">NorthStar Creative Co.</span>
-            <h1>Grow Your Blue-Collar Business With NorthStar Creative Co.</h1>
-            <p>Websites, branding, social media, ads, CRM, lead follow-up, job tracking, and business operations built for local service businesses.</p>
+            <span class="split-label">North Star Creative Co.</span>
+            <h1>Grow Your Business with North Star Creative Co.</h1>
+            <p id="northstarAcquisitionCopy">Forge helps you find work. North Star Creative Co. helps your business win more of it.</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-action="focus-northstar-intake">Get Marketing Help</button>
-              <button class="btn blue" type="button" data-action="focus-northstar-packages">Build My Business System</button>
+              <button class="btn orange" type="button" data-action="focus-northstar-intake">Request a Free Marketing Audit</button>
+              <button class="btn blue" type="button" data-action="focus-northstar-packages">Get More Jobs</button>
+              <button class="btn ghost light" type="button" data-action="focus-northstar-intake">Talk to North Star Creative Co.</button>
               <button class="btn ghost light" type="button" data-action="copy-northstar-brief">Copy Brief</button>
             </div>
           </div>
@@ -923,11 +924,22 @@
           <div class="northstar-main">
             <section class="northstar-intro">
               <div>
-                <span class="split-label">Forge business growth arm</span>
-                <h2>Turn attention into real jobs.</h2>
-                <p>NorthStar Creative Co. is the full-service digital agency and business-operations arm connected to Forge. Forge can send leads, and NorthStar can help businesses capture those leads, follow up, book the work, collect reviews, and build a professional brand.</p>
+                <span class="split-label">Forge-to-North Star acquisition</span>
+                <h2>Forge is the marketplace. North Star Creative Co. is the growth arm.</h2>
+                <p>Forge helps solo workers, crews, established trade companies, and anchor contractors get organized for local jobs. North Star Creative Co. helps those businesses improve websites, Google Business visibility, ads, reviews, photos/videos, CRM, lead follow-up, recruiting, and growth systems.</p>
               </div>
               <button class="btn ghost small" type="button" data-action="copy-northstar-queue">Copy NorthStar Queue</button>
+            </section>
+
+            <section class="northstar-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Forge Marketing Score</span>
+                  <h2>Your business has a Forge Marketing Score.</h2>
+                  <p>North Star Creative Co. can help improve your visibility, leads, reviews, and follow-up.</p>
+                </div>
+              </div>
+              <div class="northstar-score-grid" id="northstarScoreGrid"></div>
             </section>
 
             <section class="northstar-services">
@@ -953,20 +965,38 @@
             <section class="northstar-packages" id="northstarPackages">
               <div class="section-title compact">
                 <div>
-                  <span class="split-label">Recommended packages</span>
-                  <h2>Pick the level of help the business actually needs.</h2>
+                  <span class="split-label">North Star service packages</span>
+                  <h2>Choose the growth lane that matches the business size.</h2>
                 </div>
               </div>
               <div class="northstar-package-grid" id="northstarPackageGrid"></div>
+            </section>
+
+            <section class="northstar-services">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Marketing for Roofing Companies</span>
+                  <h2>Dedicated roofing-company marketing subsection.</h2>
+                  <p>Roofing is a priority vertical because roof replacement, repair, storm, gutter, commercial, and property-manager campaigns can become high-value North Star clients.</p>
+                </div>
+              </div>
+              <div class="northstar-chip-grid" id="northstarRoofingServices"></div>
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Recommended landing page templates</span>
+                  <h2>Roofing pages to build and test first.</h2>
+                </div>
+              </div>
+              <ul class="northstar-template-list" id="northstarRoofingTemplates"></ul>
             </section>
           </div>
 
           <aside class="northstar-intake-panel" id="northstarIntakeSection">
             <form class="northstar-form" id="northstarLeadForm">
-              <span class="split-label">Business growth request</span>
-              <h2>Request help from NorthStar.</h2>
+              <span class="split-label">North Star marketing intake</span>
+              <h2>Request help from North Star Creative Co.</h2>
               <div class="field-row">
-                <label>Name<input id="northstarName" required placeholder="Full name" /></label>
+                <label>Owner/contact name<input id="northstarName" required placeholder="Full name" /></label>
                 <label>Business name<input id="northstarCompanyName" required placeholder="Business name" /></label>
               </div>
               <div class="field-row">
@@ -977,15 +1007,42 @@
                 <label>City<input id="northstarCity" required value="Medford, OR" /></label>
                 <label>Type of business/trade<input id="northstarTrade" required placeholder="Roofing, remodeling, detailing, landscaping..." /></label>
               </div>
-              <label>Current website optional<input id="northstarWebsite" type="url" placeholder="https://example.com" /></label>
+              <label>Website URL<input id="northstarWebsite" type="url" placeholder="https://example.com" /></label>
+              <label>Google Business profile URL<input id="northstarGoogleBusiness" type="url" placeholder="https://business.google.com/..." /></label>
               <label>Current social media link optional<input id="northstarSocial" type="url" placeholder="https://instagram.com/business" /></label>
+              <label>Service categories<select id="northstarServiceCategories" multiple required></select></label>
+              <label>Service areas<input id="northstarServiceAreas" required placeholder="Medford, Grants Pass, Ashland, Southern Oregon..." /></label>
+              <div class="field-row">
+                <label>Years in business<input id="northstarYearsInBusiness" inputmode="numeric" placeholder="Example: 8" /></label>
+                <label>Number of employees<input id="northstarEmployees" inputmode="numeric" placeholder="Example: 12" /></label>
+              </div>
+              <div class="field-row">
+                <label>Number of crews<input id="northstarCrews" inputmode="numeric" placeholder="Example: 3" /></label>
+                <label>Business size<select id="northstarBusinessSize" required></select></label>
+              </div>
+              <label>Marketing need<select id="northstarMarketingNeed" required></select></label>
               <label>Services needed<select id="northstarServices" multiple required></select></label>
-              <label>Monthly budget range<select id="northstarBudget" required></select></label>
-              <label>Biggest problem right now<textarea id="northstarProblem" rows="4" required placeholder="What is costing the business leads, time, reputation, or follow-up?"></textarea></label>
+              <label>Monthly marketing budget<select id="northstarBudget" required></select></label>
+              <label>Current ad spend<select id="northstarCurrentAdSpend" required></select></label>
+              <label>Current monthly lead volume<select id="northstarLeadVolume" required></select></label>
+              <label>Main business problem<textarea id="northstarProblem" rows="4" required placeholder="What is costing the business leads, time, reputation, or follow-up?"></textarea></label>
+              <div class="field-row">
+                <label>Do you answer every call?<select id="northstarAnswerEveryCall" required></select></label>
+                <label>Do you have a CRM?<select id="northstarHasCrm" required></select></label>
+              </div>
+              <div class="field-row">
+                <label>Do you need hiring/recruiting help?<select id="northstarHiringHelp" required></select></label>
+                <label>Do you want residential jobs, commercial jobs, or both?<select id="northstarResidentialCommercial" required></select></label>
+              </div>
+              <div class="field-row">
+                <label>Do you need photos/videos?<select id="northstarNeedsMedia" required></select></label>
+                <label>Do you want North Star to audit your marketing?<select id="northstarAuditRequested" required></select></label>
+              </div>
               <label>Goal for next 30-90 days<textarea id="northstarGoal" rows="4" required placeholder="More calls, booked jobs, review generation, CRM setup, ads, better website, cleaner operations..."></textarea></label>
-              <p class="trust-note"><strong>Forge integration:</strong> Forge captures customer demand. NorthStar helps businesses convert that demand into booked jobs and cleaner operations.</p>
-              <label class="check-row"><input id="northstarConsent" required type="checkbox" /> I agree to be contacted by NorthStar/Forge about this request.</label>
-              <button class="btn orange" type="submit">Get Marketing Help</button>
+              <label>Notes<textarea id="northstarNotes" rows="4" placeholder="Anything else North Star should know before the audit or growth consultation?"></textarea></label>
+              <p class="trust-note"><strong>Forge integration:</strong> Forge captures customer demand. North Star helps businesses convert that demand into booked jobs and cleaner operations. North Star leads stay separate from normal Forge job requests.</p>
+              <label class="check-row"><input id="northstarConsent" required type="checkbox" /> I agree to be contacted by North Star/Forge about this request.</label>
+              <button class="btn orange" type="submit">Request a Free Marketing Audit</button>
             </form>
             <div class="northstar-lead-list" id="northstarLeadList"></div>
           </aside>
@@ -1494,7 +1551,7 @@
               <span class="split-label">Apply as a Driver</span>
               <h2>Apply as a Driver</h2>
               <div class="field-row">
-                <label>Driver / business profile name<input id="personalDriverBusinessName" required /></label>
+                <label>Driver / company profile name<input id="personalDriverCompanyProfile" required /></label>
                 <label>Driver contact name<input id="personalDriverOwnerName" required /></label>
               </div>
               <div class="field-row">
@@ -1542,7 +1599,7 @@
               <span class="split-label">Merchant Services Interest</span>
               <h2>Merchant Services Interest</h2>
               <div class="field-row">
-                <label>Business name<input id="merchantBusinessName" required /></label>
+                <label>Company name<input id="merchantCompanyName" required /></label>
                 <label>Owner / contact<input id="merchantOwnerName" required /></label>
               </div>
               <div class="field-row">
@@ -1553,7 +1610,7 @@
                 <label>Industry<input id="merchantIndustry" required placeholder="Contractor, auto shop, maker, restaurant" /></label>
                 <label>City<input id="merchantCity" value="Medford, OR" /></label>
               </div>
-              <label>Current processor<input id="merchantCurrentProcessor" placeholder="Unknown, Square, Stripe, bank, etc." /></label>
+              <label>Current processor<input id="merchantCurrentProcessor" placeholder="Unknown, Square, Stripe, current provider, etc." /></label>
               <label>Monthly card/payment volume<select id="merchantMonthlyVolume"><option>Unknown</option><option>Under $10k</option><option>$10k - $50k</option><option>$50k - $150k</option><option>$150k+</option></select></label>
               <label>Needs<select id="merchantNeeds" multiple><option>Card payments</option><option>Invoices</option><option>Deposits</option><option>Recurring billing</option><option>Mobile payments</option><option>Online checkout</option><option>Business banking tools</option><option>Expense cards</option></select></label>
               <label>Notes<textarea id="merchantNotes" rows="4" placeholder="What problem are they trying to solve?"></textarea></label>
@@ -3494,7 +3551,10 @@
             <div class="table-card"><table id="adminLeadsTable"></table></div>
             <div class="lead-board" id="adminJobPipeline"></div>
             <div class="admin-heading">
-              <h2>Worker Leads</h2>
+              <div>
+                <h2>Worker Leads</h2>
+                <p class="muted">Worker Trust / Proof Ledger uses Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decisions for admin review.</p>
+              </div>
               <button class="btn ghost small" type="button" data-action="export-workers">Export Workers CSV</button>
             </div>
             <div class="table-card"><table id="adminWorkersTable"></table></div>

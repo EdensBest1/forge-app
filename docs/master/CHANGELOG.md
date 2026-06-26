@@ -3,6 +3,12 @@
 ## 2026-06-26 - Launch reconciliation checkpoint
 
 - Created pre-edit checkpoint commit before launch reconciliation work.
+- Added Personal Driver / Private Driver Services route, forms, admin review tables, export actions, webhook type, schema tables, safety copy, and route-loader shells.
+- Added Forge Payments / Merchant Services route, lead form, admin table, export action, webhook type, schema table, and strict no-sensitive-financial-data boundary.
+- Added Local Products / Makers route, vendor form, admin table, export action, webhook type, schema table, and public-listing review boundary.
+- Added Worker Trust / Proof Ledger with Green/Silver/Gold tiers, rank steps, proof signals, dispatch decisions, provider-card display, admin worker columns, and schema target.
+- Added Fencing & Custom Iron Gates and Personal Driver as service verticals while preserving existing marketplace categories.
+- Updated README, Feature Registry, Final Public Gate, Webhook Payloads, Supabase schema, service-worker route cache, and route-loader shells.
 
 Track every change Codex makes in this repository.
 
