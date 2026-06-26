@@ -78,7 +78,7 @@ export function validateProjectLead(input: ProjectLeadInput): ValidationResult {
   const route = projectRoute(input.projectType as ProjectType, input.budgetRange as BudgetRange);
   const status = (input.status as ProjectStatus | undefined) || route.status;
   const normalized: ProjectLead = {
-    id: input.id || crypto.randomUUID(),
+    id: input.id || "project-lead-pending-id",
     contactName: input.contactName,
     phone: input.phone,
     email: input.email,
@@ -98,7 +98,7 @@ export function validateProjectLead(input: ProjectLeadInput): ValidationResult {
     needsFinancing: input.needsFinancing,
     uploadPhotos: input.uploadPhotos,
     uploadDocuments: input.uploadDocuments,
-    preferredContactMethod: input.preferredContactMethod,
+    preferredContactMethod: (input.preferredContactMethod as ProjectLead["preferredContactMethod"]) || "Phone",
     consentToShareWithPartner: Boolean(input.consentToShareWithPartner),
     route: route.route,
     status,

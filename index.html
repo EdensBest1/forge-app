@@ -23,7 +23,7 @@
           <div class="top-actions">
             <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
             <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
-            <button class="btn ghost small" type="button" data-nav="creative">Photo / Video</button>
+            <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
             <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
@@ -211,7 +211,7 @@
             <article class="service-category-card">
               <span class="split-label">Creative services</span>
               <h3>Photography & Videography</h3>
-              <p>Weddings, events, business content, real estate, social media, and family shoots.</p>
+              <p>Weddings, events, business content, social media shoots, real estate, product photos, and video production.</p>
               <button class="btn ghost small" type="button" data-nav="creative">Book a Creative</button>
             </article>
           </div>
@@ -504,7 +504,7 @@
           <div class="creative-hero-copy">
             <span class="split-label">Photography & Videography</span>
             <h1>Hire Local Photographers & Videographers</h1>
-            <p>Book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, and more.</p>
+            <p>Hire trusted local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-creative-lead">Book a Creative</button>
               <button class="btn blue" type="button" data-action="focus-creative-provider">Apply as a Provider</button>
@@ -517,8 +517,8 @@
             <section class="creative-intro">
               <div>
                 <span class="split-label">Local creative marketplace</span>
-                <h2>Creative help for Medford and surrounding areas.</h2>
-                <p>Forge helps customers connect with trusted local creatives, including photographers and videographers like Dennis and other approved providers in the community.</p>
+                <h2>Local creators for real moments.</h2>
+                <p>Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.</p>
               </div>
               <button class="btn ghost small" type="button" data-action="copy-creative-queue">Copy Creative Queue</button>
             </section>
@@ -527,72 +527,156 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Service types</span>
-                  <h2>One place to request the shoot, content, or coverage.</h2>
+                  <h2>Hire trusted local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</h2>
                 </div>
               </div>
               <div class="creative-service-grid" id="creativeServiceGrid"></div>
             </section>
 
+            <section class="creative-quality">
+              <div>
+                <span class="split-label">Safety and quality</span>
+                <h2>Built for trust and quality.</h2>
+              </div>
+              <ul>
+                <li>Portfolio review</li>
+                <li>Provider profiles</li>
+                <li>Customer request details</li>
+                <li>Clear pricing or custom quotes</li>
+                <li>Service agreements</li>
+                <li>Delivery expectations</li>
+                <li>Incident reporting</li>
+                <li>Admin approval before public provider listing</li>
+              </ul>
+            </section>
+
             <section class="creative-form-section" id="creativeLeadSection">
               <div class="section-title compact">
                 <div>
-                  <span class="split-label">Customer lead form</span>
-                  <h2>Tell Forge what needs to be photographed or filmed.</h2>
+                  <span class="split-label">/photography/request</span>
+                  <h2>Request a shoot.</h2>
                 </div>
               </div>
               <form class="creative-form" id="creativeLeadForm">
                 <div class="field-row">
-                  <label>Name<input id="creativeName" required placeholder="Full name" /></label>
-                  <label>Phone<input id="creativePhone" required placeholder="(541) 555-0000" /></label>
+                  <label>Customer name<input id="creativeName" required placeholder="Full name" /></label>
+                  <label>Email<input id="creativeEmail" required type="email" placeholder="name@email.com" /></label>
                 </div>
                 <div class="field-row">
-                  <label>Email<input id="creativeEmail" required type="email" placeholder="name@email.com" /></label>
+                  <label>Phone<input id="creativePhone" required placeholder="(541) 555-0000" /></label>
                   <label>City<input id="creativeCity" required value="Medford, OR" /></label>
                 </div>
                 <div class="field-row">
-                  <label>Event/project type<select id="creativeProjectType" required></select></label>
-                  <label>Desired date<input id="creativeDesiredDate" type="date" /></label>
+                  <label>Service type<select id="creativeProjectType" required></select></label>
+                  <label>Shoot date<input id="creativeDesiredDate" required type="date" /></label>
                 </div>
-                <label>Location of shoot<input id="creativeShootLocation" required placeholder="Venue, business, home, church, property, or city" /></label>
                 <div class="field-row">
-                  <label>Estimated budget<select id="creativeBudget" required></select></label>
-                  <label>Photo, video, or both<select id="creativeMediaType" required></select></label>
+                  <label>Shoot start time<input id="creativeShootStartTime" required type="time" /></label>
+                  <label>Estimated duration<input id="creativeDuration" required placeholder="Example: 2 hours, half day, full day" /></label>
                 </div>
-                <label>Short description<textarea id="creativeDescription" rows="4" required placeholder="What do you need captured, how many people or locations, and what final content do you want?"></textarea></label>
-                <label>Upload or inspiration link optional<input id="creativeInspirationLink" type="url" placeholder="https://example.com/inspiration" /></label>
+                <label>Shoot location/address<input id="creativeShootLocation" required placeholder="Venue, business, home, church, property, or address" /></label>
+                <div class="field-row">
+                  <label>Photo, video, or both<select id="creativeMediaType" required></select></label>
+                  <label>Budget range<select id="creativeBudget" required></select></label>
+                </div>
+                <label>How soon do you need final files?<select id="creativeDeliveryDeadline" required></select></label>
+                <label>Event/shoot description<textarea id="creativeDescription" rows="4" required placeholder="What do you need captured, how many people or locations, and what final content do you want?"></textarea></label>
+                <div class="field-row">
+                  <label>Venue name optional<input id="creativeVenueName" placeholder="Venue or business name" /></label>
+                  <label>Guest count optional<input id="creativeGuestCount" inputmode="numeric" placeholder="Example: 80" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Number of locations optional<input id="creativeLocationCount" inputmode="numeric" placeholder="Example: 1, 2, 3" /></label>
+                  <label>Indoor / outdoor<select id="creativeIndoorOutdoor"></select></label>
+                </div>
+                <label>Style preference optional<input id="creativeStylePreference" placeholder="Documentary, bright and airy, cinematic, editorial, natural, etc." /></label>
+                <label>Inspiration links optional<input id="creativeInspirationLink" type="url" placeholder="https://example.com/inspiration" /></label>
+                <label>Shot list optional<textarea id="creativeShotList" rows="3" placeholder="Must-have family photos, product angles, rooms, vehicles, speeches, clips, or social shots."></textarea></label>
+                <div class="field-row">
+                  <label>Need second shooter?<select id="creativeSecondShooter"></select></label>
+                  <label>Need drone?<select id="creativeDrone"></select></label>
+                </div>
+                <div class="field-row">
+                  <label>Need raw footage?<select id="creativeRawFootage"></select></label>
+                  <label>Need social media clips?<select id="creativeSocialClips"></select></label>
+                </div>
+                <label>Need same-day preview?<select id="creativeSameDayPreview"></select></label>
                 <label class="file-button btn ghost full">Upload inspiration files<input id="creativeInspirationFiles" type="file" multiple accept="image/*,video/*,.pdf" /></label>
                 <p class="trust-note"><strong>Privacy note:</strong> Customer contact information is used only for Forge booking and provider matching.</p>
                 <label class="check-row"><input id="creativeConsent" required type="checkbox" /> I agree to be contacted by Forge or an approved provider about this request.</label>
-                <button class="btn orange" type="submit">Request Creative Work</button>
+                <label class="check-row"><input id="creativeTerms" required type="checkbox" /> I agree to Forge Terms of Service.</label>
+                <label class="check-row"><input id="creativePrivacy" required type="checkbox" /> I acknowledge the Forge Privacy Policy.</label>
+                <div class="creative-booking-notes">
+                  <span class="split-label">Photography & Videography Booking Notes</span>
+                  <ul>
+                    <li>Final pricing may depend on date, location, duration, deliverables, editing needs, travel, and provider availability.</li>
+                    <li>Customer should confirm portfolio, deliverables, timeline, deposit, cancellation terms, and final file delivery before booking.</li>
+                    <li>Drone services require proper provider approval and may depend on weather, location rules, and safety conditions.</li>
+                    <li>Forge does not guarantee a specific provider unless the booking is confirmed.</li>
+                  </ul>
+                </div>
+                <button class="btn orange" type="submit">Request a Shoot</button>
               </form>
               <div class="creative-lead-list" id="creativeLeadList"></div>
             </section>
           </div>
 
           <aside class="creative-provider-panel" id="creativeProviderSection">
+            <div class="creative-provider-copy">
+              <span class="split-label">/photography/apply</span>
+              <h2>Are you a photographer or videographer?</h2>
+              <p>Apply to join Forge as a local creative provider. Build your profile, show your portfolio, choose your services, and receive local job opportunities.</p>
+            </div>
             <form class="creative-form provider" id="creativeProviderForm">
               <span class="split-label">Provider signup</span>
-              <h2>Apply to offer photography or videography through Forge.</h2>
-              <label>Name / business name<input id="creativeProviderName" required placeholder="Name or business" /></label>
+              <h2>Apply to Join</h2>
               <div class="field-row">
-                <label>Phone<input id="creativeProviderPhone" required placeholder="(541) 555-0000" /></label>
-                <label>Email<input id="creativeProviderEmail" required type="email" placeholder="provider@email.com" /></label>
+                <label>First name<input id="creativeProviderFirstName" required placeholder="First name" /></label>
+                <label>Last name<input id="creativeProviderLastName" required placeholder="Last name" /></label>
               </div>
-              <label>City / service area<input id="creativeProviderArea" required value="Medford, OR" /></label>
-              <label>Photography, videography, or both<select id="creativeProviderDiscipline" required></select></label>
+              <label>Business name optional<input id="creativeProviderCompanyName" placeholder="Business or studio name" /></label>
+              <div class="field-row">
+                <label>Email<input id="creativeProviderEmail" required type="email" placeholder="provider@email.com" /></label>
+                <label>Phone<input id="creativeProviderPhone" required placeholder="(541) 555-0000" /></label>
+              </div>
+              <label>City<input id="creativeProviderCity" required value="Medford, OR" /></label>
+              <label>Services offered<textarea id="creativeProviderShoots" rows="3" required placeholder="Wedding photography, event videography, real estate, reels, editing only, drone add-ons, etc."></textarea></label>
               <label>Portfolio link<input id="creativeProviderPortfolio" required type="url" placeholder="https://portfolio.example.com" /></label>
-              <label>Instagram / social link<input id="creativeProviderSocial" type="url" placeholder="https://instagram.com/yourhandle" /></label>
-              <label>Years of experience<select id="creativeProviderExperience" required></select></label>
-              <label>Equipment notes optional<textarea id="creativeProviderEquipment" rows="3" placeholder="Camera bodies, lenses, audio, lighting, drone, editing setup, etc."></textarea></label>
-              <label>Types of shoots offered<textarea id="creativeProviderShoots" rows="3" required placeholder="Weddings, real estate, business branding, events, family, social content, etc."></textarea></label>
+              <label>Instagram / TikTok / YouTube / website link optional<input id="creativeProviderSocial" type="url" placeholder="https://instagram.com/yourhandle" /></label>
+              <div class="field-row">
+                <label>Years of experience<select id="creativeProviderExperience" required></select></label>
+                <label>Service area<input id="creativeProviderArea" required value="Medford, OR" /></label>
+              </div>
+              <label>Primary camera / gear summary<textarea id="creativeProviderEquipment" rows="3" required placeholder="Camera bodies, lenses, audio, lighting, drone, editing setup, etc."></textarea></label>
+              <label>Editing software<input id="creativeProviderEditingSoftware" required placeholder="Lightroom, Photoshop, Premiere, Final Cut, DaVinci, CapCut, etc." /></label>
               <label>Availability<input id="creativeProviderAvailability" required placeholder="Weekends, weekdays, evenings, rush work, seasonal notes" /></label>
+              <label>Starting rate or quote preference<input id="creativeProviderStartingRate" required placeholder="$500 starting, custom quote, hourly, half-day, full-day, etc." /></label>
+              <div class="field-row">
+                <label>Wedding experience optional<input id="creativeProviderWeddingExperience" placeholder="Example: 12 weddings" /></label>
+                <label>Event experience optional<input id="creativeProviderEventExperience" placeholder="Example: churches, fundraisers, concerts" /></label>
+              </div>
+              <div class="field-row">
+                <label>Real estate experience optional<input id="creativeProviderRealEstateExperience" placeholder="Listings, rentals, land, walkthroughs" /></label>
+                <label>Product photography experience optional<input id="creativeProviderProductExperience" placeholder="Products, food, apparel, e-commerce" /></label>
+              </div>
+              <label>Drone capability<select id="creativeProviderDroneCapability"></select></label>
+              <label class="file-button btn ghost full">Upload drone certification / qualification<input id="creativeProviderDroneCertification" type="file" accept="image/*,.pdf" /></label>
+              <label class="file-button btn ghost full">Upload insurance document<input id="creativeProviderInsuranceUpload" type="file" accept="image/*,.pdf" /></label>
+              <label>Sample gallery links optional<textarea id="creativeProviderSampleGalleries" rows="3" placeholder="Gallery links, client albums, proofing links."></textarea></label>
+              <label>Video reel link optional<input id="creativeProviderVideoReel" type="url" placeholder="https://example.com/reel" /></label>
+              <label class="file-button btn ghost full">Upload profile photo<input id="creativeProviderProfilePhoto" type="file" accept="image/*" /></label>
+              <label>Bio optional<textarea id="creativeProviderBio" rows="4" placeholder="Short public profile bio, specialties, style, and service approach."></textarea></label>
               <label>Insurance / licensing notes optional<textarea id="creativeProviderInsurance" rows="3" placeholder="Liability insurance, drone certification, business license, venue requirements, etc."></textarea></label>
-              <label class="check-row"><input id="creativeProviderTerms" required type="checkbox" /> I agree to Forge provider terms and approved-provider review.</label>
+              <label class="check-row"><input id="creativeProviderTerms" required type="checkbox" /> I agree to Forge Provider Terms.</label>
+              <label class="check-row"><input id="creativeProviderPrivacy" required type="checkbox" /> I acknowledge the Forge Privacy Policy.</label>
               <button class="btn blue" type="submit">Apply as Creative Provider</button>
             </form>
             <div class="creative-provider-list" id="creativeProviderList"></div>
           </aside>
         </section>
+        <footer class="creative-disclaimer">
+          Forge connects customers with independent local photographers, videographers, and creative providers. Customers should review portfolios, pricing, delivery timelines, and service terms before booking.
+        </footer>
       </section>
 
       <section class="screen auto-screen" id="autos-screen" data-screen="autos">
@@ -1664,6 +1748,18 @@
             </div>
             <div class="table-card"><table id="adminWorkersTable"></table></div>
             <div class="lead-board" id="adminWorkerPipeline"></div>
+            <div class="admin-heading">
+              <h2>Creative Requests</h2>
+              <button class="btn ghost small" type="button" data-action="export-creative-requests">Export Creative Requests CSV</button>
+            </div>
+            <div class="table-card"><table id="adminCreativeRequestsTable"></table></div>
+            <div class="lead-board" id="adminCreativeRequestsPipeline"></div>
+            <div class="admin-heading">
+              <h2>Creative Providers</h2>
+              <button class="btn ghost small" type="button" data-action="export-creative-providers">Export Creative Providers CSV</button>
+            </div>
+            <div class="table-card"><table id="adminCreativeProvidersTable"></table></div>
+            <div class="lead-board" id="adminCreativeProvidersPipeline"></div>
             <div class="admin-heading">
               <h2>Referral / Friend Leads</h2>
               <button class="btn ghost small" type="button" data-action="export-referrals">Export Referrals CSV</button>

@@ -2,10 +2,13 @@ const STORAGE_KEY = "forge.wireframe.mvp.v1";
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
 const CREATIVE_CATEGORY_LABEL = "Photography & Videography";
+const CREATIVE_CATEGORY_SLUG = "photography-videography";
 const categories = ["Handyman", "Landscaping", "Junk Removal", "Moving", "Painting", "Plumbing", "Electrical", "Cleaning", CREATIVE_CATEGORY_LABEL];
-const jobStatuses = ["New", "Pending", "Contacted", "Matching", "In Progress", "Completed"];
-const workerStatuses = ["New", "Contacted", "Ready", "Paused"];
+const jobStatuses = ["New", "Submitted", "Pending", "Contacted", "Matching", "Quoted", "Accepted", "Assigned", "In Progress", "Completed", "Canceled"];
+const workerStatuses = ["New", "Submitted", "Contacted", "Ready", "Approved", "Rejected", "Suspended", "Paused"];
 const referralStatuses = ["New", "Contacted", "Converted", "Later"];
+const creativeRequestStatuses = ["submitted", "reviewing", "quoted", "accepted", "assigned", "completed", "canceled"];
+const creativeProviderStatuses = ["draft", "submitted", "under_review", "approved", "rejected", "suspended"];
 const homebuildingStatuses = [
   "New Project Lead",
   "Needs More Info",
@@ -137,40 +140,54 @@ const autoServiceGroups = [
 ];
 const autoServiceOptions = autoServiceGroups.flatMap((group) => group.items);
 const creativeServiceTypes = [
-  "Wedding photography",
-  "Wedding videography",
-  "Engagement shoots",
-  "Event photography",
-  "Event videography",
-  "Real estate photography",
-  "Drone video/photo if available",
-  "Business branding shoots",
-  "Social media content packages",
-  "Product photography",
-  "Family portraits",
-  "Church and community events",
-  "Music videos and creative content",
-  "Same-day or rush content if available"
+  {
+    title: "Wedding Photography",
+    description: "Full wedding-day coverage, ceremony photos, reception photos, couple portraits, family portraits, and edited galleries."
+  },
+  {
+    title: "Wedding Videography",
+    description: "Ceremony coverage, highlight films, speeches, reception moments, and edited wedding videos."
+  },
+  {
+    title: "Engagement & Couples Shoots",
+    description: "Engagement photos, anniversary shoots, proposal shoots, and couple portraits."
+  },
+  {
+    title: "Event Photography",
+    description: "Birthday parties, church events, fundraisers, conferences, sports events, concerts, and community events."
+  },
+  {
+    title: "Business Content",
+    description: "Content for small businesses, job sites, blue-collar companies, restaurants, gyms, auto dealers, real estate teams, and local brands."
+  },
+  {
+    title: "Social Media Reels & Short-Form Video",
+    description: "Instagram reels, TikTok videos, YouTube shorts, behind-the-scenes content, product demos, and business promo clips."
+  },
+  {
+    title: "Real Estate & Property Photography",
+    description: "Home listings, rental properties, land, commercial spaces, construction progress, and property walkthrough content."
+  },
+  {
+    title: "Product & Brand Photography",
+    description: "Product photos, lifestyle shots, e-commerce images, food photos, apparel shoots, and branded content."
+  },
+  {
+    title: "Editing Only",
+    description: "Photo editing, video editing, highlight reels, color correction, captions, and social media exports."
+  },
+  {
+    title: "Drone Photo/Video Add-On",
+    description: "Aerial photo and video add-on only for providers who submit proper drone qualifications, insurance, and approval."
+  }
 ];
-const creativeProjectTypes = [
-  "Wedding photography",
-  "Wedding videography",
-  "Engagement shoot",
-  "Event photography",
-  "Event videography",
-  "Real estate shoot",
-  "Drone photo/video",
-  "Business branding shoot",
-  "Social media content package",
-  "Product photography",
-  "Family portraits",
-  "Church or community event",
-  "Music video or creative content",
-  "Same-day or rush content",
-  "Other creative project"
-];
-const creativeBudgetOptions = ["Quote first", "Under $500", "$500 - $1,000", "$1,000 - $2,500", "$2,500+"];
+const creativeProjectTypes = creativeServiceTypes.map((service) => service.title);
+const creativeBudgetOptions = ["Quote first", "Under $500", "$500 - $1,000", "$1,000 - $2,500", "$2,500 - $5,000", "$5,000+"];
 const creativeMediaOptions = ["Photo", "Video", "Both photo and video"];
+const creativeDeliveryOptions = ["Flexible", "Same day", "24-48 hours", "3-7 days", "1-2 weeks", "2-4 weeks", "Custom deadline"];
+const creativeIndoorOutdoorOptions = ["Not sure", "Indoor", "Outdoor", "Both indoor and outdoor"];
+const creativeNeedOptions = ["Not sure", "Yes", "No"];
+const creativeProviderDroneOptions = ["No", "Yes - FAA Part 107 / qualified", "Yes - pending approval", "Not sure"];
 const creativeProviderDisciplines = ["Photography", "Videography", "Both photography and videography"];
 const creativeProviderExperienceOptions = ["New provider", "1-2 years", "3-5 years", "5+ years", "10+ years"];
 const autoDealers = [
@@ -243,7 +260,9 @@ const opportunitySteps = [
 ];
 const routeByScreen = {
   autos: "/auto",
-  creative: "/photography-videography",
+  creative: "/photography",
+  "creative-request": "/photography/request",
+  "creative-apply": "/photography/apply",
   projects: "/projects",
   "admin-projects": "/admin/projects",
   homebuilding: "/homebuilding",
@@ -252,6 +271,12 @@ const routeByScreen = {
 const screenByPath = {
   "/auto": "autos",
   "/auto/": "autos",
+  "/photography": "creative",
+  "/photography/": "creative",
+  "/photography/request": "creative-request",
+  "/photography/request/": "creative-request",
+  "/photography/apply": "creative-apply",
+  "/photography/apply/": "creative-apply",
   "/photography-videography": "creative",
   "/photography-videography/": "creative",
   "/projects": "projects",
@@ -1232,9 +1257,19 @@ function isCreativeProvider(worker) {
 
 function normalizeScreen(screen) {
   if (screen === "auto" || screen === "autos") return "autos";
-  if (["photo", "photos", "video", "creative", "photography", "photography-videography", CREATIVE_CATEGORY_VALUE].includes(screen)) return "creative";
+  if (["photo", "photos", "video", "creative", "photography", "photography-videography", CREATIVE_CATEGORY_VALUE, CREATIVE_CATEGORY_SLUG].includes(screen)) return "creative";
+  if (["photography/request", "photography-request", "creative-request", "request-shoot"].includes(screen)) return "creative-request";
+  if (["photography/apply", "photography-apply", "creative-apply", "apply-photographer"].includes(screen)) return "creative-apply";
   if (screen === "admin/projects") return "admin-projects";
   return screen || "home";
+}
+
+function visibleScreenFor(screen) {
+  return ["creative-request", "creative-apply"].includes(screen) ? "creative" : screen;
+}
+
+function screenExists(screen) {
+  return Boolean(document.querySelector(`[data-screen="${visibleScreenFor(normalizeScreen(screen))}"]`));
 }
 
 function navigate(screen, options = {}) {
@@ -1258,10 +1293,17 @@ function navigate(screen, options = {}) {
   if (options.jobId) state.activeJobId = options.jobId;
   if (screen === "status" && state.session.role === "customer") loadCustomerStatus(state.session.name);
   if (screen === "messages" && options.threadId) state.activeMessageThreadId = options.threadId;
-  document.querySelectorAll(".screen").forEach((node) => node.classList.toggle("active", node.dataset.screen === screen));
+  const visibleScreen = visibleScreenFor(screen);
+  document.querySelectorAll(".screen").forEach((node) => node.classList.toggle("active", node.dataset.screen === visibleScreen));
   history.replaceState(null, "", screenUrl(screen));
   render();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (screen === "creative-request") {
+    focusAutoPanel("#creativeLeadSection", "#creativeName");
+  } else if (screen === "creative-apply") {
+    focusAutoPanel("#creativeProviderSection", "#creativeProviderFirstName");
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 function screenUrl(screen) {
@@ -1276,7 +1318,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/auto", "/auto/", "/photography-videography", "/photography-videography/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/auto", "/auto/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -1334,7 +1376,7 @@ function render() {
 function renderNavigationState() {
   const activeScreen = document.querySelector(".screen.active")?.dataset.screen || "home";
   document.querySelectorAll("[data-nav]").forEach((node) => {
-    const isActive = normalizeScreen(node.dataset.nav) === activeScreen;
+    const isActive = visibleScreenFor(normalizeScreen(node.dataset.nav)) === activeScreen;
     node.classList.toggle("active", isActive);
     if (node.matches("button, a")) {
       node.setAttribute("aria-current", isActive ? "page" : "false");
@@ -1668,14 +1710,30 @@ function setFieldValue(selector, value) {
   if (field && value) field.value = value;
 }
 
+function fieldValue(selector) {
+  return document.querySelector(selector)?.value?.trim() || "";
+}
+
+function fieldChecked(selector) {
+  return Boolean(document.querySelector(selector)?.checked);
+}
+
 function renderSelects() {
   fillSelect("#jobCategory", ["", ...categories], "Select a category");
   fillSelect("#listingCategory", ["All Categories", ...categories]);
-  fillSelect("#creativeProjectType", creativeProjectTypes);
+  fillSelect("#creativeProjectType", ["", ...creativeProjectTypes], "Select a service type");
   fillSelect("#creativeBudget", creativeBudgetOptions);
   fillSelect("#creativeMediaType", creativeMediaOptions);
+  fillSelect("#creativeDeliveryDeadline", creativeDeliveryOptions);
+  fillSelect("#creativeIndoorOutdoor", creativeIndoorOutdoorOptions);
+  fillSelect("#creativeSecondShooter", creativeNeedOptions);
+  fillSelect("#creativeDrone", creativeNeedOptions);
+  fillSelect("#creativeRawFootage", creativeNeedOptions);
+  fillSelect("#creativeSocialClips", creativeNeedOptions);
+  fillSelect("#creativeSameDayPreview", creativeNeedOptions);
   fillSelect("#creativeProviderDiscipline", creativeProviderDisciplines);
   fillSelect("#creativeProviderExperience", creativeProviderExperienceOptions);
+  fillSelect("#creativeProviderDroneCapability", creativeProviderDroneOptions);
   fillSelect("#projectType", projectTypeOptions);
   fillSelect("#projectBudgetRange", budgetRangeOptions);
   fillSelect("#projectStage", projectStageOptions);
@@ -1861,6 +1919,7 @@ function renderFinishChecklist() {
     ["Bid flow", state.bids.length > 0, "Workers can submit bids and customers can choose one."],
     ["Message trail", state.messages.length > 0, "Messages are saved for follow-up after key actions."],
     ["Forge Auto Services", state.vehicles.length > 0 && state.autoInquiries.length > 0 && (state.autoRequests || []).length > 0, "Forge Auto has service requests, partner categories, dealer listings, buyer inquiry capture, and handoff queues."],
+    ["Forge Projects", (state.projectLeads || []).length > 0, "Projects has public intake, major review routing, Forge Pros routing, and Seneca review gating."],
     ["Admin follow-up", state.jobs.length > 0 && state.workers.length > 0, "Admin can manage jobs, workers, referrals, exports, and reports."],
     ["Mobile demo", true, "Bottom tab bar includes Demo, Post, Jobs, Messages, and Profile."],
     ["Launch ask", true, "After-demo cards ask for a job, worker signup, or referral."]
@@ -1928,7 +1987,8 @@ function renderCreativePage() {
   serviceGrid.innerHTML = creativeServiceTypes.map((service) => `
     <article>
       <span>${escapeHtml(CREATIVE_CATEGORY_LABEL)}</span>
-      <strong>${escapeHtml(service)}</strong>
+      <strong>${escapeHtml(service.title)}</strong>
+      <p>${escapeHtml(service.description)}</p>
     </article>
   `).join("");
 
@@ -1936,7 +1996,7 @@ function renderCreativePage() {
   leadList.innerHTML = creativeLeads.slice(0, 4).map((lead) => `
     <article>
       <div>
-        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.mediaType || "Creative request")}</span>
+        <span class="split-label">${escapeHtml(creativeStatusText(lead.creativeStatus || lead.status))} · ${escapeHtml(lead.mediaType || "Creative request")}</span>
         <strong>${escapeHtml(lead.customer)} · ${escapeHtml(lead.projectType || lead.title)}</strong>
         <p>${escapeHtml(lead.location)} · ${escapeHtml(lead.budget)} · ${escapeHtml(lead.desiredDate || lead.urgency || "Date flexible")}</p>
       </div>
@@ -1948,7 +2008,7 @@ function renderCreativePage() {
   providerList.innerHTML = creativeProviders.slice(0, 4).map((provider) => `
     <article>
       <div>
-        <span class="split-label">${escapeHtml(provider.status)} · ${escapeHtml(provider.discipline || CREATIVE_CATEGORY_LABEL)}</span>
+        <span class="split-label">${escapeHtml(creativeStatusText(provider.providerStatus || provider.status))} · ${escapeHtml(provider.discipline || CREATIVE_CATEGORY_LABEL)}</span>
         <strong>${escapeHtml(provider.name)}</strong>
         <p>${escapeHtml(provider.area || provider.service_area || "Service area pending")} · ${escapeHtml(provider.experience || "Experience pending")}</p>
       </div>
@@ -2281,6 +2341,8 @@ function projectLeadFollowUpText(lead) {
     `Route: ${lead.route} (${projectStatusLabel(lead.status)}).`,
     `Scope: ${projectOptionLabel(projectTypeOptions, lead.projectType)} in ${lead.city}, ${lead.state}; budget ${projectOptionLabel(budgetRangeOptions, lead.budgetRange)}; stage ${projectOptionLabel(projectStageOptions, lead.projectStage)}.`,
     lead.consentToShareWithPartner ? "You gave consent for Forge to share project details with third-party partners after Forge review." : "Forge does not have consent to share this with third-party partners yet.",
+    canSendProjectToSeneca(lead) ? "This lead is eligible for the Send to Seneca Review admin action." : "Seneca Review requires OR/WA, Forge Qualified status, and consent to share.",
+    isSenecaPartnerApproved() ? "Seneca partner routing is enabled in Forge." : "Seneca is currently a draft partner record and should not be presented as an official approved partner until the feature flag and written approval are in place.",
     "Forge is a lead marketplace and project coordinator, not the contractor of record.",
     "Construction work must be accepted only by properly licensed and insured contractors where required.",
     "Can you confirm the best time to review the project details?"
@@ -3138,6 +3200,8 @@ function renderDashboards() {
   const careerLeads = (state.opportunityLeads || []).length;
   const homebuildingLeads = (state.homebuildingLeads || []).length;
   const projectLeads = (state.projectLeads || []).length;
+  const creativeRequests = state.jobs.filter(isCreativeJob);
+  const creativeProviders = state.workers.filter(isCreativeProvider);
   const hotLeads = state.referrals.filter((lead) => lead.priority === "Hot").length + state.jobs.filter((job) => job.status === "New").length;
 
   const workerTitle = document.querySelector("#workerDashboardTitle");
@@ -3152,6 +3216,8 @@ function renderDashboards() {
   document.querySelector("#adminStats").innerHTML = statCards([
     ["New Jobs", newJobs],
     ["Workers", workers],
+    ["Creative Requests", creativeRequests.length],
+    ["Creative Providers", creativeProviders.length],
     ["Referrals", referrals],
     ["Career Leads", careerLeads],
     ["Homebuilding", homebuildingLeads],
@@ -3185,6 +3251,24 @@ function renderDashboards() {
     phone: worker.phone,
     area: worker.area,
     status: worker.status
+  })));
+
+  renderTable("#adminCreativeRequestsTable", creativeRequests.map((lead) => ({
+    customer: lead.customer,
+    service: lead.projectType || lead.title,
+    date: lead.desiredDate || lead.urgency,
+    location: lead.location,
+    budget: lead.budget,
+    status: creativeStatusText(lead.creativeStatus || lead.status)
+  })));
+
+  renderTable("#adminCreativeProvidersTable", creativeProviders.map((provider) => ({
+    name: provider.name,
+    business: provider.businessName || "",
+    services: provider.servicesOffered || provider.shootTypes || provider.discipline,
+    area: provider.area || provider.service_area,
+    portfolio: provider.portfolioLink || "",
+    status: creativeStatusText(provider.providerStatus || provider.status)
   })));
 
   renderTable("#adminReferralsTable", state.referrals.map((lead) => ({
@@ -3330,7 +3414,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this homebuilding request${detail}. Forge pre-screens qualified project leads and can send accepted major leads to Seneca for review. Seneca chooses whether to accept or decline. If Seneca signs the client, Forge may receive an agreed referral or success fee. All construction and development contracts remain between the client and Seneca or the licensed contractor. Forge is not the contractor of record. Sensitive documents and payment details stay outside Forge in this MVP.`;
   }
   if (confirmation.type === "creative") {
-    return `Forge saved this photography and videography request${detail}. The operator can match it with trusted local creatives, including providers like Dennis and other approved community providers, without publishing private contact information.`;
+    return `Forge saved this photography and videography request${detail}. The operator can match it with approved local creative providers without publishing private contact information.`;
   }
   if (confirmation.type === "creative-provider") {
     return `Forge saved this creative provider application${detail}. The operator can review portfolio, availability, insurance or licensing notes, and provider terms before matching the provider with customers.`;
@@ -3637,8 +3721,8 @@ function backendHandoffRows() {
   return [
     {
       label: "Database",
-      title: "Supabase schema prepared",
-      body: "Use SUPABASE_SCHEMA.sql for job leads, workers, referrals, bids, messages, delivery logs, and activity events."
+      title: "Supabase schema prepared with Projects migration",
+      body: "Use SUPABASE_SCHEMA.sql for core marketplace tables and migrations/20260626_projects.sql for ProjectLead, ProjectLeadNote, Partner, PartnerReferral, and PartnerDocument."
     },
     {
       label: "Payloads",
@@ -4082,6 +4166,65 @@ function renderLeadPipelines() {
       </div>
     </article>
   `).join("");
+
+  const creativeRequestsTarget = document.querySelector("#adminCreativeRequestsPipeline");
+  if (creativeRequestsTarget) {
+    const creativeRequests = state.jobs.filter(isCreativeJob);
+    creativeRequestsTarget.innerHTML = creativeRequests.map((lead) => {
+      const status = normalizedCreativeRequestStatus(lead);
+      return `
+        <article class="lead-card">
+          <div>
+            <span class="split-label">${escapeHtml(creativeStatusText(status))} · ${escapeHtml(lead.mediaType || "Creative request")}</span>
+            <h3>${escapeHtml(lead.projectType || lead.title)}</h3>
+            <p>${escapeHtml(lead.customer)} · ${escapeHtml(lead.phone || "No phone yet")} · ${escapeHtml(lead.location || "Location pending")}</p>
+          </div>
+          <label>Creative status
+            <select data-creative-request-status="${escapeHtml(lead.id)}">
+              ${creativeRequestStatuses.map((item) => `<option value="${escapeHtml(item)}" ${item === status ? "selected" : ""}>${escapeHtml(creativeStatusText(item))}</option>`).join("")}
+            </select>
+          </label>
+          <label>Admin notes
+            <textarea data-creative-request-notes="${escapeHtml(lead.id)}" rows="2" placeholder="Quote, provider match, delivery, or follow-up notes">${escapeHtml(lead.adminNotes || "")}</textarea>
+          </label>
+          <div class="lead-actions">
+            ${contactLinks(lead.phone, lead.email, jobTemplate(lead))}
+            <button class="btn ghost small" type="button" data-action="copy-creative-lead" data-creative-lead-id="${escapeHtml(lead.id)}">Copy Lead</button>
+          </div>
+        </article>
+      `;
+    }).join("") || `<article class="lead-card"><p class="muted">No creative requests yet.</p></article>`;
+  }
+
+  const creativeProvidersTarget = document.querySelector("#adminCreativeProvidersPipeline");
+  if (creativeProvidersTarget) {
+    const creativeProviders = state.workers.filter(isCreativeProvider);
+    creativeProvidersTarget.innerHTML = creativeProviders.map((provider) => {
+      const status = normalizedCreativeProviderStatus(provider);
+      return `
+        <article class="lead-card">
+          <div>
+            <span class="split-label">${escapeHtml(creativeStatusText(status))} · ${provider.featured ? "Featured" : "Not featured"}</span>
+            <h3>${escapeHtml(provider.name || "Local Creative Provider")}</h3>
+            <p>${escapeHtml(provider.servicesOffered || provider.shootTypes || provider.discipline || CREATIVE_CATEGORY_LABEL)} · ${escapeHtml(provider.phone || "No phone yet")}</p>
+          </div>
+          <label>Provider status
+            <select data-creative-provider-status="${escapeHtml(provider.email)}">
+              ${creativeProviderStatuses.map((item) => `<option value="${escapeHtml(item)}" ${item === status ? "selected" : ""}>${escapeHtml(creativeStatusText(item))}</option>`).join("")}
+            </select>
+          </label>
+          <label class="check-row"><input type="checkbox" data-creative-provider-featured="${escapeHtml(provider.email)}" ${provider.featured ? "checked" : ""} /> Featured provider</label>
+          <label>Admin notes
+            <textarea data-creative-provider-notes="${escapeHtml(provider.email)}" rows="2" placeholder="Portfolio review, insurance, drone approval, or follow-up notes">${escapeHtml(provider.adminNotes || "")}</textarea>
+          </label>
+          <div class="lead-actions">
+            ${contactLinks(provider.phone, provider.email, workerTemplate(provider))}
+            <button class="btn ghost small" type="button" data-action="copy-creative-provider" data-creative-provider-email="${escapeHtml(provider.email)}">Copy Provider</button>
+          </div>
+        </article>
+      `;
+    }).join("") || `<article class="lead-card"><p class="muted">No creative provider applications yet.</p></article>`;
+  }
 
   document.querySelector("#adminReferralPipeline").innerHTML = state.referrals.map((lead) => `
     <article class="lead-card">
@@ -4603,34 +4746,55 @@ function selectedFileSummary(selector, noun = "file") {
 }
 
 function submitCreativeLead() {
-  const projectType = document.querySelector("#creativeProjectType").value;
-  const desiredDate = document.querySelector("#creativeDesiredDate").value;
-  const shootLocation = document.querySelector("#creativeShootLocation").value.trim();
-  const city = document.querySelector("#creativeCity").value.trim();
-  const description = document.querySelector("#creativeDescription").value.trim();
+  const projectType = fieldValue("#creativeProjectType");
+  const desiredDate = fieldValue("#creativeDesiredDate");
+  const shootLocation = fieldValue("#creativeShootLocation");
+  const city = fieldValue("#creativeCity");
+  const description = fieldValue("#creativeDescription");
+  const shootStartTime = fieldValue("#creativeShootStartTime");
+  const deliveryDeadline = fieldValue("#creativeDeliveryDeadline");
   const lead = {
     id: `${Date.now()}`,
     title: `${CREATIVE_CATEGORY_LABEL}: ${projectType}`,
     category: CREATIVE_CATEGORY_VALUE,
     categoryLabel: CREATIVE_CATEGORY_LABEL,
+    categorySlug: CREATIVE_CATEGORY_SLUG,
     projectType,
+    serviceType: projectType,
     desiredDate: desiredDate || "Date flexible",
+    shootStartTime,
+    estimatedDuration: fieldValue("#creativeDuration"),
+    deliveryDeadline,
     shootLocation,
     city,
     location: shootLocation || city,
     urgency: desiredDate || "Flexible",
-    budget: document.querySelector("#creativeBudget").value,
-    mediaType: document.querySelector("#creativeMediaType").value,
+    budget: fieldValue("#creativeBudget"),
+    mediaType: fieldValue("#creativeMediaType"),
+    venueName: fieldValue("#creativeVenueName"),
+    guestCount: fieldValue("#creativeGuestCount"),
+    numberOfLocations: fieldValue("#creativeLocationCount"),
+    indoorOutdoor: fieldValue("#creativeIndoorOutdoor"),
+    stylePreference: fieldValue("#creativeStylePreference"),
+    shotList: fieldValue("#creativeShotList"),
+    secondShooterNeeded: fieldValue("#creativeSecondShooter"),
+    droneRequested: fieldValue("#creativeDrone"),
+    rawFootageRequested: fieldValue("#creativeRawFootage"),
+    socialClipsRequested: fieldValue("#creativeSocialClips"),
+    sameDayPreviewRequested: fieldValue("#creativeSameDayPreview"),
     bids: 0,
-    status: "New",
+    status: "Submitted",
+    creativeStatus: "submitted",
     posted: "Today",
     description,
-    customer: document.querySelector("#creativeName").value.trim(),
-    phone: document.querySelector("#creativePhone").value.trim(),
-    email: document.querySelector("#creativeEmail").value.trim(),
-    inspirationLink: document.querySelector("#creativeInspirationLink").value.trim(),
+    customer: fieldValue("#creativeName"),
+    phone: fieldValue("#creativePhone"),
+    email: fieldValue("#creativeEmail"),
+    inspirationLink: fieldValue("#creativeInspirationLink"),
     inspirationUploads: selectedFileSummary("#creativeInspirationFiles"),
-    consent: document.querySelector("#creativeConsent").checked,
+    consent: fieldChecked("#creativeConsent"),
+    termsAccepted: fieldChecked("#creativeTerms"),
+    privacyAcknowledged: fieldChecked("#creativePrivacy"),
     notes: "New photography_videography lead from Forge creative intake."
   };
   state.jobs.unshift(lead);
@@ -4642,8 +4806,8 @@ function submitCreativeLead() {
     body: "Forge saved the photography and videography request for local provider matching.",
     details: [
       `${lead.customer} · ${lead.projectType}`,
-      `${lead.location} · ${lead.desiredDate}`,
-      `${lead.mediaType} · ${lead.budget}`
+      `${lead.location} · ${lead.desiredDate}${shootStartTime ? ` at ${shootStartTime}` : ""}`,
+      `${lead.mediaType} · ${lead.budget} · ${deliveryDeadline || "delivery flexible"}`
     ],
     nextSteps: [
       "Forge saves this as a photography_videography job lead",
@@ -4662,40 +4826,73 @@ function submitCreativeLead() {
 }
 
 function submitCreativeProvider() {
+  const firstName = fieldValue("#creativeProviderFirstName");
+  const lastName = fieldValue("#creativeProviderLastName");
+  const businessName = fieldValue("#creativeProviderCompanyName");
+  const name = [firstName, lastName].filter(Boolean).join(" ") || businessName || "Local Creative Provider";
+  const serviceArea = fieldValue("#creativeProviderArea");
+  const servicesOffered = fieldValue("#creativeProviderShoots");
+  const yearsExperience = fieldValue("#creativeProviderExperience");
   const provider = {
-    name: document.querySelector("#creativeProviderName").value.trim(),
+    name,
+    firstName,
+    lastName,
+    businessName,
     trade: CREATIVE_CATEGORY_LABEL,
     category: CREATIVE_CATEGORY_VALUE,
     providerCategory: CREATIVE_CATEGORY_VALUE,
-    phone: document.querySelector("#creativeProviderPhone").value.trim(),
-    email: document.querySelector("#creativeProviderEmail").value.trim(),
-    experience: document.querySelector("#creativeProviderExperience").value,
-    area: document.querySelector("#creativeProviderArea").value.trim(),
-    service_area: document.querySelector("#creativeProviderArea").value.trim(),
-    discipline: document.querySelector("#creativeProviderDiscipline").value,
-    portfolioLink: document.querySelector("#creativeProviderPortfolio").value.trim(),
-    socialLink: document.querySelector("#creativeProviderSocial").value.trim(),
-    equipmentNotes: document.querySelector("#creativeProviderEquipment").value.trim(),
-    shootTypes: document.querySelector("#creativeProviderShoots").value.trim(),
-    availability: document.querySelector("#creativeProviderAvailability").value.trim(),
-    insuranceNotes: document.querySelector("#creativeProviderInsurance").value.trim(),
-    termsAccepted: document.querySelector("#creativeProviderTerms").checked,
-    status: "New"
+    categorySlug: CREATIVE_CATEGORY_SLUG,
+    phone: fieldValue("#creativeProviderPhone"),
+    email: fieldValue("#creativeProviderEmail"),
+    city: fieldValue("#creativeProviderCity"),
+    experience: yearsExperience,
+    yearsExperience,
+    area: serviceArea,
+    service_area: serviceArea,
+    serviceArea,
+    discipline: CREATIVE_CATEGORY_LABEL,
+    servicesOffered,
+    shootTypes: servicesOffered,
+    portfolioLink: fieldValue("#creativeProviderPortfolio"),
+    socialLink: fieldValue("#creativeProviderSocial"),
+    gearSummary: fieldValue("#creativeProviderEquipment"),
+    equipmentNotes: fieldValue("#creativeProviderEquipment"),
+    editingSoftware: fieldValue("#creativeProviderEditingSoftware"),
+    availability: fieldValue("#creativeProviderAvailability"),
+    startingRate: fieldValue("#creativeProviderStartingRate"),
+    weddingExperience: fieldValue("#creativeProviderWeddingExperience"),
+    eventExperience: fieldValue("#creativeProviderEventExperience"),
+    realEstateExperience: fieldValue("#creativeProviderRealEstateExperience"),
+    productExperience: fieldValue("#creativeProviderProductExperience"),
+    droneCapability: fieldValue("#creativeProviderDroneCapability"),
+    droneCertificationUpload: selectedFileSummary("#creativeProviderDroneCertification"),
+    insuranceUpload: selectedFileSummary("#creativeProviderInsuranceUpload"),
+    sampleGalleryLinks: fieldValue("#creativeProviderSampleGalleries"),
+    videoReelLink: fieldValue("#creativeProviderVideoReel"),
+    profilePhotoUpload: selectedFileSummary("#creativeProviderProfilePhoto"),
+    bio: fieldValue("#creativeProviderBio"),
+    insuranceNotes: fieldValue("#creativeProviderInsurance"),
+    termsAccepted: fieldChecked("#creativeProviderTerms"),
+    providerTermsAccepted: fieldChecked("#creativeProviderTerms"),
+    privacyAcknowledged: fieldChecked("#creativeProviderPrivacy"),
+    status: "Submitted",
+    providerStatus: "submitted",
+    featured: false
   };
   state.worker = provider;
-  const existingWorker = state.workers.findIndex((worker) => worker.email.toLowerCase() === provider.email.toLowerCase());
+  const existingWorker = state.workers.findIndex((worker) => String(worker.email || "").toLowerCase() === provider.email.toLowerCase());
   if (existingWorker >= 0) {
     state.workers[existingWorker] = provider;
   } else {
     state.workers.unshift(provider);
   }
-  addActivity(`Creative provider application saved: ${provider.name} (${provider.discipline}).`);
+  addActivity(`Creative provider application saved: ${provider.name} (${provider.servicesOffered || provider.discipline}).`);
   state.lastConfirmation = {
     type: "creative-provider",
     title: "Creative provider application saved.",
     body: "Forge saved this photographer or videographer application for approved-provider review.",
     details: [
-      `${provider.name} · ${provider.discipline}`,
+      `${provider.name} · ${provider.servicesOffered || provider.discipline}`,
       `${provider.area} service area`,
       `${provider.experience} experience`
     ],
@@ -4711,6 +4908,7 @@ function submitCreativeProvider() {
   sendLead("worker", provider);
   showToast("Creative provider application saved.");
   document.querySelector("#creativeProviderForm").reset();
+  setFieldValue("#creativeProviderCity", "Medford, OR");
   setFieldValue("#creativeProviderArea", "Medford, OR");
   navigate("confirm");
 }
@@ -4809,6 +5007,22 @@ function humanize(value) {
   return value.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
 }
 
+function creativeStatusText(status) {
+  return String(status || "submitted")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function normalizedCreativeRequestStatus(lead) {
+  const status = String(lead?.creativeStatus || lead?.status || "submitted").toLowerCase().replaceAll(" ", "_");
+  return creativeRequestStatuses.includes(status) ? status : "submitted";
+}
+
+function normalizedCreativeProviderStatus(provider) {
+  const status = String(provider?.providerStatus || provider?.status || "submitted").toLowerCase().replaceAll(" ", "_");
+  return creativeProviderStatuses.includes(status) ? status : "submitted";
+}
+
 function findWorkerByName(name) {
   return state.workers.find((worker) => samePerson(worker.name, name));
 }
@@ -4849,6 +5063,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "choose-best") showToast("Pick one of the bids on the right.");
   if (action?.dataset.action === "export-jobs") exportCsv("forge-job-leads.csv", state.jobs);
   if (action?.dataset.action === "export-workers") exportCsv("forge-worker-leads.csv", state.workers);
+  if (action?.dataset.action === "export-creative-requests") exportCsv("forge-creative-requests.csv", state.jobs.filter(isCreativeJob));
+  if (action?.dataset.action === "export-creative-providers") exportCsv("forge-creative-providers.csv", state.workers.filter(isCreativeProvider));
   if (action?.dataset.action === "export-referrals") exportCsv("forge-referral-leads.csv", state.referrals);
   if (action?.dataset.action === "export-homebuilding") exportCsv("forge-homebuilding-leads.csv", state.homebuildingLeads || []);
   if (action?.dataset.action === "export-projects") exportCsv("forge-project-leads.csv", state.projectLeads || []);
@@ -4895,7 +5111,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-creative-lead") copyCreativeLead(action.dataset.creativeLeadId);
   if (action?.dataset.action === "copy-creative-provider") copyCreativeProvider(action.dataset.creativeProviderEmail);
   if (action?.dataset.action === "focus-creative-lead") focusAutoPanel("#creativeLeadSection", "#creativeName");
-  if (action?.dataset.action === "focus-creative-provider") focusAutoPanel("#creativeProviderSection", "#creativeProviderName");
+  if (action?.dataset.action === "focus-creative-provider") focusAutoPanel("#creativeProviderSection", "#creativeProviderFirstName");
   if (action?.dataset.action === "copy-auto-market-brief") copyAutoMarketBrief();
   if (action?.dataset.action === "copy-auto-dealer-plan") copyAutoDealerPlan();
   if (action?.dataset.action === "copy-auto-dealer-setup") copyAutoDealerSetup();
@@ -5009,6 +5225,45 @@ document.addEventListener("change", (event) => {
     showToast("Worker status updated.");
   }
 
+  const creativeRequestStatus = event.target.closest("[data-creative-request-status]");
+  if (creativeRequestStatus) {
+    const lead = state.jobs.find((item) => item.id === creativeRequestStatus.dataset.creativeRequestStatus && isCreativeJob(item));
+    if (lead) {
+      lead.creativeStatus = creativeRequestStatus.value;
+      lead.status = creativeStatusText(creativeRequestStatus.value);
+    }
+    addActivity(`Creative request status changed: ${lead?.projectType || "request"} -> ${creativeStatusText(creativeRequestStatus.value)}.`);
+    saveState();
+    renderDashboards();
+    renderCreativePage();
+    showToast("Creative request status updated.");
+  }
+
+  const creativeProviderStatus = event.target.closest("[data-creative-provider-status]");
+  if (creativeProviderStatus) {
+    const provider = state.workers.find((item) => item.email === creativeProviderStatus.dataset.creativeProviderStatus && isCreativeProvider(item));
+    if (provider) {
+      provider.providerStatus = creativeProviderStatus.value;
+      provider.status = creativeStatusText(creativeProviderStatus.value);
+    }
+    addActivity(`Creative provider status changed: ${provider?.name || "provider"} -> ${creativeStatusText(creativeProviderStatus.value)}.`);
+    saveState();
+    renderDashboards();
+    renderCreativePage();
+    showToast("Creative provider status updated.");
+  }
+
+  const creativeProviderFeatured = event.target.closest("[data-creative-provider-featured]");
+  if (creativeProviderFeatured) {
+    const provider = state.workers.find((item) => item.email === creativeProviderFeatured.dataset.creativeProviderFeatured && isCreativeProvider(item));
+    if (provider) provider.featured = creativeProviderFeatured.checked;
+    addActivity(`Creative provider featured changed: ${provider?.name || "provider"} -> ${creativeProviderFeatured.checked ? "featured" : "not featured"}.`);
+    saveState();
+    renderDashboards();
+    renderCreativePage();
+    showToast("Creative provider updated.");
+  }
+
   const referralStatus = event.target.closest("[data-referral-status]");
   if (referralStatus) {
     const referral = state.referrals.find((item) => item.id === referralStatus.dataset.referralStatus);
@@ -5058,6 +5313,8 @@ document.addEventListener("input", (event) => {
   if (event.target.closest("#projectIntakeForm")) renderProjectRoutePreview();
 
   const notes = event.target.closest("[data-job-notes]");
+  const creativeRequestNotes = event.target.closest("[data-creative-request-notes]");
+  const creativeProviderNotes = event.target.closest("[data-creative-provider-notes]");
   const referralNotes = event.target.closest("[data-referral-notes]");
   const homebuildingNotes = event.target.closest("[data-homebuilding-notes]");
   const projectNote = event.target.closest("[data-project-note]");
@@ -5065,6 +5322,18 @@ document.addEventListener("input", (event) => {
     const job = state.jobs.find((item) => item.id === notes.dataset.jobNotes);
     if (!job) return;
     job.notes = notes.value;
+    saveState();
+  }
+  if (creativeRequestNotes) {
+    const lead = state.jobs.find((item) => item.id === creativeRequestNotes.dataset.creativeRequestNotes && isCreativeJob(item));
+    if (!lead) return;
+    lead.adminNotes = creativeRequestNotes.value;
+    saveState();
+  }
+  if (creativeProviderNotes) {
+    const provider = state.workers.find((item) => item.email === creativeProviderNotes.dataset.creativeProviderNotes && isCreativeProvider(item));
+    if (!provider) return;
+    provider.adminNotes = creativeProviderNotes.value;
     saveState();
   }
   if (referralNotes) {
@@ -5089,7 +5358,7 @@ document.addEventListener("input", (event) => {
 
 window.addEventListener("hashchange", () => {
   const screen = normalizeScreen(location.hash.replace("#", "") || "home");
-  if (document.querySelector(`[data-screen="${screen}"]`)) {
+  if (screenExists(screen)) {
     navigate(screen);
   }
 });
@@ -5505,10 +5774,10 @@ const demoAccount = demoAccounts.find((account) => account.role === demoRole);
 expireAdminSession(demoAccount);
 render();
 if (demoAccount) {
-  const landing = document.querySelector(`[data-screen="${initial}"]`) ? initial : demoAccount.screen;
+  const landing = screenExists(initial) ? initial : demoAccount.screen;
   loginAs(demoAccount.role, demoAccount.name, landing);
 } else {
-  navigate(document.querySelector(`[data-screen="${initial}"]`) ? initial : "home");
+  navigate(screenExists(initial) ? initial : "home");
 }
 registerServiceWorker();
 
@@ -5516,7 +5785,7 @@ function initialScreen() {
   const rawHashScreen = location.hash.replace("#", "");
   if (rawHashScreen) {
     const hashScreen = normalizeScreen(rawHashScreen);
-    if (document.querySelector(`[data-screen="${hashScreen}"]`)) return hashScreen;
+    if (screenExists(hashScreen)) return hashScreen;
   }
   return screenByPath[location.pathname] || "home";
 }
@@ -5637,7 +5906,7 @@ async function copyInviteText() {
     `Homebuilding: ${base}/homebuilding?v=70`,
     `Projects: ${base}/projects?v=70`,
     `Build Tracker: ${base}/homebuilding/tracker?v=70`,
-    `Photography & Videography: ${base}/photography-videography?v=70`,
+    `Photography & Videography: ${base}/photography?v=70`,
     `See Forge: ${base}?v=70#home`
   ].join("\n\n");
   await copyText(invite, "Launch invite copied.");
@@ -5655,7 +5924,7 @@ async function copyFirstUserLinks() {
     `Request homebuilding review: ${base}/homebuilding?v=70`,
     `Submit a project opportunity: ${base}/projects?v=70`,
     `Open Build Tracker demo: ${base}/homebuilding/tracker?v=70`,
-    `Book Photography & Videography: ${base}/photography-videography?v=70`,
+    `Book Photography & Videography: ${base}/photography?v=70`,
     `Plan a school, union, or AI job path: ${base}?v=70#opportunities`,
     `Check an existing job: ${base}?v=70#status`,
     `Start at Forge home: ${base}?v=70#home`,
@@ -5683,7 +5952,7 @@ async function copySignupChecklist() {
     `Homebuilding: ${base}/homebuilding?v=70`,
     `Projects: ${base}/projects?v=70`,
     `Build Tracker: ${base}/homebuilding/tracker?v=70`,
-    `Photography & Videography: ${base}/photography-videography?v=70`,
+    `Photography & Videography: ${base}/photography?v=70`,
     `Training & Careers: ${base}?v=70#opportunities`,
     `Check status: ${base}?v=70#status`,
     `Open admin: ${base}?v=70&demo=admin#admin`
@@ -5834,17 +6103,8 @@ function roleDemoLink(role, screen) {
   const normalizedScreen = normalizeScreen(screen);
   const base = appBaseUrl();
   const demoQuery = `?v=70&demo=${encodeURIComponent(role)}`;
-  if (normalizedScreen === "autos" && location.protocol !== "file:") {
-    return `${base}/auto${demoQuery}`;
-  }
-  if (normalizedScreen === "creative" && location.protocol !== "file:") {
-    return `${base}/photography-videography${demoQuery}`;
-  }
-  if (normalizedScreen === "projects" && location.protocol !== "file:") {
-    return `${base}/projects${demoQuery}`;
-  }
-  if (normalizedScreen === "admin-projects" && location.protocol !== "file:") {
-    return `${base}/admin/projects${demoQuery}`;
+  if (routeByScreen[normalizedScreen] && location.protocol !== "file:") {
+    return `${base}${routeByScreen[normalizedScreen]}${demoQuery}`;
   }
   return `${base}${demoQuery}#${normalizedScreen === "autos" ? "auto" : normalizedScreen}`;
 }
@@ -5936,16 +6196,33 @@ function creativeLeadLines(lead) {
     "Forge creative lead",
     `${lead.customer} - ${lead.projectType || lead.title}`,
     `Category: ${CREATIVE_CATEGORY_VALUE}`,
+    `Category slug: ${lead.categorySlug || CREATIVE_CATEGORY_SLUG}`,
     `Phone: ${lead.phone}`,
     lead.email ? `Email: ${lead.email}` : "Email: Not provided",
     `City: ${lead.city || "Not provided"}`,
     `Shoot location: ${lead.shootLocation || lead.location}`,
     `Desired date: ${lead.desiredDate || lead.urgency || "Flexible"}`,
+    `Shoot start time: ${lead.shootStartTime || "Not provided"}`,
+    `Estimated duration: ${lead.estimatedDuration || "Not provided"}`,
+    `Delivery deadline: ${lead.deliveryDeadline || "Not provided"}`,
     `Budget: ${lead.budget}`,
     `Photo/video: ${lead.mediaType || "Not provided"}`,
+    `Venue: ${lead.venueName || "Not provided"}`,
+    `Guest count: ${lead.guestCount || "Not provided"}`,
+    `Locations: ${lead.numberOfLocations || "Not provided"}`,
+    `Indoor/outdoor: ${lead.indoorOutdoor || "Not sure"}`,
+    `Style preference: ${lead.stylePreference || "Not provided"}`,
+    `Second shooter: ${lead.secondShooterNeeded || "Not sure"}`,
+    `Drone requested: ${lead.droneRequested || "Not sure"}`,
+    `Raw footage: ${lead.rawFootageRequested || "Not sure"}`,
+    `Social clips: ${lead.socialClipsRequested || "Not sure"}`,
+    `Same-day preview: ${lead.sameDayPreviewRequested || "Not sure"}`,
     lead.inspirationLink ? `Inspiration link: ${lead.inspirationLink}` : "Inspiration link: Not provided",
     `Uploads: ${lead.inspirationUploads || "0 files selected"}`,
-    `Status: ${lead.status}`,
+    `Status: ${creativeStatusText(lead.creativeStatus || lead.status)}`,
+    `Terms accepted: ${lead.termsAccepted ? "Yes" : "No"}`,
+    `Privacy acknowledged: ${lead.privacyAcknowledged ? "Yes" : "No"}`,
+    `Shot list: ${lead.shotList || "Not provided"}`,
     `Description: ${lead.description || "No description saved."}`,
     "Privacy: customer contact information is for Forge booking and provider matching only."
   ];
@@ -5957,17 +6234,36 @@ function creativeProviderLines(provider) {
     "Forge creative provider application",
     `${provider.name} - ${provider.discipline || CREATIVE_CATEGORY_LABEL}`,
     `Provider category: ${CREATIVE_CATEGORY_VALUE}`,
+    `Category slug: ${provider.categorySlug || CREATIVE_CATEGORY_SLUG}`,
+    `Business: ${provider.businessName || "Not provided"}`,
     `Phone: ${provider.phone}`,
     provider.email ? `Email: ${provider.email}` : "Email: Not provided",
+    `City: ${provider.city || "Not provided"}`,
     `Service area: ${provider.area || provider.service_area || "Not provided"}`,
     `Experience: ${provider.experience || "Not provided"}`,
     `Portfolio: ${provider.portfolioLink || "Not provided"}`,
     `Social: ${provider.socialLink || "Not provided"}`,
-    `Shoot types: ${provider.shootTypes || "Not provided"}`,
+    `Services offered: ${provider.servicesOffered || provider.shootTypes || "Not provided"}`,
     `Availability: ${provider.availability || "Not provided"}`,
-    `Equipment notes: ${provider.equipmentNotes || "Not provided"}`,
+    `Starting rate: ${provider.startingRate || "Not provided"}`,
+    `Gear summary: ${provider.gearSummary || provider.equipmentNotes || "Not provided"}`,
+    `Editing software: ${provider.editingSoftware || "Not provided"}`,
+    `Wedding experience: ${provider.weddingExperience || "Not provided"}`,
+    `Event experience: ${provider.eventExperience || "Not provided"}`,
+    `Real estate experience: ${provider.realEstateExperience || "Not provided"}`,
+    `Product experience: ${provider.productExperience || "Not provided"}`,
+    `Drone capability: ${provider.droneCapability || "Not provided"}`,
+    `Drone certification upload: ${provider.droneCertificationUpload || "0 files selected"}`,
+    `Insurance upload: ${provider.insuranceUpload || "0 files selected"}`,
+    `Sample galleries: ${provider.sampleGalleryLinks || "Not provided"}`,
+    `Video reel: ${provider.videoReelLink || "Not provided"}`,
+    `Profile photo: ${provider.profilePhotoUpload || "0 files selected"}`,
+    `Bio: ${provider.bio || "Not provided"}`,
     `Insurance/licensing notes: ${provider.insuranceNotes || "Not provided"}`,
-    `Status: ${provider.status}`
+    `Provider terms accepted: ${provider.providerTermsAccepted || provider.termsAccepted ? "Yes" : "No"}`,
+    `Privacy acknowledged: ${provider.privacyAcknowledged ? "Yes" : "No"}`,
+    `Featured: ${provider.featured ? "Yes" : "No"}`,
+    `Status: ${creativeStatusText(provider.providerStatus || provider.status)}`
   ];
 }
 
@@ -6000,7 +6296,7 @@ function copyCreativeBrief() {
     "Forge Photography & Videography brief",
     "Headline: Hire Local Photographers & Videographers",
     "Positioning: Forge helps customers in Medford and surrounding areas book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
-    "Provider note: Forge helps customers connect with trusted local creatives, including photographers and videographers like Dennis and other approved providers in the community.",
+    "Provider note: Forge helps customers connect with approved local creative providers after portfolio, availability, terms, and safety review.",
     `Customer category value: ${CREATIVE_CATEGORY_VALUE}`,
     `Creative requests: ${state.jobs.filter(isCreativeJob).length}`,
     `Creative providers: ${state.workers.filter(isCreativeProvider).length}`,
@@ -6592,6 +6888,10 @@ function copyBackendHandoff() {
     "",
     "Files prepared:",
     "- SUPABASE_SCHEMA.sql",
+    "- migrations/20260626_projects.sql",
+    "- types/project-leads.ts",
+    "- validation/projectLeadSchema.ts",
+    "- seed/projectPartners.seed.ts",
     "- WEBHOOK_PAYLOADS.md",
     "- SECURITY_REVIEW_CHECKLIST.md",
     "",

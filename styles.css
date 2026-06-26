@@ -2647,6 +2647,7 @@ textarea:focus {
 
 .creative-intro,
 .creative-services,
+.creative-quality,
 .creative-form-section,
 .creative-form,
 .creative-provider-list,
@@ -2657,6 +2658,7 @@ textarea:focus {
 
 .creative-intro,
 .creative-services,
+.creative-quality,
 .creative-form-section,
 .creative-provider-panel {
   padding: 20px;
@@ -2713,6 +2715,44 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.creative-service-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.48;
+}
+
+.creative-quality {
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.creative-quality h2,
+.creative-provider-copy h2,
+.creative-provider-copy p {
+  margin: 0;
+}
+
+.creative-quality ul,
+.creative-booking-notes ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.creative-provider-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.creative-provider-copy p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .creative-form input,
 .creative-form select,
 .creative-form textarea {
@@ -2727,6 +2767,15 @@ textarea:focus {
 
 .creative-form .file-button {
   justify-content: center;
+}
+
+.creative-booking-notes {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #d8e2f0;
+  border-radius: 8px;
+  background: #f8fbff;
 }
 
 .creative-lead-list article,
@@ -2754,6 +2803,14 @@ textarea:focus {
   color: var(--muted);
   font-size: 0.86rem;
   line-height: 1.45;
+}
+
+.creative-disclaimer {
+  padding: 18px 28px 34px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .text-bar-icons button {
@@ -5534,6 +5591,7 @@ td {
   .creative-hero,
   .creative-layout,
   .creative-intro,
+  .creative-quality,
   .signup-layout,
   .dashboard-shell,
   .capture-layout,

@@ -3,6 +3,8 @@ const CORE_ASSETS = [
   "./",
   "./auto/",
   "./photography-videography/",
+  "./projects/",
+  "./admin/projects/",
   "./index.html",
   "./styles.css",
   "./app.js",
