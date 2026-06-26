@@ -2,6 +2,7 @@
 
 ## 2026-06-26 - Launch reconciliation checkpoint
 
+- Added Forge-to-North Star Creative Co. client acquisition system: expanded `/northstar-creative` page, provider signup growth question and business-size classification, richer North Star marketing intake, automatic classifications, Forge Marketing Score, four service package cards, roofing-company marketing subsection, admin lead table fields, webhook/schema/migration/validation updates, and docs clarifying North Star leads stay separate from normal Forge job requests.
 - Created pre-edit checkpoint commit before launch reconciliation work.
 - Added Personal Driver / Private Driver Services route, forms, admin review tables, export actions, webhook type, schema tables, safety copy, and route-loader shells.
 - Added Forge Payments / Merchant Services route, lead form, admin table, export action, webhook type, schema table, and strict no-sensitive-financial-data boundary.
