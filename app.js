@@ -2880,6 +2880,7 @@ function renderWorkerProfile() {
   setFieldValue("#workerEmail", worker.email);
   setFieldValue("#workerExperience", worker.experience);
   setFieldValue("#workerArea", worker.area);
+  setFieldValue("#workerServiceVertical", worker.serviceVertical);
 }
 
 function renderProfileStatus() {
@@ -3440,6 +3441,7 @@ function renderJobs() {
       <div class="avatar">${job.title.slice(0, 1)}</div>
       <div>
         <h3>${escapeHtml(job.title)}</h3>
+        ${job.serviceVerticalTitle ? `<span class="job-service-pill">${escapeHtml(job.serviceVerticalTitle)}</span>` : ""}
         <p>${escapeHtml(job.location)} &nbsp; ${escapeHtml(job.urgency)}</p>
         <p>${escapeHtml(job.description)}</p>
       </div>
@@ -3785,6 +3787,7 @@ function renderAutos() {
   const stats = document.querySelector("#autoStats");
   const listings = document.querySelector("#autoListings");
   const serviceGrid = document.querySelector("#autoServiceGrid");
+  const transportGrid = document.querySelector("#autoTransportServiceGrid");
   const requestList = document.querySelector("#autoRequestList");
   const dealers = document.querySelector("#autoDealerGrid");
   const setup = document.querySelector("#autoDealerSetup");
@@ -3816,6 +3819,16 @@ function renderAutos() {
         <ul>
           ${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
+      </article>
+    `).join("");
+  }
+  if (transportGrid) {
+    transportGrid.innerHTML = autoTransportServiceCards.map((card) => `
+      <article>
+        <span>${escapeHtml(card.tag)}</span>
+        <h3>${escapeHtml(card.title)}</h3>
+        <p>${escapeHtml(card.body)}</p>
+        <button class="btn ghost small" type="button" data-action="start-auto-path" data-auto-path="${escapeHtml(card.formTarget)}">${card.action === "focus-vehicle-listing" ? "Open Seller Form" : "Open Request Form"}</button>
       </article>
     `).join("");
   }
@@ -3878,12 +3891,13 @@ function renderAutos() {
       <div class="auto-badge">${escapeHtml(vehicle.make.slice(0, 1))}</div>
       <div>
         <span class="split-label">${escapeHtml(vehicle.status)} · ${escapeHtml(vehicle.location)} · ${escapeHtml(autoDealerName(vehicle.dealerId))}</span>
-        <h2>${escapeHtml(vehicle.year)} ${escapeHtml(vehicle.make)} ${escapeHtml(vehicle.model)}</h2>
+        <h2>${escapeHtml(vehicle.year)} ${escapeHtml(vehicle.make)} ${escapeHtml(vehicle.model)} ${escapeHtml(vehicle.trim || "")}</h2>
         <p>${escapeHtml(vehicle.description)}</p>
         <div class="auto-meta">
           <span>${escapeHtml(vehicle.mileage)}</span>
           <span>Seller: ${escapeHtml(vehicle.seller)}</span>
           <span>Dealer: ${escapeHtml(autoDealerName(vehicle.dealerId))}</span>
+          <span>Review: ${escapeHtml(vehicle.reviewStatus || "Public listing")}</span>
           <span>Posted: ${escapeHtml(vehicle.posted)}</span>
         </div>
       </div>
@@ -4799,6 +4813,100 @@ function autoDealerByName(name) {
   return autoDealers.find((dealer) => dealer.name === name) || autoDealers[0];
 }
 
+function autoPartnerById(id) {
+  return (state.partners || []).find((partner) => partner.id === id) || seedState.partners.find((partner) => partner.id === id);
+}
+
+function vehicleLookupText(vehicle) {
+  return normalizeLookup([
+    vehicle.year,
+    vehicle.make,
+    vehicle.model,
+    vehicle.trim,
+    vehicle.description,
+    vehicle.condition,
+    vehicle.location,
+    vehicle.fuelType,
+    vehicle.drivetrain
+  ].filter(Boolean).join(" "));
+}
+
+function moneyNumber(value) {
+  return Number(String(value || "").replace(/[^\d.]/g, "")) || 0;
+}
+
+function isLuxuryVehicle(vehicle) {
+  const text = vehicleLookupText(vehicle);
+  const luxuryTerms = ["porsche", "ferrari", "lamborghini", "mclaren", "aston martin", "bentley", "rolls", "maserati", "mercedes", "amg", "bmw", "audi", "lexus", "tesla", "range rover", "land rover", "cadillac escalade", "platinum", "exotic", "luxury"];
+  return luxuryTerms.some((term) => text.includes(term)) || moneyNumber(vehicle.price) >= 50000 || vehicle.intent === "Forge Platinum Auto Concierge";
+}
+
+function isTruckOrCommercial(vehicle) {
+  const text = vehicleLookupText(vehicle);
+  return ["truck", "diesel", "f150", "f-150", "f250", "f-250", "f350", "f-350", "ram", "silverado", "sierra", "commercial", "fleet", "work van", "cargo van"].some((term) => text.includes(term));
+}
+
+function isPortlandMetroVehicle(vehicle) {
+  const text = vehicleLookupText(vehicle);
+  return ["portland", "lake oswego", "beaverton", "vancouver wa", "vancouver, wa", "tigard", "gresham", "oregon city"].some((term) => text.includes(term));
+}
+
+function isSouthernOregonVehicle(vehicle) {
+  const text = vehicleLookupText(vehicle);
+  return ["medford", "southern oregon", "grants pass", "white city", "central point", "ashland", "eagle point", "rogue valley"].some((term) => text.includes(term));
+}
+
+function vehicleNeedsTitleHelp(vehicle) {
+  const text = normalizeLookup([vehicle.titleStatus, vehicle.loanLien, vehicle.payoffAmount].filter(Boolean).join(" "));
+  return ["lien", "payoff", "lost", "salvage", "rebuilt", "title help", "unsure", "yes"].some((term) => text.includes(term));
+}
+
+function vehicleLeadTags(vehicle) {
+  const tags = new Set();
+  const intent = normalizeLookup(vehicle.intent || "");
+  if (intent.includes("sell")) tags.add("sell_my_car");
+  if (intent.includes("list")) tags.add("list_vehicle");
+  if (intent.includes("consign")) tags.add("consign_vehicle");
+  if (intent.includes("wholesale")) tags.add("wholesale_offer");
+  if (intent.includes("auction")) tags.add("auction_sourcing");
+  if (isLuxuryVehicle(vehicle)) tags.add("luxury_or_exotic");
+  if (isTruckOrCommercial(vehicle)) tags.add("truck_or_commercial");
+  if (!isLuxuryVehicle(vehicle) && !isTruckOrCommercial(vehicle)) tags.add("standard_vehicle");
+  if (normalizeLookup(vehicle.description || "").includes("transport")) tags.add("transport_needed");
+  if (vehicle.wantsReplacement) tags.add("request_vehicle");
+  if (vehicleNeedsTitleHelp(vehicle)) tags.add("title_help_needed");
+  if (vehicle.sellTimeline === "ASAP" || isLuxuryVehicle(vehicle) || vehicleNeedsTitleHelp(vehicle)) tags.add("high_priority_review");
+  return autoLeadCategoryLabels.filter((tag) => tags.has(tag)).concat([...tags].filter((tag) => !autoLeadCategoryLabels.includes(tag)));
+}
+
+function vehicleAssignedPartner(vehicle) {
+  if (isLuxuryVehicle(vehicle) && isPortlandMetroVehicle(vehicle)) return "Forge Platinum Auto Concierge";
+  if (isLuxuryVehicle(vehicle)) return "Forge Platinum Auto Concierge";
+  if (isSouthernOregonVehicle(vehicle) || isTruckOrCommercial(vehicle)) return "S&A Auto / Southern Oregon Auto Operations";
+  return autoDealerName(vehicle.dealerId);
+}
+
+function vehicleLeadRoute(vehicle) {
+  const parts = [];
+  if (isLuxuryVehicle(vehicle)) parts.push("Forge Platinum review");
+  if (isSouthernOregonVehicle(vehicle) || isTruckOrCommercial(vehicle)) parts.push("Southern Oregon dealer review");
+  if (vehicleNeedsTitleHelp(vehicle)) parts.push("Title/help review before partner handoff");
+  if (vehicle.wantsReplacement) parts.push("Create linked Request a Vehicle lead");
+  if (!parts.length) parts.push("Vehicle listing review");
+  return parts.join(" · ");
+}
+
+function vehicleLeadScore(vehicle) {
+  let score = 20;
+  if (isLuxuryVehicle(vehicle)) score += 30;
+  if (isTruckOrCommercial(vehicle)) score += 18;
+  if (isSouthernOregonVehicle(vehicle) || isPortlandMetroVehicle(vehicle)) score += 12;
+  if (vehicleNeedsTitleHelp(vehicle)) score += 10;
+  if (vehicle.sellTimeline === "ASAP") score += 10;
+  if (vehicle.consentToPartnerContact) score += 10;
+  return Math.min(100, score);
+}
+
 function autoLeadRouteRows() {
   return [
     {
@@ -4835,6 +4943,7 @@ function renderDetail() {
     <div class="detail-price">${escapeHtml(job.budget)}</div>
     <h2>Job Description</h2>
     <p>${escapeHtml(job.description)}</p>
+    ${serviceJobDetailPanel(job)}
     <div class="detail-meta">
       <div><span>Category</span><strong>${escapeHtml(categoryLabel(job.category))}</strong></div>
       <div><span>Posted</span><strong>${escapeHtml(job.posted)}</strong></div>
@@ -4857,6 +4966,7 @@ function renderDetail() {
         <h3>${escapeHtml(bid.worker)}</h3>
         <p><span class="stars">★ ★ ★ ★ ☆</span> ${bid.rating} (${bid.reviews}) · ${escapeHtml(bid.timeline)} ${bid.chosen ? " · Chosen" : ""}</p>
         <p>${escapeHtml(bid.message)}</p>
+        ${bidDetailMeta(bid)}
       </div>
       <div>
         <strong>${escapeHtml(bid.amount)}</strong>
@@ -4864,6 +4974,51 @@ function renderDetail() {
       </div>
     </article>
   `).join("") || `<p class="muted">No bids yet.</p>`;
+}
+
+function serviceJobDetailPanel(job) {
+  const vertical = serviceVerticalById(job.serviceVertical) || serviceVerticalForCategory(job.category);
+  if (!vertical) return "";
+  const rows = serviceDetailRows(job.serviceDetails, vertical.jobFields);
+  return `
+    <section class="service-detail-panel">
+      <div>
+        <span class="split-label">${escapeHtml(vertical.title)}</span>
+        <h2>Service scope details</h2>
+        <p>${escapeHtml(job.servicePhotoSummary || "0 photos selected")}</p>
+      </div>
+      <div class="service-detail-grid">
+        ${rows.map(([label, value]) => `
+          <article>
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+          </article>
+        `).join("") || `<article><span>Scope</span><strong>Details pending</strong></article>`}
+      </div>
+    </section>
+  `;
+}
+
+function bidDetailMeta(bid) {
+  const rows = [
+    ["Earliest availability", bid.earliestAvailability],
+    ["Estimated duration", bid.estimatedDuration],
+    ["Crew members", bid.crewMembers],
+    ["Materials included", bid.materialsIncluded],
+    ["Supplies included", bid.suppliesIncluded],
+    ["Equipment included", bid.equipmentIncluded],
+    ["Dump fees included", bid.dumpFeesIncluded],
+    ["Laundry included", bid.laundryIncluded],
+    ["Restocking included", bid.restockingIncluded],
+    ["Recurring available", bid.recurringAvailable],
+    ["Experience note", bid.experienceNote]
+  ].filter(([, value]) => String(value || "").trim());
+  if (!rows.length) return "";
+  return `
+    <div class="bid-detail-meta">
+      ${rows.map(([label, value]) => `<span><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`).join("")}
+    </div>
+  `;
 }
 
 function jobFlowTracker(job, bids, chosenBid) {
@@ -7941,8 +8096,8 @@ document.addEventListener("click", (event) => {
     if (!job || !selectedBid) return;
     bids.forEach((bid) => bid.chosen = false);
     selectedBid.chosen = true;
-    selectedBid.status = "Chosen";
-    job.status = "In Progress";
+    selectedBid.status = "Selected";
+    job.status = isServiceVerticalJob(job) ? "Provider selected" : "In Progress";
     state.activeMessageThreadId = `job-${job.id}`;
     state.messages.unshift({
       id: `${Date.now()}`,
@@ -7956,10 +8111,10 @@ document.addEventListener("click", (event) => {
     state.lastConfirmation = {
       type: "bid",
       title: "Bid chosen.",
-      body: "Forge moved the job to In Progress and saved a message so the next step is clear.",
+      body: `Forge moved the job to ${job.status} and saved a message so the next step is clear.`,
       details: [
         `${selectedBid.worker} · ${selectedBid.amount}`,
-        `${job.title} is In Progress`,
+        `${job.title} is ${job.status}`,
         `${selectedBid.timeline} timeline`
       ],
       primary: { label: "Open Messages", screen: "messages" },
@@ -7967,7 +8122,7 @@ document.addEventListener("click", (event) => {
     };
     addActivity(`Bid selected for ${job.title}: ${selectedBid.worker}.`);
     saveState();
-    showToast("Bid chosen. Job moved to In Progress.");
+    showToast(`Bid chosen. Job moved to ${job.status}.`);
     navigate("confirm");
   }
 });
@@ -8574,13 +8729,25 @@ document.querySelector("#opportunityForm").addEventListener("submit", (event) =>
 document.querySelector("#workerSignupForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const businessGrowthTools = selectedProviderGrowthTools();
+  const selectedVertical = serviceVerticalById(fieldValue("#workerServiceVertical")) || serviceVerticalForCategory(fieldValue("#workerTrade"));
+  const profileDetails = selectedVertical ? collectServiceDetails("data-provider-profile-field") : {};
+  const providerTags = Array.from(document.querySelectorAll("input[name='workerTags']:checked")).map((input) => input.value);
   state.worker = {
     name: document.querySelector("#workerName").value.trim(),
-    trade: document.querySelector("#workerTrade").value.trim(),
+    trade: selectedVertical?.title || document.querySelector("#workerTrade").value.trim(),
     phone: document.querySelector("#workerPhone").value.trim(),
     email: document.querySelector("#workerEmail").value.trim(),
     experience: document.querySelector("#workerExperience").value,
-    area: document.querySelector("#workerArea").value,
+    area: profileDetails.serviceArea || document.querySelector("#workerArea").value,
+    serviceArea: profileDetails.serviceArea || document.querySelector("#workerArea").value,
+    businessName: profileDetails.businessName || "",
+    ownerName: profileDetails.ownerName || document.querySelector("#workerName").value.trim(),
+    serviceVertical: selectedVertical?.id || "",
+    serviceVerticalTitle: selectedVertical?.title || "",
+    providerCategory: selectedVertical?.id || "",
+    providerType: fieldValue("#workerProviderType") || selectedVertical?.providerTypes?.[0] || "",
+    profileDetails,
+    tags: providerTags,
     businessGrowthTools,
     status: "New"
   };
@@ -8600,6 +8767,7 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       `${state.worker.name} · ${state.worker.trade}`,
       `${state.worker.area} service area`,
       `${state.worker.experience} experience`,
+      selectedVertical ? `${selectedVertical.title} · ${state.worker.providerType || "Provider"}` : "General Forge worker",
       providerFlexLead ? "Capital Desk follow-up flagged" : "No Capital Desk follow-up selected"
     ],
     nextSteps: [
@@ -8625,6 +8793,17 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     worker: document.querySelector("#bidWorkerName").value.trim(),
     amount: document.querySelector("#bidAmount").value.trim(),
     timeline: document.querySelector("#bidTimeline").value.trim(),
+    earliestAvailability: fieldValue("#bidEarliestAvailability"),
+    estimatedDuration: fieldValue("#bidDuration"),
+    crewMembers: fieldValue("#bidCrewCount"),
+    materialsIncluded: fieldValue("#bidMaterialsIncluded"),
+    suppliesIncluded: fieldValue("#bidSuppliesIncluded"),
+    equipmentIncluded: fieldValue("#bidEquipmentIncluded"),
+    dumpFeesIncluded: fieldValue("#bidDumpFeesIncluded"),
+    laundryIncluded: fieldValue("#bidLaundryIncluded"),
+    restockingIncluded: fieldValue("#bidRestockingIncluded"),
+    recurringAvailable: fieldValue("#bidRecurringAvailable"),
+    experienceNote: fieldValue("#bidExperienceNote"),
     message: document.querySelector("#bidMessage").value.trim(),
     rating: "New",
     reviews: 0,
@@ -8633,7 +8812,8 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
   };
   state.bids.unshift(bid);
   selectedJob.bids += 1;
-  if (selectedJob.status === "New") selectedJob.status = "Matching";
+  if (isServiceVerticalJob(selectedJob) && ["Open for bids", "New"].includes(selectedJob.status)) selectedJob.status = "Bid submitted";
+  else if (selectedJob.status === "New") selectedJob.status = "Matching";
   state.activeJobId = selectedJob.id;
   addActivity(`New bid submitted by ${bid.worker} for ${selectedJob.title}: ${bid.amount}.`);
   state.lastConfirmation = {
@@ -8643,7 +8823,8 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     details: [
       `${bid.worker} · ${bid.amount}`,
       selectedJob.title,
-      `${bid.timeline} timeline`
+      `${bid.timeline} timeline`,
+      `${bid.crewMembers || "Crew count pending"} · materials included: ${bid.materialsIncluded || "No"}`
     ],
     nextSteps: [
       "Forge attaches your bid to the selected job",
