@@ -7963,7 +7963,7 @@ function safetyChecks() {
 }
 
 function totalLeadCount() {
-  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length + (state.employerTrainingPartners || []).length + (state.schoolPartners || []).length + (state.resumeRequests || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
+  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.manufacturingSupplierLeads || []).length + (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length + (state.employerTrainingPartners || []).length + (state.schoolPartners || []).length + (state.resumeRequests || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
 }
 
 function renderLaunchCommandCenter() {
@@ -13296,12 +13296,49 @@ function manufacturingSupplierLines(supplier) {
   ];
 }
 
+function manufacturingSupplierLeadLines(lead) {
+  const normalized = normalizeManufacturingSupplierLead(lead);
+  return [
+    `${normalized.companyName} - ${normalized.supplierCategory}`,
+    `Outreach status: ${normalized.outreachStatus}`,
+    `Contact: ${normalized.contactName || "Not listed"} · ${normalized.phone || "No phone"} · ${normalized.email || "No email"}`,
+    `Website: ${normalized.website || "Not listed"}`,
+    `Location: ${[normalized.city, normalized.state, normalized.country].filter(Boolean).join(", ") || "Not listed"}`,
+    `Capabilities: ${normalized.capabilities || "Not listed"}`,
+    `Certifications: ${normalized.certifications || "Not listed"}`,
+    `Product types: ${normalized.productTypes || "Not listed"}`,
+    `MOQ: ${normalized.moq || "Not listed"}`,
+    `Lead time: ${normalized.leadTime || "Not listed"}`,
+    `Source: ${normalized.source}`,
+    `Source URL: ${normalized.sourceUrl || "Not listed"}`,
+    `Date discovered: ${normalized.dateDiscovered || "Not listed"}`,
+    `Added by: ${normalized.addedBy || "Not listed"}`,
+    `Last contacted: ${normalized.lastContacted || "Not contacted"}`,
+    `Next follow-up: ${normalized.nextFollowUpDate || "Not scheduled"}`,
+    `Potential value: ${normalized.potentialOpportunityValue || "Not listed"}`,
+    `Related Forge vertical: ${normalized.relatedForgeVertical}`,
+    `Tags: ${normalized.tags || "None"}`,
+    `Notes: ${normalized.notes || "None"}`,
+    `Follow-up notes: ${normalized.followUpNotes || "None"}`,
+    `Source boundary: ${MANUFACTURING_IMPORT_PERMISSION_COPY}`
+  ];
+}
+
 function manufacturingRfqText(lead) {
   return manufacturingRfqLines(lead).join("\n");
 }
 
 function manufacturingSupplierText(supplier) {
   return manufacturingSupplierLines(supplier).join("\n");
+}
+
+function manufacturingSupplierLeadText(lead) {
+  return manufacturingSupplierLeadLines(lead).join("\n");
+}
+
+function manufacturingSupplierLeadOutreachText(lead) {
+  const normalized = normalizeManufacturingSupplierLead(lead);
+  return MANUFACTURING_OUTREACH_TEMPLATE.replaceAll("{{companyName}}", normalized.companyName || "there");
 }
 
 function manufacturingSupplierPhone(supplier) {
@@ -13327,19 +13364,153 @@ function copyManufacturingSupplier(id) {
   copyText(manufacturingSupplierLines(supplier).join("\n"), "Manufacturing supplier copied.");
 }
 
+function copyManufacturingSupplierLead(id) {
+  const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(manufacturingSupplierLeadText(lead), "Supplier lead copied.");
+}
+
+function copyManufacturingOutreachTemplate() {
+  copyText(MANUFACTURING_OUTREACH_TEMPLATE, "Manufacturing outreach template copied.");
+}
+
+function viewManufacturingSupplierLead(id) {
+  state.activeManufacturingSupplierLeadId = id;
+  saveState();
+  renderManufacturingPage();
+  focusAutoPanel("#manufacturingLeadSourceCrm", "#manufacturingSupplierCsvInput");
+}
+
+function inviteManufacturingSupplierLead(id) {
+  const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === id);
+  if (!lead) return;
+  lead.outreachStatus = "Invited to Join Forge";
+  lead.lastContacted = lead.lastContacted || "Today";
+  lead.followUpNotes = lead.followUpNotes || "Invitation sent with Forge manufacturing partnership template.";
+  state.activeManufacturingSupplierLeadId = lead.id;
+  addActivity(`Supplier lead invited to Forge: ${lead.companyName}.`);
+  saveState();
+  render();
+  showToast("Supplier invite tracked.");
+}
+
+function convertManufacturingSupplierLead(id) {
+  const lead = normalizeManufacturingSupplierLead((state.manufacturingSupplierLeads || []).find((item) => item.id === id));
+  if (!lead.companyName) return;
+  const existing = (state.manufacturingSuppliers || []).find((supplier) => samePerson(supplier.companyName, lead.companyName));
+  const supplier = normalizeManufacturingSupplier({
+    id: existing?.id || `manufacturing-supplier-${Date.now()}`,
+    companyName: lead.companyName,
+    contactPerson: lead.contactName,
+    location: [lead.city, lead.state, lead.country].filter(Boolean).join(", "),
+    serviceArea: lead.country || "United States",
+    supplierType: lead.supplierCategory || "Supplement Manufacturer",
+    capabilities: lead.capabilities,
+    productCategories: String(lead.productTypes || "").split(",").map((item) => item.trim()).filter(Boolean),
+    dosageForms: inferDosageFormsFromText(`${lead.productTypes} ${lead.capabilities}`),
+    minimumOrderQuantity: lead.moq,
+    certifications: String(lead.certifications || "").split(",").map((item) => item.trim()).filter(Boolean),
+    facilityType: lead.certifications,
+    turnaroundTime: lead.leadTime,
+    estimatedLeadTime: lead.leadTime,
+    packagingOptions: lead.productTypes,
+    website: lead.website,
+    phoneEmail: lead.email || lead.phone,
+    source: lead.source,
+    sourceUrl: lead.sourceUrl,
+    sourceNotes: lead.notes,
+    dateAdded: "Today",
+    outreachStatus: lead.outreachStatus,
+    lastContacted: lead.lastContacted,
+    nextFollowUpDate: lead.nextFollowUpDate,
+    relationshipOwner: lead.addedBy,
+    notes: `${lead.notes || ""}\nConverted from supplier lead CRM. ${MANUFACTURING_IMPORT_PERMISSION_COPY}`.trim(),
+    verifiedByForge: "Placeholder only",
+    status: "Needs Review"
+  });
+  if (existing) {
+    Object.assign(existing, supplier);
+  } else {
+    state.manufacturingSuppliers.unshift(supplier);
+  }
+  const original = (state.manufacturingSupplierLeads || []).find((item) => item.id === id);
+  if (original) original.outreachStatus = "Converted to Provider Profile";
+  addActivity(`Supplier lead converted to provider profile: ${supplier.companyName}.`);
+  saveState();
+  render();
+  showToast("Supplier profile created from lead.");
+}
+
+function createManufacturingOpportunityFromLead(id) {
+  const lead = normalizeManufacturingSupplierLead((state.manufacturingSupplierLeads || []).find((item) => item.id === id));
+  if (!lead.companyName) return;
+  const rfq = normalizeManufacturingRfq({
+    id: `manufacturing-rfq-${Date.now()}`,
+    customerCompanyName: "Forge internal sourcing",
+    productIdea: `${lead.supplierCategory} opportunity`,
+    productType: lead.productTypes || "Supplement Manufacturing",
+    brandName: `${lead.companyName} sourcing opportunity`,
+    formulaStatus: "Need white label product",
+    dosageForm: inferDosageFormsFromText(`${lead.productTypes} ${lead.capabilities}`)[0] || "Other",
+    targetQuantity: lead.moq || "MOQ pending",
+    desiredMoq: lead.moq,
+    desiredPackaging: "To be confirmed",
+    ingredientRequirements: lead.capabilities,
+    testingNeeds: lead.certifications,
+    targetLaunchDate: "",
+    budgetRange: lead.potentialOpportunityValue || "Not sure yet",
+    locationPreference: [lead.city, lead.state, lead.country].filter(Boolean).join(", "),
+    contactName: lead.contactName,
+    contactEmail: lead.email,
+    contactPhone: lead.phone,
+    status: "Sourcing manufacturers",
+    created: "Today",
+    notes: `Created from supplier lead CRM for ${lead.companyName}. ${MANUFACTURING_IMPORT_PERMISSION_COPY}`
+  });
+  state.manufacturingRfqs.unshift(rfq);
+  const original = (state.manufacturingSupplierLeads || []).find((item) => item.id === id);
+  if (original) original.outreachStatus = "Manufacturing Opportunity Created";
+  addActivity(`Manufacturing opportunity created from supplier lead: ${lead.companyName}.`);
+  saveState();
+  render();
+  showToast("Manufacturing opportunity created.");
+}
+
+function createManufacturingFollowUpTask(id) {
+  const lead = (state.manufacturingSupplierLeads || []).find((item) => item.id === id);
+  if (!lead) return;
+  lead.outreachStatus = "Follow-up needed";
+  lead.nextFollowUpDate = lead.nextFollowUpDate || "Today";
+  lead.followUpNotes = lead.followUpNotes || "Follow up on capabilities, MOQ, certifications, and Forge onboarding interest.";
+  state.activeManufacturingSupplierLeadId = lead.id;
+  addActivity(`Follow-up task created for supplier lead: ${lead.companyName}.`);
+  saveState();
+  render();
+  showToast("Follow-up task created.");
+}
+
+function inferDosageFormsFromText(value) {
+  const text = normalizeLookup(value);
+  return manufacturingDosageForms.filter((form) => text.includes(normalizeLookup(form))).slice(0, 4);
+}
+
 function copyManufacturingQueue() {
   const rfqs = state.manufacturingRfqs || [];
   const suppliers = state.manufacturingSuppliers || [];
+  const supplierLeads = state.manufacturingSupplierLeads || [];
   const lines = [
     "Forge Manufacturing + Nutraceuticals queue",
     "",
     `RFQs: ${rfqs.length}`,
     `Supplier profiles: ${suppliers.length}`,
+    `Supplier leads: ${supplierLeads.length}`,
     "",
     "RFQs:",
     ...(rfqs.length ? rfqs.flatMap((lead) => [...manufacturingRfqLines(lead), ""]) : ["No RFQs yet.", ""]),
     "Suppliers:",
     ...(suppliers.length ? suppliers.flatMap((supplier) => [...manufacturingSupplierLines(supplier), ""]) : ["No supplier profiles yet.", ""]),
+    "Supplier leads:",
+    ...(supplierLeads.length ? supplierLeads.flatMap((lead) => [...manufacturingSupplierLeadLines(lead), ""]) : ["No supplier leads yet.", ""]),
     "Thomasnet boundary:",
     MANUFACTURING_DIRECTORY_BOUNDARY_COPY
   ];
