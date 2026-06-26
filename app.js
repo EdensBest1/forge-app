@@ -930,7 +930,7 @@ const startPaths = [
     body: "Request coverage for weddings, events, business content, real estate, social media, family photos, or community work.",
     next: "Forge saves the creative brief and routes it to approved local photographers and videographers.",
     screen: "creative",
-    action: "Book a Creative",
+    action: "Hire a Photographer",
     tone: "orange"
   },
   {
@@ -6294,7 +6294,7 @@ function copyCreativeQueue() {
 function copyCreativeBrief() {
   const lines = [
     "Forge Photography & Videography brief",
-    "Headline: Hire Local Photographers & Videographers",
+    "Headline: Photography & Videography",
     "Positioning: Forge helps customers in Medford and surrounding areas book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
     "Provider note: Forge helps customers connect with approved local creative providers after portfolio, availability, terms, and safety review.",
     `Customer category value: ${CREATIVE_CATEGORY_VALUE}`,

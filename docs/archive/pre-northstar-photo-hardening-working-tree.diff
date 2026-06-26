@@ -1,178 +1,136 @@
-diff --git a/README.md b/README.md
-index 902b3d7..cc75830 100644
---- a/README.md
-+++ b/README.md
-@@ -17,7 +17,7 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
- - Forge Autos soft-launch lead route for buyer inquiry, dealer handoff, safety boundary, and follow-up
- - Auto dealer setup checklist and `AUTO_DEALER_INTEGRATION.md` for approved dealer contact, inventory, terms, and compliance setup
- - Auto buyer inquiry form and queue for routing vehicle interest to dealer partners
--- Photography & Videography page and route for customer creative requests and approved local creative provider applications
-+- Photography & Videography routes at `/photography`, `/photography/request`, and `/photography/apply` for customer creative requests and approved local creative provider applications
- - Demo login screen with worker, job poster, and admin roles
- - Perspective Demo screen for showing Forge as John, Mike, or Admin
- - Perspective Demo now includes an Auto marketplace proof path, Autos cue card, and shareable Autos link
-diff --git a/WEBHOOK_PAYLOADS.md b/WEBHOOK_PAYLOADS.md
-index 8060f2d..c657b10 100644
---- a/WEBHOOK_PAYLOADS.md
-+++ b/WEBHOOK_PAYLOADS.md
-@@ -15,6 +15,8 @@ Forge sends webhook payloads from `sendLead(type, payload)` as JSON:
+diff --git a/app.js b/app.js
+index 586cff8..9d2d5b2 100644
+--- a/app.js
++++ b/app.js
+@@ -930,7 +930,7 @@ const startPaths = [
+     body: "Request coverage for weddings, events, business content, real estate, social media, family photos, or community work.",
+     next: "Forge saves the creative brief and routes it to approved local photographers and videographers.",
+     screen: "creative",
+-    action: "Book a Creative",
++    action: "Hire a Photographer",
+     tone: "orange"
+   },
+   {
+diff --git a/index.html b/index.html
+index e1c8c9c..735f279 100644
+--- a/index.html
++++ b/index.html
+@@ -89,7 +89,7 @@
+             <span class="split-label">I need creative work</span>
+             <h2>Book photography or videography.</h2>
+             <p>Hire local creatives for weddings, events, business content, real estate, social media, family shoots, and community projects.</p>
+-            <button class="btn ghost" type="button" data-nav="creative">Book a Creative</button>
++            <button class="btn ghost" type="button" data-nav="creative">Hire a Photographer</button>
+           </article>
+           <article>
+             <span class="split-label">I want a path up</span>
+@@ -212,7 +212,7 @@
+               <span class="split-label">Creative services</span>
+               <h3>Photography & Videography</h3>
+               <p>Weddings, events, business content, social media shoots, real estate, product photos, and video production.</p>
+-              <button class="btn ghost small" type="button" data-nav="creative">Book a Creative</button>
++              <button class="btn ghost small" type="button" data-nav="creative">Hire a Photographer</button>
+             </article>
+           </div>
+         </section>
+@@ -503,11 +503,11 @@
+           </figure>
+           <div class="creative-hero-copy">
+             <span class="split-label">Photography & Videography</span>
+-            <h1>Hire Local Photographers & Videographers</h1>
++            <h1>Photography & Videography</h1>
+             <p>Hire trusted local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</p>
+             <div class="hero-actions">
+-              <button class="btn orange" type="button" data-action="focus-creative-lead">Book a Creative</button>
+-              <button class="btn blue" type="button" data-action="focus-creative-provider">Apply as a Provider</button>
++              <button class="btn orange" type="button" data-action="focus-creative-lead">Request a Shoot</button>
++              <button class="btn blue" type="button" data-action="focus-creative-provider">Apply as a Photographer</button>
+               <button class="btn ghost light" type="button" data-action="copy-creative-brief">Copy Brief</button>
+             </div>
+           </div>
+diff --git a/smoke-test.mjs b/smoke-test.mjs
+index 7c109da..ceb55f5 100644
+--- a/smoke-test.mjs
++++ b/smoke-test.mjs
+@@ -64,12 +64,16 @@ const requiredHtml = [
+   "Copy Buyer Queue",
+   "Auto safety",
+   "Photography & Videography",
+-  "Hire Local Photographers & Videographers",
++  "Hire a Photographer",
++  "Request a Shoot",
++  "Apply as a Photographer",
+   "creativeLeadForm",
+   "creativeProviderForm",
+-  "Book a Creative",
+-  "Apply as a Provider",
+-  "Forge helps customers connect with trusted local creatives, including photographers and videographers like Dennis and other approved providers in the community.",
++  "creativeDeliveryDeadline",
++  "creativeProviderEditingSoftware",
++  "Photography & Videography Booking Notes",
++  "Built for trust and quality.",
++  "Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.",
+   "Start here",
+   "Choose the path that matches why you came to Forge.",
+   "startPathGrid",
+@@ -230,8 +234,15 @@ const requiredJs = [
+   "Vehicle listing saved.",
+   "Copy Seller Info",
+   "CREATIVE_CATEGORY_VALUE",
++  "CREATIVE_CATEGORY_SLUG",
+   "photography_videography",
++  "creativeRequestStatuses",
++  "creativeProviderStatuses",
++  "creativeDeliveryOptions",
+   "creativeServiceTypes",
++  "creativeProviderDroneCapability",
++  "adminCreativeRequestsTable",
++  "adminCreativeProvidersTable",
+   "renderCreativePage",
+   "submitCreativeLead",
+   "submitCreativeProvider",
+@@ -432,6 +443,9 @@ const packageJson = await readFile("package.json", "utf8");
+ const githubWorkflow = await readFile(".github/workflows/forge-checks.yml", "utf8");
+ const finalPublicGate = await readFile("FINAL_PUBLIC_GATE.md", "utf8");
+ const autoDealerIntegration = await readFile("AUTO_DEALER_INTEGRATION.md", "utf8");
++const photographyRoute = await readFile("photography/index.html", "utf8");
++const photographyRequestRoute = await readFile("photography/request/index.html", "utf8");
++const photographyApplyRoute = await readFile("photography/apply/index.html", "utf8");
+ const creativeRoute = await readFile("photography-videography/index.html", "utf8");
  
- - `job`: New job poster lead from Post a Job.
- - `worker`: Worker profile signup.
-+- `job` with `payload.category = "photography_videography"`: Photography & Videography customer request from `/photography/request`.
-+- `worker` with `payload.providerCategory = "photography_videography"`: Photography & Videography provider application from `/photography/apply`.
- - `opportunity`: Trade school, union/apprenticeship, or blue-collar AI job interest.
- - `project`: Forge Projects intake for home projects, major renovations, development, commercial, land, or investment-backed opportunities.
- - `project-seneca-review`: Forge-approved project lead sent to Seneca Review after OR/WA check, Forge Qualified status, and user consent.
-@@ -28,12 +30,20 @@ Expected fields: `id`, `title`, `category`, `location`, `urgency`, `budget`, `de
+ const missingHtml = requiredHtml.filter((text) => !html.includes(text));
+@@ -446,6 +460,7 @@ const missingCss = [
+   ["auto buyer inquiries", css.includes(".auto-inquiries") && css.includes(".auto-inquiry-list")],
+   ["auto lead route", css.includes(".auto-route-grid") && css.includes(".auto-route")],
+   ["photography videography page", css.includes(".creative-layout") && css.includes(".creative-service-grid") && css.includes(".creative-provider-panel")],
++  ["photography quality notes", css.includes(".creative-quality") && css.includes(".creative-booking-notes") && css.includes(".creative-disclaimer")],
+   ["homebuilding page", css.includes(".homebuilding-layout") && css.includes(".tracker-feature-card")],
+   ["build tracker dashboard", css.includes(".build-tracker-dashboard") && css.includes(".tracker-card")],
+   ["build tracker gantt", css.includes(".gantt-scroll") && css.includes(".gantt-bar")],
+@@ -491,19 +506,22 @@ const missingDeploy = [
+   ["vercel rewrite", vercel.includes("\"rewrites\"") && vercel.includes("\"/index.html\"")],
+   ["robots present", robots.includes("User-agent: *")],
+   ["security review checklist", securityReview.includes("Forge Security Review Checklist") && securityReview.includes("Launch Decision")],
+-  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("enable row level security")],
+-  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("opportunity") && webhookPayloads.includes("Public Beta Safety")],
++  ["supabase schema", supabaseSchema.includes("forge_job_leads") && supabaseSchema.includes("forge_opportunity_leads") && supabaseSchema.includes("photography_videography") && supabaseSchema.includes("creative_service_requests") && supabaseSchema.includes("creative_provider_applications") && supabaseSchema.includes("enable row level security")],
++  ["webhook payload docs", webhookPayloads.includes("Forge Webhook Payloads") && webhookPayloads.includes("photography_videography") && webhookPayloads.includes("Public Beta Safety")],
+   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
+   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
+   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
+-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography-videography?v=70")],
++  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v70\"") && releaseManifest.includes("/photography?v=70") && releaseManifest.includes("/photography/request?v=70") && releaseManifest.includes("/photography/apply?v=70") && releaseManifest.includes("/photography-videography?v=70")],
+   ["release candidate notes", releaseCandidate.includes("Forge Public Beta Release Candidate") && releaseCandidate.includes("Human Gates Still Required")],
+   ["release check script", releaseCheck.includes("Forge release check passed.") && releaseCheck.includes("service worker version")],
+   ["package scripts", packageJson.includes("\"check\"") && packageJson.includes("check:release")],
+   ["github checks workflow", githubWorkflow.includes("Forge Checks") && githubWorkflow.includes("npm run check")],
+   ["final public gate", finalPublicGate.includes("Forge Final Public Gate") && finalPublicGate.includes("Launch Decision")],
+   ["auto dealer integration", autoDealerIntegration.includes("Forge Auto Dealer Integration") && autoDealerIntegration.includes("JoCo Auto Sales")],
+-  ["photography videography route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")]
++  ["photography route", photographyRoute.includes("Forge Photography & Videography") && photographyRoute.includes("/route-loader.js")],
++  ["photography request route", photographyRequestRoute.includes("Forge Photography & Videography Request") && photographyRequestRoute.includes("/route-loader.js")],
++  ["photography apply route", photographyApplyRoute.includes("Forge Photography & Videography Provider Application") && photographyApplyRoute.includes("/route-loader.js")],
++  ["photography videography alias route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")]
+ ].filter(([, ok]) => !ok).map(([label]) => label);
+ const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
  
- Map to `forge_job_leads`.
- 
-+Photography & Videography requests include additional fields: `categorySlug`, `serviceType`, `desiredDate`, `shootStartTime`, `estimatedDuration`, `shootLocation`, `city`, `mediaType`, `deliveryDeadline`, `venueName`, `guestCount`, `numberOfLocations`, `indoorOutdoor`, `stylePreference`, `inspirationLink`, `inspirationUploads`, `shotList`, `secondShooterNeeded`, `droneRequested`, `rawFootageRequested`, `socialClipsRequested`, `sameDayPreviewRequested`, `termsAccepted`, `privacyAcknowledged`, and `creativeStatus`.
-+
-+Map creative requests to `forge_job_leads` for the current MVP or to `creative_service_requests` when the backend supports the dedicated table.
-+
- ## Worker Payload
- 
- Expected fields: `name`, `trade`, `phone`, `email`, `experience`, `area`, `status`.
- 
- Map to `forge_worker_leads`.
- 
-+Photography & Videography provider applications include additional fields: `firstName`, `lastName`, `businessName`, `city`, `providerCategory`, `categorySlug`, `servicesOffered`, `portfolioLink`, `socialLink`, `yearsExperience`, `gearSummary`, `editingSoftware`, `availability`, `serviceArea`, `startingRate`, `weddingExperience`, `eventExperience`, `realEstateExperience`, `productExperience`, `droneCapability`, `droneCertificationUpload`, `insuranceUpload`, `sampleGalleryLinks`, `videoReelLink`, `profilePhotoUpload`, `bio`, `providerTermsAccepted`, `privacyAcknowledged`, `featured`, and `providerStatus`.
-+
-+Map creative providers to `forge_worker_leads` for the current MVP or to `creative_provider_applications` when the backend supports the dedicated table.
-+
- ## Opportunity Payload
- 
- Expected fields: `id`, `name`, `phone`, `email`, `goal`, `experience`, `location`, `note`, `status`, `created`.
-diff --git a/migrations/20260626_creative_services.sql b/migrations/20260626_creative_services.sql
-new file mode 100644
-index 0000000..7416f91
---- /dev/null
-+++ b/migrations/20260626_creative_services.sql
-@@ -0,0 +1,125 @@
-+-- Additive Photography & Videography intake tables for Forge.
-+-- Existing forge_job_leads and forge_worker_leads remain valid generic intake targets.
-+
-+create extension if not exists pgcrypto;
-+
-+do $$
-+begin
-+  if not exists (
-+    select 1 from pg_type t
-+    join pg_namespace n on n.oid = t.typnamespace
-+    where t.typname = 'creative_service_request_status'
-+      and n.nspname = 'public'
-+  ) then
-+    create type public.creative_service_request_status as enum (
-+      'submitted',
-+      'reviewing',
-+      'quoted',
-+      'accepted',
-+      'assigned',
-+      'completed',
-+      'canceled'
-+    );
-+  end if;
-+end
-+$$;
-+
-+do $$
-+begin
-+  if not exists (
-+    select 1 from pg_type t
-+    join pg_namespace n on n.oid = t.typnamespace
-+    where t.typname = 'creative_provider_application_status'
-+      and n.nspname = 'public'
-+  ) then
-+    create type public.creative_provider_application_status as enum (
-+      'draft',
-+      'submitted',
-+      'under_review',
-+      'approved',
-+      'rejected',
-+      'suspended'
-+    );
-+  end if;
-+end
-+$$;
-+
-+create table if not exists public.creative_service_requests (
-+  id uuid primary key default gen_random_uuid(),
-+  source_id text,
-+  customer_name text not null,
-+  email text not null,
-+  phone text not null,
-+  city text not null,
-+  service_type text not null,
-+  shoot_date date,
-+  shoot_start_time text,
-+  estimated_duration text,
-+  shoot_location text not null,
-+  media_type text not null,
-+  budget_range text not null,
-+  delivery_deadline text,
-+  event_description text not null,
-+  venue_name text,
-+  guest_count text,
-+  number_of_locations text,
-+  indoor_outdoor text,
-+  style_preference text,
-+  inspiration_link text,
-+  inspiration_uploads text,
-+  shot_list text,
-+  second_shooter_needed text,
-+  drone_requested text,
-+  raw_footage_requested text,
-+  social_clips_requested text,
-+  same_day_preview_requested text,
-+  contact_consent boolean not null default false,
-+  terms_accepted boolean not null default false,
-+  privacy_acknowledged boolean not null default false,
-+  status public.creative_service_request_status not null default 'submitted',
-+  admin_notes text,
-+  created_at timestamptz not null default now(),
-+  updated_at timestamptz not null default now()
-+);
-+
-+create table if not exists public.creative_provider_applications (
-+  id uuid primary key default gen_random_uuid(),
-+  source_email text,
-+  first_name text not null,
-+  last_name text not null,
-+  business_name text,
-+  email text not null,
-+  phone text not null,
-+  city text not null,
-+  services_offered text not null,
-+  portfolio_link text not null,
-+  social_link text,
-+  years_experience text not null,
-+  gear_summary text not null,
-+  editing_software text not null,
-+  availability text not null,
-+  service_area text not null,
-+  starting_rate text not null,
-+  wedding_experience text,
-+  event_experience text,
-+  real_estate_experience text,
-+  product_experience text,
-+  drone_capability text,
-+  drone_certification_upload text,
-+  insurance_upload text,
-+  sample_gallery_links text,
-+  video_reel_link text,
-+  profile_photo_upload text,
-+  bio text,
-+  insurance_notes text,
-+  provider_terms_accepted boolean not null default false,
-+  privacy_acknowledged boolean not null default false,
-+  featured boolean not null default false,
-+  status public.creative_provider_application_status not null default 'submitted',
-+  admin_notes text,
-+  created_at timestamptz not null default now(),
-+  updated_at timestamptz not null default now()
-+);
-+
-+alter table public.creative_service_requests enable row level security;
-+alter table public.creative_provider_applications enable row level security;
