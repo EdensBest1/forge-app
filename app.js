@@ -1433,8 +1433,48 @@ const opportunitySteps = [
   ["4", "Apply outside Forge", "Submit only through the official school, union, employer, or program channel."],
   ["5", "Follow up", "Save the next date and contact so Forge can help the operator keep momentum."]
 ];
+const admitlyPathwayOptions = [
+  "College",
+  "Trade School",
+  "Apprenticeship",
+  "Union Program",
+  "Certification",
+  "CDL / Driving",
+  "Healthcare Certificate",
+  "Construction Career",
+  "Automotive / Diesel",
+  "Creative / Media / Photography / Videography",
+  "Entrepreneurship",
+  "Other"
+];
+const academyOptions = [
+  "Apply to Trade School",
+  "Find an Apprenticeship",
+  "Build My Resume",
+  "Find Blue-Collar Jobs",
+  "Join a Union Pathway",
+  "Get Certified",
+  "Hire Trained Workers",
+  "Partner as a School or Employer"
+];
+const pathwayStatuses = ["New Lead", "Contacted", "Intake Complete", "Application Started", "Documents Needed", "Submitted", "Interview / Placement", "Accepted", "Hired / Placed", "Not Qualified", "Paused"];
+const forgeCareerPlusFeatures = [
+  "AI resume builder",
+  "AI cover letter / application helper",
+  "Trade school application support",
+  "Apprenticeship application support",
+  "Scholarship/grant search",
+  "Interview prep",
+  "Priority worker profile",
+  "Priority job placement alerts",
+  "Career dashboard"
+];
+const academyTradeOptions = ["Electrical", "Welding", "HVAC", "Plumbing", "Roofing / construction", "CDL / logistics", "Diesel / automotive", "Heavy equipment", "Fire / EMS", "CNA / medical assistant", "Agriculture / farm advancement", "Creative media", "Blue-collar AI field tech", "Other"];
+const fundingNeedOptions = ["Not sure", "Needs scholarships/grants", "Needs financial aid", "Can self-pay", "Employer sponsored", "Low-cost options only"];
 const routeByScreen = {
   autos: "/auto",
+  "forge-academy": "/forge-academy",
+  "trade-pathways": "/trade-pathways",
   "road-rescue": "/road-rescue",
   creative: "/photography",
   "creative-request": "/photography/request",
@@ -1452,6 +1492,26 @@ const routeByScreen = {
 const screenByPath = {
   "/auto": "autos",
   "/auto/": "autos",
+  "/forge-academy": "forge-academy",
+  "/forge-academy/": "forge-academy",
+  "/forge-academy/apply": "forge-academy",
+  "/forge-academy/apply/": "forge-academy",
+  "/forge-academy/employers": "forge-academy",
+  "/forge-academy/employers/": "forge-academy",
+  "/forge-academy/schools": "forge-academy",
+  "/forge-academy/schools/": "forge-academy",
+  "/dashboard/career": "forge-academy",
+  "/dashboard/career/": "forge-academy",
+  "/admin/forge-academy": "admin",
+  "/admin/forge-academy/": "admin",
+  "/trade-pathways": "trade-pathways",
+  "/trade-pathways/": "trade-pathways",
+  "/trade-pathways/apply": "trade-pathways",
+  "/trade-pathways/apply/": "trade-pathways",
+  "/dashboard/trade-pathways": "trade-pathways",
+  "/dashboard/trade-pathways/": "trade-pathways",
+  "/admin/trade-pathways": "admin",
+  "/admin/trade-pathways/": "admin",
   "/road-rescue": "road-rescue",
   "/road-rescue/": "road-rescue",
   "/photography": "creative",
@@ -2471,6 +2531,143 @@ const seedState = {
       created: "Today"
     }
   ],
+  tradePathwayLeads: [
+    {
+      id: "trade-pathway-demo",
+      sourceApp: "admitly",
+      leadType: "Admitly Trade Pathways",
+      fullName: "Sample Admitly Applicant",
+      email: "student@example.com",
+      phone: "(541) 555-4410",
+      city: "Medford",
+      state: "OR",
+      educationLevel: "High school graduate",
+      ageRange: "18-24",
+      pathway: "Trade School",
+      desiredTrade: "Welding",
+      timeline: "Next 3 months",
+      fundingNeed: "Needs scholarships/grants",
+      workExperience: "Some hands-on experience",
+      resumeText: "",
+      essayHelp: "Yes",
+      scholarshipHelp: "Yes",
+      jobHelp: "Yes",
+      consentToContact: true,
+      status: "New Lead",
+      priority: "Warm",
+      notes: "Demo Admitly lead for trade school application planning.",
+      created: "Today"
+    }
+  ],
+  forgeAcademyLeads: [
+    {
+      id: "forge-academy-demo",
+      sourceApp: "forge",
+      leadType: "Student / Worker Career Intake",
+      fullName: "Sample Forge Worker",
+      email: "worker@example.com",
+      phone: "(541) 555-8831",
+      city: "Medford",
+      state: "OR",
+      desiredTrade: "Electrical",
+      currentExperience: "Entry-level helper",
+      hasTransportation: "Yes",
+      hasDriversLicense: "Yes",
+      needsTraining: "Yes",
+      needsJobNow: "Yes",
+      needsResume: "Yes",
+      interestedCareerPlus: "Yes",
+      consentToContact: true,
+      status: "New Lead",
+      priority: "Hot",
+      notes: "Demo Forge Academy lead for apprenticeship and resume support.",
+      created: "Today"
+    }
+  ],
+  employerTrainingPartners: [
+    {
+      id: "employer-training-demo",
+      sourceApp: "forge",
+      leadType: "Employer Training Partner",
+      businessName: "Rogue Valley Electrical Demo Co.",
+      contactName: "Demo Hiring Manager",
+      email: "hiring@example.com",
+      phone: "(541) 555-6601",
+      tradeCategory: "Electrical",
+      hiringNeeds: "Entry-level helpers and apprentices",
+      apprenticeshipAvailability: "Interested",
+      willingToTrain: "Yes",
+      insuranceLicense: "License/insurance review needed before public matching",
+      notes: "Demo employer partner for Forge Academy.",
+      status: "New Lead",
+      priority: "Warm",
+      created: "Today"
+    }
+  ],
+  schoolPartners: [
+    {
+      id: "school-partner-demo",
+      sourceApp: "admitly",
+      leadType: "School / Program Partner",
+      schoolName: "Southern Oregon Trade Program Demo",
+      contactName: "Demo Program Director",
+      email: "program@example.com",
+      phone: "(541) 555-7702",
+      programTypes: "Welding, electrical, HVAC",
+      location: "Medford, OR",
+      costRange: "$2,500 - $12,000",
+      financialAidAvailable: "Yes",
+      enrollmentDeadlines: "Rolling / next cohort TBD",
+      notes: "Demo program partner for Admitly Trade Pathways.",
+      status: "New Lead",
+      priority: "Warm",
+      created: "Today"
+    }
+  ],
+  resumeRequests: [
+    {
+      id: "resume-request-demo",
+      sourceApp: "forge",
+      leadType: "Forge Career+ Resume Request",
+      fullName: "Sample Resume Applicant",
+      email: "resume@example.com",
+      phone: "(541) 555-9012",
+      city: "Medford",
+      state: "OR",
+      pathway: "Apprenticeship",
+      desiredTrade: "Diesel / automotive",
+      experienceLevel: "Some hands-on experience",
+      status: "New Lead",
+      priority: "Warm",
+      notes: "Wants AI resume builder and interview prep when Forge Career+ opens.",
+      consentToContact: true,
+      created: "Today"
+    }
+  ],
+  forgeCareerProfiles: [
+    {
+      id: "career-profile-mike",
+      sourceApp: "forge",
+      leadType: "Forge Career Profile",
+      fullName: "Mike Jones",
+      email: "mike@example.com",
+      phone: "(541) 555-9876",
+      city: "Medford",
+      state: "OR",
+      desiredTrade: "Handyman / construction",
+      certifications: "Basic tools, jobsite experience",
+      tradeSchoolInterest: "Maybe",
+      apprenticeshipInterest: "Yes",
+      resumeHelpNeeded: "Yes",
+      entryLevelAvailable: "Yes",
+      willingToTravel: "Yes",
+      preferredRadius: "25 miles",
+      status: "New Lead",
+      priority: "Warm",
+      notes: "Demo worker career profile enhancement.",
+      created: "Today"
+    }
+  ],
   activity: [
     { at: "Today", text: "Forge MVP opened for early lead capture." },
     { at: "Today", text: "Demo worker and job leads loaded." }
@@ -2670,6 +2867,12 @@ function normalizeState(value) {
   next.northstarLeads = value?.northstarLeads || seedState.northstarLeads;
   next.flexLeads = value?.flexLeads || seedState.flexLeads;
   next.opportunityLeads = value?.opportunityLeads || seedState.opportunityLeads;
+  next.tradePathwayLeads = value?.tradePathwayLeads || seedState.tradePathwayLeads;
+  next.forgeAcademyLeads = value?.forgeAcademyLeads || seedState.forgeAcademyLeads;
+  next.employerTrainingPartners = value?.employerTrainingPartners || seedState.employerTrainingPartners;
+  next.schoolPartners = value?.schoolPartners || seedState.schoolPartners;
+  next.resumeRequests = value?.resumeRequests || seedState.resumeRequests;
+  next.forgeCareerProfiles = value?.forgeCareerProfiles || seedState.forgeCareerProfiles;
   next.worker = normalizeDemoWorker(value?.worker || seedState.worker);
   next.workers = value?.workers || [next.worker, ...seedState.workers.slice(1)];
   next.referrals = value?.referrals || seedState.referrals;
@@ -2736,6 +2939,12 @@ function normalizeState(value) {
   next.northstarLeads = next.northstarLeads.map((lead) => ({ status: "New", created: "Today", email: "", adminNotes: "", servicesNeeded: [], category: NORTHSTAR_CATEGORY_VALUE, secondaryCategory: NORTHSTAR_OPERATIONS_CATEGORY_VALUE, ...lead }));
   next.flexLeads = next.flexLeads.map((lead) => normalizeFlexLead(lead));
   next.opportunityLeads = next.opportunityLeads.map((lead) => ({ status: "New", created: "Today", email: "", note: "", location: "Medford, OR", ...lead }));
+  next.tradePathwayLeads = next.tradePathwayLeads.map((lead) => ({ sourceApp: "admitly", leadType: "Admitly Trade Pathways", status: "New Lead", priority: "Warm", created: "Today", consentToContact: false, notes: "", ...lead }));
+  next.forgeAcademyLeads = next.forgeAcademyLeads.map((lead) => ({ sourceApp: "forge", leadType: "Student / Worker Career Intake", status: "New Lead", priority: "Warm", created: "Today", consentToContact: false, notes: "", ...lead }));
+  next.employerTrainingPartners = next.employerTrainingPartners.map((lead) => ({ sourceApp: "forge", leadType: "Employer Training Partner", status: "New Lead", priority: "Warm", created: "Today", notes: "", ...lead }));
+  next.schoolPartners = next.schoolPartners.map((lead) => ({ sourceApp: "admitly", leadType: "School / Program Partner", status: "New Lead", priority: "Warm", created: "Today", notes: "", ...lead }));
+  next.resumeRequests = next.resumeRequests.map((lead) => ({ sourceApp: "forge", leadType: "Forge Career+ Resume Request", status: "New Lead", priority: "Warm", created: "Today", consentToContact: false, notes: "", ...lead }));
+  next.forgeCareerProfiles = next.forgeCareerProfiles.map((lead) => ({ sourceApp: "forge", leadType: "Forge Career Profile", status: "New Lead", priority: "Warm", created: "Today", notes: "", ...lead }));
   next.activity = value?.activity || seedState.activity;
   next.lastConfirmation = value?.lastConfirmation || seedState.lastConfirmation;
   return next;
@@ -3373,6 +3582,8 @@ function normalizeScreen(screen) {
   if (["northstar", "northstar-creative", "northstar-creative-co", "business-growth", "marketing", NORTHSTAR_CATEGORY_VALUE, NORTHSTAR_OPERATIONS_CATEGORY_VALUE].includes(screen)) return "northstar";
   if (["capital", "forge/capital", "forge-flex", "forge/flex", "partners/flex", "flex", "capital-desk"].includes(screen)) return "capital";
   if (["manufacturing", "manufacturing-nutraceuticals", "forge/manufacturing", "nutraceuticals", "supplements", "vitamins", MANUFACTURING_CATEGORY_VALUE, MANUFACTURING_CATEGORY_SLUG].includes(screen)) return "manufacturing";
+  if (["academy", "forge-academy", "forge/academy", "dashboard/career", "career-plus", "forge-career-plus"].includes(screen)) return "forge-academy";
+  if (["admitly", "trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
   if (["building", "forge-building", "buildings"].includes(screen)) return "building";
   if (["admin/building-leads", "building-leads", "admin-building"].includes(screen)) return "admin-building-leads";
   if (screen === "admin/projects") return "admin-projects";
@@ -3433,7 +3644,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/auto", "/auto/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -3458,6 +3669,8 @@ function render() {
   renderNorthStarPage();
   renderCapitalPage();
   renderManufacturingPage();
+  renderForgeAcademy();
+  renderAdmitlyTradePathways();
   renderProviderGrowthTools();
   renderRequiredTradeCategories();
   renderServiceVerticals();
@@ -3492,6 +3705,7 @@ function render() {
   renderOutreachBatch();
   renderSessionHistory();
   renderAdminExtras();
+  renderAcademyAdmin();
   renderFlexLeadsAdmin();
   renderLaunchGoals();
   renderFounding200();
@@ -3905,6 +4119,11 @@ function renderSelects() {
   fillSelect("#manufacturingDosageFilter", ["All Dosage Forms", ...manufacturingDosageForms]);
   fillSelect("#manufacturingMoqFilter", manufacturingMoqFilterOptions);
   fillSelect("#manufacturingCertificationFilter", ["All Certifications", ...manufacturingCertificationOptions]);
+  fillSelect("#academyDesiredTrade", academyTradeOptions);
+  fillSelect("#academyEmployerTrade", academyTradeOptions);
+  fillSelect("#admitlyPathway", admitlyPathwayOptions);
+  fillSelect("#admitlyDesiredTrade", academyTradeOptions);
+  fillSelect("#admitlyFundingNeed", fundingNeedOptions);
   fillSelect("#projectType", projectTypeOptions);
   fillSelect("#projectBudgetRange", budgetRangeOptions);
   fillSelect("#projectStage", projectStageOptions);
@@ -4241,7 +4460,7 @@ function renderCapitalPage() {
   });
 
   helps.innerHTML = [
-    "Built for contractors, builders, landscapers, roofers, fencing companies, iron gate companies, auto shops, transport companies, diesel truck operators, photographers, videographers, agencies, restaurants, and service businesses that spend money before they get paid."
+    "Built for contractors, builders, landscapers, roofers, fencing companies, custom iron gate companies, auto shops, body shops, transport companies, diesel truck operators, photographers, videographers, agencies, restaurants, and service businesses that spend money before they get paid."
   ].map((item) => `<p>${escapeHtml(item)}</p>`).join("");
 
   problems.innerHTML = [
@@ -4249,24 +4468,26 @@ function renderCapitalPage() {
     "Fuel, labor, and vendor bills hit before invoices are paid",
     "Employees need controlled spending cards",
     "The owner wants cleaner expense tracking",
-    "The business needs better systems before scaling"
+    "The business needs better systems before scaling",
+    "Jobs are coming in, but cash flow is tight",
+    "Growth is possible, but the business needs structure"
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   mayHelp.innerHTML = [
-    "Business credit and cash-flow tools",
-    "Vendor payments, AP workflows, and timing support",
+    "Business credit and cash-flow timing",
+    "Vendor payments and business banking tools",
     "Employee cards and controlled expense management",
-    "Fuel, materials, equipment, and growth-capital planning",
-    "Cleaner spend visibility before a business scales"
+    "Growth capital review",
+    "Fuel/material/equipment spending and payroll timing"
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   steps.innerHTML = [
     "Tell Forge what your business needs.",
-    "Forge checks whether you look like a fit.",
-    "Forge checks consent, partner approval, and data-sharing approval.",
-    "If a finance partner is approved and configured, Forge can share the next review step.",
-    "The finance partner handles eligibility, approval, onboarding, activation, and support.",
-    "Forge can also help with leads, marketing, websites, CRM, hiring, and operations."
+    "Forge reviews whether your business looks like a fit.",
+    "Forge sends you the official Flex referral link if appropriate.",
+    "You apply directly with Flex.",
+    "Flex handles approval, onboarding, activation, and product support.",
+    "Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations."
   ].map((item, index) => `
     <article>
       <strong>${index + 1}</strong>
@@ -4281,6 +4502,9 @@ function renderCapitalPage() {
       <p>${escapeHtml(lead.industry)} · ${escapeHtml(lead.city || "City pending")} · score ${lead.lead_score}</p>
     </article>
   `).join("") || `<article><p class="muted">No Capital Desk leads yet.</p></article>`;
+
+  const continueButton = document.querySelector("#flexContinueButton");
+  if (continueButton) continueButton.href = flexReferralUrl();
 }
 
 function renderManufacturingPage() {
@@ -4920,6 +5144,161 @@ function renderOpportunities() {
       <button class="btn ghost small" type="button" data-action="copy-opportunity-lead" data-opportunity-id="${escapeHtml(lead.id)}">Copy Lead</button>
     </article>
   `).join("") || `<p class="muted">No career interest saved yet.</p>`;
+}
+
+function renderForgeAcademy() {
+  const optionGrid = document.querySelector("#academyOptionGrid");
+  const featureGrid = document.querySelector("#careerPlusFeatureGrid");
+  const leadList = document.querySelector("#academyLeadList");
+  if (!optionGrid || !featureGrid || !leadList) return;
+  optionGrid.innerHTML = academyOptions.map((option) => `
+    <article>
+      <span>${escapeHtml(option.includes("Hire") || option.includes("Partner") ? "Partner" : "Worker")}</span>
+      <strong>${escapeHtml(option)}</strong>
+      <p>${escapeHtml(academyOptionCopy(option))}</p>
+    </article>
+  `).join("");
+  featureGrid.innerHTML = forgeCareerPlusFeatures.map((feature) => `<article><strong>${escapeHtml(feature)}</strong><span>Pricing coming soon.</span></article>`).join("");
+  leadList.innerHTML = (state.forgeAcademyLeads || []).map((lead) => `
+    <article>
+      <div>
+        <span>${escapeHtml(lead.status)} · ${escapeHtml(lead.desiredTrade || "Career path")}</span>
+        <strong>${escapeHtml(lead.fullName)} · ${escapeHtml(lead.city || "Medford")}, ${escapeHtml(lead.state || "OR")}</strong>
+        <p>${escapeHtml(lead.notes || lead.currentExperience || "No notes saved yet.")}</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-academy-lead" data-academy-id="${escapeHtml(lead.id)}">Copy Lead</button>
+    </article>
+  `).join("") || `<p class="muted">No Forge Academy leads yet.</p>`;
+}
+
+function academyOptionCopy(option) {
+  const copy = {
+    "Apply to Trade School": "Use Admitly to organize programs, deadlines, costs, documents, and next application steps.",
+    "Find an Apprenticeship": "Match interests with employer, union, and on-the-job training pathways.",
+    "Build My Resume": "Prepare a blue-collar resume and work-history summary for jobs, schools, and apprenticeships.",
+    "Find Blue-Collar Jobs": "Connect career planning back to Forge jobs and local employer opportunities.",
+    "Join a Union Pathway": "Track union intake windows, tests, interviews, and required documents.",
+    "Get Certified": "Plan CDL, healthcare, safety, construction, automotive, and other certification steps.",
+    "Hire Trained Workers": "Help employers find people who are training, certified, or ready to learn.",
+    "Partner as a School or Employer": "Invite schools, programs, contractors, and employers into the workforce pipeline."
+  };
+  return copy[option] || "Save the right career path and next action.";
+}
+
+function renderAdmitlyTradePathways() {
+  const pathwayGrid = document.querySelector("#admitlyPathwayGrid");
+  const aiGrid = document.querySelector("#admitlyAiGrid");
+  const dashboardGrid = document.querySelector("#admitlyDashboardGrid");
+  if (!pathwayGrid || !aiGrid || !dashboardGrid) return;
+  pathwayGrid.innerHTML = admitlyPathwayOptions.map((pathway) => `
+    <article>
+      <span>Pathway</span>
+      <strong>${escapeHtml(pathway)}</strong>
+      <p>${escapeHtml(pathway === "College" ? "Admissions, essays, deadlines, scholarships, and school planning." : "Applications, requirements, funding, and career steps organized with Admitly.")}</p>
+    </article>
+  `).join("");
+  aiGrid.innerHTML = ["AI application coach", "AI essay/personal statement helper", "AI resume builder", "AI scholarship finder", "AI deadline planner", "AI trade-school matching"].map((feature) => `
+    <article><strong>${escapeHtml(feature)}</strong><p>Placeholder for future Admitly AI workflow.</p></article>
+  `).join("");
+  dashboardGrid.innerHTML = ["My Pathway", "Applications", "Deadlines", "Resume", "Scholarships / Grants", "Recommended Schools", "Recommended Apprenticeships", "Recommended Forge Jobs"].map((item) => `
+    <article><strong>${escapeHtml(item)}</strong><span>Dashboard card</span></article>
+  `).join("");
+}
+
+function renderAcademyAdmin() {
+  const stats = document.querySelector("#academyAdminStats");
+  const partners = document.querySelector("#adminAcademyPartners");
+  if (!stats || !partners) return;
+  const academy = state.forgeAcademyLeads || [];
+  const admitly = state.tradePathwayLeads || [];
+  const employers = state.employerTrainingPartners || [];
+  const schools = state.schoolPartners || [];
+  const resumes = state.resumeRequests || [];
+  renderTable("#adminForgeAcademyTable", academy.map((lead) => ({
+    name: lead.fullName,
+    phone: lead.phone,
+    city: `${lead.city || ""}, ${lead.state || ""}`,
+    trade: lead.desiredTrade,
+    training: lead.needsTraining,
+    jobNow: lead.needsJobNow,
+    resume: lead.needsResume,
+    careerPlus: lead.interestedCareerPlus,
+    status: lead.status,
+    priority: lead.priority
+  })));
+  renderTable("#adminTradePathwaysTable", admitly.map((lead) => ({
+    name: lead.fullName,
+    phone: lead.phone,
+    city: `${lead.city || ""}, ${lead.state || ""}`,
+    pathway: lead.pathway,
+    trade: lead.desiredTrade,
+    timeline: lead.timeline,
+    funding: lead.fundingNeed,
+    status: lead.status,
+    priority: lead.priority
+  })));
+  stats.innerHTML = [
+    ["Career Leads", academy.length + admitly.length],
+    ["Trade School Leads", admitly.filter((lead) => /trade|certification|cdl|healthcare|construction|automotive/i.test(lead.pathway || "")).length],
+    ["Apprenticeship Leads", [...academy, ...admitly].filter((lead) => /apprentice|union/i.test(`${lead.pathway || ""} ${lead.notes || ""}`)).length],
+    ["Employer Partners", employers.length],
+    ["School Partners", schools.length],
+    ["Resume Requests", resumes.length],
+    ["Placement Opportunities", employers.filter((lead) => /yes|interested|available/i.test(`${lead.willingToTrain || ""} ${lead.apprenticeshipAvailability || ""}`)).length]
+  ].map(([label, value]) => `<article><strong>${escapeHtml(String(value))}</strong><span>${escapeHtml(label)}</span></article>`).join("");
+  const adminCard = (lead, type, action, idName) => `
+    <article>
+      <span>${escapeHtml(type)} · ${escapeHtml(lead.status || "New Lead")}</span>
+      <strong>${escapeHtml(lead.businessName || lead.schoolName || lead.fullName || lead.contactName || "Academy lead")}</strong>
+      <p>${escapeHtml(lead.desiredTrade || lead.tradeCategory || lead.programTypes || lead.pathway || lead.notes || "No notes saved yet.")}</p>
+      <button class="btn ghost small" type="button" data-action="${action}" data-${idName}="${escapeHtml(lead.id)}">Copy</button>
+    </article>
+  `;
+  partners.innerHTML = [
+    ...employers.map((lead) => adminCard(lead, "Employer Partner", "copy-academy-employer", "employer-id")),
+    ...schools.map((lead) => adminCard(lead, "School Partner", "copy-academy-school", "school-id")),
+    ...resumes.map((lead) => adminCard(lead, "Resume Request", "copy-resume-request", "resume-id"))
+  ].join("") || `<p class="muted">No Academy partner or resume requests yet.</p>`;
+  renderAcademyPipelines();
+}
+
+function renderAcademyPipelines() {
+  const academyTarget = document.querySelector("#adminForgeAcademyPipeline");
+  const admitlyTarget = document.querySelector("#adminTradePathwaysPipeline");
+  if (academyTarget) {
+    academyTarget.innerHTML = (state.forgeAcademyLeads || []).map((lead) => academyPipelineCard(lead, "academy")).join("") || `<article class="lead-card"><p class="muted">No Forge Academy leads yet.</p></article>`;
+  }
+  if (admitlyTarget) {
+    admitlyTarget.innerHTML = (state.tradePathwayLeads || []).map((lead) => academyPipelineCard(lead, "trade-pathway")).join("") || `<article class="lead-card"><p class="muted">No Admitly Trade Pathways leads yet.</p></article>`;
+  }
+}
+
+function academyPipelineCard(lead, kind) {
+  const idAttr = kind === "academy" ? "data-academy-status" : "data-trade-pathway-status";
+  const noteAttr = kind === "academy" ? "data-academy-notes" : "data-trade-pathway-notes";
+  const copyAction = kind === "academy" ? "copy-academy-lead" : "copy-trade-pathway-lead";
+  const dataName = kind === "academy" ? "academy-id" : "trade-pathway-id";
+  return `
+    <article class="lead-card">
+      <div>
+        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.pathway || lead.desiredTrade || "Career pathway")}</span>
+        <h3>${escapeHtml(lead.fullName)}</h3>
+        <p>${escapeHtml(lead.phone || "No phone")} · ${escapeHtml(lead.email || "No email")} · ${escapeHtml(lead.city || "Medford")}, ${escapeHtml(lead.state || "OR")}</p>
+      </div>
+      <label>Status
+        <select ${idAttr}="${escapeHtml(lead.id)}">
+          ${pathwayStatuses.map((status) => `<option ${status === lead.status ? "selected" : ""}>${escapeHtml(status)}</option>`).join("")}
+        </select>
+      </label>
+      <label>Notes
+        <textarea ${noteAttr}="${escapeHtml(lead.id)}" rows="2">${escapeHtml(lead.notes || "")}</textarea>
+      </label>
+      <div class="lead-actions">
+        ${contactLinks(lead.phone, lead.email, academyLeadText(lead))}
+        <button class="btn ghost small" type="button" data-action="${copyAction}" data-${dataName}="${escapeHtml(lead.id)}">Copy Lead</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderBuildingPage() {
@@ -7210,7 +7589,7 @@ function safetyChecks() {
 }
 
 function totalLeadCount() {
-  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.opportunityLeads || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
+  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length + (state.employerTrainingPartners || []).length + (state.schoolPartners || []).length + (state.resumeRequests || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
 }
 
 function renderLaunchCommandCenter() {
@@ -7266,13 +7645,13 @@ function launchCommandRows() {
     },
     {
       label: "Career leads",
-      total: (state.opportunityLeads || []).length,
-      needTouch: (state.opportunityLeads || []).filter((lead) => ["New", "Packet Started"].includes(lead.status)).length,
-      contacted: (state.opportunityLeads || []).filter((lead) => lead.status === "Contacted").length,
-      moving: (state.opportunityLeads || []).filter((lead) => ["Packet Started", "Applied"].includes(lead.status)).length,
-      next: "Clarify the path, copy the application plan, and move the applicant toward official program or employer channels.",
-      screen: "opportunities",
-      action: "Career Path"
+      total: (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length,
+      needTouch: [...(state.opportunityLeads || []), ...(state.tradePathwayLeads || []), ...(state.forgeAcademyLeads || [])].filter((lead) => ["New", "New Lead", "Packet Started"].includes(lead.status)).length,
+      contacted: [...(state.opportunityLeads || []), ...(state.tradePathwayLeads || []), ...(state.forgeAcademyLeads || [])].filter((lead) => lead.status === "Contacted").length,
+      moving: [...(state.opportunityLeads || []), ...(state.tradePathwayLeads || []), ...(state.forgeAcademyLeads || [])].filter((lead) => ["Intake Complete", "Application Started", "Submitted", "Interview / Placement", "Accepted", "Hired / Placed", "Packet Started", "Applied"].includes(lead.status)).length,
+      next: "Move Forge Academy and Admitly applicants from intake into official school, union, employer, or program channels.",
+      screen: "forge-academy",
+      action: "Academy"
     },
     {
       label: "Homebuilding",
@@ -7726,6 +8105,7 @@ function renderFlexLeadsAdmin() {
         <th>Score</th>
         <th>Status</th>
         <th>Notes</th>
+        <th>Date</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -7740,6 +8120,7 @@ function renderFlexLeadsAdmin() {
           <td>
             <span>${escapeHtml(lead.primary_need || "Need pending")}</span><br />
             <small>${escapeHtml(lead.monthly_spend_range || "Spend pending")} · ${escapeHtml(lead.years_in_business || "Years pending")} · ${escapeHtml(lead.employee_count || "Team pending")}</small>
+            <br /><small>${lead.interested_in_forge_job_leads ? "Forge job leads · " : ""}${lead.interested_in_north_star_marketing ? "NorthStar · " : ""}${lead.interested_in_payment_processing ? "Payments · " : ""}${lead.interested_in_website_crm_automation ? "Website/CRM" : ""}</small>
           </td>
           <td><strong>${lead.lead_score}</strong></td>
           <td>
@@ -7749,11 +8130,17 @@ function renderFlexLeadsAdmin() {
             </select>
           </td>
           <td><textarea data-flex-notes="${escapeHtml(lead.id)}" rows="3" placeholder="Outreach, consent, Flex handoff, or upsell notes">${escapeHtml(lead.notes || "")}</textarea></td>
+          <td>${escapeHtml(lead.created_at || "Today")}</td>
           <td>
             <div class="lead-actions">
               ${contactLinks(lead.phone, lead.email, flexOutreachText(lead))}
               <button class="btn ghost small" type="button" data-action="copy-flex-outreach" data-flex-id="${escapeHtml(lead.id)}">Copy outreach message</button>
               <button class="btn blue small" type="button" data-action="open-flex-referral" data-flex-lead-id="${escapeHtml(lead.id)}">Open Flex Referral Link</button>
+              <button class="btn ghost small" type="button" data-action="mark-flex-status" data-flex-id="${escapeHtml(lead.id)}" data-flex-status-value="contacted">Mark as contacted</button>
+              <button class="btn ghost small" type="button" data-action="mark-flex-status" data-flex-id="${escapeHtml(lead.id)}" data-flex-status-value="qualified">Mark as qualified</button>
+              <button class="btn ghost small" type="button" data-action="mark-flex-status" data-flex-id="${escapeHtml(lead.id)}" data-flex-status-value="flex_link_sent">Mark as Flex link sent</button>
+              <button class="btn ghost small" type="button" data-action="mark-flex-status" data-flex-id="${escapeHtml(lead.id)}" data-flex-status-value="forge_upsell_offered">Mark as Forge upsell offered</button>
+              <button class="btn ghost small" type="button" data-action="mark-flex-status" data-flex-id="${escapeHtml(lead.id)}" data-flex-status-value="forge_client_won">Mark as Forge client won</button>
               <button class="btn ghost small" type="button" data-action="create-flex-upsell-task" data-flex-id="${escapeHtml(lead.id)}">Create Forge Upsell Task</button>
             </div>
           </td>
@@ -8785,9 +9172,10 @@ function submitFlexLead() {
     monthly_spend_range: fieldValue("#flexMonthlySpend"),
     employee_count: fieldValue("#flexEmployeeCount"),
     primary_need: fieldValue("#flexPrimaryNeed"),
-    interested_in_forge_services: fieldChecked("#flexInterestedForge"),
+    interested_in_forge_job_leads: fieldChecked("#flexInterestedForge"),
     interested_in_north_star_marketing: fieldChecked("#flexInterestedNorthstar"),
     interested_in_payment_processing: fieldChecked("#flexInterestedProcessorHelp"),
+    interested_in_website_crm_automation: fieldChecked("#flexInterestedWebsiteCrm"),
     consent_to_contact: fieldChecked("#flexConsentToContact"),
     consent_to_receive_flex_referral: fieldChecked("#flexConsentReferral"),
     referral_source: "forge_capital_desk",
@@ -8799,8 +9187,8 @@ function submitFlexLead() {
   addActivity(`Flex Capital Desk lead saved: ${lead.business_name} (${lead.industry}) score ${lead.lead_score}.`);
   state.lastConfirmation = {
     type: "flex",
-    title: "Forge Capital Desk lead saved.",
-    body: "Forge saved your basic business information and consent. Finance partner routing stays pending until approval and data-sharing gates are true.",
+    title: "Thank you.",
+    body: "Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.",
     details: [
       `${lead.business_name} · ${lead.industry}`,
       `${lead.primary_need || "Need pending"} · score ${lead.lead_score}`,
@@ -8816,10 +9204,31 @@ function submitFlexLead() {
   };
   saveState();
   sendLead("forge-flex", flexLeadWebhookPayload(lead));
-  showToast("Capital Desk lead saved.");
+  sendConfiguredFlexWebhooks(lead);
+  showFlexLeadSuccess(lead);
+  showToast("Capital Desk request received.");
   document.querySelector("#flexLeadForm").reset();
   renderCapitalPage();
-  navigate("confirm");
+}
+
+function showFlexLeadSuccess(lead) {
+  const form = document.querySelector("#flexLeadForm");
+  const success = document.querySelector("#flexLeadSuccess");
+  const continueButton = document.querySelector("#flexContinueButton");
+  if (!form || !success) return;
+  form.classList.add("hidden");
+  success.classList.remove("hidden");
+  if (continueButton) continueButton.href = flexReferralUrl();
+  success.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetFlexForm() {
+  const form = document.querySelector("#flexLeadForm");
+  const success = document.querySelector("#flexLeadSuccess");
+  if (!form || !success) return;
+  success.classList.add("hidden");
+  form.classList.remove("hidden");
+  focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
 }
 
 function submitManufacturingRfq() {
@@ -9283,6 +9692,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-flex-outreach") copyFlexOutreach(action.dataset.flexId);
   if (action?.dataset.action === "open-flex-referral") openFlexReferral(action.dataset.flexLeadId);
   if (action?.dataset.action === "create-flex-upsell-task") createFlexUpsellTask(action.dataset.flexId);
+  if (action?.dataset.action === "reset-flex-form") resetFlexForm();
+  if (action?.dataset.action === "mark-flex-status") markFlexStatus(action.dataset.flexId, action.dataset.flexStatusValue);
   if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
   if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");
   if (action?.dataset.action === "copy-manufacturing-brief") copyManufacturingBrief();
@@ -9323,6 +9734,16 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-opportunity-plan") copyOpportunityPlan();
   if (action?.dataset.action === "copy-opportunity-lead") copyOpportunityLead(action.dataset.opportunityId);
   if (action?.dataset.action === "copy-opportunity-leads") copyOpportunityLeads();
+  if (action?.dataset.action === "focus-academy-student") focusAutoPanel("#forgeAcademyStudentForm", "#academyFullName");
+  if (action?.dataset.action === "focus-academy-employer") focusAutoPanel("#academyEmployerForm", "#academyEmployerBusiness");
+  if (action?.dataset.action === "focus-admitly-pathway") focusAutoPanel("#admitlyTradePathwayForm", "#admitlyFullName");
+  if (action?.dataset.action === "copy-academy-brief") copyAcademyBrief();
+  if (action?.dataset.action === "copy-academy-admin") copyAcademyAdminQueue();
+  if (action?.dataset.action === "copy-academy-lead") copyAcademyLead(action.dataset.academyId);
+  if (action?.dataset.action === "copy-trade-pathway-lead") copyTradePathwayLead(action.dataset.tradePathwayId);
+  if (action?.dataset.action === "copy-academy-employer") copyAcademyEmployer(action.dataset.employerId);
+  if (action?.dataset.action === "copy-academy-school") copyAcademySchool(action.dataset.schoolId);
+  if (action?.dataset.action === "copy-resume-request") copyResumeRequest(action.dataset.resumeId);
   if (action?.dataset.action === "focus-project-intake") focusAutoPanel("#projectIntakeForm", "#projectContactName");
   if (action?.dataset.action === "focus-project-major") focusAutoPanel("#projectIntakeForm", "#projectType");
   if (action?.dataset.action === "focus-project-partner") focusAutoPanel("#projectsPartnerSpotlight", null);
@@ -9587,6 +10008,24 @@ document.addEventListener("change", (event) => {
     setBuildingLeadStatus(buildingStatus.dataset.buildingStatus, buildingStatus.value, `Status changed to ${buildingStatusLabel(buildingStatus.value)}.`);
   }
 
+  const academyStatus = event.target.closest("[data-academy-status]");
+  if (academyStatus) {
+    const lead = (state.forgeAcademyLeads || []).find((item) => item.id === academyStatus.dataset.academyStatus);
+    if (lead) lead.status = academyStatus.value;
+    addActivity(`Forge Academy status changed: ${lead?.fullName || "lead"} -> ${academyStatus.value}.`);
+    saveState();
+    renderAcademyAdmin();
+  }
+
+  const tradePathwayStatus = event.target.closest("[data-trade-pathway-status]");
+  if (tradePathwayStatus) {
+    const lead = (state.tradePathwayLeads || []).find((item) => item.id === tradePathwayStatus.dataset.tradePathwayStatus);
+    if (lead) lead.status = tradePathwayStatus.value;
+    addActivity(`Admitly Trade Pathways status changed: ${lead?.fullName || "lead"} -> ${tradePathwayStatus.value}.`);
+    saveState();
+    renderAcademyAdmin();
+  }
+
   const messageThread = event.target.closest("#messageThreadSelect");
   if (messageThread) {
     state.activeMessageThreadId = messageThread.value;
@@ -9622,6 +10061,8 @@ document.addEventListener("input", (event) => {
   const homebuildingNotes = event.target.closest("[data-homebuilding-notes]");
   const buildingNotes = event.target.closest("[data-building-notes]");
   const projectNote = event.target.closest("[data-project-note]");
+  const academyNotes = event.target.closest("[data-academy-notes]");
+  const tradePathwayNotes = event.target.closest("[data-trade-pathway-notes]");
   if (notes) {
     const job = state.jobs.find((item) => item.id === notes.dataset.jobNotes);
     if (!job) return;
@@ -9688,6 +10129,16 @@ document.addEventListener("input", (event) => {
     const lead = (state.projectLeads || []).find((item) => item.id === projectNote.dataset.projectNote);
     if (!lead) return;
     lead.adminNote = projectNote.value;
+    saveState();
+  }
+  if (academyNotes) {
+    const lead = (state.forgeAcademyLeads || []).find((item) => item.id === academyNotes.dataset.academyNotes);
+    if (lead) lead.notes = academyNotes.value;
+    saveState();
+  }
+  if (tradePathwayNotes) {
+    const lead = (state.tradePathwayLeads || []).find((item) => item.id === tradePathwayNotes.dataset.tradePathwayNotes);
+    if (lead) lead.notes = tradePathwayNotes.value;
     saveState();
   }
 });
@@ -10099,6 +10550,144 @@ document.querySelector("#opportunityForm").addEventListener("submit", (event) =>
   event.target.reset();
   setFieldValue("#opportunityLocation", "Medford, OR");
   showToast("Career interest saved.");
+  navigate("confirm");
+});
+
+document.querySelector("#forgeAcademyStudentForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const lead = {
+    id: `forge-academy-${Date.now()}`,
+    sourceApp: "forge",
+    leadType: "Student / Worker Career Intake",
+    fullName: fieldValue("#academyFullName"),
+    email: fieldValue("#academyEmail"),
+    phone: fieldValue("#academyPhone"),
+    city: fieldValue("#academyCity") || "Medford",
+    state: fieldValue("#academyState") || "OR",
+    desiredTrade: document.querySelector("#academyDesiredTrade")?.value || "",
+    currentExperience: fieldValue("#academyExperience"),
+    hasTransportation: document.querySelector("#academyTransportation")?.value || "",
+    hasDriversLicense: document.querySelector("#academyDriversLicense")?.value || "",
+    needsTraining: fieldChecked("#academyNeedsTraining") ? "Yes" : "No",
+    needsJobNow: fieldChecked("#academyNeedsJobNow") ? "Yes" : "No",
+    needsResume: fieldChecked("#academyNeedsResume") ? "Yes" : "No",
+    interestedCareerPlus: fieldChecked("#academyCareerPlus") ? "Yes" : "No",
+    consentToContact: fieldChecked("#academyConsent"),
+    status: "New Lead",
+    priority: fieldChecked("#academyNeedsJobNow") ? "Hot" : "Warm",
+    notes: fieldValue("#academyNotes"),
+    created: "Today"
+  };
+  state.forgeAcademyLeads.unshift(lead);
+  if (lead.needsResume === "Yes" || lead.interestedCareerPlus === "Yes") state.resumeRequests.unshift(resumeRequestFromAcademyLead(lead));
+  addActivity(`Forge Academy lead saved: ${lead.fullName} for ${lead.desiredTrade}.`);
+  state.lastConfirmation = academyConfirmation(lead, "Forge Academy lead saved.");
+  saveState();
+  sendLead("forge-academy", lead);
+  event.target.reset();
+  setFieldValue("#academyCity", "Medford");
+  setFieldValue("#academyState", "OR");
+  showToast("Forge Academy lead saved.");
+  navigate("confirm");
+});
+
+document.querySelector("#academyEmployerForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const lead = {
+    id: `academy-employer-${Date.now()}`,
+    sourceApp: "forge",
+    leadType: "Employer Training Partner",
+    businessName: fieldValue("#academyEmployerBusiness"),
+    contactName: fieldValue("#academyEmployerContact"),
+    email: fieldValue("#academyEmployerEmail"),
+    phone: fieldValue("#academyEmployerPhone"),
+    tradeCategory: document.querySelector("#academyEmployerTrade")?.value || "",
+    hiringNeeds: fieldValue("#academyEmployerNeeds"),
+    apprenticeshipAvailability: document.querySelector("#academyEmployerApprenticeship")?.value || "",
+    willingToTrain: document.querySelector("#academyEmployerTrain")?.value || "",
+    insuranceLicense: fieldValue("#academyEmployerLicense"),
+    notes: fieldValue("#academyEmployerNotes"),
+    status: "New Lead",
+    priority: "Warm",
+    created: "Today"
+  };
+  state.employerTrainingPartners.unshift(lead);
+  addActivity(`Forge Academy employer partner saved: ${lead.businessName}.`);
+  saveState();
+  sendLead("employer-training-partner", lead);
+  event.target.reset();
+  showToast("Employer training partner saved.");
+  navigate("admin");
+});
+
+document.querySelector("#academySchoolForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const lead = {
+    id: `academy-school-${Date.now()}`,
+    sourceApp: "admitly",
+    leadType: "School / Program Partner",
+    schoolName: fieldValue("#academySchoolName"),
+    contactName: fieldValue("#academySchoolContact"),
+    email: fieldValue("#academySchoolEmail"),
+    phone: fieldValue("#academySchoolPhone"),
+    programTypes: fieldValue("#academySchoolPrograms"),
+    location: fieldValue("#academySchoolLocation") || "Medford, OR",
+    costRange: fieldValue("#academySchoolCost"),
+    financialAidAvailable: document.querySelector("#academySchoolAid")?.value || "",
+    enrollmentDeadlines: fieldValue("#academySchoolDeadlines"),
+    notes: fieldValue("#academySchoolNotes"),
+    status: "New Lead",
+    priority: "Warm",
+    created: "Today"
+  };
+  state.schoolPartners.unshift(lead);
+  addActivity(`Academy school/program partner saved: ${lead.schoolName}.`);
+  saveState();
+  sendLead("school-program-partner", lead);
+  event.target.reset();
+  setFieldValue("#academySchoolLocation", "Medford, OR");
+  showToast("School/program partner saved.");
+  navigate("admin");
+});
+
+document.querySelector("#admitlyTradePathwayForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const lead = {
+    id: `trade-pathway-${Date.now()}`,
+    sourceApp: "admitly",
+    leadType: "Admitly Trade Pathways",
+    fullName: fieldValue("#admitlyFullName"),
+    email: fieldValue("#admitlyEmail"),
+    phone: fieldValue("#admitlyPhone"),
+    city: fieldValue("#admitlyCity") || "Medford",
+    state: fieldValue("#admitlyState") || "OR",
+    educationLevel: document.querySelector("#admitlyEducation")?.value || "",
+    ageRange: document.querySelector("#admitlyAgeRange")?.value || "",
+    pathway: document.querySelector("#admitlyPathway")?.value || "",
+    desiredTrade: document.querySelector("#admitlyDesiredTrade")?.value || "",
+    timeline: document.querySelector("#admitlyTimeline")?.value || "",
+    fundingNeed: document.querySelector("#admitlyFundingNeed")?.value || "",
+    workExperience: fieldValue("#admitlyExperience"),
+    resumeText: fieldValue("#admitlyResumeText"),
+    essayHelp: fieldChecked("#admitlyEssayHelp") ? "Yes" : "No",
+    scholarshipHelp: fieldChecked("#admitlyScholarshipHelp") ? "Yes" : "No",
+    jobHelp: fieldChecked("#admitlyJobHelp") ? "Yes" : "No",
+    consentToContact: fieldChecked("#admitlyConsent"),
+    status: "New Lead",
+    priority: document.querySelector("#admitlyTimeline")?.value === "ASAP" ? "Hot" : "Warm",
+    notes: fieldValue("#admitlyNotes"),
+    created: "Today"
+  };
+  state.tradePathwayLeads.unshift(lead);
+  if (lead.resumeText || lead.jobHelp === "Yes") state.resumeRequests.unshift(resumeRequestFromTradePathwayLead(lead));
+  addActivity(`Admitly Trade Pathways lead saved: ${lead.fullName} for ${lead.pathway}.`);
+  state.lastConfirmation = academyConfirmation(lead, "Admitly Trade Pathways lead saved.");
+  saveState();
+  sendLead("trade-pathway", lead);
+  event.target.reset();
+  setFieldValue("#admitlyCity", "Medford");
+  setFieldValue("#admitlyState", "OR");
+  showToast("Admitly Trade Pathways lead saved.");
   navigate("confirm");
 });
 
@@ -11263,6 +11852,243 @@ function opportunityLeadLines(lead) {
   ];
 }
 
+function resumeRequestFromAcademyLead(lead) {
+  return {
+    id: `resume-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
+    sourceApp: "forge",
+    leadType: "Forge Career+ Resume Request",
+    fullName: lead.fullName,
+    phone: lead.phone,
+    email: lead.email,
+    desiredTrade: lead.desiredTrade,
+    city: lead.city,
+    state: lead.state,
+    currentExperience: lead.currentExperience,
+    resumeText: "",
+    status: "New Lead",
+    priority: lead.priority || "Warm",
+    consentToContact: lead.consentToContact,
+    notes: lead.notes || "Created from Forge Academy career intake.",
+    created: "Today"
+  };
+}
+
+function resumeRequestFromTradePathwayLead(lead) {
+  return {
+    id: `resume-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
+    sourceApp: "admitly",
+    leadType: "Admitly Resume / Career Request",
+    fullName: lead.fullName,
+    phone: lead.phone,
+    email: lead.email,
+    desiredTrade: lead.desiredTrade,
+    city: lead.city,
+    state: lead.state,
+    currentExperience: lead.workExperience,
+    resumeText: lead.resumeText,
+    status: "New Lead",
+    priority: lead.priority || "Warm",
+    consentToContact: lead.consentToContact,
+    notes: lead.notes || "Created from Admitly Trade Pathways intake.",
+    created: "Today"
+  };
+}
+
+function academyConfirmation(lead, title) {
+  const isAdmitly = lead.sourceApp === "admitly";
+  return {
+    type: isAdmitly ? "admitly-trade-pathway" : "forge-academy",
+    title,
+    body: isAdmitly
+      ? "Admitly saved this pathway request for application, scholarship, resume, and official program follow-up."
+      : "Forge saved this career intake for training, apprenticeship, resume, and local job follow-up.",
+    details: [
+      `${lead.fullName} · ${lead.phone}`,
+      `${lead.pathway || lead.desiredTrade || "Career pathway"} · ${lead.city || "Medford"}, ${lead.state || "OR"}`,
+      `Status: ${lead.status} · Priority: ${lead.priority}`
+    ],
+    nextSteps: [
+      "Admin confirms consent, goals, timeline, and basic eligibility",
+      "Applicant uses official school, union, employer, apprenticeship, or program channels for submission",
+      "Forge and Admitly do not collect IDs, SSNs, payment information, passwords, transcripts, or official documents in this MVP",
+      "No admission, scholarship, licensure, job, union, or placement outcome is guaranteed"
+    ],
+    primary: { label: isAdmitly ? "Open Admitly" : "Open Academy", screen: isAdmitly ? "trade-pathways" : "forge-academy" },
+    secondary: { label: "Open Admin", screen: "admin" }
+  };
+}
+
+function academyLeadText(lead) {
+  if (!lead) return "No Academy leads yet.";
+  return [
+    `Hi ${lead.fullName || "there"}, this is Forge and Admitly.`,
+    `I saved your ${lead.pathway || lead.desiredTrade || "career pathway"} request.`,
+    `Next step: confirm your goal, timeline, transportation, resume needs, and the official school, union, apprenticeship, employer, or program channel.`,
+    "We do not guarantee admission, jobs, union acceptance, scholarships, financial aid, licensure, or placement, but we can help organize the next steps.",
+    "What is the best time to talk?"
+  ].join(" ");
+}
+
+function academyLeadLines(lead) {
+  if (!lead) return ["No Academy lead selected."];
+  return [
+    `${lead.sourceApp === "admitly" ? "Admitly Trade Pathways" : "Forge Academy"} lead`,
+    `${lead.fullName} - ${lead.pathway || lead.desiredTrade || "Career pathway"}`,
+    `Lead type: ${lead.leadType || "Career intake"}`,
+    `Phone: ${lead.phone}`,
+    lead.email ? `Email: ${lead.email}` : "Email: Not provided",
+    `City/state: ${lead.city || "Medford"}, ${lead.state || "OR"}`,
+    lead.educationLevel ? `Education level: ${lead.educationLevel}` : `Current experience: ${lead.currentExperience || "Not provided"}`,
+    lead.pathway ? `Pathway: ${lead.pathway}` : `Desired trade: ${lead.desiredTrade || "Not provided"}`,
+    lead.desiredTrade ? `Desired trade/career: ${lead.desiredTrade}` : "",
+    lead.timeline ? `Timeline: ${lead.timeline}` : "",
+    lead.fundingNeed ? `Funding need: ${lead.fundingNeed}` : "",
+    lead.hasTransportation ? `Transportation: ${lead.hasTransportation}` : "",
+    lead.hasDriversLicense ? `Driver's license: ${lead.hasDriversLicense}` : "",
+    lead.needsTraining ? `Needs training: ${lead.needsTraining}` : "",
+    lead.needsJobNow ? `Needs job now: ${lead.needsJobNow}` : "",
+    lead.needsResume ? `Needs resume: ${lead.needsResume}` : "",
+    lead.interestedCareerPlus ? `Interested in Forge Career+: ${lead.interestedCareerPlus}` : "",
+    lead.essayHelp ? `Essay help: ${lead.essayHelp}` : "",
+    lead.scholarshipHelp ? `Scholarship help: ${lead.scholarshipHelp}` : "",
+    lead.jobHelp ? `Job/apprenticeship help: ${lead.jobHelp}` : "",
+    `Consent to contact: ${lead.consentToContact ? "Yes" : "No"}`,
+    `Status: ${lead.status || "New Lead"}`,
+    `Priority: ${lead.priority || "Warm"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
+    "Boundary: no IDs, SSNs, payment info, passwords, transcripts, or official documents in the browser MVP.",
+    "No guarantee: admission, employment, union acceptance, licensure, scholarship approval, financial aid, or placement is not guaranteed."
+  ].filter(Boolean);
+}
+
+function academyEmployerLines(lead) {
+  if (!lead) return ["No employer partner selected."];
+  return [
+    "Forge Academy employer training partner",
+    `${lead.businessName} - ${lead.tradeCategory || "Trade category pending"}`,
+    `Contact: ${lead.contactName || "Not provided"}`,
+    `Phone: ${lead.phone}`,
+    lead.email ? `Email: ${lead.email}` : "Email: Not provided",
+    `Hiring needs: ${lead.hiringNeeds || "Not provided"}`,
+    `Apprenticeship availability: ${lead.apprenticeshipAvailability || "Not provided"}`,
+    `Willing to train: ${lead.willingToTrain || "Not provided"}`,
+    `Insurance/license notes: ${lead.insuranceLicense || "Not provided"}`,
+    `Status: ${lead.status || "New Lead"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
+    "Partner boundary: verify license, insurance, pay, safety requirements, and written partner terms before routing people."
+  ];
+}
+
+function academySchoolLines(lead) {
+  if (!lead) return ["No school/program partner selected."];
+  return [
+    "Admitly / Forge Academy school partner",
+    `${lead.schoolName} - ${lead.programTypes || "Programs pending"}`,
+    `Contact: ${lead.contactName || "Not provided"}`,
+    `Phone: ${lead.phone}`,
+    lead.email ? `Email: ${lead.email}` : "Email: Not provided",
+    `Location: ${lead.location || "Not provided"}`,
+    `Cost range: ${lead.costRange || "Not provided"}`,
+    `Financial aid available: ${lead.financialAidAvailable || "Unknown"}`,
+    `Enrollment deadlines: ${lead.enrollmentDeadlines || "Not provided"}`,
+    `Status: ${lead.status || "New Lead"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
+    "School boundary: verify accreditation, tuition, financial aid, outcomes, licensure fit, and official deadlines before recommending."
+  ];
+}
+
+function resumeRequestLines(lead) {
+  if (!lead) return ["No resume request selected."];
+  return [
+    lead.leadType || "Forge Career+ resume request",
+    `${lead.fullName} - ${lead.desiredTrade || "Career path pending"}`,
+    `Phone: ${lead.phone}`,
+    lead.email ? `Email: ${lead.email}` : "Email: Not provided",
+    `Location: ${lead.city || "Medford"}, ${lead.state || "OR"}`,
+    `Experience: ${lead.currentExperience || "Not provided"}`,
+    `Resume text: ${lead.resumeText || "Not provided"}`,
+    `Status: ${lead.status || "New Lead"}`,
+    `Priority: ${lead.priority || "Warm"}`,
+    `Consent to contact: ${lead.consentToContact ? "Yes" : "No"}`,
+    `Notes: ${lead.notes || "No notes saved."}`,
+    "Career+ placeholder: pricing, secure uploads, and paid features are not live yet."
+  ];
+}
+
+function copyAcademyLead(id) {
+  const lead = (state.forgeAcademyLeads || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(academyLeadLines(lead).join("\n"), "Forge Academy lead copied.");
+}
+
+function copyTradePathwayLead(id) {
+  const lead = (state.tradePathwayLeads || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(academyLeadLines(lead).join("\n"), "Admitly Trade Pathways lead copied.");
+}
+
+function copyAcademyEmployer(id) {
+  const lead = (state.employerTrainingPartners || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(academyEmployerLines(lead).join("\n"), "Academy employer partner copied.");
+}
+
+function copyAcademySchool(id) {
+  const lead = (state.schoolPartners || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(academySchoolLines(lead).join("\n"), "Academy school partner copied.");
+}
+
+function copyResumeRequest(id) {
+  const lead = (state.resumeRequests || []).find((item) => item.id === id);
+  if (!lead) return;
+  copyText(resumeRequestLines(lead).join("\n"), "Resume request copied.");
+}
+
+function copyAcademyBrief() {
+  const lines = [
+    "Forge Academy brief",
+    "",
+    "Forge Academy helps local workers build blue-collar career pathways through trade-school help, apprenticeship planning, union pathway prep, resumes, and local job placement support.",
+    "Powered by Admitly: Admitly remains the education, admissions, scholarship, essay, school planning, and application platform.",
+    "",
+    "Tracks:",
+    ...academyOptions.map((option) => `- ${option}: ${academyOptionCopy(option)}`),
+    "",
+    "Forge Career+: paid placeholder for AI resume, AI cover letter, application help, scholarships/grants, interview prep, priority profile, priority job alerts, and career dashboard.",
+    "",
+    `Forge Academy: ${roleDemoLink("customer", "forge-academy")}`,
+    `Admitly Trade Pathways: ${roleDemoLink("customer", "trade-pathways")}`,
+    "",
+    "Safety: no admission, employment, union, scholarship, financial aid, licensure, or placement guarantees. Verify official requirements. Do not collect IDs, SSNs, transcripts, payment info, passwords, or official documents in this MVP."
+  ];
+  copyText(lines.join("\n"), "Academy brief copied.");
+}
+
+function copyAcademyAdminQueue() {
+  const lines = [
+    "Forge Academy / Admitly Trade Pathways admin queue",
+    "",
+    `Forge Academy leads: ${(state.forgeAcademyLeads || []).length}`,
+    `Admitly Trade Pathways leads: ${(state.tradePathwayLeads || []).length}`,
+    `Employer partners: ${(state.employerTrainingPartners || []).length}`,
+    `School partners: ${(state.schoolPartners || []).length}`,
+    `Resume requests: ${(state.resumeRequests || []).length}`,
+    "",
+    "Forge Academy leads",
+    ...(state.forgeAcademyLeads || []).flatMap((lead) => [...academyLeadLines(lead), ""]),
+    "Admitly Trade Pathways leads",
+    ...(state.tradePathwayLeads || []).flatMap((lead) => [...academyLeadLines(lead), ""]),
+    "Employer partners",
+    ...(state.employerTrainingPartners || []).flatMap((lead) => [...academyEmployerLines(lead), ""]),
+    "School partners",
+    ...(state.schoolPartners || []).flatMap((lead) => [...academySchoolLines(lead), ""]),
+    "Resume requests",
+    ...(state.resumeRequests || []).flatMap((lead) => [...resumeRequestLines(lead), ""])
+  ];
+  copyText(lines.join("\n"), "Academy admin queue copied.");
+}
+
 function copyAutoServiceRequest(id) {
   const request = (state.autoRequests || []).find((item) => item.id === id);
   if (!request) return;
@@ -12160,12 +12986,19 @@ function moveRoadRescueForward(id) {
 function markFlexContacted(id) {
   const lead = (state.flexLeads || []).find((item) => item.id === id);
   if (!lead) return;
-  lead.status = "contacted";
+  markFlexStatus(id, "contacted");
+}
+
+function markFlexStatus(id, status) {
+  const lead = (state.flexLeads || []).find((item) => item.id === id);
+  if (!lead || !flexLeadStatuses.includes(status)) return;
+  lead.status = status;
   lead.updated_at = "Today";
-  addActivity(`Flex lead contacted: ${lead.business_name} (${lead.owner_name}).`);
+  if (status === "flex_link_sent" && !lead.flex_referral_url_sent) lead.flex_referral_url_sent = flexReferralUrl();
+  addActivity(`Flex lead status changed: ${lead.business_name} -> ${flexStatusLabel(status)}.`);
   saveState();
   render();
-  showToast("Flex lead marked contacted.");
+  showToast(`Flex lead marked ${flexStatusLabel(status)}.`);
 }
 
 function moveFlexForward(id) {

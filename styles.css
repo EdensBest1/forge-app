@@ -5148,6 +5148,214 @@ textarea:focus {
   align-items: center;
 }
 
+.academy-hero,
+.admitly-hero {
+  min-height: 430px;
+  display: grid;
+  align-items: center;
+  padding: 54px 28px;
+  color: white;
+}
+
+.academy-hero {
+  background:
+    linear-gradient(90deg, rgba(0, 61, 165, 0.95), rgba(0, 61, 165, 0.78) 48%, rgba(245, 111, 0, 0.84)),
+    url("./assets/forge-hero.png") center / cover;
+}
+
+.admitly-hero {
+  background:
+    linear-gradient(90deg, rgba(8, 18, 38, 0.94), rgba(0, 61, 165, 0.76) 58%, rgba(255, 255, 255, 0.28)),
+    url("./assets/forge-homebuilding-hero.png") center / cover;
+}
+
+.academy-hero > div,
+.admitly-hero > div {
+  max-width: 760px;
+  display: grid;
+  gap: 14px;
+}
+
+.academy-hero h1,
+.admitly-hero h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 5.2rem);
+  line-height: 0.95;
+}
+
+.academy-hero p,
+.admitly-hero p {
+  max-width: 680px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.academy-subtitle {
+  font-weight: 900;
+}
+
+.academy-layout,
+.admitly-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.48fr);
+  gap: 22px;
+  padding: 28px;
+  background: #f5f8fc;
+}
+
+.academy-main,
+.admitly-main,
+.academy-forms {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.academy-options,
+.academy-career-plus,
+.academy-admin-preview,
+.academy-disclaimer,
+.academy-form,
+.admitly-card,
+.admitly-intake {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.academy-career-plus {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  border-color: #ffc28c;
+  background: #fff9f3;
+}
+
+.academy-option-grid,
+.academy-feature-grid,
+.admitly-path-grid,
+.admitly-ai-grid,
+.admitly-dashboard-grid,
+.academy-admin-stats,
+.academy-partner-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.academy-option-grid article,
+.academy-feature-grid article,
+.admitly-path-grid article,
+.admitly-ai-grid article,
+.admitly-dashboard-grid article,
+.academy-admin-stats article,
+.academy-partner-grid article {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  min-height: 118px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.academy-option-grid span,
+.admitly-path-grid span,
+.academy-lead-list span,
+.academy-feature-grid span {
+  color: var(--orange);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.academy-option-grid strong,
+.academy-feature-grid strong,
+.admitly-path-grid strong,
+.admitly-ai-grid strong,
+.admitly-dashboard-grid strong,
+.academy-lead-list strong,
+.academy-admin-stats strong {
+  color: var(--blue);
+}
+
+.academy-option-grid p,
+.admitly-path-grid p,
+.admitly-ai-grid p,
+.academy-lead-list p,
+.academy-disclaimer p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.42;
+}
+
+.academy-lead-list {
+  display: grid;
+  gap: 10px;
+}
+
+.academy-lead-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.academy-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.admitly-bar {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+}
+
+.admitly-brand {
+  color: var(--blue);
+  font-size: 1.35rem;
+  font-weight: 1000;
+  text-decoration: none;
+  letter-spacing: 0;
+}
+
+.admitly-intake {
+  position: sticky;
+  top: 12px;
+}
+
+.academy-admin-section {
+  border-color: #ffc28c;
+}
+
+.academy-admin-stats {
+  margin: 8px 0;
+}
+
+.academy-admin-stats article {
+  min-height: 78px;
+  background: #fff9f3;
+  border-color: #ffd4b1;
+}
+
+.academy-admin-stats strong {
+  font-size: 1.45rem;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.74fr);
@@ -6717,6 +6925,8 @@ td {
   .messages-layout,
   .profile-layout,
   .opportunity-layout,
+  .academy-layout,
+  .admitly-layout,
   .building-hero,
   .building-layout,
   .projects-hero,
@@ -6780,6 +6990,16 @@ td {
   .opportunity-track-grid,
   .opportunity-step-grid,
   .opportunity-lead-list article,
+  .academy-career-plus,
+  .academy-option-grid,
+  .academy-feature-grid,
+  .academy-lead-list article,
+  .academy-check-grid,
+  .admitly-path-grid,
+  .admitly-ai-grid,
+  .admitly-dashboard-grid,
+  .academy-admin-stats,
+  .academy-partner-grid,
   .building-card-grid,
   .building-review-grid,
   .projects-overview,

@@ -29,6 +29,7 @@
             <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
             <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
             <button class="btn ghost small" type="button" data-nav="manufacturing">Manufacturing</button>
+            <button class="btn ghost small" type="button" data-nav="forge-academy">Academy</button>
             <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
             <button class="btn ghost small" type="button" data-nav="building">Building</button>
             <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
@@ -126,7 +127,13 @@
             <span class="split-label">I want a path up</span>
             <h2>Apply to schools, unions, and blue-collar AI jobs.</h2>
             <p>Save your goal and build a next-step plan for trade school, apprenticeship, union, and field-tech career paths.</p>
-            <button class="btn ghost" type="button" data-nav="opportunities">Explore Career Paths</button>
+            <button class="btn ghost" type="button" data-nav="forge-academy">Open Forge Academy</button>
+          </article>
+          <article>
+            <span class="split-label">I need application help</span>
+            <h2>Admitly Trade Pathways</h2>
+            <p>Plan college, trade school, union, certification, scholarship, resume, and application steps with Admitly.</p>
+            <button class="btn ghost" type="button" data-nav="trade-pathways">Open Admitly</button>
           </article>
           <article>
             <span class="split-label">I need a project engine</span>
@@ -955,9 +962,9 @@
           <div class="capital-hero-copy">
             <span class="split-label">Forge Capital Desk</span>
             <h1>Business owners need breathing room.</h1>
-            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, and local operators request review for modern business finance tools through approved finance partners when available.</p>
+            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-action="focus-flex-form">Request Finance Review</button>
+              <button class="btn orange" type="button" data-action="focus-flex-form">Check Flex Options</button>
               <button class="btn ghost light" type="button" data-action="copy-flex-outreach">Talk to Forge Capital Desk</button>
             </div>
           </div>
@@ -978,13 +985,13 @@
               <ul id="flexProblemsList"></ul>
             </section>
             <section class="capital-section capital-flex-help">
-              <span class="split-label">What finance review may help with</span>
-              <h2>Modern business finance tools through approved partner review.</h2>
+              <span class="split-label">What Flex may help with</span>
+              <h2>Modern business finance tools through Flex.</h2>
               <ul id="flexMayHelpList"></ul>
             </section>
             <section class="capital-section">
-              <span class="split-label">How finance review works</span>
-              <h2>Forge collects consent. Approved finance partners handle product decisions.</h2>
+              <span class="split-label">How Flex referral works</span>
+              <h2>Forge collects consent. Flex handles the product path.</h2>
               <div class="capital-steps" id="flexHowItWorks"></div>
             </section>
             <section class="capital-section compliance">
@@ -994,9 +1001,10 @@
             <section class="capital-section upsell">
               <span class="split-label">Forge / NorthStar upsell</span>
               <h2>Capital is one part of business growth.</h2>
-              <p>Forge can also help business owners with more customer leads, marketing through NorthStar Creative Co., websites, CRM, automation setup, hiring, operations, and payment processing help.</p>
+              <p>Forge Capital Desk is only one part of the business-owner ecosystem.</p>
+              <p>If your company also needs more customer leads, better marketing, a stronger website, CRM automation, payment processing, hiring help, or business operations support, Forge and North Star Creative Co. can help build the full system around your business.</p>
               <div class="hero-actions">
-                <button class="btn ghost small" type="button" data-nav="northstar">Open NorthStar</button>
+                <button class="btn ghost small" type="button" data-nav="northstar">Get Business Growth Help</button>
                 <button class="btn ghost small" type="button" data-nav="capture" data-operator-only>Capture Referral</button>
               </div>
             </section>
@@ -1008,8 +1016,8 @@
           <aside class="capital-form-panel" id="flexLeadFormSection">
             <form class="capital-form" id="flexLeadForm">
               <span class="split-label">Lead form</span>
-              <h2>Request Finance Review</h2>
-              <p class="muted">Forge only collects basic lead and consent details before any approved finance partner review or configured referral URL is used.</p>
+              <h2>Forge Capital Desk Lead Form</h2>
+              <p class="muted">Forge only collects basic lead and consent details before sending business owners to the official Flex referral URL.</p>
               <label>Owner name<input id="flexOwnerName" required autocomplete="name" placeholder="Full name" /></label>
               <label>Business name<input id="flexCompanyName" required placeholder="Business name" /></label>
               <label>Email<input id="flexEmail" required type="email" autocomplete="email" placeholder="owner@example.com" /></label>
@@ -1019,27 +1027,38 @@
                 <label>State<input id="flexState" maxlength="2" placeholder="OR" /></label>
               </div>
               <label>Industry<select id="flexIndustry" required></select></label>
-              <label>Website optional<input id="flexWebsite" type="url" placeholder="https://example.com" /></label>
+              <label>Website or social media link<input id="flexWebsite" type="url" placeholder="https://example.com" /></label>
               <div class="field-row">
                 <label>Years in business<select id="flexYearsInBusiness"></select></label>
-                <label>Employees<select id="flexEmployeeCount"></select></label>
+                <label>Number of employees<select id="flexEmployeeCount"></select></label>
               </div>
               <div class="field-row">
                 <label>Monthly revenue<select id="flexMonthlyRevenue"></select></label>
-                <label>Monthly spend<select id="flexMonthlySpend"></select></label>
+                <label>Monthly business spending<select id="flexMonthlySpend"></select></label>
               </div>
-              <label>Primary need<select id="flexPrimaryNeed"></select></label>
+              <label>Main business need<select id="flexPrimaryNeed"></select></label>
               <label>Anything else Forge should know?<textarea id="flexNotes" rows="3" placeholder="Timing, vendor bills, payroll timing, fuel, materials, equipment, cards, growth plans, or follow-up notes."></textarea></label>
               <div class="capital-checkboxes">
-                <label class="check-row"><input id="flexInterestedForge" type="checkbox" /> Interested in more customer leads through Forge</label>
-                <label class="check-row"><input id="flexInterestedNorthstar" type="checkbox" /> Interested in marketing through NorthStar Creative Co.</label>
+                <label class="check-row"><input id="flexInterestedForge" type="checkbox" /> Interested in Forge job leads?</label>
+                <label class="check-row"><input id="flexInterestedNorthstar" type="checkbox" /> Interested in North Star Creative Co. marketing?</label>
                 <label class="check-row"><input id="flexInterestedProcessorHelp" type="checkbox" /> Interested in payment processing help</label>
+                <label class="check-row"><input id="flexInterestedWebsiteCrm" type="checkbox" /> Interested in website / CRM / automation setup?</label>
               </div>
               <p class="trust-note" data-flex-compliance></p>
               <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
-              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive approved finance partner review information if available.</label>
-              <button class="btn orange full" type="submit">Request Finance Review</button>
+              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive the official Flex referral link.</label>
+              <button class="btn orange full" type="submit">Check Flex Options</button>
             </form>
+            <div class="capital-success hidden" id="flexLeadSuccess" aria-live="polite">
+              <span class="split-label">Capital Desk request received</span>
+              <h2>Thank you.</h2>
+              <p>Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.</p>
+              <p class="trust-note" data-flex-compliance></p>
+              <div class="hero-actions">
+                <a class="btn orange" id="flexContinueButton" href="https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK" target="_blank" rel="noopener noreferrer">Continue to Flex</a>
+                <button class="btn ghost small" type="button" data-action="reset-flex-form">Submit Another</button>
+              </div>
+            </div>
           </aside>
         </section>
       </section>
@@ -1685,6 +1704,208 @@
             <label>Notes<textarea id="opportunityNote" rows="4" placeholder="Example: Interested in electrical apprenticeship, HVAC school, robotics technician, or drone inspection work."></textarea></label>
             <p class="trust-note"><strong>Application boundary:</strong> Do not upload or enter IDs, transcripts, SSNs, payment info, passwords, or official documents into this MVP.</p>
             <button class="btn orange" type="submit">Save Career Interest</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="screen forge-academy-screen" id="forge-academy-screen" data-screen="forge-academy">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="trade-pathways">Admitly</button><button type="button" data-nav="admin" data-admin-control>Admin</button></div>
+        </header>
+        <section class="academy-hero">
+          <div>
+            <span class="split-label">Forge Academy · powered by Admitly</span>
+            <h1>Forge Academy</h1>
+            <p class="academy-subtitle">Blue-collar career pathways, trade-school help, apprenticeships, resumes, and local job placement powered by Admitly.</p>
+            <p>Build a career, not just a job. Forge Academy connects local workers with trade-school support, apprenticeships, blue-collar job opportunities, AI resumes, and career pathways powered by Admitly.</p>
+            <p class="trust-note">Forge exists to serve the community with excellence, create opportunity for working people, and honor God through service.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="focus-academy-student">Start Career Intake</button>
+              <button class="btn blue" type="button" data-action="focus-academy-employer">Employer Partner</button>
+              <button class="btn ghost light" type="button" data-nav="trade-pathways">Open Admitly Trade Pathways</button>
+            </div>
+          </div>
+        </section>
+        <section class="academy-layout">
+          <div class="academy-main">
+            <section class="academy-options">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Career paths</span>
+                  <h2>Choose what you need next.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-action="copy-academy-brief">Copy Academy Brief</button>
+              </div>
+              <div class="academy-option-grid" id="academyOptionGrid"></div>
+            </section>
+            <section class="academy-career-plus">
+              <div>
+                <span class="split-label">Forge Career+</span>
+                <h2>AI-powered career support for working people.</h2>
+                <p>Forge Career+ gives workers AI-powered help with resumes, applications, interview preparation, trade-school enrollment, scholarship searches, and priority career placement opportunities.</p>
+                <strong>Pricing coming soon.</strong>
+              </div>
+              <div class="academy-feature-grid" id="careerPlusFeatureGrid"></div>
+            </section>
+            <section class="academy-admin-preview">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Saved career leads</span>
+                  <h2>Local Academy pipeline.</h2>
+                </div>
+              </div>
+              <div class="academy-lead-list" id="academyLeadList"></div>
+            </section>
+            <section class="academy-disclaimer">
+              <span class="split-label">Safety boundary</span>
+              <p>Forge and Admitly do not guarantee admission, employment, union acceptance, licensure, scholarship approval, financial aid, or placement. Users must verify school accreditation, licensing requirements, tuition, program outcomes, job requirements, and official deadlines.</p>
+            </section>
+          </div>
+          <aside class="academy-forms">
+            <form class="academy-form" id="forgeAcademyStudentForm">
+              <span class="split-label">Student / worker career intake</span>
+              <h2>Start a career pathway.</h2>
+              <div class="field-row">
+                <label>Full name<input id="academyFullName" required placeholder="Full name" /></label>
+                <label>Phone<input id="academyPhone" required placeholder="(541) 555-0000" /></label>
+              </div>
+              <label>Email<input id="academyEmail" type="email" placeholder="name@email.com" /></label>
+              <div class="field-row">
+                <label>City<input id="academyCity" value="Medford" /></label>
+                <label>State<input id="academyState" maxlength="2" value="OR" /></label>
+              </div>
+              <label>Desired trade<select id="academyDesiredTrade"></select></label>
+              <label>Current experience<textarea id="academyExperience" rows="2" placeholder="Work history, tools, jobs, school, military, or hands-on experience."></textarea></label>
+              <div class="field-row">
+                <label>Transportation?<select id="academyTransportation"><option>Yes</option><option>No</option><option>Sometimes</option></select></label>
+                <label>Driver's license?<select id="academyDriversLicense"><option>Yes</option><option>No</option><option>Permit</option></select></label>
+              </div>
+              <div class="academy-check-grid">
+                <label class="check-row"><input id="academyNeedsTraining" type="checkbox" /> Needs training</label>
+                <label class="check-row"><input id="academyNeedsJobNow" type="checkbox" /> Needs job now</label>
+                <label class="check-row"><input id="academyNeedsResume" type="checkbox" /> Needs resume</label>
+                <label class="check-row"><input id="academyCareerPlus" type="checkbox" /> Interested in Forge Career+</label>
+              </div>
+              <label>Notes<textarea id="academyNotes" rows="3" placeholder="Timeline, funding, certifications, work radius, apprenticeship goals, or job preferences."></textarea></label>
+              <label class="check-row"><input id="academyConsent" required type="checkbox" /> I consent to Forge and Admitly contacting me about career, school, apprenticeship, resume, and job support.</label>
+              <button class="btn orange full" type="submit">Save Career Intake</button>
+            </form>
+            <form class="academy-form" id="academyEmployerForm">
+              <span class="split-label">Employer / contractor partner</span>
+              <h2>Hire or train local workers.</h2>
+              <label>Business name<input id="academyEmployerBusiness" required placeholder="Business name" /></label>
+              <div class="field-row">
+                <label>Contact name<input id="academyEmployerContact" required placeholder="Contact" /></label>
+                <label>Phone<input id="academyEmployerPhone" required placeholder="(541) 555-0000" /></label>
+              </div>
+              <label>Email<input id="academyEmployerEmail" type="email" placeholder="contact@email.com" /></label>
+              <label>Trade category<select id="academyEmployerTrade"></select></label>
+              <label>Hiring needs<textarea id="academyEmployerNeeds" rows="2" placeholder="Roles, number of workers, experience level, timeline, pay range."></textarea></label>
+              <div class="field-row">
+                <label>Apprenticeship availability<select id="academyEmployerApprenticeship"><option>Interested</option><option>Already available</option><option>Not yet</option></select></label>
+                <label>Willing to train?<select id="academyEmployerTrain"><option>Yes</option><option>Maybe</option><option>No</option></select></label>
+              </div>
+              <label>Insurance / license notes<textarea id="academyEmployerLicense" rows="2" placeholder="License, insurance, bonded status, requirements, or review notes."></textarea></label>
+              <label>Notes<textarea id="academyEmployerNotes" rows="2"></textarea></label>
+              <button class="btn blue full" type="submit">Save Employer Partner</button>
+            </form>
+            <form class="academy-form" id="academySchoolForm">
+              <span class="split-label">School / program partner</span>
+              <h2>List a training program.</h2>
+              <label>School/program name<input id="academySchoolName" required placeholder="Program name" /></label>
+              <div class="field-row">
+                <label>Contact name<input id="academySchoolContact" required placeholder="Contact" /></label>
+                <label>Phone<input id="academySchoolPhone" required placeholder="(541) 555-0000" /></label>
+              </div>
+              <label>Email<input id="academySchoolEmail" type="email" placeholder="program@email.com" /></label>
+              <label>Program types<input id="academySchoolPrograms" placeholder="CDL, welding, HVAC, electrical, CNA..." /></label>
+              <div class="field-row">
+                <label>Location<input id="academySchoolLocation" value="Medford, OR" /></label>
+                <label>Cost range<input id="academySchoolCost" placeholder="$2,500 - $12,000" /></label>
+              </div>
+              <div class="field-row">
+                <label>Financial aid?<select id="academySchoolAid"><option>Yes</option><option>No</option><option>Unknown</option></select></label>
+                <label>Deadlines<input id="academySchoolDeadlines" placeholder="Rolling, Fall, Spring..." /></label>
+              </div>
+              <label>Notes<textarea id="academySchoolNotes" rows="2"></textarea></label>
+              <button class="btn ghost full" type="submit">Save School Partner</button>
+            </form>
+          </aside>
+        </section>
+      </section>
+
+      <section class="screen trade-pathways-screen" id="trade-pathways-screen" data-screen="trade-pathways">
+        <header class="admitly-bar">
+          <a class="admitly-brand" href="#trade-pathways" data-nav="trade-pathways">ADMITLY</a>
+          <div class="bar-icons"><button type="button" data-nav="forge-academy">Forge Academy</button><button type="button" data-nav="admin" data-admin-control>Admin</button></div>
+        </header>
+        <section class="admitly-hero">
+          <div>
+            <span class="split-label">Admitly Trade Pathways</span>
+            <h1>Your Future. Admitted.</h1>
+            <p>Admitly now supports college, trade school, apprenticeship, union, certification, and career pathways. Whether your future is a university, a trade, a license, or a business, Admitly helps you organize the steps and apply with confidence.</p>
+            <div class="hero-actions">
+              <button class="btn blue" type="button" data-action="focus-admitly-pathway">Start Pathway Intake</button>
+              <button class="btn ghost" type="button" data-nav="forge-academy">See Forge Local Jobs</button>
+            </div>
+          </div>
+        </section>
+        <section class="admitly-layout">
+          <div class="admitly-main">
+            <section class="admitly-card">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Pathway selector</span>
+                  <h2>College, trades, certifications, unions, and career programs.</h2>
+                </div>
+              </div>
+              <div class="admitly-path-grid" id="admitlyPathwayGrid"></div>
+            </section>
+            <section class="admitly-card">
+              <span class="split-label">AI assistance placeholders</span>
+              <h2>Premium planning tools for education and career moves.</h2>
+              <div class="admitly-ai-grid" id="admitlyAiGrid"></div>
+            </section>
+            <section class="admitly-card">
+              <span class="split-label">Dashboard preview</span>
+              <h2>Everything organized in one place.</h2>
+              <div class="admitly-dashboard-grid" id="admitlyDashboardGrid"></div>
+            </section>
+          </div>
+          <form class="admitly-intake" id="admitlyTradePathwayForm">
+            <span class="split-label">Trade Pathways intake</span>
+            <h2>Plan your next application.</h2>
+            <div class="field-row">
+              <label>Full name<input id="admitlyFullName" required placeholder="Full name" /></label>
+              <label>Phone<input id="admitlyPhone" required placeholder="(541) 555-0000" /></label>
+            </div>
+            <label>Email<input id="admitlyEmail" required type="email" placeholder="student@email.com" /></label>
+            <div class="field-row">
+              <label>City<input id="admitlyCity" value="Medford" /></label>
+              <label>State<input id="admitlyState" maxlength="2" value="OR" /></label>
+            </div>
+            <div class="field-row">
+              <label>Education level<select id="admitlyEducation"><option>In high school</option><option>High school graduate</option><option>Some college</option><option>Associate degree</option><option>Bachelor's degree</option><option>GED / alternative pathway</option></select></label>
+              <label>Age range<select id="admitlyAgeRange"><option>Optional</option><option>Under 18</option><option>18-24</option><option>25-34</option><option>35-44</option><option>45+</option></select></label>
+            </div>
+            <label>Desired pathway<select id="admitlyPathway"></select></label>
+            <label>Desired trade/career<select id="admitlyDesiredTrade"></select></label>
+            <div class="field-row">
+              <label>Timeline<select id="admitlyTimeline"><option>ASAP</option><option>Next 3 months</option><option>3-6 months</option><option>6-12 months</option><option>Just researching</option></select></label>
+              <label>Budget / financial aid<select id="admitlyFundingNeed"></select></label>
+            </div>
+            <label>Work experience<textarea id="admitlyExperience" rows="3" placeholder="Jobs, school, volunteer, tools, military, caregiving, business, or hands-on experience."></textarea></label>
+            <label>Resume text / upload placeholder<textarea id="admitlyResumeText" rows="3" placeholder="Paste resume notes. File upload comes later with secure storage."></textarea></label>
+            <div class="academy-check-grid">
+              <label class="check-row"><input id="admitlyEssayHelp" type="checkbox" /> Essay/personal statement help</label>
+              <label class="check-row"><input id="admitlyScholarshipHelp" type="checkbox" /> Scholarship/grant help</label>
+              <label class="check-row"><input id="admitlyJobHelp" type="checkbox" /> Jobs/apprenticeship help</label>
+            </div>
+            <label>Notes<textarea id="admitlyNotes" rows="3" placeholder="Schools, deadlines, programs, scholarship questions, or concerns."></textarea></label>
+            <label class="check-row"><input id="admitlyConsent" required type="checkbox" /> I consent to Admitly and Forge contacting me about education, applications, scholarships, career planning, and local job opportunities.</label>
+            <p class="trust-note">Admitly and Forge do not guarantee admission, employment, union acceptance, licensure, scholarship approval, or financial aid.</p>
+            <button class="btn blue full" type="submit">Save Trade Pathway Lead</button>
           </form>
         </section>
       </section>
@@ -2494,6 +2715,7 @@
             <button type="button" data-nav="signup">Workers</button>
             <button type="button" data-nav="capital">Flex Leads</button>
             <button type="button" data-nav="manufacturing">Manufacturing</button>
+            <button type="button" data-nav="forge-academy">Academy</button>
             <button type="button" data-nav="admin-building-leads">Building Leads</button>
             <button type="button" data-nav="admin-projects">Projects</button>
             <button type="button" data-nav="bid">Bids</button>
@@ -2769,6 +2991,8 @@
                   <option>NorthStar</option>
                   <option>Capital Desk</option>
                   <option>Manufacturing</option>
+                  <option>Forge Academy</option>
+                  <option>Admitly Trade Pathways</option>
                   <option>Road Rescue</option>
                   <option>Jobs</option>
                   <option>Workers</option>
@@ -2886,6 +3110,41 @@
             </div>
             <div class="table-card"><table id="adminRoadRescueTable"></table></div>
             <div class="lead-board" id="adminRoadRescuePipeline"></div>
+            <section class="settings-card academy-admin-section" id="adminForgeAcademy">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Forge Academy + Admitly</span>
+                  <h2>Trade pathways, resumes, apprenticeships, schools, and employer partners.</h2>
+                  <p class="muted">Review Academy worker leads, Admitly Trade Pathways leads, school/program partners, employer partners, and Forge Career+ resume requests.</p>
+                </div>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-academy-admin">Copy Academy Queue</button>
+                  <button class="btn orange small" type="button" data-nav="forge-academy">Open Academy</button>
+                  <button class="btn blue small" type="button" data-nav="trade-pathways">Open Admitly</button>
+                </div>
+              </div>
+              <div class="academy-admin-stats" id="academyAdminStats"></div>
+              <div class="admin-heading compact">
+                <div>
+                  <h2>Forge Academy Worker / Student Leads</h2>
+                  <p class="muted">Desired trade, training need, job urgency, resume need, and Career+ interest.</p>
+                </div>
+              </div>
+              <div class="table-card"><table id="adminForgeAcademyTable"></table></div>
+              <div class="lead-board" id="adminForgeAcademyPipeline"></div>
+              <div class="admin-heading compact">
+                <div>
+                  <h2>Admitly Trade Pathways Leads</h2>
+                  <p class="muted">Applications, scholarships, essays, deadlines, schools, apprenticeships, and Forge job handoff.</p>
+                </div>
+              </div>
+              <div class="table-card"><table id="adminTradePathwaysTable"></table></div>
+              <div class="lead-board" id="adminTradePathwaysPipeline"></div>
+              <div class="admin-heading compact">
+                <h2>School / Employer Partners and Resume Requests</h2>
+              </div>
+              <div class="academy-partner-grid" id="adminAcademyPartners"></div>
+            </section>
             <div class="admin-heading">
               <h2>Manufacturing RFQs</h2>
               <div class="compact-actions">

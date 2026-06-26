@@ -111,6 +111,150 @@ create table if not exists public.forge_opportunity_leads (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.trade_pathway_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'admitly',
+  lead_type text not null default 'Admitly Trade Pathways',
+  full_name text not null,
+  phone text,
+  email text,
+  city text,
+  state text,
+  education_level text,
+  age_range text,
+  pathway text,
+  desired_trade text,
+  timeline text,
+  funding_need text,
+  work_experience text,
+  resume_text text,
+  essay_help boolean not null default false,
+  scholarship_help boolean not null default false,
+  job_help boolean not null default false,
+  consent_to_contact boolean not null default false,
+  status text not null default 'New Lead',
+  priority text not null default 'Warm',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.forge_academy_leads (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'forge',
+  lead_type text not null default 'Student / Worker Career Intake',
+  full_name text not null,
+  phone text,
+  email text,
+  city text,
+  state text,
+  desired_trade text,
+  current_experience text,
+  has_transportation text,
+  has_drivers_license text,
+  needs_training boolean not null default false,
+  needs_job_now boolean not null default false,
+  needs_resume boolean not null default false,
+  interested_career_plus boolean not null default false,
+  consent_to_contact boolean not null default false,
+  status text not null default 'New Lead',
+  priority text not null default 'Warm',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.forge_career_profiles (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'forge',
+  full_name text not null,
+  phone text,
+  email text,
+  city text,
+  state text,
+  desired_trade text,
+  skills text[],
+  certifications text[],
+  work_history_summary text,
+  resume_ready boolean not null default false,
+  looking_for_work boolean not null default true,
+  looking_for_training boolean not null default false,
+  priority_job_alerts boolean not null default false,
+  career_plus_status text not null default 'Not Active',
+  consent_to_contact boolean not null default false,
+  status text not null default 'Profile Started',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.school_partners (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'admitly',
+  school_name text not null,
+  contact_name text,
+  phone text,
+  email text,
+  program_types text,
+  location text,
+  cost_range text,
+  financial_aid_available text,
+  enrollment_deadlines text,
+  accreditation_notes text,
+  status text not null default 'New Lead',
+  priority text not null default 'Warm',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.employer_training_partners (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'forge',
+  business_name text not null,
+  contact_name text,
+  phone text,
+  email text,
+  trade_category text,
+  hiring_needs text,
+  apprenticeship_availability text,
+  willing_to_train text,
+  insurance_license_notes text,
+  written_partner_terms boolean not null default false,
+  status text not null default 'New Lead',
+  priority text not null default 'Warm',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.resume_requests (
+  id uuid primary key default gen_random_uuid(),
+  source_id text,
+  source_app text not null default 'forge',
+  lead_type text not null default 'Forge Career+ Resume Request',
+  full_name text not null,
+  phone text,
+  email text,
+  city text,
+  state text,
+  desired_trade text,
+  current_experience text,
+  resume_text text,
+  consent_to_contact boolean not null default false,
+  career_plus_status text not null default 'Placeholder',
+  status text not null default 'New Lead',
+  priority text not null default 'Warm',
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.forge_vehicle_seller_leads (
   id uuid primary key default gen_random_uuid(),
   source_id text,
@@ -655,6 +799,12 @@ alter table public.forge_job_leads enable row level security;
 alter table public.forge_worker_leads enable row level security;
 alter table public.forge_referral_leads enable row level security;
 alter table public.forge_opportunity_leads enable row level security;
+alter table public.trade_pathway_leads enable row level security;
+alter table public.forge_academy_leads enable row level security;
+alter table public.forge_career_profiles enable row level security;
+alter table public.school_partners enable row level security;
+alter table public.employer_training_partners enable row level security;
+alter table public.resume_requests enable row level security;
 alter table public.forge_vehicle_seller_leads enable row level security;
 alter table public.forge_operations_vault_documents enable row level security;
 alter table public.forge_bids enable row level security;
