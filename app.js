@@ -3811,6 +3811,23 @@ function normalizeServiceBid(bid) {
     laundryIncluded: "No",
     restockingIncluded: "No",
     recurringAvailable: "No",
+    manufacturingMoq: "",
+    manufacturingUnitCost: "",
+    manufacturingSetupFee: "",
+    manufacturingSampleFee: "",
+    manufacturingPackagingCost: "",
+    manufacturingLabelingCost: "",
+    manufacturingTestingCost: "",
+    manufacturingLeadTime: "",
+    manufacturingProductionTimeline: "",
+    manufacturingPaymentTerms: "",
+    manufacturingCertifications: "",
+    manufacturingTestingIncluded: "",
+    manufacturingFormulationIncluded: "Not applicable",
+    manufacturingPackagingIncluded: "Not applicable",
+    manufacturingFulfillmentIncluded: "Not applicable",
+    manufacturingNdaRequired: "Not applicable",
+    manufacturingQuestions: "",
     experienceNote: "",
     ...bid
   };
@@ -6673,6 +6690,23 @@ function bidDetailMeta(bid) {
     ["Laundry included", bid.laundryIncluded],
     ["Restocking included", bid.restockingIncluded],
     ["Recurring available", bid.recurringAvailable],
+    ["Manufacturing MOQ", bid.manufacturingMoq],
+    ["Unit cost estimate", bid.manufacturingUnitCost],
+    ["Setup fee", bid.manufacturingSetupFee],
+    ["Sample fee", bid.manufacturingSampleFee],
+    ["Packaging cost", bid.manufacturingPackagingCost],
+    ["Labeling cost", bid.manufacturingLabelingCost],
+    ["Testing cost", bid.manufacturingTestingCost],
+    ["Manufacturing lead time", bid.manufacturingLeadTime],
+    ["Production timeline", bid.manufacturingProductionTimeline],
+    ["Payment terms", bid.manufacturingPaymentTerms],
+    ["Certifications included", bid.manufacturingCertifications],
+    ["Testing included", bid.manufacturingTestingIncluded],
+    ["Formulation included", bid.manufacturingFormulationIncluded],
+    ["Packaging included", bid.manufacturingPackagingIncluded],
+    ["Fulfillment included", bid.manufacturingFulfillmentIncluded],
+    ["NDA required", bid.manufacturingNdaRequired],
+    ["Questions for customer", bid.manufacturingQuestions],
     ["Experience note", bid.experienceNote]
   ].filter(([, value]) => String(value || "").trim());
   if (!rows.length) return "";
@@ -11374,11 +11408,28 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     laundryIncluded: fieldValue("#bidLaundryIncluded"),
     restockingIncluded: fieldValue("#bidRestockingIncluded"),
     recurringAvailable: fieldValue("#bidRecurringAvailable"),
+    manufacturingMoq: fieldValue("#bidManufacturingMoq"),
+    manufacturingUnitCost: fieldValue("#bidManufacturingUnitCost"),
+    manufacturingSetupFee: fieldValue("#bidManufacturingSetupFee"),
+    manufacturingSampleFee: fieldValue("#bidManufacturingSampleFee"),
+    manufacturingPackagingCost: fieldValue("#bidManufacturingPackagingCost"),
+    manufacturingLabelingCost: fieldValue("#bidManufacturingLabelingCost"),
+    manufacturingTestingCost: fieldValue("#bidManufacturingTestingCost"),
+    manufacturingLeadTime: fieldValue("#bidManufacturingLeadTime"),
+    manufacturingProductionTimeline: fieldValue("#bidManufacturingProductionTimeline"),
+    manufacturingPaymentTerms: fieldValue("#bidManufacturingPaymentTerms"),
+    manufacturingCertifications: fieldValue("#bidManufacturingCertifications"),
+    manufacturingTestingIncluded: fieldValue("#bidManufacturingTestingIncluded"),
+    manufacturingFormulationIncluded: fieldValue("#bidManufacturingFormulationIncluded"),
+    manufacturingPackagingIncluded: fieldValue("#bidManufacturingPackagingIncluded"),
+    manufacturingFulfillmentIncluded: fieldValue("#bidManufacturingFulfillmentIncluded"),
+    manufacturingNdaRequired: fieldValue("#bidManufacturingNdaRequired"),
+    manufacturingQuestions: fieldValue("#bidManufacturingQuestions"),
     experienceNote: fieldValue("#bidExperienceNote"),
     message: document.querySelector("#bidMessage").value.trim(),
     rating: "New",
     reviews: 0,
-    status: "Submitted",
+    status: fieldValue("#bidStatus") || "Submitted",
     chosen: false
   };
   state.bids.unshift(bid);
@@ -13925,18 +13976,20 @@ function moveFlexForward(id) {
 function markManufacturingContacted(id) {
   const lead = (state.manufacturingRfqs || []).find((item) => item.id === id);
   if (!lead) return;
-  lead.status = "Needs Review";
-  addActivity(`Manufacturing RFQ needs review: ${lead.brandName || lead.productType}.`);
+  lead.status = "Sourcing manufacturers";
+  addActivity(`Manufacturing RFQ moved to sourcing: ${lead.brandName || lead.productType}.`);
   saveState();
   render();
-  showToast("Manufacturing RFQ marked Needs Review.");
+  showToast("Manufacturing RFQ marked Sourcing manufacturers.");
 }
 
 function moveManufacturingForward(id) {
   const lead = (state.manufacturingRfqs || []).find((item) => item.id === id);
   if (!lead) return;
-  const index = manufacturingLeadStatuses.indexOf(lead.status);
-  lead.status = index >= 0 ? manufacturingLeadStatuses[Math.min(index + 1, manufacturingLeadStatuses.length - 1)] : "Supplier Matching";
+  const order = ["Request received", "Sourcing manufacturers", "Awaiting bids", "Sampling", "Formulation", "Production quote", "Manufacturing selected", "In production", "Testing", "Packaging", "Ready to ship", "Completed"];
+  const current = manufacturingLegacyStatusMap[lead.status] || lead.status;
+  const index = order.indexOf(current);
+  lead.status = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "Sourcing manufacturers";
   addActivity(`Manufacturing RFQ moved forward: ${lead.brandName || lead.productType} is ${lead.status}.`);
   saveState();
   render();
