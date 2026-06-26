@@ -8967,13 +8967,29 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
       phone: lead.contactPhone,
       email: lead.contactEmail,
       status: lead.status,
-      priority: ["New RFQ", "Needs Review", "Supplier Matching", "Quote Received", "Compliance Review"].includes(lead.status) ? "Hot" : "Warm",
+      priority: ["Request received", "Sourcing manufacturers", "Awaiting bids", "Production quote", "Formulation"].includes(lead.status) ? "Hot" : "Warm",
       message: manufacturingRfqText(lead),
       action: "mark-manufacturing-contacted",
       forwardAction: "move-manufacturing-forward",
-      forwardLabel: lead.status === "Supplier Matching" ? "Matching" : "Move Forward",
+      forwardLabel: lead.status === "Sourcing manufacturers" ? "Matching" : "Move Forward",
       copyAction: "copy-manufacturing-rfq",
       dataName: "manufacturingRfqId"
+    })),
+    ...(state.manufacturingSupplierLeads || []).map((lead) => ({
+      id: lead.id,
+      kind: "Manufacturing",
+      title: `${lead.companyName || "Supplier lead"} · ${lead.supplierCategory || "Supplier"}`,
+      person: lead.companyName,
+      phone: lead.phone,
+      email: lead.email,
+      status: lead.outreachStatus,
+      priority: ["Not contacted", "Follow-up needed", "Replied", "Qualified"].includes(lead.outreachStatus) ? "Hot" : "Warm",
+      message: manufacturingSupplierLeadOutreachText(lead),
+      action: "invite-manufacturing-supplier-lead",
+      forwardAction: "create-manufacturing-follow-up",
+      forwardLabel: lead.outreachStatus === "Follow-up needed" ? "Follow Up" : "Create Task",
+      copyAction: "copy-manufacturing-supplier-lead",
+      dataName: "manufacturingSupplierLeadId"
     })),
     ...(state.opportunityLeads || []).map((lead) => ({
       id: lead.id,
@@ -8994,7 +9010,7 @@ function filteredFollowUpRows(typeFilter = "All Lead Types", statusFilter = "Nee
   ].filter((row) => {
     const typeOk = typeFilter === "All Lead Types" || row.kind === typeFilter;
     const statusOk = statusFilter === "All Statuses"
-      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Contacted", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "New RFQ", "Needs Review", "Supplier Matching", "Quote Requested", "Quote Received", "Compliance Review", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
+      || (statusFilter === "Needs Follow-Up" && ["New", "Pending", "Contacted", "Scoping", "Proposal Needed", "new", "qualified", "New Project Lead", "Needs More Info", "Request received", "Sourcing manufacturers", "Awaiting bids", "Production quote", "Formulation", "Not contacted", "Follow-up needed", "Replied", "Qualified", "NEW", "NEEDS_MORE_INFO", "MAJOR_PROJECT_REVIEW", "FORGE_QUALIFIED"].includes(row.status))
       || row.status === statusFilter
       || row.priority === statusFilter;
     return typeOk && statusOk;
@@ -9040,6 +9056,21 @@ function followUpScore(row) {
     "Proposal Needed": 28,
     Scoping: 24,
     "Proposal Sent": 18,
+    "Request received": 30,
+    "Sourcing manufacturers": 28,
+    "Awaiting bids": 26,
+    Sampling: 22,
+    Formulation: 26,
+    "Production quote": 24,
+    "Manufacturing selected": 20,
+    "In production": 18,
+    Testing: 18,
+    Packaging: 16,
+    "Ready to ship": 12,
+    "Not contacted": 30,
+    "Follow-up needed": 28,
+    Replied: 26,
+    Qualified: 24,
     "New RFQ": 30,
     "Needs Review": 28,
     "Supplier Matching": 26,
