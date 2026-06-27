@@ -1,3 +1,7 @@
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
 type FlexLeadInput = {
   owner_name?: string;
   business_name?: string;
