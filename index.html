@@ -41,6 +41,7 @@
             <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
             <a class="nav-link" href="/pricing/">Pricing</a>
             <a class="nav-link" href="/impact/">Impact</a>
+            <button class="nav-link" type="button" data-nav="launch-status">Launch Status</button>
             <button class="nav-link" type="button" data-nav="legal">Safety</button>
           </nav>
           <div class="header-actions">
@@ -57,6 +58,7 @@
                   <button type="button" data-nav="post">Post a Job</button>
                   <button type="button" data-nav="signup">Join as Worker</button>
                   <a href="/pricing/">Pricing / Upgrades</a>
+                  <button type="button" data-nav="launch-status">Launch Status</button>
                 </section>
                 <section>
                   <h3>Auto & Transport</h3>
@@ -115,6 +117,7 @@
           </div>
           <strong>Impact tracker coming soon - verified updates will be published after launch.</strong>
           <a class="btn ghost small" href="/impact/">Impact Page</a>
+          <button class="btn ghost small" type="button" data-nav="launch-status">Launch Status</button>
         </section>
 
         <section class="feature-strip" aria-label="Forge benefits">
@@ -809,6 +812,74 @@
             <button class="btn ghost" id="confirmSecondary" type="button">Back Home</button>
             <button class="btn ghost" type="button" data-action="copy-confirmation-handoff">Copy Handoff</button>
           </div>
+        </section>
+      </section>
+
+      <section class="screen" id="launch-status-screen" data-screen="launch-status">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Launch Status</strong>
+        </header>
+        <section class="launch-status-layout">
+          <article class="launch-status-hero">
+            <span class="split-label">Soft launch readiness</span>
+            <h1>Forge is ready for controlled first-user demos, not broad public traffic yet.</h1>
+            <p>Use Forge now with people Andrew can personally follow up with. Keep payments, sensitive documents, emergency requests, and final contracts outside the MVP until production auth, backend storage, and legal/security review are complete.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+              <button class="btn ghost" type="button" data-nav="perspective">Open Demo Paths</button>
+            </div>
+          </article>
+          <section class="launch-status-grid" aria-label="Current Forge readiness summary">
+            <article class="ready">
+              <span>Ready</span>
+              <strong>First-user signups</strong>
+              <p>Job posters, workers, business leads, auto requests, Academy/Admitly interest, and referrals can be captured for manual follow-up.</p>
+            </article>
+            <article class="ready">
+              <span>Ready</span>
+              <strong>Perspective demos</strong>
+              <p>Customer, worker, and admin views are available so early users can see what Forge looks like from their side.</p>
+            </article>
+            <article class="ready">
+              <span>Ready</span>
+              <strong>Manual matching workflow</strong>
+              <p>Jobs, bids, messages, profile status, follow-up queues, and launch lists are present for controlled operator-led demos.</p>
+            </article>
+            <article class="attention">
+              <span>Guarded</span>
+              <strong>No live payments</strong>
+              <p>Pricing and boosts are demo/manual only. Forge is not collecting cards, deposits, escrow, or marketplace payments in this MVP.</p>
+            </article>
+            <article class="attention">
+              <span>Guarded</span>
+              <strong>Backend required</strong>
+              <p>Before broad public launch, lead delivery needs Zapier, Supabase, or another backend plus backup/export operations.</p>
+            </article>
+            <article class="attention">
+              <span>Guarded</span>
+              <strong>Security gate required</strong>
+              <p>Admin tools, exports, imports, reports, webhooks, and production data need real auth/RBAC before strangers get the public link.</p>
+            </article>
+          </section>
+          <section class="launch-status-panel">
+            <div>
+              <span class="split-label">Use tomorrow</span>
+              <h2>Recommended soft-launch path</h2>
+              <ol class="launch-status-steps">
+                <li>Invite a small controlled group: friends, workers, job posters, business owners, auto contacts, and trade-pathway leads.</li>
+                <li>Ask each person to complete one real action, then verify that Forge saved the lead and shows the right perspective.</li>
+                <li>Export a JSON backup after each outreach block and keep sensitive payments or documents outside Forge.</li>
+                <li>Only expand wider after backend delivery, admin auth, legal review, and the full security check pass.</li>
+              </ol>
+            </div>
+            <div class="launch-status-actions">
+              <button class="btn orange" type="button" data-nav="capture" data-operator-only>Capture Referral</button>
+              <button class="btn blue" type="button" data-nav="admin" data-operator-only>Open Admin Launch Center</button>
+              <button class="btn ghost" type="button" data-nav="legal">Read Early Access Terms</button>
+            </div>
+          </section>
         </section>
       </section>
 

@@ -7491,6 +7491,113 @@ textarea:focus {
   background: #f8fbff;
 }
 
+.launch-status-layout {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.launch-status-hero,
+.launch-status-panel {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-status-hero {
+  border-left: 6px solid var(--orange);
+  background: #fffaf4;
+}
+
+.launch-status-hero h1,
+.launch-status-panel h2 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.launch-status-hero p,
+.launch-status-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.launch-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.launch-status-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 148px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-status-grid article.ready {
+  border-left: 5px solid var(--blue);
+}
+
+.launch-status-grid article.attention {
+  border-left: 5px solid var(--orange);
+  background: #fffaf4;
+}
+
+.launch-status-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-status-grid article.attention span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-status-grid strong {
+  color: var(--ink);
+}
+
+.launch-status-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.38;
+}
+
+.launch-status-panel {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.34fr);
+  align-items: start;
+}
+
+.launch-status-steps {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.launch-status-actions {
+  display: grid;
+  gap: 10px;
+}
+
 .queue-card h3 {
   margin: 4px 0 6px;
 }
@@ -7864,6 +7971,8 @@ td {
   .backend-grid,
   .auth-grid,
   .safety-grid,
+  .launch-status-grid,
+  .launch-status-panel,
   .launch-command-grid,
   .auto-admin-grid,
   .auto-admin-columns,

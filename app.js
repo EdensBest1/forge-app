@@ -4505,6 +4505,7 @@ function normalizeScreen(screen) {
   if (["personal-driver", "private-driver", "driver", "drivers", PERSONAL_DRIVER_CATEGORY_VALUE].includes(screen)) return "personal-driver";
   if (["payments", "forge-payments", "merchant-services", "merchant", FORGE_PAYMENTS_CATEGORY_VALUE].includes(screen)) return "payments";
   if (["local-products", "makers", "local-makers", "products", LOCAL_PRODUCTS_CATEGORY_VALUE].includes(screen)) return "local-products";
+  if (["launch", "launch-status", "soft-launch", "readiness", "public-readiness"].includes(screen)) return "launch-status";
   if (["academy", "forge-academy", "forge/academy", "dashboard/career", "career-plus", "forge-career-plus"].includes(screen)) return "forge-academy";
   if (["admitly", "trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
   if (["building", "forge-building", "buildings"].includes(screen)) return "building";
