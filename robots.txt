@@ -1,2 +1,6 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /capture
+Disallow: /reports
+Disallow: /api
+Disallow: /debug

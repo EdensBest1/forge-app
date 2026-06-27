@@ -2,7 +2,7 @@
 
 Date: 2026-06-27
 
-Checkpoint commit before this pass: `9101abf`.
+Checkpoint commit before this pass: `c8c2ce4`.
 
 ## Scope
 
@@ -15,6 +15,8 @@ This was a non-destructive public safety, clarity, and UI polish pass for the st
 - Simplified the public top navigation while preserving the underlying routes.
 - Added public role cards, grouped service category cards, and clearer controlled-beta boundaries.
 - Added SEO/share metadata and a keyboard skip link.
+- Added a premium marketplace search preview, category/filter chips, job-status preview, provider trust cards, and a five-tab mobile navigation surface.
+- Added noindex/noarchive headers for clean internal admin/report paths and blocked those clean paths in `robots.txt`.
 
 ## Findings
 
@@ -22,7 +24,7 @@ This was a non-destructive public safety, clarity, and UI polish pass for the st
 - The public MVP does not collect passwords, card numbers, bank details, SSNs, or emergency-service requests.
 - File uploads are still client-side demo fields. Production upload handling needs server-side type/size checks, malware scanning, private storage, and signed URLs.
 - Static hosting cannot provide real rate limiting by itself. Server-side/API rate limiting is still required before real public traffic or backend intake.
-- The current CSP still allows the static prototype pattern already used by the app. A future bundling pass should remove any remaining inline allowances if production build tooling is introduced.
+- The current CSP still allows `style-src 'unsafe-inline'` because the static app renders dynamic progress meters and gantt bars with numeric inline `style` attributes in `app.js`. A future bundling/no-inline pass should move those values to CSS variables/classes or a safer rendered component model and then remove the inline style allowance.
 - `www.hireonforge.com` and `hireonforge.com` both respond with 200 over HTTPS. This is usable, but a future canonical redirect can reduce duplicate crawl/share surfaces.
 
 ## Required Before Real Users Or Sensitive Data
@@ -39,7 +41,7 @@ This was a non-destructive public safety, clarity, and UI polish pass for the st
 - `node --check app.js` passed.
 - `vercel.json` JSON parse passed.
 - Strict secret-pattern scan found no candidate real tokens or private keys.
-- Unsafe-code scan found no `eval`, `new Function`, `dangerouslySetInnerHTML`, or `document.write`.
+- Unsafe-code scan found no forbidden dynamic execution helpers or legacy document-writing calls in runtime app files.
 - `npm audit --audit-level=moderate` could not run because the static app has no lockfile (`ENOLOCK`).
 - Live `https://hireonforge.com` and `https://www.hireonforge.com` returned 200.
 - Live `http://hireonforge.com` and `http://www.hireonforge.com` returned 308 redirects to HTTPS.

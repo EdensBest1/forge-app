@@ -14,8 +14,12 @@
     <meta property="og:description" content="Post local work, join as a worker, or request business growth support through Forge's controlled beta marketplace." />
     <meta property="og:url" content="https://hireonforge.com/" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <title>Forge - Hire Local Workers, Crews, and Service Providers</title>
+    <meta name="twitter:title" content="Forge - Post the Job. Get the Crew." />
+    <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
+    <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
+    <title>Forge - Post the Job. Get the Crew.</title>
     <link rel="stylesheet" href="./styles.css?v=71" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
@@ -50,7 +54,7 @@
             <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
             <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
-            <button class="btn ghost" type="button" data-nav="services">Browse Forge Services</button>
+            <button class="btn ghost" type="button" data-nav="services">Browse Services</button>
             <button class="btn ghost" type="button" data-nav="status">Check Job Status</button>
           </div>
           </div>
@@ -62,7 +66,37 @@
         <section class="feature-strip" aria-label="Forge benefits">
           <article><span class="icon">Q</span><strong>Quick Posting</strong><small>Post in minutes</small></article>
           <article><span class="icon">L</span><strong>Local Pros</strong><small>In Medford</small></article>
-          <article><span class="icon">S</span><strong>Safe & Secure</strong><small>Verified workers</small></article>
+          <article><span class="icon">S</span><strong>Safety First</strong><small>Admin-reviewed leads</small></article>
+        </section>
+
+        <section class="forge-marketplace-preview" aria-label="Forge marketplace search preview">
+          <div class="marketplace-search-copy">
+            <span class="split-label">Marketplace search</span>
+            <h2>Search the work, the service, or the provider type.</h2>
+            <p>Forge keeps the first move simple: choose a category, describe the scope, and let admin review route the lead before money or sensitive documents enter the MVP.</p>
+          </div>
+          <div class="forge-search-console">
+            <label class="forge-search-box">
+              <span>Search services</span>
+              <input type="search" value="roofing repair near Medford" readonly aria-label="Demo Forge service search" />
+            </label>
+            <div class="forge-chip-cloud" aria-label="Forge category shortcuts">
+              <span>Home & Property</span>
+              <span>Skilled Trades</span>
+              <span>Auto & Transport</span>
+              <span>Business Growth</span>
+              <span>Manufacturing</span>
+              <span>Career Pathways</span>
+              <span>Building</span>
+            </div>
+            <div class="forge-filter-cloud" aria-label="Forge best-for filters">
+              <span>Best for homeowners</span>
+              <span>Best for contractors</span>
+              <span>Best for urgent jobs</span>
+              <span>Best for business growth</span>
+              <span>Best for manufacturing</span>
+            </div>
+          </div>
         </section>
 
         <section class="role-gateway-panel" aria-label="Primary Forge paths">
@@ -122,6 +156,46 @@
             <p>No payment is collected in the MVP. Forge does not guarantee emergency response, availability, licensing, insurance, pricing, or work quality. Users should verify identity, scope, price, license, insurance, and safety before work begins.</p>
           </div>
           <button class="btn ghost" type="button" data-nav="legal">Read Terms & Privacy</button>
+        </section>
+
+        <section class="job-trust-panel" aria-label="Forge job status and provider trust preview">
+          <article class="job-status-card">
+            <span class="split-label">Job status timeline</span>
+            <h2>Every job has a clear next step.</h2>
+            <ol class="status-timeline-preview">
+              <li><strong>Draft</strong><span>Scope started</span></li>
+              <li><strong>Submitted</strong><span>Consent captured</span></li>
+              <li><strong>Admin Review</strong><span>Lead screened</span></li>
+              <li><strong>Matched</strong><span>Provider fit found</span></li>
+              <li><strong>Contacted</strong><span>Follow-up started</span></li>
+              <li><strong>Scheduled</strong><span>Time agreed outside MVP</span></li>
+              <li><strong>Completed</strong><span>Manual confirmation</span></li>
+            </ol>
+          </article>
+          <article class="provider-preview-card">
+            <span class="split-label">Provider profile preview</span>
+            <h2>Company cards show fit without overclaiming verification.</h2>
+            <div class="provider-card-row">
+              <strong>Rogue Valley Roofing Crew</strong>
+              <span>Roofing · repairs · estimates</span>
+              <div class="trust-badge-row">
+                <small>Identity pending</small>
+                <small>License pending</small>
+                <small>Insurance pending</small>
+                <small>References pending</small>
+                <small>Admin reviewed</small>
+              </div>
+            </div>
+            <div class="provider-card-row">
+              <strong>Forge Road Rescue Partner</strong>
+              <span>Roadside · tow routing · tire help</span>
+              <div class="trust-badge-row">
+                <small>Identity pending</small>
+                <small>Coverage area listed</small>
+                <small>Emergency boundary shown</small>
+              </div>
+            </div>
+          </article>
         </section>
 
         <section class="start-path-panel">
@@ -4039,17 +4113,14 @@
 
     <div class="mobile-tabbar">
       <button type="button" data-nav="home" aria-label="Open Forge home">Home</button>
-      <button type="button" data-nav="perspective" aria-label="Open demo paths">Demo</button>
+      <button type="button" data-nav="services" aria-label="Browse Forge services">Services</button>
       <button type="button" data-nav="post" aria-label="Post a job">Post</button>
       <button type="button" data-nav="jobs" aria-label="Browse jobs">Jobs</button>
-      <button type="button" data-nav="auto" aria-label="Open Forge Auto services">Auto</button>
-      <button type="button" data-nav="road-rescue" aria-label="Open Road Rescue">Rescue</button>
-      <button type="button" data-nav="capital" aria-label="Open Capital Desk">Capital</button>
-      <button type="button" data-nav="building" aria-label="Open Forge Building">Building</button>
-      <button type="button" data-nav="projects" aria-label="Open Forge Projects">Projects</button>
-      <button type="button" data-nav="homebuilding" aria-label="Open homebuilding">Build</button>
-      <button type="button" data-nav="messages" aria-label="Open messages">Msgs</button>
-      <button type="button" data-nav="profile" aria-label="Open profile status">Profile</button>
+      <button type="button" data-nav="login" aria-label="Open account">Account</button>
+      <div class="mobile-tabbar-secondary" aria-label="Forge demo shortcuts">
+        <button type="button" data-nav="demo" aria-label="Open demo paths">Demo</button>
+        <button type="button" data-nav="profile" aria-label="Open profile status">Status</button>
+      </div>
     </div>
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
