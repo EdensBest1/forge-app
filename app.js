@@ -4245,6 +4245,58 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+const FORM_MIN_SUBMIT_MS = 700;
+const FORM_MAX_FIELD_LENGTH = 1600;
+const FORM_MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+const guardedSubmits = new WeakMap();
+
+function notifyGuard(message) {
+  if (typeof showToast === "function") showToast(message);
+}
+
+function installFormGuards(root = document) {
+  const forms = root instanceof HTMLFormElement ? [root] : [...root.querySelectorAll("form")];
+  forms.forEach((form) => {
+    if (form.dataset.guardInstalled) return;
+    form.dataset.guardInstalled = "true";
+    form.dataset.startedAt = String(Date.now());
+    const trap = document.createElement("label");
+    trap.className = "form-honeypot";
+    trap.setAttribute("aria-hidden", "true");
+    trap.textContent = "Company website";
+    const input = document.createElement("input");
+    input.name = "companyWebsite";
+    input.tabIndex = -1;
+    input.autocomplete = "off";
+    trap.appendChild(input);
+    form.appendChild(trap);
+  });
+}
+
+function validateGuardedForm(form) {
+  const startedAt = Number(form.dataset.startedAt || Date.now());
+  if (Date.now() - startedAt < FORM_MIN_SUBMIT_MS) {
+    return "Please review the form for a moment before submitting.";
+  }
+  if (guardedSubmits.get(form)) return "This form is already submitting.";
+  const trap = form.querySelector("input[name='companyWebsite']");
+  if (trap?.value.trim()) return "Submission blocked.";
+  const fields = [...form.elements].filter((field) => typeof field.value === "string");
+  const oversizedField = fields.find((field) => field.value.length > FORM_MAX_FIELD_LENGTH);
+  if (oversizedField) return "One field is too long. Please shorten it before submitting.";
+  const files = [...form.querySelectorAll("input[type='file']")].flatMap((input) => [...(input.files || [])]);
+  const oversizedFile = files.find((file) => file.size > FORM_MAX_UPLOAD_BYTES);
+  if (oversizedFile) return "One uploaded file is too large for the MVP. Please use files under 8 MB.";
+  const disallowedFile = files.find((file) => /\.(exe|dmg|pkg|app|sh|bat|cmd|js|mjs|ps1)$/i.test(file.name));
+  if (disallowedFile) return "Executable files are not accepted in the MVP.";
+  trap?.closest(".form-honeypot")?.remove();
+  delete form.dataset.guardInstalled;
+  setTimeout(() => installFormGuards(form), 0);
+  guardedSubmits.set(form, true);
+  setTimeout(() => guardedSubmits.delete(form), 2500);
+  return "";
+}
+
 function categoryValue(category) {
   if (category === CREATIVE_CATEGORY_LABEL) return CREATIVE_CATEGORY_VALUE;
   if (category === NORTHSTAR_CATEGORY_LABEL) return NORTHSTAR_CATEGORY_VALUE;
@@ -11348,6 +11400,19 @@ function findWorkerByName(name) {
 function samePerson(left, right) {
   return String(left || "").trim().toLowerCase() === String(right || "").trim().toLowerCase();
 }
+
+installFormGuards();
+
+document.addEventListener("submit", (event) => {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement)) return;
+  installFormGuards(form);
+  const guardMessage = validateGuardedForm(form);
+  if (!guardMessage) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  notifyGuard(guardMessage);
+}, true);
 
 document.addEventListener("click", (event) => {
   const login = event.target.closest("[data-login-role]");

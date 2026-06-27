@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0648b7" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <title>Forge MVP</title>
+    <meta
+      name="description"
+      content="Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers, starting in Medford and Southern Oregon."
+    />
+    <link rel="canonical" href="https://hireonforge.com/" />
+    <meta property="og:title" content="Forge - Hire Local Workers, Crews, and Service Providers" />
+    <meta property="og:description" content="Post local work, join as a worker, or request business growth support through Forge's controlled beta marketplace." />
+    <meta property="og:url" content="https://hireonforge.com/" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Forge - Hire Local Workers, Crews, and Service Providers</title>
     <link rel="stylesheet" href="./styles.css?v=71" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
   <body>
+    <a class="skip-link" href="#home-screen">Skip to main content</a>
     <div class="user-banner hidden" id="userBanner"></div>
 
     <main class="app">
@@ -21,24 +32,12 @@
             <span>FORGE</span>
           </a>
           <div class="top-actions">
-            <button class="btn ghost small" id="perspectiveButton" type="button" data-nav="perspective">Perspectives</button>
             <button class="btn ghost small" type="button" data-nav="services">Services</button>
-            <button class="btn ghost small" type="button" data-nav="auto">Auto</button>
-            <button class="btn ghost small" type="button" data-nav="road-rescue">Road Rescue</button>
-            <button class="btn ghost small" type="button" data-nav="creative">Photography & Videography</button>
-            <button class="btn ghost small" type="button" data-nav="northstar">NorthStar</button>
-            <button class="btn ghost small" type="button" data-nav="capital">Capital Desk</button>
-            <button class="btn ghost small" type="button" data-nav="manufacturing">Manufacturing</button>
-            <button class="btn ghost small" type="button" data-nav="personal-driver">Personal Driver</button>
-            <button class="btn ghost small" type="button" data-nav="payments">Payments</button>
-            <button class="btn ghost small" type="button" data-nav="local-products">Products</button>
-            <button class="btn ghost small" type="button" data-nav="forge-academy">Academy</button>
-            <button class="btn ghost small" type="button" data-nav="opportunities">Careers</button>
-            <button class="btn ghost small" type="button" data-nav="building">Building</button>
-            <button class="btn ghost small" type="button" data-nav="homebuilding">Homebuilding</button>
-            <button class="btn ghost small" type="button" data-nav="projects">Projects</button>
-            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In</button>
-            <button class="btn blue small" type="button" data-nav="capture" data-operator-only>Capture Lead</button>
+            <button class="btn ghost small" type="button" data-nav="post">Post a Job</button>
+            <button class="btn ghost small" type="button" data-nav="signup">Join as Worker</button>
+            <button class="btn ghost small" type="button" data-nav="northstar">For Businesses</button>
+            <button class="btn ghost small" type="button" data-nav="legal">Safety</button>
+            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In / Admin</button>
             <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
           </div>
         </header>
@@ -46,7 +45,8 @@
         <section class="home-hero">
           <div class="hero-copy">
             <h1>Post the job.<span>Get the crew.</span></h1>
-            <p>Forge helps customers find local workers, crews, and businesses, and helps providers build profiles and bid on jobs.</p>
+            <p>Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers - starting in Medford and Southern Oregon.</p>
+            <p class="hero-trust-line">Controlled beta · No payments collected in the MVP · Admin-reviewed leads</p>
             <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
             <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
@@ -63,6 +63,65 @@
           <article><span class="icon">Q</span><strong>Quick Posting</strong><small>Post in minutes</small></article>
           <article><span class="icon">L</span><strong>Local Pros</strong><small>In Medford</small></article>
           <article><span class="icon">S</span><strong>Safe & Secure</strong><small>Verified workers</small></article>
+        </section>
+
+        <section class="role-gateway-panel" aria-label="Primary Forge paths">
+          <article>
+            <span class="split-label">I need workers</span>
+            <h2>Post the scope and get reviewed follow-up.</h2>
+            <p>Share the job, location, timeline, and contact consent. Forge keeps the lead in admin review while bids and follow-up are coordinated.</p>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-nav="post">Post Job</button>
+              <button class="btn ghost" type="button" data-nav="status">Check Job Status</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I need work</span>
+            <h2>Create a provider profile.</h2>
+            <p>List your service area, experience, availability, categories, and proof signals so Forge can route matching local jobs.</p>
+            <div class="hero-actions">
+              <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+              <button class="btn ghost" type="button" data-nav="jobs">Browse Jobs</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I run a business</span>
+            <h2>Get leads and tighten operations.</h2>
+            <p>Request help with local leads, websites, Google Business, ads, CRM, payments, manufacturing, or growth follow-up.</p>
+            <div class="hero-actions">
+              <button class="btn blue" type="button" data-nav="northstar">Grow My Business</button>
+              <button class="btn ghost" type="button" data-nav="manufacturing">Manufacturing Help</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="service-group-panel" aria-label="Forge service groups">
+          <div class="section-title">
+            <div>
+              <span class="split-label">Services</span>
+              <h2>Everything stays available, grouped so the first choice is simple.</h2>
+              <p>Pick the closest lane first. Detailed category forms and admin queues remain behind each route.</p>
+            </div>
+            <button class="btn ghost small" type="button" data-nav="services">Open All Services</button>
+          </div>
+          <div class="service-group-grid">
+            <article><h3>Home & Property</h3><p>Handyman, cleaning, Airbnb turnovers, landscaping, junk removal, moving, painting.</p><button class="btn ghost small" type="button" data-nav="post">Post Home Work</button></article>
+            <article><h3>Skilled Trades</h3><p>Electrical, plumbing, HVAC, roofing, carpentry, welding, concrete, masonry, asphalt and pavers.</p><button class="btn ghost small" type="button" data-nav="services">Browse Trades</button></article>
+            <article><h3>Auto & Transport</h3><p>Road rescue, auto repair, sell my car, private driver, luxury and partner routing.</p><button class="btn ghost small" type="button" data-nav="auto">Open Auto</button></article>
+            <article><h3>Business Growth</h3><p>North Star Creative Co., websites, Google Business, ads, CRM, roofing company marketing.</p><button class="btn ghost small" type="button" data-nav="northstar">Business Help</button></article>
+            <article><h3>Manufacturing</h3><p>Nutraceuticals, vitamins, gummies, powders, packaging, labs, fulfillment.</p><button class="btn ghost small" type="button" data-nav="manufacturing">Find a Manufacturer</button></article>
+            <article><h3>Career Pathways</h3><p>Forge Academy, Admitly Trade Pathways, apprenticeships, trade school, unions.</p><button class="btn ghost small" type="button" data-nav="forge-academy">Explore Careers</button></article>
+            <article><h3>Building & Development</h3><p>Homebuilding, major projects, financing review, partner routing.</p><button class="btn ghost small" type="button" data-nav="building">Open Building</button></article>
+          </div>
+        </section>
+
+        <section class="beta-boundary-panel" aria-label="Forge controlled beta safety">
+          <div>
+            <span class="split-label">Safety boundary</span>
+            <h2>Forge is useful today, but still controlled beta.</h2>
+            <p>No payment is collected in the MVP. Forge does not guarantee emergency response, availability, licensing, insurance, pricing, or work quality. Users should verify identity, scope, price, license, insurance, and safety before work begins.</p>
+          </div>
+          <button class="btn ghost" type="button" data-nav="legal">Read Terms & Privacy</button>
         </section>
 
         <section class="start-path-panel">
