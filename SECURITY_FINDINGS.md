@@ -4,6 +4,17 @@ Date: 2026-06-27
 
 Checkpoint commit before this pass: `c8c2ce4`.
 
+## 2026-06-27 06:25 PDT Legal/Ops/Funnel/Impact Hardening
+
+- Default public mode is now on for first-time visitors.
+- Public top navigation no longer says `Log In / Admin`; it says `Log In`.
+- Admin login card is hidden from non-admin public display with `data-admin-control`.
+- Added `ADMIN_ACCESS_POLICY.md` and `MONEY_SECURITY_CONTROLS.md`.
+- Added legal binder templates under `legal/`, including DocuSign, Drive, Monday.com, Klaviyo, Canva, money-control, people-ops, anti-bypass, and state-matrix documentation.
+- Added impact tracker docs and example ledger with placeholder-only public metrics.
+- Added `.env.example` placeholders for DocuSign, Google Drive, Monday.com, Klaviyo, Canva, and related workflow variables without secret values.
+- Remaining risk: hosted auth/RBAC, server-side enforcement, production database audit logs, rate limiting, and counsel/payment partner review are still required before real operations.
+
 ## 2026-06-27 05:55 PDT Passive Recheck
 
 ### Checked

@@ -2019,7 +2019,7 @@ const demoAccounts = [
     name: "Forge Admin",
     label: "Operator",
     screen: "admin",
-    publicMode: false,
+    publicMode: true,
     visible: "Admin dashboard, lead capture, exports, and Zapier setup"
   }
 ];

@@ -2,6 +2,14 @@
 
 Generated: 2026-06-27 01:10 PDT
 
+## 2026-06-27 06:25 PDT Addendum
+
+- **Admin exposure:** improved locally by turning public mode on by default, renaming public login text, and hiding the admin demo login card from non-admin display. Must be rechecked after deployment.
+- **Legal documents:** binder templates created, but attorney review is required before external use.
+- **Money movement:** no direct fund holding or payout flow is approved; money-control docs now document dual approval, callback verification, and payment partner review requirements.
+- **Impact claims:** public numbers remain placeholder-only until verified source records exist.
+- **Deployment:** not deployed. Andrew approval is required before production deployment.
+
 | Risk | Status | Mitigation / Next Action |
 |---|---|---|
 | Production admin auth incomplete | Open | Keep admin/demo controls hidden/gated; implement hosted auth/RBAC before broad public launch. |

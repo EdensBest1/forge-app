@@ -1,0 +1,11 @@
+{
+  "last_updated": null,
+  "source_of_truth": "Admin-controlled ledger required before public metrics are shown.",
+  "children_fed": null,
+  "meals_funded": null,
+  "orphanage_projects_supported": null,
+  "church_projects_supported": null,
+  "india_projects": [],
+  "worldwide_projects": [],
+  "public_placeholder": "Impact tracker coming soon - verified updates will be published after launch."
+}

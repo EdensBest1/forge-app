@@ -2,6 +2,26 @@
 
 Generated: 2026-06-27 01:14 PDT
 
+## 2026-06-27 06:30 PDT Legal/Ops/Funnel/Impact Pass
+
+| Command | Result |
+|---|---|
+| `node --check app.js` | passed |
+| `node --check route-loader.js` | passed |
+| `npm run check` | passed |
+| `npm run lint` | not available |
+| `npm run typecheck` | not available |
+| `npm run test` | not available |
+| `npm run build` | not available |
+| `npm audit --audit-level=high` | blocked: `ENOLOCK`, no lockfile |
+| `curl -I https://hireonforge.com` | HTTP 200 over HTTPS; live deployment still older than this local pass |
+| `curl -I https://www.hireonforge.com` | HTTP 200 over HTTPS; live deployment still older than this local pass |
+| Local browser smoke `http://127.0.0.1:4174/` | passed: dark hero, impact strip, public CTAs, no `Log In / Admin` wording |
+| Local browser smoke `http://127.0.0.1:4174/#login` | passed: public login screen hides the `Open Admin` card |
+| Local browser smoke `http://127.0.0.1:4174/impact/` | passed: placeholder-only impact page |
+
+Current status: local checks pass and public admin-demo exposure is improved locally. Production was not deployed and must be rechecked after Andrew approval.
+
 ## 2026-06-27 05:55 PDT Recheck
 
 | Command | Result |

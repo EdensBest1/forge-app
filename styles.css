@@ -91,6 +91,10 @@ figure {
   display: block;
 }
 
+.home-screen {
+  background: #101319;
+}
+
 .home-top,
 .simple-bar,
 .blue-bar {
@@ -286,7 +290,11 @@ body:not(.role-admin) [data-admin-control] {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
   min-height: 370px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.18), rgba(16, 19, 25, 0.94)),
+    #101319;
+  color: #fff;
 }
 
 .hero-copy {
@@ -298,10 +306,10 @@ body:not(.role-admin) [data-admin-control] {
 .hero-trust-line {
   width: fit-content;
   margin: 4px 0 0;
-  border: 1px solid rgba(6, 72, 183, 0.14);
+  border: 1px solid rgba(255, 166, 86, 0.28);
   border-radius: 6px;
-  background: var(--blue-soft);
-  color: #143e85;
+  background: rgba(255, 106, 0, 0.12);
+  color: #ffe1c2;
   padding: 9px 12px;
   font-size: 0.82rem;
   font-weight: 850;
@@ -323,7 +331,7 @@ body:not(.role-admin) [data-admin-control] {
 .hero-copy p {
   max-width: 390px;
   margin-bottom: 26px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 1.08rem;
   line-height: 1.55;
 }
@@ -389,6 +397,7 @@ body:not(.role-admin) [data-admin-control] {
 .home-jobs,
 .timeline,
 .audience-split,
+.impact-trust-strip,
 .forge-marketplace-preview,
 .role-gateway-panel,
 .service-group-panel,
@@ -399,6 +408,31 @@ body:not(.role-admin) [data-admin-control] {
 .signup-readiness-panel,
 .demo-script {
   padding: 24px 28px;
+}
+
+.impact-trust-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, auto) auto;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: #151a22;
+  color: #fff;
+}
+
+.impact-trust-strip p,
+.impact-trust-strip strong {
+  margin: 0;
+}
+
+.impact-trust-strip p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.5;
+}
+
+.impact-trust-strip strong {
+  color: #ffe1c2;
+  font-size: 0.86rem;
 }
 
 .forge-marketplace-preview {
@@ -490,7 +524,7 @@ body:not(.role-admin) [data-admin-control] {
 
 .role-gateway-panel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   border-bottom: 1px solid var(--line);
   background: #fff;

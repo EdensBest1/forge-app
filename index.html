@@ -40,8 +40,9 @@
             <button class="btn ghost small" type="button" data-nav="post">Post a Job</button>
             <button class="btn ghost small" type="button" data-nav="signup">Join as Worker</button>
             <button class="btn ghost small" type="button" data-nav="northstar">For Businesses</button>
+            <a class="btn ghost small" href="/impact/">Impact</a>
             <button class="btn ghost small" type="button" data-nav="legal">Safety</button>
-            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In / Admin</button>
+            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In</button>
             <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
           </div>
         </header>
@@ -50,17 +51,25 @@
           <div class="hero-copy">
             <h1>Post the job.<span>Get the crew.</span></h1>
             <p>Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers - starting in Medford and Southern Oregon.</p>
-            <p class="hero-trust-line">Controlled beta · No payments collected in the MVP · Admin-reviewed leads</p>
+            <p class="hero-trust-line">Controlled beta · Admin-reviewed leads · No payments collected in MVP · Built to help fund House of Heaven impact work</p>
             <div class="hero-actions">
             <button class="btn orange" type="button" data-nav="post">Post a Job</button>
             <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
             <button class="btn ghost" type="button" data-nav="services">Browse Services</button>
-            <button class="btn ghost" type="button" data-nav="status">Check Job Status</button>
           </div>
           </div>
           <figure class="hero-photo">
             <img src="./assets/forge-hero.png" alt="Local worker preparing for a job" />
           </figure>
+        </section>
+
+        <section class="impact-trust-strip" aria-label="House of Heaven impact tracker">
+          <div>
+            <span class="split-label">Built to serve</span>
+            <p>A portion of profit supports House of Heaven work to feed children and help build orphanages and churches in India and around the world.</p>
+          </div>
+          <strong>Impact tracker coming soon - verified updates will be published after launch.</strong>
+          <a class="btn ghost small" href="/impact/">Impact Page</a>
         </section>
 
         <section class="feature-strip" aria-label="Forge benefits">
@@ -125,6 +134,38 @@
             <div class="hero-actions">
               <button class="btn blue" type="button" data-nav="northstar">Grow My Business</button>
               <button class="btn ghost" type="button" data-nav="manufacturing">Manufacturing Help</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I need auto help</span>
+            <h2>Route vehicle needs through reviewed partners.</h2>
+            <p>Buy, sell, transport, repair, or source vehicles through admin-reviewed partner routing.</p>
+            <div class="hero-actions">
+              <button class="btn ghost" type="button" data-nav="auto">Start Auto Request</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I need a manufacturer</span>
+            <h2>Find manufacturing support.</h2>
+            <p>Explore vitamins, supplements, gummies, powders, packaging, labs, fulfillment, and supplier intake paths.</p>
+            <div class="hero-actions">
+              <button class="btn ghost" type="button" data-nav="manufacturing">Start Manufacturing Intake</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I need creative / marketing help</span>
+            <h2>Build a stronger local presence.</h2>
+            <p>Request photography, video, websites, Google Business help, ads, and North Star Creative Co. support.</p>
+            <div class="hero-actions">
+              <button class="btn ghost" type="button" data-nav="creative-request">Request Creative Help</button>
+            </div>
+          </article>
+          <article>
+            <span class="split-label">I want training or a trade path</span>
+            <h2>Build a career, not just a job.</h2>
+            <p>Explore Forge Academy, Admitly trade pathways, apprenticeships, and local career support.</p>
+            <div class="hero-actions">
+              <button class="btn ghost" type="button" data-nav="forge-academy">Explore Career Paths</button>
             </div>
           </article>
         </section>
@@ -559,7 +600,7 @@
               <p>Check the bathroom faucet job, review bids, and follow the customer flow.</p>
               <button class="btn orange" type="button" data-login-role="customer" data-login-name="John Smith" data-login-screen="status">Continue as John</button>
             </article>
-            <article class="login-card">
+            <article class="login-card" data-admin-control>
               <span class="split-label">Operator</span>
               <h2>Forge Admin</h2>
               <div class="login-status"><strong>Profile Status</strong><span>Operator active</span></div>

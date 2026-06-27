@@ -2,6 +2,28 @@
 
 Generated: 2026-06-27 05:55 PDT
 
+## 2026-06-27 06:30 PDT Additive Public Cleanup
+
+### Added Or Improved Locally
+
+- Public mode is on by default for first-time visitors.
+- Public top nav now uses Services, Post a Job, Join as Worker, For Businesses, Impact, Safety, Log In.
+- Hero now uses a darker steel/orange Forge treatment and exact impact trust line.
+- Added role cards for auto help, manufacturing, creative/marketing help, and training/trade paths.
+- Added `/impact/` page with placeholder-only impact metrics.
+- Added `/go/post-job`, `/go/worker`, `/go/contractor`, `/go/business`, `/go/manufacturing`, `/go/auto`, and `/go/creative` role pages.
+- Public login screen hides the admin demo login card from non-admin display.
+
+### Verification
+
+- Local browser smoke passed for `/`, `/#login`, and `/impact/`.
+- Local `npm run check` passed.
+
+### Still Blocked
+
+- Live production is still the older deployment until Andrew approves deployment.
+- Real operations still require hosted auth/RBAC and server-side enforcement.
+
 ## Scope
 
 Checked live production at:
