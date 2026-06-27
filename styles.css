@@ -1332,6 +1332,7 @@ body:not(.role-admin) [data-admin-control] {
 .provider-directory-card {
   display: grid;
   gap: 12px;
+  min-width: 0;
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -1339,9 +1340,35 @@ body:not(.role-admin) [data-admin-control] {
   box-shadow: var(--shadow);
 }
 
+.service-vertical-card > *,
+.provider-directory-card > *,
+.service-category-card > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .service-vertical-card h3,
-.provider-directory-card h3 {
+.provider-directory-card h3,
+.service-category-card h3 {
   margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.service-vertical-card p,
+.provider-directory-card p,
+.service-category-card p {
+  overflow-wrap: anywhere;
+}
+
+.service-vertical-card .hero-actions,
+.service-category-card .hero-actions {
+  flex-wrap: wrap;
+}
+
+.service-vertical-card .btn,
+.service-category-card .btn {
+  min-width: 0;
+  white-space: normal;
 }
 
 .service-category-mini,

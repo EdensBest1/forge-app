@@ -18,4 +18,4 @@ node scripts/check-premium-ui-controlled-beta-readiness.mjs
 
 ## Status
 
-The final command results are recorded in docs/launch/CHECK_RESULTS_PREMIUM_UI_CONTROLLED_BETA_READINESS.md.
+Final command, curl, and browser results are recorded in `docs/launch/CHECK_RESULTS_PREMIUM_UI_CONTROLLED_BETA_READINESS.md`. The completed pass is green for Andrew review, with attorney review and production deployment still gated.
