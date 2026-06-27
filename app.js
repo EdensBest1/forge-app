@@ -7803,11 +7803,35 @@ function messageSummary(thread) {
         <strong>${escapeHtml(related.next)}</strong>
         <small>${escapeHtml(lastMessage ? `Last touch: ${lastMessage.sentAt}` : "No saved message yet")}</small>
       </div>
+      ${messageFlowMarkup(thread, related)}
       <div class="hero-actions">
         ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Job</button>` : ""}
         ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
       </div>
     </article>
+  `;
+}
+
+function messageFlowMarkup(thread, related) {
+  if (!thread.id.startsWith("job-")) return "";
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  const chosen = bids.find((bid) => bid.chosen);
+  const rows = [
+    ["Job posted", job ? job.status : "Saved lead", true],
+    ["Bid received", bids.length ? `${bids.length} bid${bids.length === 1 ? "" : "s"}` : "Waiting", bids.length > 0],
+    ["Handoff ready", chosen ? `${chosen.worker} selected` : bids.length ? "Needs choice" : "Needs bid", Boolean(chosen)]
+  ];
+  return `
+    <div class="message-flow" aria-label="Job to bid to message flow">
+      ${rows.map(([label, detail, done]) => `
+        <div class="${done ? "done" : ""}">
+          <span>${done ? "✓" : "!"}</span>
+          <strong>${escapeHtml(label)}</strong>
+          <small>${escapeHtml(detail)}</small>
+        </div>
+      `).join("")}
+    </div>
   `;
 }
 

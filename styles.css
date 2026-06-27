@@ -2297,6 +2297,66 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.35;
 }
 
+.message-flow,
+.bid-flow-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.message-flow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.message-flow div,
+.bid-flow-panel article {
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.message-flow div {
+  background: #f8fbff;
+}
+
+.message-flow div.done {
+  border-color: #bfd0e7;
+}
+
+.message-flow span,
+.bid-flow-panel span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffe9d8;
+  color: var(--orange);
+  font-size: 0.75rem;
+  font-weight: 950;
+}
+
+.message-flow div.done span {
+  background: var(--blue);
+  color: white;
+}
+
+.message-flow strong,
+.bid-flow-panel strong {
+  color: var(--ink);
+}
+
+.message-flow small,
+.bid-flow-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
 .profile-card,
 .profile-mini-card {
   border: 1px solid var(--line);
@@ -7954,6 +8014,7 @@ td {
   .job-flow-grid,
   .job-flow-brief-grid,
   .handoff-grid,
+  .message-flow,
   .profile-meta,
   .profile-brief-grid,
   .profile-checklist,
