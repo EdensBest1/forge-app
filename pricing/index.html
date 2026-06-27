@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forge Pricing</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body { background: #f5f8fc; color: #0b1633; font-family: Inter, system-ui, sans-serif; margin: 0; }
+      main { padding: 28px; }
+      .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+      .pricing-card { background: white; border: 1px solid #d7e0ec; border-radius: 8px; padding: 18px; display: grid; gap: 10px; }
+      .pricing-card strong { color: #003da5; font-size: 1.4rem; }
+      .pricing-card ul { margin: 0; padding-left: 18px; }
+      .pricing-card li, .pricing-note { color: #526070; line-height: 1.45; }
+      .label-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .label-row span { border: 1px solid #bfd0e7; border-radius: 999px; padding: 4px 8px; font-weight: 800; font-size: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="/">Back to Forge</a>
+      <h1>Forge Pricing</h1>
+      <p class="pricing-note">Paid tiers improve profile tools, analytics, boost credits, and sponsored visibility after trust and safety gates. No plan guarantees jobs, bids, leads, licensing, or results.</p>
+      <section class="pricing-grid" id="pricingGrid"></section>
+      <section class="pricing-card">
+        <h2>Badge explanations</h2>
+        <p><strong>Verified</strong> requires real approval. <strong>Promoted/Sponsored/Boosted</strong> means paid placement and must be labeled. <strong>Fast Responder</strong>, <strong>Licensed</strong>, <strong>Insured</strong>, and <strong>Background Checked</strong> require actual matching evidence/status.</p>
+      </section>
+      <h2>Add-ons</h2>
+      <section class="pricing-grid" id="addOnGrid"></section>
+      <dialog id="boostDialog">
+        <form method="dialog" class="pricing-card">
+          <h2>Boost purchase demo</h2>
+          <p>This is a manual/demo boost request. No payment is collected here. Boosts are labeled and safety/compliance gates still apply.</p>
+          <button type="submit">Close</button>
+        </form>
+      </dialog>
+    </main>
+    <script type="module">
+      import { addOnsForApp, appDisclaimers, formatPrice, plansForApp } from "/monetization/monetization-config.mjs";
+      const pricingGrid = document.querySelector("#pricingGrid");
+      const addOnGrid = document.querySelector("#addOnGrid");
+      pricingGrid.innerHTML = plansForApp("forge").map((plan) => `
+        <article class="pricing-card">
+          <div class="label-row">
+            ${plan.verificationIncluded ? "<span>Verification review</span>" : ""}
+            ${plan.analyticsIncluded ? "<span>Analytics</span>" : ""}
+            ${plan.boostCreditsPerMonth ? `<span>${plan.boostCreditsPerMonth} boosts/mo</span>` : ""}
+          </div>
+          <h2>${plan.name}</h2>
+          <strong>${formatPrice(plan.monthlyPriceCents)}/mo</strong>
+          <p>${plan.description}</p>
+          <ul>${plan.features.slice(0, 8).map((feature) => `<li>${feature}</li>`).join("")}</ul>
+          <button type="button" data-open-boost>Manual/demo upgrade</button>
+        </article>
+      `).join("");
+      addOnGrid.innerHTML = addOnsForApp("forge").map((item) => `
+        <article class="pricing-card">
+          <h3>${item.name}</h3>
+          <strong>${formatPrice(item.priceCents)}</strong>
+          <p>${item.termsDisclaimer}</p>
+          <button type="button" data-open-boost>Open Boost Request</button>
+        </article>
+      `).join("");
+      document.addEventListener("click", (event) => {
+        if (event.target.matches("[data-open-boost]")) document.querySelector("#boostDialog").showModal();
+      });
+      document.body.insertAdjacentHTML("beforeend", `<footer style="padding: 28px;">${appDisclaimers.forge}</footer>`);
+    </script>
+  </body>
+</html>

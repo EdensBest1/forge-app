@@ -9,6 +9,8 @@
     "check:smoke": "node smoke-test.mjs",
     "check:security": "node security-check.mjs",
     "check:release": "node release-check.mjs",
-    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release"
+    "check:monetization": "node scripts/check-monetization-engine.mjs",
+    "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
+    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release && npm run check:monetization"
   }
 }
