@@ -2,6 +2,23 @@
 
 Generated: 2026-06-27 01:14 PDT
 
+## 2026-06-27 05:55 PDT Recheck
+
+| Command | Result |
+|---|---|
+| `npm run check` | passed |
+| `npm run lint` | not available |
+| `npm run typecheck` | not available |
+| `npm run test` | not available |
+| `npm run build` | not available |
+| `npm audit --audit-level=high` | blocked: `ENOLOCK`, no lockfile |
+| `curl -I https://hireonforge.com` | HTTP 200 over HTTPS; HSTS/CSP/security headers present |
+| `curl -I https://www.hireonforge.com` | HTTP 200 over HTTPS; HSTS/CSP/security headers present |
+| Browser render of live `/` | loaded; failed public-readiness check because public admin-demo entrypoints remain visible |
+| Vercel deployment read | no deploy performed; custom domain resolved to ready deployment `dpl_AaRLrstzWYwHkivMVPpf99FoNbkh` |
+
+Current status: local checks pass, but public controlled-beta readiness is blocked by admin-demo exposure and visual-target cleanup.
+
 ## App
 
 - Root: `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`

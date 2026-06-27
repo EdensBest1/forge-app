@@ -4,6 +4,47 @@ Date: 2026-06-27
 
 Checkpoint commit before this pass: `c8c2ce4`.
 
+## 2026-06-27 05:55 PDT Passive Recheck
+
+### Checked
+
+- Live headers for `https://hireonforge.com` and `https://www.hireonforge.com`.
+- Live rendered homepage and key hash routes with browser automation.
+- Local source for hardcoded secrets, `.env` files, token/private-key patterns, unsafe dynamic execution helpers, `innerHTML`, query-param use, and exposed admin/demo surfaces.
+- Existing project security/check scripts through `npm run check`.
+
+### Passed
+
+- HTTPS returns HTTP 200 on both apex and `www`.
+- HSTS is present.
+- CSP is present and includes `frame-ancestors 'none'`.
+- `X-Content-Type-Options: nosniff` is present.
+- `X-Frame-Options: DENY` is present.
+- `Referrer-Policy: strict-origin-when-cross-origin` is present.
+- `Permissions-Policy` is present.
+- No committed real `.env` file was found.
+- Strict token/private-key search found no candidate real tokens or private keys.
+- Runtime scan did not identify `eval` or `new Function` use.
+- Public forms reviewed did not collect card numbers, bank details, SSNs, passwords, or emergency-service details.
+
+### Failed Or Risky
+
+- Public site exposes `OPEN ADMIN`/admin follow-up demo entrypoints. This is the highest current public-readiness blocker.
+- Admin/operator behavior is demo/session-gated only, not production hosted auth/RBAC.
+- CSP allows `style-src 'unsafe-inline'` for current dynamic styles; this should be removed after a no-inline render pass.
+- `innerHTML` rendering remains a review surface. Current escaping reduces risk, but future user-generated content must remain escaped and server-validated.
+- Query-param/demo mode handling exists and should not be used as authorization.
+- Both apex and `www` return 200; a canonical redirect would reduce duplicate public surfaces.
+- `Server: Vercel` is exposed. This is expected platform behavior and not directly controllable in app code.
+- `npm audit --audit-level=high` is blocked by missing lockfile (`ENOLOCK`).
+
+### Next Required Security Actions
+
+1. Hide, rename, or move public admin-demo entrypoints before controlled beta.
+2. Add hosted auth, RBAC, server-side route enforcement, audit logs, rate limits, and production upload handling before real operations.
+3. Remove inline-style CSP allowance after dynamic style rendering is refactored.
+4. Add a lockfile or documented package audit workflow before claiming dependency audit coverage.
+
 ## Scope
 
 This was a non-destructive public safety, clarity, and UI polish pass for the static Forge MVP. It did not remove routes, categories, forms, dashboards, legal language, or launch tooling. No production deployment was performed.
