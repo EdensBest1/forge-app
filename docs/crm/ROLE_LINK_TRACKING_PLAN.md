@@ -10,6 +10,8 @@ https://stitchmarketplace.com/go/farm?lead_code=lead_abcd1234&utm_source=monday&
 
 ## Implementation
 
+- `scripts/monday/score-oregon-operators.mjs` creates stable public-safe lead codes from an existing code or a Monday item seed.
+- The private assignment export includes Stitch, Forge, and North Star URLs so outreach can choose the right role-specific path without putting PII in the link.
 - `lead-attribution.js` reads only approved query params.
 - It stores approved attribution in localStorage.
 - It decorates same-origin links so the params carry to internal CTAs.

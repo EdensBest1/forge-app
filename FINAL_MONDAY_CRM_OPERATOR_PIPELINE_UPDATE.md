@@ -33,6 +33,8 @@
 - Forge role links assigned: rules created
 - North Star links assigned: rules created through Forge creative path
 - Tracking params safe: yes
+- Private assignment export: designed to include `assigned_landing_page`, `stitch_landing_page`, `forge_landing_page`, and `northstar_landing_page`
+- Public lead codes: stable and public-safe, derived from existing lead code or non-PII Monday item seed
 
 ## 5. Monday Writeback
 
@@ -60,19 +62,23 @@
 - Query params captured: yes
 - Backend status: static/in-browser preservation only
 - Missing endpoint: `POST /api/lead-attribution-events`
+- URL privacy: phone, email, owner name, address, and license number are not allowed in tracking params
 
 ## 9. CRM Privacy/Security
 
 - PII not committed: yes
 - Token not exposed: yes
 - Private exports gitignored: yes
+- Private export directories created locally: yes
 
 ## 10. Checks Run
 
-- Stitch `npm run check`: passed
+- Stitch `npm run check`: passed, 294 syntax targets and 184 package checks
 - Stitch `npm audit`: passed, 0 vulnerabilities
-- Forge `npm run check`: passed
+- Forge `npm run check`: passed, syntax/smoke/security/release/monetization checks
 - Forge `npm audit`: passed, 0 vulnerabilities
+- Monday scripts without token/export: blocked as expected with exit code 2
+- Monday helper behavior checks: passed
 - Lint/typecheck/test/build scripts: not available in these package scripts
 
 ## 11. Git Status

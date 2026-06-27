@@ -2,14 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   PRIVATE_DIR,
+  forgeLandingForLead,
   getLogicalValue,
-  landingForCategory,
   normalizeCompany,
   normalizeEmail,
   normalizePhone,
   normalizedCategory,
+  northstarLandingForLead,
+  primaryLandingUrl,
   publicLeadCode,
   scoreLead,
+  stitchLandingForCategory,
+  trackingUrl,
   writeCsv
 } from "./crm-common.mjs";
 
@@ -46,15 +50,22 @@ for (const lead of leads) {
 const scored = deduped.map((lead) => {
   const category = normalizedCategory(lead);
   const score = scoreLead(lead);
-  const leadCode = publicLeadCode(getLogicalValue(lead, "public_lead_code"));
-  const landingPage = landingForCategory(category);
+  const licenseType = getLogicalValue(lead, "license_type");
+  const leadCode = publicLeadCode(getLogicalValue(lead, "public_lead_code"), `monday:${payload.board_id || "6658307629"}:${lead.monday_item_id}`);
+  const stitchUrl = trackingUrl(stitchLandingForCategory(category), { leadCode, category, licenseType });
+  const forgeUrl = trackingUrl(forgeLandingForLead(lead, category), { leadCode, category, licenseType });
+  const northstarUrl = trackingUrl(northstarLandingForLead(lead), { leadCode, category, licenseType });
+  const assignedLandingPage = primaryLandingUrl({ stitchUrl, forgeUrl, northstarUrl });
   return {
     ...lead,
     lead_code: leadCode,
     normalized_category: category,
     lead_score: score.score,
     flags: score.flags.join(";"),
-    assigned_landing_page: `${landingPage}?lead_code=${encodeURIComponent(leadCode)}&utm_source=monday&utm_campaign=oregon_operator_wave_1&segment=${encodeURIComponent(category)}&license_type=${encodeURIComponent(getLogicalValue(lead, "license_type"))}`
+    stitch_landing_page: stitchUrl,
+    forge_landing_page: forgeUrl,
+    northstar_landing_page: northstarUrl,
+    assigned_landing_page: assignedLandingPage
   };
 });
 
@@ -70,11 +81,11 @@ for (const [category, rows] of byCategory) {
   rows.slice(0, 50).forEach((lead, index) => top50.push({ ...lead, top_50_category_rank: index + 1, wave: "Wave 1" }));
 }
 
-const privateHeaders = ["monday_item_id", "item_name", "group_title", "normalized_category", "lead_score", "flags", "lead_code", "assigned_landing_page", "top_50_category_rank", "wave"];
+const privateHeaders = ["monday_item_id", "item_name", "group_title", "normalized_category", "lead_score", "flags", "lead_code", "assigned_landing_page", "stitch_landing_page", "forge_landing_page", "northstar_landing_page", "top_50_category_rank", "wave"];
 writeCsv(path.join(PRIVATE_DIR, "deduped_leads.private.csv"), scored, privateHeaders);
 writeCsv(path.join(PRIVATE_DIR, "duplicates.private.csv"), duplicates, ["monday_item_id", "item_name", "group_title", "duplicate_reason", "duplicate_of"]);
 writeCsv(path.join(PRIVATE_DIR, "top_50_by_category.private.csv"), top50, privateHeaders);
-writeCsv(path.join(PRIVATE_DIR, "landing_page_assignments.private.csv"), top50, ["monday_item_id", "lead_code", "normalized_category", "assigned_landing_page", "wave"]);
+writeCsv(path.join(PRIVATE_DIR, "landing_page_assignments.private.csv"), top50, ["monday_item_id", "lead_code", "normalized_category", "assigned_landing_page", "stitch_landing_page", "forge_landing_page", "northstar_landing_page", "wave"]);
 
 const countsBy = (rows, getter) => {
   const counts = new Map();

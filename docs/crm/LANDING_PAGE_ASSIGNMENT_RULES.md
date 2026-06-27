@@ -25,6 +25,17 @@ Do not put phone numbers, emails, owner names, license numbers, or private CRM d
 
 - `https://hireonforge.com/go/creative`
 
+## Private Export Columns
+
+The scoring script writes separate private columns for:
+
+- `stitch_landing_page`
+- `forge_landing_page`
+- `northstar_landing_page`
+- `assigned_landing_page`
+
+In this Forge repo, `assigned_landing_page` defaults to the Forge path unless `CRM_PRIMARY_LANDING_SITE` is set to `stitch` or `northstar` before running the private scoring script.
+
 ## Safe Tracking Params
 
 Allowed:
@@ -40,3 +51,5 @@ Forbidden:
 - owner name
 - license number
 - address
+
+Lead codes are public-safe identifiers derived from an existing public lead code when available, otherwise from a stable Monday item seed. They must never be generated from phone, email, owner name, address, or license number.

@@ -19,8 +19,8 @@ Audit date: 2026-06-27
 | Tracked private exports | 0 | 0 |
 | Non-empty Monday token assignments | 0 | 0 |
 | Private export ignore check | passed | passed |
-| Email pattern files | 28 existing public/template files | 4 existing public/template files |
-| Phone pattern files | 16 existing public/template files | 0 |
+| Email pattern files | 28 existing public/template files | 5 existing public/template files |
+| Phone pattern files | 16 existing public/template files | 3 existing public/template files |
 
 ## Findings
 
@@ -33,5 +33,6 @@ Audit date: 2026-06-27
 
 - Added private CRM export ignore patterns.
 - Added read-only Monday scripts that fail with a clear missing-token message.
+- Added stable public-safe lead codes based on non-PII Monday item seeds when no existing code is present.
 - Added public-safe lead attribution capture for role landing pages.
 - Added CRM policy docs prohibiting PII in public reports and URLs.

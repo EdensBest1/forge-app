@@ -6,6 +6,8 @@ Check date: 2026-06-27
 
 - `MONDAY_API_TOKEN`: missing
 - `node scripts/monday/analyze-board.mjs`: expected blocked result, exit 2, missing credential message shown
+- `node scripts/monday/export-private-leads.mjs`: expected blocked result, exit 2, missing credential message shown
+- `node scripts/monday/score-oregon-operators.mjs`: expected blocked result, exit 2, missing private export message shown
 - Monday board read: no
 - Monday writeback: no
 
@@ -14,8 +16,9 @@ Check date: 2026-06-27
 | Command | Result |
 | --- | --- |
 | `node --check scripts/monday/*.mjs` | passed |
+| Monday helper behavior check | passed |
 | `node --check lead-attribution.js` | passed |
-| `npm run check` | passed |
+| `npm run check` | passed, 294 syntax targets and 184 package checks |
 | `npm run lint` | not available |
 | `npm run typecheck` | not available |
 | `npm run test` | not available |
@@ -27,6 +30,7 @@ Check date: 2026-06-27
 | Command | Result |
 | --- | --- |
 | `node --check scripts/monday/*.mjs` | passed |
+| Monday helper behavior check | passed |
 | `node --check lead-attribution.js` | passed |
 | `npm run check` | passed |
 | `npm run lint` | not available |

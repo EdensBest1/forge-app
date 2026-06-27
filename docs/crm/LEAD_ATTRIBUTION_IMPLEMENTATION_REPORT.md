@@ -15,6 +15,8 @@
 
 ## Behavior
 
+- Private scoring exports generate stable public-safe lead codes from a non-PII Monday item seed when no existing public code is present.
+- Private scoring exports include separate Stitch, Forge, and North Star tracking URLs.
 - Approved params are stored in localStorage.
 - Approved params are appended to same-origin links.
 - Approved params are added as hidden fields to existing forms.

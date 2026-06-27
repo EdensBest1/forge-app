@@ -5,6 +5,7 @@ import path from "node:path";
 export const BOARD_ID = process.env.MONDAY_BOARD_ID || "6658307629";
 export const WORKSPACE_ID = process.env.MONDAY_WORKSPACE_ID || "5099718";
 export const PRIVATE_DIR = path.join(process.cwd(), "private_crm_exports", `monday_${BOARD_ID}`);
+export const PRIMARY_LANDING_SITE = process.env.CRM_PRIMARY_LANDING_SITE || "forge";
 
 export const logicalFieldPatterns = {
   company_name: ["company", "business", "organization", "account"],
@@ -29,6 +30,7 @@ export const logicalFieldPatterns = {
   do_not_contact: ["do not contact", "dnc", "suppression", "suppressed"],
   outreach_stage: ["outreach stage", "stage"],
   assigned_landing_page: ["assigned landing", "landing page"],
+  public_lead_code: ["public lead code", "lead code"],
   top_50_wave: ["top 50", "wave"],
   stitch_fit: ["stitch fit"],
   forge_fit: ["forge fit"],
@@ -193,12 +195,63 @@ export function getLogicalValue(lead, logical) {
   return normalizeText(match?.[1] || "");
 }
 
-export function publicLeadCode(existing) {
+export function publicLeadCode(existing, stableInput = "") {
   if (existing) return existing;
+  const seed = stableInput || crypto.randomUUID();
   if (process.env.LEAD_CODE_SECRET) {
-    return crypto.createHmac("sha256", process.env.LEAD_CODE_SECRET).update(crypto.randomUUID()).digest("hex").slice(0, 16);
+    return `lead_${crypto.createHmac("sha256", process.env.LEAD_CODE_SECRET).update(seed).digest("hex").slice(0, 16)}`;
+  }
+  if (stableInput) {
+    return `lead_${crypto.createHash("sha256").update(seed).digest("hex").slice(0, 16)}`;
   }
   return `lead_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`;
+}
+
+export function stitchLandingForCategory(category) {
+  const stitch = {
+    "Farm / Producer": "https://stitchmarketplace.com/go/farm",
+    Processor: "https://stitchmarketplace.com/go/processor",
+    Lab: "https://stitchmarketplace.com/go/lab",
+    "Dispensary / Retailer": "https://stitchmarketplace.com/go/dispensary",
+    Wholesaler: "https://stitchmarketplace.com/go/wholesaler",
+    "Logistics / Transport": "https://stitchmarketplace.com/go/logistics",
+    "Broker / Admin Review": "https://stitchmarketplace.com/go/broker"
+  };
+  return stitch[category] || "https://stitchmarketplace.com/go/broker";
+}
+
+export function forgeLandingForLead(lead, category) {
+  const text = normalizeComparable(`${category} ${getLogicalValue(lead, "license_type")} ${getLogicalValue(lead, "category")} ${getLogicalValue(lead, "notes")} ${lead.item_name}`);
+  if (/(contractor|worker|recruit|hire|staff)/.test(text)) return "https://hireonforge.com/go/contractor";
+  if (/(auto|transport|delivery|driver|fleet)/.test(text)) return "https://hireonforge.com/go/auto";
+  if (/(manufactur|packag|processor|nutraceutical|production)/.test(text)) return "https://hireonforge.com/go/manufacturing";
+  if (/(creative|marketing|website|brand|photo|video|seo|ads|crm)/.test(text)) return "https://hireonforge.com/go/creative";
+  if (/(farm|producer|grow|harvest|labor|facility|cleanup)/.test(text)) return "https://hireonforge.com/go/business";
+  return "https://hireonforge.com/go/post-job";
+}
+
+export function northstarLandingForLead() {
+  return "https://hireonforge.com/go/creative";
+}
+
+export function trackingUrl(baseUrl, { leadCode, category, licenseType }) {
+  const url = new URL(baseUrl);
+  url.searchParams.set("lead_code", leadCode);
+  url.searchParams.set("utm_source", "monday");
+  url.searchParams.set("utm_campaign", "oregon_operator_wave_1");
+  url.searchParams.set("segment", category);
+  url.searchParams.set("license_type", licenseType || "");
+  return url.toString();
+}
+
+export function primaryLandingUrl({ stitchUrl, forgeUrl, northstarUrl }) {
+  if (PRIMARY_LANDING_SITE === "stitch") return stitchUrl;
+  if (PRIMARY_LANDING_SITE === "northstar") return northstarUrl;
+  return forgeUrl;
+}
+
+export function landingForCategory(category) {
+  return stitchLandingForCategory(category);
 }
 
 export function scoreLead(lead) {
@@ -244,17 +297,4 @@ export function normalizedCategory(lead) {
   if (/(logistic|transport|delivery)/.test(text)) return "Logistics / Transport";
   if (/(broker|admin)/.test(text)) return "Broker / Admin Review";
   return "Unknown / Needs Review";
-}
-
-export function landingForCategory(category) {
-  const stitch = {
-    "Farm / Producer": "https://stitchmarketplace.com/go/farm",
-    Processor: "https://stitchmarketplace.com/go/processor",
-    Lab: "https://stitchmarketplace.com/go/lab",
-    "Dispensary / Retailer": "https://stitchmarketplace.com/go/dispensary",
-    Wholesaler: "https://stitchmarketplace.com/go/wholesaler",
-    "Logistics / Transport": "https://stitchmarketplace.com/go/logistics",
-    "Broker / Admin Review": "https://stitchmarketplace.com/go/broker"
-  };
-  return stitch[category] || "https://stitchmarketplace.com/go/broker";
 }
