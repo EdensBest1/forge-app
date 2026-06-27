@@ -17,6 +17,7 @@ This was a non-destructive public safety, clarity, and UI polish pass for the st
 - Added SEO/share metadata and a keyboard skip link.
 - Added a premium marketplace search preview, category/filter chips, job-status preview, provider trust cards, and a five-tab mobile navigation surface.
 - Added noindex/noarchive headers for clean internal admin/report paths and blocked those clean paths in `robots.txt`.
+- Added clean `/privacy/`, `/terms/`, and `/safety/` alias shells that route to the existing legal/safety screen.
 
 ## Findings
 
@@ -39,9 +40,11 @@ This was a non-destructive public safety, clarity, and UI polish pass for the st
 
 - `npm run check` passed.
 - `node --check app.js` passed.
+- `node --check route-loader.js` passed.
 - `vercel.json` JSON parse passed.
 - Strict secret-pattern scan found no candidate real tokens or private keys.
 - Unsafe-code scan found no forbidden dynamic execution helpers or legacy document-writing calls in runtime app files.
 - `npm audit --audit-level=moderate` could not run because the static app has no lockfile (`ENOLOCK`).
+- Local `curl -I` checks for `/privacy/`, `/terms/`, and `/safety/` returned 200.
 - Live `https://hireonforge.com` and `https://www.hireonforge.com` returned 200.
 - Live `http://hireonforge.com` and `http://www.hireonforge.com` returned 308 redirects to HTTPS.

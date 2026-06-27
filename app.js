@@ -1801,6 +1801,12 @@ const routeByScreen = {
   "homebuilding-tracker": "/homebuilding/tracker"
 };
 const screenByPath = {
+  "/privacy": "legal",
+  "/privacy/": "legal",
+  "/terms": "legal",
+  "/terms/": "legal",
+  "/safety": "legal",
+  "/safety/": "legal",
   "/auto": "autos",
   "/auto/": "autos",
   "/forge-academy": "forge-academy",
