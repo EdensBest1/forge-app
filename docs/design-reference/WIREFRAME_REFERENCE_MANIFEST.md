@@ -23,6 +23,8 @@ These files are internal design references only. They were copied into the repos
 | Forge | `/Users/andrewoommern/Downloads/ChatGPT Image May 15, 2026 at 08_42_27 AM 2.PNG` | `docs/design-reference/forge/wireframes/ChatGPT Image May 15, 2026 at 08_42_27 AM 2.PNG` | 1654539 bytes | 1536x1024 | yes | yes |
 | Forge | `/Users/andrewoommern/Downloads/ChatGPT Image May 15, 2026 at 08_42_27 AM.png` | `docs/design-reference/forge/wireframes/ChatGPT Image May 15, 2026 at 08_42_27 AM.png` | 1591839 bytes | 1536x1024 | yes | yes |
 
+| Forge | `/Users/andrewoommern/Desktop/Screenshot 2026-06-27 at 6.42.24 AM.png` | `docs/design-reference/forge/wireframes/Screenshot 2026-06-27 at 6.42.24 AM.png` | 47173 bytes | 1334x121 | yes | yes |
+
 ## Expected Forge Names Not Found Exactly
 
 - `IMG_9247(2).JPG` was not found exactly. Variant found: `IMG_9247.JPG`.
@@ -30,6 +32,8 @@ These files are internal design references only. They were copied into the repos
 - `ChatGPT Image May 15, 2026 at 08_42_27 AM 2(1).PNG` was not found exactly. Variant found: `ChatGPT Image May 15, 2026 at 08_42_27 AM 2.PNG`.
 
 ## Visual Read
+
+- The 2026-06-27 6:42:24 AM desktop header screenshot is now archived as a narrow header reference for the public nav cleanup.
 
 - The Forge reference set shows a blue-collar services marketplace with strong "Post the job. Get the crew." flow, job posting, worker signup, jobs, bids, admin dashboard, and mobile screens.
 - One visual direction is clean blue/orange. The written target asks for a darker steel/matte black/graphite/orange-gold treatment.

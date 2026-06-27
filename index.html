@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0648b7" />
+    <meta name="theme-color" content="#101319" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta
       name="description"
@@ -35,15 +35,58 @@
             <span class="flame">F</span>
             <span>FORGE</span>
           </a>
-          <div class="top-actions">
-            <button class="btn ghost small" type="button" data-nav="services">Services</button>
-            <button class="btn ghost small" type="button" data-nav="post">Post a Job</button>
-            <button class="btn ghost small" type="button" data-nav="signup">Join as Worker</button>
-            <button class="btn ghost small" type="button" data-nav="northstar">For Businesses</button>
-            <a class="btn ghost small" href="/impact/">Impact</a>
-            <button class="btn ghost small" type="button" data-nav="legal">Safety</button>
-            <button class="btn ghost small" id="loginButton" type="button" data-nav="login">Log In</button>
+          <nav class="public-nav" aria-label="Forge public navigation">
+            <button class="nav-link" type="button" data-nav="services">Services</button>
+            <button class="nav-link" type="button" data-nav="signup">For Workers</button>
+            <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
+            <a class="nav-link" href="/impact/">Impact</a>
+            <button class="nav-link" type="button" data-nav="legal">Safety</button>
+          </nav>
+          <div class="header-actions">
+            <button class="search-pill" type="button" data-nav="services" aria-label="Search Forge services">Search</button>
             <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
+            <button class="btn header-worker small" type="button" data-nav="signup">Join as Worker</button>
+            <details class="explore-menu">
+              <summary>Explore</summary>
+              <div class="explore-panel" role="group" aria-label="Explore Forge">
+                <section>
+                  <h3>Core</h3>
+                  <button type="button" data-nav="perspective">Perspectives</button>
+                  <button type="button" data-nav="services">Services</button>
+                  <button type="button" data-nav="post">Post a Job</button>
+                  <button type="button" data-nav="signup">Join as Worker</button>
+                </section>
+                <section>
+                  <h3>Auto & Transport</h3>
+                  <button type="button" data-nav="autos">Auto</button>
+                  <button type="button" data-nav="road-rescue">Road Rescue</button>
+                  <button type="button" data-nav="personal-driver">Personal Driver</button>
+                </section>
+                <section>
+                  <h3>Creative & Marketing</h3>
+                  <button type="button" data-nav="creative">Photography & Videography</button>
+                  <button type="button" data-nav="northstar">NorthStar</button>
+                </section>
+                <section>
+                  <h3>Capital & Payments</h3>
+                  <button type="button" data-nav="capital">Capital Desk</button>
+                  <button type="button" data-nav="payments">Payments</button>
+                </section>
+                <section>
+                  <h3>Products & Manufacturing</h3>
+                  <button type="button" data-nav="manufacturing">Manufacturing</button>
+                  <button type="button" data-nav="local-products">Products</button>
+                </section>
+                <section>
+                  <h3>Career & Building</h3>
+                  <button type="button" data-nav="forge-academy">Forge Academy</button>
+                  <button type="button" data-nav="trade-pathways">Trade Pathways</button>
+                  <button type="button" data-nav="building">Building / Development</button>
+                  <button type="button" data-nav="homebuilding">Homebuilding Tracker</button>
+                </section>
+              </div>
+            </details>
+            <button class="login-link" id="loginButton" type="button" data-nav="login">Log In</button>
           </div>
         </header>
 
