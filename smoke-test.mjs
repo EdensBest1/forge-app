@@ -534,6 +534,7 @@ const requiredJs = [
   "renderDemoOutcomes",
   "renderNavigationState",
   "renderFinishChecklist",
+  "Bottom tab bar includes Home, Services, Post, Jobs, Account, plus Demo, Launch, and Status shortcuts.",
   "copyDemoScript",
   "copyDemoPack",
   "copyDemoLink",

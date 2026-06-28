@@ -5280,7 +5280,7 @@ function renderFinishChecklist() {
     ["Forge Auto Services", state.vehicles.length > 0 && state.autoInquiries.length > 0 && (state.autoRequests || []).length > 0, "Forge Auto has service requests, partner categories, dealer listings, buyer inquiry capture, and handoff queues."],
     ["Forge Projects", (state.projectLeads || []).length > 0, "Projects has public intake, major review routing, Forge Pros routing, and Seneca review gating."],
     ["Admin follow-up", state.jobs.length > 0 && state.workers.length > 0, "Admin can manage jobs, workers, referrals, exports, and reports."],
-    ["Mobile demo", true, "Bottom tab bar includes Demo, Post, Jobs, Messages, and Profile."],
+    ["Mobile demo", true, "Bottom tab bar includes Home, Services, Post, Jobs, Account, plus Demo, Launch, and Status shortcuts."],
     ["Launch ask", true, "After-demo cards ask for a job, worker signup, or referral."]
   ];
   const complete = checks.filter(([, done]) => done).length;
