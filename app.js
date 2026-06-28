@@ -4494,6 +4494,7 @@ function isCreativeProvider(worker) {
 }
 
 function normalizeScreen(screen) {
+  if (["demo", "demo-paths", "perspectives", "perspective-demo"].includes(screen)) return "perspective";
   if (screen === "auto" || screen === "autos") return "autos";
   if (["road-rescue", "road_rescue", "roadrescue", "road-help", "road-help-request", "pothole-help"].includes(screen)) return "road-rescue";
   if (["photo", "photos", "video", "creative", "photography", "photography-videography", CREATIVE_CATEGORY_VALUE, CREATIVE_CATEGORY_SLUG].includes(screen)) return "creative";
