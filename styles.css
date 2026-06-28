@@ -2336,9 +2336,21 @@ body:not(.role-admin) [data-admin-control] {
 
 .message-flow,
 .bid-flow-panel,
+.demo-handoff-actions,
 .status-flow-panel {
   display: grid;
   gap: 8px;
+}
+
+.demo-handoff-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.demo-handoff-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
 .message-flow {
@@ -8058,6 +8070,7 @@ td {
   .job-flow-brief-grid,
   .handoff-grid,
   .message-flow,
+  .demo-handoff-actions,
   .profile-meta,
   .profile-brief-grid,
   .profile-checklist,
