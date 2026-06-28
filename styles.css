@@ -2065,6 +2065,43 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.demo-command-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
+  gap: 14px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--orange);
+  border-radius: 8px;
+  background: #f8fbff;
+  box-shadow: var(--shadow);
+}
+
+.demo-command-strip h2,
+.demo-command-strip p {
+  margin: 0;
+}
+
+.demo-command-strip h2 {
+  color: var(--blue);
+}
+
+.demo-command-strip p {
+  color: var(--muted);
+  line-height: 1.42;
+}
+
+.demo-command-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.demo-command-actions .btn {
+  min-height: 40px;
+}
+
 .finish-today {
   display: grid;
   gap: 14px;
@@ -7966,6 +8003,7 @@ td {
   .timeline-grid,
   .demo-steps,
   .demo-guide,
+  .demo-command-strip,
   .demo-guide-steps,
   .demo-cue-grid,
   .demo-path-grid,
