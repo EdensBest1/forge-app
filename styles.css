@@ -7605,6 +7605,27 @@ textarea:focus {
   background: #f8fbff;
 }
 
+.status-demo-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #ffd2b0;
+  border-radius: 8px;
+  background: #fff7ef;
+}
+
+.status-demo-card span {
+  color: var(--orange);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.status-demo-card strong {
+  color: var(--ink);
+  line-height: 1.35;
+}
+
 .launch-status-layout {
   display: grid;
   gap: 18px;
