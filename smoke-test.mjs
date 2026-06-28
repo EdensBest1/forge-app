@@ -732,6 +732,7 @@ const missingCss = [
   ["academy admin grids", css.includes(".academy-admin-stats") && css.includes(".academy-partner-grid")],
   ["soft launch plan", css.includes(".soft-launch-grid") && css.includes(".soft-launch")],
   ["demo command strip", css.includes(".demo-command-strip") && css.includes(".demo-command-actions")],
+  ["wireframe alignment layer", css.includes("Forge wireframe alignment layer") && css.includes("--wire-blue") && css.includes(".home-top .brand")],
   ["first user start path", css.includes(".start-path-grid") && css.includes(".start-path-card")],
   ["first user path heading", css.includes(".start-path-heading")],
   ["signup readiness panel", css.includes(".signup-readiness-panel") && css.includes(".readiness-grid")],

@@ -9215,3 +9215,394 @@ td {
     padding: 22px 18px;
   }
 }
+
+/* Forge wireframe alignment layer: bright marketplace app shell, orange CTAs, strong blue dashboards. */
+:root {
+  --wire-bg: #f3f7fc;
+  --wire-panel: #ffffff;
+  --wire-line: #cfd9e8;
+  --wire-blue: #0648b7;
+  --wire-blue-dark: #003f9e;
+  --wire-orange: #ff6a00;
+  --wire-shadow: 0 10px 24px rgba(16, 47, 93, 0.08);
+}
+
+body {
+  background: var(--wire-bg);
+}
+
+.app {
+  background: var(--wire-panel);
+  box-shadow: 0 0 0 1px rgba(207, 217, 232, 0.72);
+}
+
+.screen {
+  background: #fff;
+}
+
+.home-top {
+  min-height: 66px;
+  border-bottom: 1px solid var(--wire-line);
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--ink);
+  box-shadow: 0 6px 20px rgba(15, 35, 75, 0.06);
+}
+
+.home-top .brand {
+  color: var(--wire-blue);
+  letter-spacing: 0;
+}
+
+.nav-link,
+.login-link,
+.search-pill,
+.explore-menu summary {
+  color: #283851;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible,
+.login-link:hover,
+.login-link:focus-visible,
+.explore-menu summary:hover,
+.explore-menu summary:focus-visible,
+.nav-link.active {
+  background: var(--blue-soft);
+  color: var(--wire-blue);
+}
+
+.search-pill,
+.explore-menu summary {
+  border: 1px solid #d7e1ee;
+  background:
+    radial-gradient(circle at 18px 50%, transparent 0 4px, var(--wire-blue) 4px 5px, transparent 5px),
+    #f8fbff;
+}
+
+.explore-menu summary {
+  background: #f8fbff;
+}
+
+.header-worker {
+  border-color: var(--wire-blue);
+  background: var(--wire-blue);
+  color: #fff;
+}
+
+.explore-panel {
+  border: 1px solid var(--wire-line);
+  background: #fff;
+  box-shadow: 0 22px 54px rgba(16, 47, 93, 0.18);
+}
+
+.explore-panel h3 {
+  color: var(--wire-orange);
+}
+
+.explore-panel button,
+.explore-panel a {
+  color: #27364d;
+}
+
+.explore-panel button:hover,
+.explore-panel button:focus-visible,
+.explore-panel a:hover,
+.explore-panel a:focus-visible {
+  background: var(--blue-soft);
+  color: var(--wire-blue);
+}
+
+.home-hero {
+  min-height: 385px;
+  border-bottom: 1px solid var(--wire-line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.hero-copy {
+  padding: 38px 32px;
+}
+
+.hero-copy h1 {
+  max-width: 460px;
+  color: var(--ink);
+  font-size: clamp(2.45rem, 4.6vw, 4.3rem);
+  line-height: 1;
+}
+
+.hero-copy h1 span {
+  color: var(--wire-orange);
+}
+
+.hero-copy p {
+  max-width: 420px;
+  color: #283851;
+  font-size: 1rem;
+  line-height: 1.48;
+}
+
+.hero-trust-line {
+  border-color: #ffd5b5;
+  background: #fff7ef;
+  color: #9b4700 !important;
+}
+
+.hero-photo {
+  min-height: 385px;
+  border-left: 1px solid var(--wire-line);
+}
+
+.hero-photo::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.28) 18%, transparent 34%);
+}
+
+.impact-trust-strip {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, auto) auto auto;
+  border-bottom: 1px solid #003783;
+  background: var(--wire-blue);
+  color: #fff;
+}
+
+.impact-trust-strip p {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.impact-trust-strip strong {
+  color: #fff;
+}
+
+.feature-strip,
+.forge-marketplace-preview,
+.role-gateway-panel,
+.service-group-panel,
+.job-trust-panel,
+.timeline,
+.demo-script,
+.signup-readiness-panel,
+.start-path-panel,
+.share-panel {
+  background: #fff;
+}
+
+.feature-strip article,
+.role-gateway-panel article,
+.service-group-grid article,
+.forge-search-console,
+.job-status-card,
+.provider-preview-card,
+.timeline-card,
+.demo-script,
+.signup-readiness-panel,
+.start-path-card,
+.share-panel,
+.wizard-card,
+.capture-card,
+.detail-card,
+.bids-card,
+.message-thread-list,
+.message-composer,
+.profile-card,
+.settings-card,
+.table-card {
+  border: 1px solid var(--wire-line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--wire-shadow);
+}
+
+.role-gateway-panel,
+.service-group-panel,
+.job-trust-panel,
+.content-wrap,
+.dashboard-main,
+.tracker-page {
+  background: #f8fbff;
+}
+
+.service-group-grid {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.service-group-grid article {
+  min-height: 0;
+}
+
+.beta-boundary-panel {
+  background: #fffaf4;
+}
+
+.simple-bar {
+  border-bottom: 1px solid var(--wire-line);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 4px 18px rgba(15, 35, 75, 0.05);
+}
+
+.blue-bar,
+.side-nav {
+  background: linear-gradient(180deg, var(--wire-blue), var(--wire-blue-dark));
+}
+
+.wizard-card {
+  width: min(760px, calc(100% - 28px));
+  margin: 28px auto;
+  padding: 24px;
+}
+
+.progress span.active {
+  background: var(--wire-blue);
+}
+
+input,
+select,
+textarea {
+  border-color: #ced9e8;
+  background: #fff;
+}
+
+.job-row,
+.bid-row,
+.status-card,
+.queue-card,
+.dashboard-card {
+  border: 1px solid var(--wire-line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(16, 47, 93, 0.06);
+}
+
+.job-row {
+  margin-bottom: 12px;
+}
+
+.job-price strong,
+.detail-card strong,
+.dashboard-card strong,
+.status {
+  color: var(--wire-orange);
+}
+
+.signup-layout {
+  background: #fff;
+}
+
+.signup-photo {
+  border-right: 1px solid var(--wire-line);
+}
+
+.signup-form {
+  background: #fff;
+}
+
+.dashboard-shell {
+  background: #fff;
+}
+
+.stat-row {
+  gap: 10px;
+}
+
+.table-card {
+  background: #fff;
+}
+
+th {
+  background: #f8fbff;
+  color: var(--wire-blue);
+}
+
+.mobile-tabbar {
+  border-top: 1px solid var(--wire-line);
+  background: #fff;
+}
+
+.mobile-tabbar-secondary {
+  background: #f8fbff;
+}
+
+@media (max-width: 900px) {
+  .home-top {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .home-top .brand {
+    color: var(--wire-blue);
+  }
+
+  .header-actions .btn.orange {
+    box-shadow: none;
+  }
+
+  .home-hero {
+    gap: 0;
+  }
+
+  .hero-photo {
+    min-height: 235px;
+    border-left: 0;
+    border-top: 1px solid var(--wire-line);
+  }
+
+  .impact-trust-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .wizard-card,
+  .capture-layout,
+  .bid-layout,
+  .messages-layout,
+  .profile-layout,
+  .content-wrap,
+  .dashboard-main {
+    padding: 18px;
+  }
+
+  .side-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-top {
+    min-height: 58px;
+  }
+
+  .home-hero {
+    display: block;
+  }
+
+  .hero-copy {
+    padding: 28px 20px 22px;
+  }
+
+  .hero-copy h1 {
+    margin-bottom: 12px;
+    font-size: 2.22rem;
+  }
+
+  .hero-copy p {
+    font-size: 0.94rem;
+    line-height: 1.4;
+  }
+
+  .hero-trust-line {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .hero-photo {
+    display: none;
+  }
+
+  .feature-strip article {
+    padding: 16px 10px;
+  }
+
+  .btn {
+    min-height: 42px;
+    padding: 0 14px;
+  }
+}
