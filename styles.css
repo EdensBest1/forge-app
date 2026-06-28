@@ -7660,6 +7660,84 @@ textarea:focus {
   line-height: 1.45;
 }
 
+.launch-decision-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.launch-decision-card article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 172px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 6px 18px rgba(16, 47, 93, 0.06);
+}
+
+.launch-decision-card article.go {
+  border-left: 5px solid var(--blue);
+}
+
+.launch-decision-card article.hold {
+  border-left: 5px solid var(--orange);
+  background: #fffaf4;
+}
+
+.launch-decision-card article.next {
+  border-left: 5px solid var(--blue-2);
+  background: #f8fbff;
+}
+
+.launch-decision-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-decision-card article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-decision-card article.next span {
+  background: var(--blue-soft);
+  color: var(--blue-2);
+}
+
+.launch-decision-card strong {
+  color: var(--ink);
+}
+
+.launch-decision-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.38;
+}
+
+.launch-decision-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.launch-decision-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .launch-status-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -8109,6 +8187,8 @@ td {
   .backend-grid,
   .auth-grid,
   .safety-grid,
+  .launch-decision-card,
+  .launch-decision-actions,
   .launch-status-grid,
   .launch-status-panel,
   .launch-command-grid,
