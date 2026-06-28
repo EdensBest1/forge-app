@@ -2298,7 +2298,8 @@ body:not(.role-admin) [data-admin-control] {
 }
 
 .message-flow,
-.bid-flow-panel {
+.bid-flow-panel,
+.status-flow-panel {
   display: grid;
   gap: 8px;
 }
@@ -2308,7 +2309,8 @@ body:not(.role-admin) [data-admin-control] {
 }
 
 .message-flow div,
-.bid-flow-panel article {
+.bid-flow-panel article,
+.status-flow-panel article {
   display: grid;
   gap: 5px;
   align-content: start;
@@ -2327,7 +2329,8 @@ body:not(.role-admin) [data-admin-control] {
 }
 
 .message-flow span,
-.bid-flow-panel span {
+.bid-flow-panel span,
+.status-flow-panel span {
   display: grid;
   place-items: center;
   width: 26px;
@@ -2345,12 +2348,14 @@ body:not(.role-admin) [data-admin-control] {
 }
 
 .message-flow strong,
-.bid-flow-panel strong {
+.bid-flow-panel strong,
+.status-flow-panel strong {
   color: var(--ink);
 }
 
 .message-flow small,
-.bid-flow-panel p {
+.bid-flow-panel p,
+.status-flow-panel p {
   margin: 0;
   color: var(--muted);
   font-size: 0.78rem;
