@@ -1928,6 +1928,19 @@ body:not(.role-admin) [data-admin-control] {
   font-weight: 950;
 }
 
+.demo-route-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.demo-route-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .demo-links {
   display: grid;
   gap: 14px;
@@ -8170,6 +8183,7 @@ td {
   .handoff-grid,
   .message-flow,
   .demo-handoff-actions,
+  .demo-route-actions,
   .profile-meta,
   .profile-brief-grid,
   .profile-checklist,

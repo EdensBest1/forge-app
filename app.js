@@ -5191,8 +5191,8 @@ function renderDemoPath() {
       <ol class="demo-route-steps">
         ${path.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}
       </ol>
-      <div class="hero-actions">
-        ${path.actions.map(([label, screen]) => `<button class="btn ghost small" type="button" data-login-role="${path.role}" data-login-name="${escapeHtml(path.name)}" data-login-screen="${screen}">${escapeHtml(label)}</button>`).join("")}
+      <div class="demo-route-actions">
+        ${path.actions.map(([label, screen], index) => `<button class="btn ${index === 0 ? "blue" : "ghost"} small" type="button" data-login-role="${path.role}" data-login-name="${escapeHtml(path.name)}" data-login-screen="${screen}">${escapeHtml(label)}</button>`).join("")}
       </div>
     </article>
   `).join("");
