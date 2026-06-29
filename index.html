@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=72" />
+    <link rel="stylesheet" href="./styles.css?v=73" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -3613,7 +3613,27 @@
               <span class="split-label">Business Growth Tools</span>
               <div id="providerGrowthTools"></div>
             </section>
+            <section class="worker-soft-launch-card" aria-label="Worker early access next steps">
+              <span class="split-label">First worker path</span>
+              <h2>What happens after you join?</h2>
+              <div class="worker-soft-launch-grid">
+                <article>
+                  <strong>Profile saved</strong>
+                  <p>Forge keeps your trade, service area, availability, and contact info in the early worker list.</p>
+                </article>
+                <article>
+                  <strong>Fit reviewed</strong>
+                  <p>The operator checks job fit, profile readiness, and any licensing or insurance notes before real matching.</p>
+                </article>
+                <article>
+                  <strong>Jobs and bids</strong>
+                  <p>You can browse demo jobs now, then bid on real local work as Forge opens the first controlled group.</p>
+                </article>
+              </div>
+            </section>
             <p class="trust-note"><strong>Profile status:</strong> Basic profile ready for Forge verification review before live job matching. <strong>Worker follow-up:</strong> Forge will use this contact info to follow up about early worker opportunities by text, phone, or email.</p>
+            <label class="check-row"><input id="workerFollowUpConsent" required type="checkbox" /> I agree Forge may contact me by text, phone, or email about early worker opportunities.</label>
+            <label class="check-row"><input id="workerTerms" required type="checkbox" /> I agree to Forge's Early Access Terms & Privacy.</label>
             <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
             <button class="btn orange" type="submit">Create My Profile</button>
           </form>
@@ -4455,6 +4475,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=72"></script>
+    <script src="./app.js?v=73"></script>
   </body>
 </html>

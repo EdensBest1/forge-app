@@ -6670,6 +6670,49 @@ textarea:focus {
   box-shadow: none;
 }
 
+.worker-soft-launch-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.worker-soft-launch-card h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+
+.worker-soft-launch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.worker-soft-launch-grid article {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.worker-soft-launch-grid strong {
+  color: var(--blue);
+  font-size: 0.82rem;
+}
+
+.worker-soft-launch-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
 .field-row {
   align-items: start;
 }
@@ -8430,6 +8473,7 @@ td {
   .demo-handoff-actions,
   .demo-route-actions,
   .worker-proof-actions,
+  .worker-soft-launch-grid,
   .status-demo-actions,
   .profile-meta,
   .profile-brief-grid,

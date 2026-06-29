@@ -229,6 +229,11 @@ const requiredHtml = [
   "Follow-up consent",
   "No payment is collected in this MVP.",
   "Worker follow-up",
+  "First worker path",
+  "What happens after you join?",
+  "workerFollowUpConsent",
+  "workerTerms",
+  "I agree Forge may contact me by text, phone, or email about early worker opportunities.",
   "Open demo paths",
   "Open launch status",
   "Open profile status",
@@ -259,8 +264,8 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=72",
-  "app.js?v=72"
+  "styles.css?v=73",
+  "app.js?v=73"
 ];
 
 const requiredJs = [
@@ -324,6 +329,8 @@ const requiredJs = [
   "copySignupChecklist",
   "Forge first-user signup checklist",
   "Post one real job.",
+  "followUpConsent",
+  "Open Profile Status",
   "copyInviteText",
   "vehicles",
   "autoServiceGroups",
@@ -761,6 +768,7 @@ const missingCss = [
   ["first user start path", css.includes(".start-path-grid") && css.includes(".start-path-card")],
   ["first user path heading", css.includes(".start-path-heading")],
   ["signup readiness panel", css.includes(".signup-readiness-panel") && css.includes(".readiness-grid")],
+  ["worker soft launch consent card", css.includes(".worker-soft-launch-card") && css.includes(".worker-soft-launch-grid")],
   ["launch gate panel", css.includes(".launch-gate") && css.includes(".launch-gate-card.blocked")],
   ["launch decision card", css.includes(".launch-decision-card") && css.includes(".launch-decision-actions")],
   ["deploy preflight panel", css.includes(".deploy-preflight") && css.includes(".deploy-grid")],
@@ -798,7 +806,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v72")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v73")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],

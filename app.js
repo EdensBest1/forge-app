@@ -12688,6 +12688,10 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     businessSize,
     northStarMarketingNeed,
     businessGrowthTools,
+    followUpConsent: fieldChecked("#workerFollowUpConsent"),
+    termsAccepted: fieldChecked("#workerTerms"),
+    privacyAcknowledged: fieldChecked("#workerTerms"),
+    earlyAccessAcknowledged: fieldChecked("#workerTerms"),
     status: "New"
   };
   const existingWorker = state.workers.findIndex((worker) => worker.email.toLowerCase() === state.worker.email.toLowerCase());
@@ -12709,17 +12713,20 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       `${state.worker.experience} experience`,
       selectedVertical ? `${selectedVertical.title} · ${state.worker.providerType || "Provider"}` : "General Forge worker",
       `${businessSize} · ${northStarMarketingNeed}`,
+      state.worker.followUpConsent ? "Follow-up consent captured" : "Follow-up consent missing",
+      state.worker.termsAccepted ? "Early Access Terms & Privacy accepted" : "Early Access Terms & Privacy missing",
       providerNorthStarLead ? `North Star lead classified ${providerNorthStarLead.leadClassification} · Score ${providerNorthStarLead.score}/100` : "No North Star growth follow-up selected",
       providerFlexLead ? "Capital Desk follow-up flagged" : "No Capital Desk follow-up selected"
     ],
     nextSteps: [
       "Forge saves your worker profile for early access",
+      "Profile Status shows readiness, trust notes, and follow-up status",
       "Admin can follow up when local jobs fit your trade",
       providerNorthStarLead ? "North Star Creative Co. can review your website, Google, ads, CRM, and follow-up needs" : "Use the provider dashboard if you want North Star growth help later",
       providerFlexLead ? "Forge Capital Desk can follow up before any Flex referral link is sent" : "Open Worker Dashboard to browse jobs and submit bids"
     ],
-    primary: { label: "Open Worker Dashboard", screen: "worker" },
-    secondary: { label: "Open Admin Leads", screen: "admin" }
+    primary: { label: "Open Profile Status", screen: "profile" },
+    secondary: { label: "Open Worker Dashboard", screen: "worker" }
   };
   saveState();
   sendLead("worker", state.worker);
