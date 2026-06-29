@@ -7847,6 +7847,75 @@ textarea:focus {
   line-height: 1.45;
 }
 
+.launch-run-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.launch-run-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-run-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.4rem;
+}
+
+.launch-run-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-run-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 186px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.launch-run-grid span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-weight: 950;
+}
+
+.launch-run-grid strong {
+  color: var(--blue);
+}
+
+.launch-run-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.launch-run-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .launch-decision-card {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -8371,6 +8440,7 @@ td {
   .follow-up-progress,
   .today-follow-up-grid,
   .launch-gate,
+  .launch-run-grid,
   .readiness-score,
   .final-gate,
   .deploy-grid,
@@ -8394,6 +8464,11 @@ td {
   .follow-up-list,
   .activity-log article {
     grid-template-columns: 1fr;
+  }
+
+  .launch-run-heading {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .bid-action-panel {

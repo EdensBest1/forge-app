@@ -11468,6 +11468,7 @@ document.addEventListener("submit", (event) => {
 document.addEventListener("click", (event) => {
   const login = event.target.closest("[data-login-role]");
   if (login) {
+    if (login.dataset.loginJob) state.activeJobId = login.dataset.loginJob;
     loginAs(login.dataset.loginRole, login.dataset.loginName, login.dataset.loginScreen);
     return;
   }
@@ -15700,11 +15701,21 @@ function copySoftLaunchRunSheet() {
   const lines = [
     "Forge launch day run sheet",
     "",
+    "Phone demo order:",
+    "1. Perspective Demo: pick the person's side.",
+    "2. John customer proof: status, bids, messages, launch boundary.",
+    "3. Mike worker proof: dashboard, jobs, Submit Bid, messages.",
+    "4. Bid handoff: open the bathroom job and show Choose + Message.",
+    "5. Save one next action, then export Backup JSON.",
+    "",
     ...softLaunchRunSheetRows().map((item) => `${item.label}: ${item.title}. ${item.body}`),
     "",
     "Working links:",
     `Admin: ${roleDemoLink("admin", "admin")}`,
     `Perspective Demo: ${roleDemoLink("customer", "perspective")}`,
+    `John Customer Proof: ${roleDemoLink("customer", "status")}`,
+    `Mike Worker Proof: ${roleDemoLink("worker", "worker")}`,
+    `Bid Handoff: ${roleDemoLink("customer", "detail")}`,
     `Post Job: ${roleDemoLink("customer", "post")}`,
     `Worker Signup: ${roleDemoLink("worker", "signup")}`,
     `Photography & Videography: ${roleDemoLink("customer", "creative")}`,
