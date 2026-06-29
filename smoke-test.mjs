@@ -542,6 +542,7 @@ const requiredJs = [
   "renderNavigationState",
   "renderFinishChecklist",
   "Bottom tab bar includes Home, Services, Post, Jobs, Account, plus Demo, Launch, and Status shortcuts.",
+  "On mobile, run John customer proof, Mike worker proof, then Launch Status in under one minute.",
   "copyDemoScript",
   "copyDemoPack",
   "copyDemoLink",

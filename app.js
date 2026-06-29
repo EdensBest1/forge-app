@@ -5281,6 +5281,7 @@ function renderFinishChecklist() {
     ["Forge Projects", (state.projectLeads || []).length > 0, "Projects has public intake, major review routing, Forge Pros routing, and Seneca review gating."],
     ["Admin follow-up", state.jobs.length > 0 && state.workers.length > 0, "Admin can manage jobs, workers, referrals, exports, and reports."],
     ["Mobile demo", true, "Bottom tab bar includes Home, Services, Post, Jobs, Account, plus Demo, Launch, and Status shortcuts."],
+    ["Phone demo order", true, "On mobile, run John customer proof, Mike worker proof, then Launch Status in under one minute."],
     ["Launch ask", true, "After-demo cards ask for a job, worker signup, or referral."]
   ];
   const complete = checks.filter(([, done]) => done).length;
@@ -13291,9 +13292,10 @@ async function copyDemoPack() {
     "",
     "Demo order:",
     "1. Open Perspective Demo and ask who they are: job poster, worker, or operator.",
-    "2. Show their Profile Status so they understand where they stand.",
-    "3. Show the core action: post/check job, browse/bid, or follow up/admin.",
-    "4. End with one ask: post a job, join as a worker, request homebuilding review, request manufacturing help, request auto service, get Road Rescue help, book creative work, request NorthStar help, save career interest, or give one referral.",
+    "2. If you only have a phone and one minute, open John customer proof, Mike worker proof, then Launch Status.",
+    "3. Show their Profile Status so they understand where they stand.",
+    "4. Show the core action: post/check job, browse/bid, or follow up/admin.",
+    "5. End with one ask: post a job, join as a worker, request homebuilding review, request manufacturing help, request auto service, get Road Rescue help, book creative work, request NorthStar help, save career interest, or give one referral.",
     "",
     "Cue cards:",
     ...demoCueCards.map((cue) => `- ${cue.audience}: ${cue.opener} Proof: ${cue.proof} Ask: ${cue.ask}`),
