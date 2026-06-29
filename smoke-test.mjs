@@ -253,7 +253,7 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=71",
+  "styles.css?v=72",
   "app.js?v=71"
 ];
 

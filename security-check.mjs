@@ -35,7 +35,7 @@ const checks = [
   ["ci package scripts present", files.includes("package.json")],
   ["github checks workflow present", workflowExists],
   ["fresh cache version", contents["service-worker.js"].includes("forge-mvp-v71")],
-  ["html asset version", contents["index.html"].includes("styles.css?v=71") && contents["index.html"].includes("app.js?v=71")]
+  ["html asset version", contents["index.html"].includes("styles.css?v=72") && contents["index.html"].includes("app.js?v=71")]
 ];
 
 const failed = checks.filter(([, ok]) => !ok);

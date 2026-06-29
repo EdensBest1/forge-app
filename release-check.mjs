@@ -15,7 +15,7 @@ const resolvedChecks = await Promise.all(checks.map(async ([label, promise]) => 
 
 const staticChecks = [
   ["manifest version", manifest.version === "v71"],
-  ["html asset version", html.includes("styles.css?v=71") && html.includes("app.js?v=71")],
+  ["html asset version", html.includes("styles.css?v=72") && html.includes("app.js?v=71")],
   ["service worker version", serviceWorker.includes("forge-mvp-v71")],
   ["admin entrypoint", manifest.entrypoints.admin.includes("?v=71&demo=admin#admin")],
   ["autos entrypoint", manifest.entrypoints.autos === "/auto?v=71"],
