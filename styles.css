@@ -6618,6 +6618,33 @@ textarea:focus {
   background: white;
 }
 
+.bid-action-panel {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  justify-items: end;
+  min-width: 148px;
+}
+
+.bid-action-panel strong {
+  color: var(--orange);
+  font-size: 1.1rem;
+}
+
+.bid-action-panel span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.bid-action-panel .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .stars {
   color: var(--orange);
   font-weight: 950;
@@ -8326,6 +8353,7 @@ td {
   .partner-document-grid,
   .project-lead-list article,
   .confirm-details,
+  .bid-row,
   .job-flow-grid,
   .job-flow-brief-grid,
   .handoff-grid,
@@ -8366,6 +8394,14 @@ td {
   .follow-up-list,
   .activity-log article {
     grid-template-columns: 1fr;
+  }
+
+  .bid-action-panel {
+    justify-items: stretch;
+  }
+
+  .bid-action-panel span {
+    text-align: left;
   }
 
   .service-group-grid article {

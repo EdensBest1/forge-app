@@ -257,7 +257,7 @@ const requiredHtml = [
   "Recent outreach sprints.",
   "sessionHistory",
   "styles.css?v=72",
-  "app.js?v=71"
+  "app.js?v=72"
 ];
 
 const requiredJs = [
@@ -612,6 +612,8 @@ const requiredJs = [
   "copySessionHistory",
   "copySessionNote",
   "Selected bid handoff",
+  "Choose + Message",
+  "Open Thread",
   "chosenBidHandoff",
   "bidHandoffText",
   "copyBidHandoff",
@@ -759,6 +761,7 @@ const missingCss = [
   ["readiness score panel", css.includes(".readiness-score") && css.includes(".readiness-score h3")],
   ["profile brief panel", css.includes(".profile-brief-grid") && css.includes(".profile-brief-heading")],
   ["bid message flow panel", css.includes(".bid-flow-panel") && css.includes(".message-flow")],
+  ["bid action panel", css.includes(".bid-action-panel") && js.includes("Choose + Message") && js.includes("Open Thread")],
   ["bid demo handoff actions", css.includes(".demo-handoff-actions") && css.includes("grid-template-columns: repeat(2, minmax(0, 1fr))")],
   ["worker proof actions", css.includes(".worker-proof-card") && css.includes(".worker-proof-actions")],
   ["customer status demo strip", css.includes(".status-demo-strip") && css.includes(".status-demo-actions")],
@@ -789,7 +792,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v71")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v72")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],

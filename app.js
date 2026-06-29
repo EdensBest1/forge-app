@@ -7506,9 +7506,11 @@ function renderDetail() {
         <p>${escapeHtml(bid.message)}</p>
         ${bidDetailMeta(bid)}
       </div>
-      <div>
+      <div class="bid-action-panel">
         <strong>${escapeHtml(bid.amount)}</strong>
-        <button class="link-button" type="button" data-choose-bid="${index}">Choose</button>
+        <span>${bid.chosen ? "Message handoff ready" : "Choose to create handoff"}</span>
+        <button class="btn ${bid.chosen ? "blue" : "orange"} small" type="button" data-choose-bid="${index}">${bid.chosen ? "Selected" : "Choose + Message"}</button>
+        <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
       </div>
     </article>
   `).join("") || `<p class="muted">No bids yet.</p>`;
