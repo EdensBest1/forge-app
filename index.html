@@ -821,12 +821,17 @@
             <span class="split-label">For job posters</span>
             <h1>Check your posted jobs and bids.</h1>
             <p class="muted">Enter the phone or email used when posting a job.</p>
-            <div class="profile-mini-card" id="customerProfileMini"></div>
             <div class="status-demo-card">
               <span>Demo customer</span>
               <strong>John Smith has a Medford job with bids ready.</strong>
+              <div class="status-demo-actions" aria-label="John customer proof shortcuts">
+                <button class="btn blue small" type="button" data-detail="bathroom-vanity">Review Bids</button>
+                <button class="btn ghost small" type="button" data-message-thread="job-bathroom-vanity">Open Messages</button>
+                <button class="btn ghost small" type="button" data-nav="launch-status">Launch Boundary</button>
+              </div>
               <button class="btn orange small" type="button" data-login-role="customer" data-login-name="John Smith" data-login-screen="status">Open John's Job Status</button>
             </div>
+            <div class="profile-mini-card" id="customerProfileMini"></div>
             <label>Phone or Email<input id="statusLookup" required placeholder="(541) 555-1234 or email@example.com" /></label>
             <p class="trust-note"><strong>Status privacy:</strong> Forge only checks saved MVP job leads in this browser. No payment or account password is required.</p>
             <button class="btn blue" type="submit">Find My Jobs</button>

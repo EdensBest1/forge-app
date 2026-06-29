@@ -7734,9 +7734,25 @@ function renderStatusResults() {
           <button class="btn blue small" type="button" data-detail="${job.id}">View Detail</button>
           <button class="btn ghost small" type="button" data-message-thread="job-${job.id}">Message Forge</button>
         </div>
+        ${customerStatusDemoStrip(job, bids)}
       </article>
     `;
   }).join("") || statusEmptyState();
+}
+
+function customerStatusDemoStrip(job, bids) {
+  const hasBids = bids.length > 0;
+  return `
+    <section class="status-demo-strip" aria-label="One-minute customer proof">
+      <span>One-minute customer proof</span>
+      <strong>${hasBids ? "Review bids, then open the message handoff." : "Show the posted job, then invite one worker to bid."}</strong>
+      <div class="status-demo-actions">
+        <button class="btn blue small" type="button" data-detail="${escapeHtml(job.id)}">${hasBids ? "Review Bids" : "View Job"}</button>
+        <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
+        <button class="btn ghost small" type="button" data-nav="launch-status">Launch Boundary</button>
+      </div>
+    </section>
+  `;
 }
 
 function statusEmptyState() {

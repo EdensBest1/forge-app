@@ -7711,6 +7711,41 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.status-demo-strip {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.status-demo-strip span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.status-demo-strip strong {
+  color: var(--blue);
+  line-height: 1.28;
+}
+
+.status-demo-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-demo-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .launch-status-layout {
   display: grid;
   gap: 18px;
@@ -8257,6 +8292,7 @@ td {
   .message-flow,
   .demo-handoff-actions,
   .demo-route-actions,
+  .status-demo-actions,
   .profile-meta,
   .profile-brief-grid,
   .profile-checklist,
