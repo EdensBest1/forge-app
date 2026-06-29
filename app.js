@@ -8517,7 +8517,7 @@ function renderSafetyCenter() {
     const summary = publicReadinessSummary();
     readiness.innerHTML = `
       <article>
-        <span class="split-label">Public beta readiness</span>
+        <span class="split-label">Public beta readiness gate</span>
         <strong>${summary.score}%</strong>
         <p>${escapeHtml(summary.body)}</p>
       </article>
@@ -8849,10 +8849,10 @@ function launchGateRows() {
 
 function publicReadinessSummary() {
   const blockers = publicReadinessBlockers();
-  const score = Math.max(88, 99 - (blockers.length * 3));
+  const score = blockers.length ? Math.max(70, 95 - (blockers.length * 7)) : 99;
   return {
     score,
-    body: "The product surface is close for a public beta, but Forge should not be treated as fully public-ready until the remaining blockers are cleared and the final security review passes.",
+    body: "This is a demo-readiness score, not launch approval. Forge can support controlled first-user demos now, but broad public launch waits until every blocker is cleared and the final security review passes.",
     blockers
   };
 }
@@ -8921,9 +8921,9 @@ function deployPreflightRows() {
         : "Connect Zapier or a real backend before sharing with people outside a controlled demo."
     },
     {
-      title: "Client admin gate",
+      title: "Demo admin guard",
       ok: true,
-      body: "Operator routes now require the Forge Admin session instead of opening from a guessed URL."
+      body: "Operator routes now require the Forge Admin session in the browser demo, but production authentication is still required before broad traffic."
     },
     {
       title: "Backup before launch",
