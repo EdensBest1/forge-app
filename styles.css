@@ -2734,6 +2734,44 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.35;
 }
 
+.worker-proof-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+  box-shadow: var(--shadow);
+}
+
+.worker-proof-card span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.worker-proof-card strong {
+  color: var(--ink);
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.worker-proof-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.worker-proof-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .capture-card h1 {
   margin-bottom: 0;
   font-size: clamp(1.8rem, 4vw, 3.1rem);
@@ -6616,6 +6654,7 @@ textarea:focus {
 .dashboard-shell {
   display: grid;
   grid-template-columns: 190px 1fr;
+  min-width: 0;
   min-height: 100vh;
 }
 
@@ -6771,6 +6810,7 @@ textarea:focus {
 }
 
 .dashboard-main {
+  min-width: 0;
   padding: 28px;
   background: #fff;
 }
@@ -8292,6 +8332,7 @@ td {
   .message-flow,
   .demo-handoff-actions,
   .demo-route-actions,
+  .worker-proof-actions,
   .status-demo-actions,
   .profile-meta,
   .profile-brief-grid,
