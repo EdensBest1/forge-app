@@ -2115,6 +2115,78 @@ body:not(.role-admin) [data-admin-control] {
   min-height: 40px;
 }
 
+.mobile-demo-flow {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.mobile-demo-flow h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.mobile-demo-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mobile-demo-flow-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.mobile-demo-flow-grid article:first-child {
+  border-left: 5px solid var(--blue);
+}
+
+.mobile-demo-flow-grid article:nth-child(2) {
+  border-left: 5px solid var(--orange);
+}
+
+.mobile-demo-flow-grid article:nth-child(3) {
+  border-left: 5px solid var(--blue-2);
+}
+
+.mobile-demo-flow-grid span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.mobile-demo-flow-grid strong {
+  color: var(--ink);
+}
+
+.mobile-demo-flow-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.38;
+}
+
+.mobile-demo-flow-grid .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .finish-today {
   display: grid;
   gap: 14px;
@@ -8128,6 +8200,7 @@ td {
   .demo-steps,
   .demo-guide,
   .demo-command-strip,
+  .mobile-demo-flow-grid,
   .demo-guide-steps,
   .demo-cue-grid,
   .demo-path-grid,
