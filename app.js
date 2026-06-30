@@ -1,4 +1,6 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
+const PUBLIC_LINK_VERSION = "76";
+const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
 const CREATIVE_CATEGORY_LABEL = "Photography & Videography";
@@ -4603,6 +4605,10 @@ function appBaseUrl() {
   url.search = "";
   if (["/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
+}
+
+function versionQuery(extra = "") {
+  return `?v=${PUBLIC_LINK_VERSION}${extra ? `&${extra}` : ""}`;
 }
 
 function render() {
@@ -13320,17 +13326,17 @@ async function copyInviteText() {
     "9. Request manufacturing help for supplements, vitamins, gummies, powders, beverages, skincare, pet wellness, packaging, labs, or compliance support.",
     "10. Send one referral: a homeowner, worker, builder, creative, auto customer, manufacturing buyer, supplier, career applicant, or business owner who should see Forge.",
     "",
-    `Post a job: ${base}?v=71#post`,
-    `Join as worker: ${base}?v=71#signup`,
-    `Homebuilding: ${base}/homebuilding?v=71`,
-    `Projects: ${base}/projects?v=71`,
-    `Build Tracker: ${base}/homebuilding/tracker?v=71`,
-    `Road Rescue: ${base}/road-rescue?v=71`,
-    `Photography & Videography: ${base}/photography?v=71`,
-    `NorthStar Creative Co.: ${base}/northstar-creative?v=71`,
-    `Forge Capital Desk: ${base}/forge/capital?v=71`,
-    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals?v=71`,
-    `See Forge: ${base}?v=71#home`
+    `Post a job: ${base}${versionQuery()}#post`,
+    `Join as worker: ${base}${versionQuery()}#signup`,
+    `Homebuilding: ${base}/homebuilding${versionQuery()}`,
+    `Projects: ${base}/projects${versionQuery()}`,
+    `Build Tracker: ${base}/homebuilding/tracker${versionQuery()}`,
+    `Road Rescue: ${base}/road-rescue${versionQuery()}`,
+    `Photography & Videography: ${base}/photography${versionQuery()}`,
+    `NorthStar Creative Co.: ${base}/northstar-creative${versionQuery()}`,
+    `Forge Capital Desk: ${base}/forge/capital${versionQuery()}`,
+    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals${versionQuery()}`,
+    `See Forge: ${base}${versionQuery()}#home`
   ].join("\n\n");
   await copyText(invite, "Launch invite copied.");
 }
@@ -13342,19 +13348,19 @@ async function copyFirstUserLinks() {
     "",
     "Pick the link that matches why you are coming to Forge:",
     "",
-    `Post one real job: ${base}?v=71#post`,
-    `Join the worker list: ${base}?v=71#signup`,
-    `Request homebuilding review: ${base}/homebuilding?v=71`,
-    `Submit a project opportunity: ${base}/projects?v=71`,
-    `Open Build Tracker demo: ${base}/homebuilding/tracker?v=71`,
-    `Request Road Rescue: ${base}/road-rescue?v=71`,
-    `Book Photography & Videography: ${base}/photography?v=71`,
-    `Grow a blue-collar business with NorthStar: ${base}/northstar-creative?v=71`,
-    `Check Flex options through Forge Capital Desk: ${base}/forge/capital?v=71`,
-    `Find a manufacturing or nutraceutical partner: ${base}/manufacturing-nutraceuticals?v=71`,
-    `Plan a school, union, or AI job path: ${base}?v=71#opportunities`,
-    `Check an existing job: ${base}?v=71#status`,
-    `Start at Forge home: ${base}?v=71#home`,
+    `Post one real job: ${base}${versionQuery()}#post`,
+    `Join the worker list: ${base}${versionQuery()}#signup`,
+    `Request homebuilding review: ${base}/homebuilding${versionQuery()}`,
+    `Submit a project opportunity: ${base}/projects${versionQuery()}`,
+    `Open Build Tracker demo: ${base}/homebuilding/tracker${versionQuery()}`,
+    `Request Road Rescue: ${base}/road-rescue${versionQuery()}`,
+    `Book Photography & Videography: ${base}/photography${versionQuery()}`,
+    `Grow a blue-collar business with NorthStar: ${base}/northstar-creative${versionQuery()}`,
+    `Check Flex options through Forge Capital Desk: ${base}/forge/capital${versionQuery()}`,
+    `Find a manufacturing or nutraceutical partner: ${base}/manufacturing-nutraceuticals${versionQuery()}`,
+    `Plan a school, union, or AI job path: ${base}${versionQuery()}#opportunities`,
+    `Check an existing job: ${base}${versionQuery()}#status`,
+    `Start at Forge home: ${base}${versionQuery()}#home`,
     "",
     "Early access note: Forge saves the right info and follows up by text, phone, or email. No payment is collected in this MVP."
   ].join("\n");
@@ -13374,21 +13380,21 @@ async function copySignupChecklist() {
     "4. Check Admin after each signup and export a backup before wider outreach.",
     "5. Before public launch, connect hosting, database, authentication, backups, and the final trust and safety workflow.",
     "",
-    `Post a job: ${base}?v=71#post`,
-    `Join worker list: ${base}?v=71#signup`,
-    `Homebuilding: ${base}/homebuilding?v=71`,
-    `Projects: ${base}/projects?v=71`,
-    `Build Tracker: ${base}/homebuilding/tracker?v=71`,
-    `Road Rescue: ${base}/road-rescue?v=71`,
-    `Photography & Videography: ${base}/photography?v=71`,
-    `NorthStar Creative Co.: ${base}/northstar-creative?v=71`,
-    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals?v=71`,
-    `Personal Driver: ${base}/personal-driver?v=71`,
-    `Forge Payments / Merchant Services: ${base}/forge-payments?v=71`,
-    `Local Products / Makers: ${base}/local-products?v=71`,
-    `Training & Careers: ${base}?v=71#opportunities`,
-    `Check status: ${base}?v=71#status`,
-    `Open admin: ${base}?v=71&demo=admin#admin`
+    `Post a job: ${base}${versionQuery()}#post`,
+    `Join worker list: ${base}${versionQuery()}#signup`,
+    `Homebuilding: ${base}/homebuilding${versionQuery()}`,
+    `Projects: ${base}/projects${versionQuery()}`,
+    `Build Tracker: ${base}/homebuilding/tracker${versionQuery()}`,
+    `Road Rescue: ${base}/road-rescue${versionQuery()}`,
+    `Photography & Videography: ${base}/photography${versionQuery()}`,
+    `NorthStar Creative Co.: ${base}/northstar-creative${versionQuery()}`,
+    `Manufacturing + Nutraceuticals: ${base}/manufacturing-nutraceuticals${versionQuery()}`,
+    `Personal Driver: ${base}/personal-driver${versionQuery()}`,
+    `Forge Payments / Merchant Services: ${base}/forge-payments${versionQuery()}`,
+    `Local Products / Makers: ${base}/local-products${versionQuery()}`,
+    `Training & Careers: ${base}${versionQuery()}#opportunities`,
+    `Check status: ${base}${versionQuery()}#status`,
+    `Open admin: ${base}${versionQuery("demo=admin")}#admin`
   ].join("\n");
   await copyText(checklist, "Signup checklist copied.");
 }
@@ -13443,7 +13449,7 @@ async function copyDemoPack() {
   const pack = [
     "Forge MVP demo pack",
     "",
-    `Start here: ${base}?v=71#perspective`,
+    `Start here: ${base}${versionQuery()}#perspective`,
     `Homeowner view: ${roleDemoLink("customer", "status")}`,
     `Homeowner readiness: ${roleDemoLink("customer", "profile")}`,
     `Worker view: ${roleDemoLink("worker", "worker")}`,
@@ -13451,9 +13457,9 @@ async function copyDemoPack() {
     `Admin view: ${roleDemoLink("admin", "admin")}`,
     `Admin readiness: ${roleDemoLink("admin", "profile")}`,
     `Training & Careers: ${roleDemoLink("customer", "opportunities")}`,
-    `Homebuilding: ${appBaseUrl()}/homebuilding?v=71`,
-    `Projects: ${appBaseUrl()}/projects?v=71`,
-    `Build Tracker: ${appBaseUrl()}/homebuilding/tracker?v=71`,
+    `Homebuilding: ${base}/homebuilding${versionQuery()}`,
+    `Projects: ${base}/projects${versionQuery()}`,
+    `Build Tracker: ${base}/homebuilding/tracker${versionQuery()}`,
     `Forge Auto Services: ${roleDemoLink("customer", "auto")}`,
     `Road Rescue: ${roleDemoLink("customer", "road-rescue")}`,
     `Photography & Videography: ${roleDemoLink("customer", "creative")}`,
@@ -13553,7 +13559,7 @@ function perspectiveLink(role) {
 function roleDemoLink(role, screen) {
   const normalizedScreen = normalizeScreen(screen);
   const base = appBaseUrl();
-  const demoQuery = `?v=71&demo=${encodeURIComponent(role)}`;
+  const demoQuery = versionQuery(`demo=${encodeURIComponent(role)}`);
   if (routeByScreen[normalizedScreen] && location.protocol !== "file:") {
     return `${base}${routeByScreen[normalizedScreen]}${demoQuery}`;
   }
@@ -15896,8 +15902,8 @@ function copyReleaseCandidatePacket() {
   const lines = [
     "Forge public beta release candidate packet",
     "",
-    "Version: v71",
-    "Open Admin: http://127.0.0.1:4174/?v=71&demo=admin#admin",
+    `Version: ${PUBLIC_LINK_LABEL}`,
+    `Open Admin: http://127.0.0.1:4174/${versionQuery("demo=admin")}#admin`,
     "",
     "Run checks:",
     "node --check app.js",

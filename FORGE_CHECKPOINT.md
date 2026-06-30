@@ -9,11 +9,11 @@ Last checkpoint: June 26, 2026
 - Perspective demo: http://127.0.0.1:4174/#perspective
 - Profile status: http://127.0.0.1:4174/#profile
 - Best demo start: http://127.0.0.1:4174/#perspective
-- Homeowner direct demo: http://127.0.0.1:4174/?v=71&demo=customer#status
-- Worker direct demo: http://127.0.0.1:4174/?v=71&demo=worker#worker
-- Admin direct demo: http://127.0.0.1:4174/?v=71&demo=admin#admin
-- Training & Careers: http://127.0.0.1:4174/?v=71#opportunities
-- Forge Auto & Transport: http://127.0.0.1:4174/auto?v=71
+- Homeowner direct demo: http://127.0.0.1:4174/?v=76&demo=customer#status
+- Worker direct demo: http://127.0.0.1:4174/?v=76&demo=worker#worker
+- Admin direct demo: http://127.0.0.1:4174/?v=76&demo=admin#admin
+- Training & Careers: http://127.0.0.1:4174/?v=76#opportunities
+- Forge Auto & Transport: http://127.0.0.1:4174/auto?v=76
 
 ## Demo Accounts
 
