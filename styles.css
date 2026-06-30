@@ -2630,6 +2630,73 @@ body:not(.role-admin) [data-admin-control] {
   color: var(--blue);
 }
 
+.profile-proof-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.profile-proof-heading h2 {
+  margin: 0;
+}
+
+.profile-proof-path {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-proof-path article {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.profile-proof-path article.waiting {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.profile-proof-path article > span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.76rem;
+  font-weight: 950;
+}
+
+.profile-proof-path article.waiting > span {
+  background: var(--orange);
+}
+
+.profile-proof-path strong {
+  display: block;
+  color: var(--ink);
+}
+
+.profile-proof-path p,
+.profile-proof-path small {
+  display: block;
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.profile-proof-path .btn {
+  min-width: 112px;
+}
+
 .profile-brief-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -8598,6 +8665,7 @@ td {
   .status-demo-actions,
   .profile-meta,
   .profile-brief-grid,
+  .profile-proof-path article,
   .profile-checklist,
   .lead-board,
   .outreach-grid,

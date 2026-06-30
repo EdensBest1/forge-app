@@ -4787,6 +4787,20 @@ function renderProfileStatus() {
       <p>${escapeHtml(item.body)}</p>
     </article>
   `).join("");
+  const proofPath = document.querySelector("#profileProofPath");
+  if (proofPath) {
+    proofPath.innerHTML = profileProofPathRows(profile).map((item) => `
+      <article class="${item.state}">
+        <span>${escapeHtml(item.step)}</span>
+        <div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+          <small>${escapeHtml(item.meta)}</small>
+        </div>
+        <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+      </article>
+    `).join("");
+  }
   document.querySelector("#profileMeta").innerHTML = profile.meta.map(([label, value]) => `
     <article>
       <span>${escapeHtml(label)}</span>
@@ -4933,6 +4947,164 @@ function profileBriefRows(profile) {
       body: profile.nextAction
     }
   ];
+}
+
+function profileProofPathRows(profile) {
+  if (state.session.role === "customer") {
+    const jobs = state.jobs.filter((job) => samePerson(job.customer, profile.name));
+    const job = jobs[0] || state.jobs[0];
+    const bids = job ? state.bids.filter((bid) => bid.jobId === job.id) : [];
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        step: "1",
+        title: "Show job status",
+        body: job ? `${job.title} is ${job.status.toLowerCase()} with ${bids.length} bid${bids.length === 1 ? "" : "s"}.` : "Post a job first so the customer view has a status trail.",
+        meta: "Customer proof starts with My Job Status.",
+        state: job ? "ready" : "waiting",
+        primary: true,
+        actionLabel: "Open Status",
+        action: { type: "nav", screen: "status" }
+      },
+      {
+        step: "2",
+        title: chosen ? "Review selected bid" : "Compare bids",
+        body: chosen ? `${chosen.worker} is selected at ${chosen.amount}.` : bids.length ? "Open Job Detail and choose the next handoff." : "Invite a worker bid before showing bid selection.",
+        meta: bids.length ? "This is the Choose + Message proof." : "Bid proof is pending.",
+        state: bids.length ? "ready" : "waiting",
+        primary: false,
+        actionLabel: job ? "Open Job Detail" : "Post Job",
+        action: job ? { type: "detail", jobId: job.id } : { type: "nav", screen: "post" }
+      },
+      {
+        step: "3",
+        title: "Open message handoff",
+        body: chosen ? "Use Messages to confirm schedule and arrival details." : "Messages become the handoff once a bid is chosen.",
+        meta: chosen ? "Scheduling handoff ready." : "Choose a bid to complete this proof.",
+        state: chosen ? "ready" : "waiting",
+        primary: false,
+        actionLabel: "Open Messages",
+        action: job ? { type: "thread", threadId: `job-${job.id}` } : { type: "nav", screen: "messages" }
+      }
+    ];
+  }
+  if (state.session.role === "worker") {
+    const worker = findWorkerByName(profile.name) || state.worker;
+    const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+    const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+    return [
+      {
+        step: "1",
+        title: "Show worker dashboard",
+        body: `${worker.name} can see local jobs, earnings, bids, and profile readiness.`,
+        meta: `${worker.trade} in ${worker.area}.`,
+        state: "ready",
+        primary: true,
+        actionLabel: "Dashboard",
+        action: { type: "nav", screen: "worker" }
+      },
+      {
+        step: "2",
+        title: bids.length ? "Show submitted bid" : "Submit one bid",
+        body: bids.length ? `${bids.length} bid${bids.length === 1 ? "" : "s"} show worker activity.` : "Open the bid form so Mike can show the worker-side action.",
+        meta: job ? `Demo job: ${job.title}.` : "No job selected yet.",
+        state: bids.length ? "ready" : "waiting",
+        primary: false,
+        actionLabel: "Submit Bid",
+        action: job ? { type: "bidJob", jobId: job.id } : { type: "nav", screen: "bid" }
+      },
+      {
+        step: "3",
+        title: "Open worker messages",
+        body: "Messages show how a bid becomes scheduling follow-up.",
+        meta: "Use this after the customer chooses a bid.",
+        state: "ready",
+        primary: false,
+        actionLabel: "Open Messages",
+        action: job ? { type: "thread", threadId: `job-${job.id}` } : { type: "nav", screen: "messages" }
+      }
+    ];
+  }
+  if (state.session.role === "admin") {
+    const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+    return [
+      {
+        step: "1",
+        title: "Open launch center",
+        body: "Show jobs, workers, reports, follow-up, and launch command from one operator view.",
+        meta: `${state.jobs.length} jobs and ${state.workers.length} workers loaded.`,
+        state: "ready",
+        primary: true,
+        actionLabel: "Admin Center",
+        action: { type: "nav", screen: "admin" }
+      },
+      {
+        step: "2",
+        title: "Review follow-up",
+        body: `${needsTouch} lead${needsTouch === 1 ? "" : "s"} currently need touch across the first-user queue.`,
+        meta: "Use Copy Queue or Launch Command before outreach.",
+        state: needsTouch ? "waiting" : "ready",
+        primary: false,
+        actionLabel: "Copy Queue",
+        action: { type: "action", name: "copy-follow-up-queue" }
+      },
+      {
+        step: "3",
+        title: "Close out and back up",
+        body: "Use the Admin closeout sequence after each demo or outreach block.",
+        meta: "Queue, batch, recap, backup, launch status.",
+        state: "ready",
+        primary: false,
+        actionLabel: "Copy Closeout",
+        action: { type: "action", name: "copy-first-user-closeout" }
+      }
+    ];
+  }
+  return [
+    {
+      step: "1",
+      title: "Choose homeowner view",
+      body: "Open John's customer proof for status, bids, and message handoff.",
+      meta: "Best proof for job posters.",
+      state: "waiting",
+      primary: true,
+      actionLabel: "Open John",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      step: "2",
+      title: "Choose worker view",
+      body: "Open Mike's worker proof for jobs, bids, and messages.",
+      meta: "Best proof for workers.",
+      state: "waiting",
+      primary: false,
+      actionLabel: "Open Mike",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      step: "3",
+      title: "Choose operator view",
+      body: "Open Admin to see follow-up, launch command, closeout, exports, and reports.",
+      meta: "Best proof for Andrew operating Forge.",
+      state: "waiting",
+      primary: false,
+      actionLabel: "Open Admin",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" }
+    }
+  ];
+}
+
+function profileProofButtonAttrs(action) {
+  if (!action) return `data-nav="profile"`;
+  if (action.type === "nav") return `data-nav="${escapeHtml(action.screen)}"`;
+  if (action.type === "detail") return `data-detail="${escapeHtml(action.jobId)}"`;
+  if (action.type === "thread") return `data-message-thread="${escapeHtml(action.threadId)}"`;
+  if (action.type === "bidJob") return `data-bid-job="${escapeHtml(action.jobId)}"`;
+  if (action.type === "action") return `data-action="${escapeHtml(action.name)}"`;
+  if (action.type === "login") {
+    return `data-login-role="${escapeHtml(action.role)}" data-login-name="${escapeHtml(action.name)}" data-login-screen="${escapeHtml(action.screen)}"`;
+  }
+  return `data-nav="profile"`;
 }
 
 function getProfileStatus() {
@@ -11697,6 +11869,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
   if (action?.dataset.action === "copy-confirmation-handoff") copyConfirmationHandoff();
+  if (action?.dataset.action === "copy-profile-proof-path") copyProfileProofPath();
   if (action?.dataset.action === "copy-demo-link") copyDemoLink(action.dataset.demoRole, action.dataset.demoScreen, action.dataset.demoLabel);
   if (action?.dataset.action === "copy-perspective-link") copyPerspectiveLink(action.dataset.perspectiveRole);
   if (action?.dataset.action === "copy-first-200") copyFirst200Plan();
@@ -15716,6 +15889,23 @@ function copyProfileBrief() {
     `Open profile: ${roleDemoLink(role, "profile")}`
   ];
   copyText(lines.join("\n"), "Status brief copied.");
+}
+
+function copyProfileProofPath() {
+  const profile = getProfileStatus();
+  const rows = profileProofPathRows(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const lines = [
+    "Forge profile proof path",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    "",
+    ...rows.map((item) => `${item.step}. ${item.title}: ${item.body} ${item.meta}`),
+    "",
+    `Open profile: ${roleDemoLink(role, "profile")}`
+  ];
+  copyText(lines.join("\n"), "Profile proof path copied.");
 }
 
 function copySafetyChecklist() {
