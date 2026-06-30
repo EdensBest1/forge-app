@@ -2613,6 +2613,84 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.profile-demo-handoff {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #ffd2b0;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.profile-demo-handoff-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile-demo-handoff-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.profile-demo-handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profile-demo-handoff-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 156px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.profile-demo-handoff-grid article.waiting {
+  background: #f8fbff;
+}
+
+.profile-demo-handoff-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.profile-demo-handoff-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.profile-demo-handoff-grid strong {
+  color: var(--ink);
+}
+
+.profile-demo-handoff-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.profile-demo-handoff-grid .btn {
+  align-self: end;
+  min-width: 0;
+}
+
 .profile-brief {
   display: grid;
   gap: 12px;
@@ -8830,6 +8908,7 @@ td {
   .status-handoff-actions,
   .profile-meta,
   .profile-brief-grid,
+  .profile-demo-handoff-grid,
   .profile-proof-path article,
   .profile-checklist,
   .lead-board,
