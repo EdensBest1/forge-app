@@ -7726,6 +7726,7 @@ function renderDetail() {
     </div>
     ${jobFlowTracker(job, bids, chosenBid)}
     ${jobFlowBrief(job, bids, chosenBid)}
+    ${jobDetailHandoffPanel(job, bids, chosenBid)}
     <div class="hero-actions">
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
@@ -7916,6 +7917,66 @@ function jobFlowBriefRows(job, bids, chosenBid) {
         ? "Forge has a job message thread that can carry the scheduling handoff."
         : "Choose a bid to create the scheduling message and move the job forward.",
       ok: hasMessage
+    }
+  ];
+}
+
+function jobDetailHandoffPanel(job, bids, chosenBid) {
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const bestBid = chosenBid || bids[0];
+  const rows = jobDetailHandoffRows(job, bids, chosenBid, bestBid, hasMessage);
+  return `
+    <section class="detail-handoff-panel" aria-label="Job detail demo handoff">
+      <div class="detail-handoff-heading">
+        <div>
+          <span class="split-label">Detail handoff</span>
+          <h2>${escapeHtml(chosenBid ? "Selected bid is ready for schedule confirmation." : bids.length ? "Choose a bid, then open the message handoff." : "Job is posted and waiting for the first bid.")}</h2>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-detail-handoff" data-job-id="${escapeHtml(job.id)}">Copy Detail Handoff</button>
+      </div>
+      <div class="detail-handoff-grid">
+        ${rows.map((row) => `
+          <article class="${row.ready ? "ready" : "waiting"}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="detail-handoff-actions">
+        <button class="btn ${chosenBid ? "ghost" : "orange"} small" type="button" data-action="${chosenBid ? "message" : "choose-best"}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Bid")}</button>
+        <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
+        <button class="btn ghost small" type="button" data-nav="status">Open Status</button>
+      </div>
+    </section>
+  `;
+}
+
+function jobDetailHandoffRows(job, bids, chosenBid, bestBid, hasMessage) {
+  return [
+    {
+      label: "Choose",
+      title: chosenBid ? `${chosenBid.worker} selected` : bestBid ? `${bestBid.worker} is first to review` : "No bid yet",
+      body: chosenBid
+        ? `${chosenBid.amount} is the active bid for ${job.customer || "the customer"}.`
+        : bestBid
+          ? `${bestBid.amount} can be accepted to create the schedule handoff.`
+          : "Share the job with one worker so the bid comparison can start.",
+      ready: Boolean(chosenBid || bestBid)
+    },
+    {
+      label: "Message",
+      title: hasMessage ? "Thread ready" : "Thread pending",
+      body: hasMessage
+        ? "The scheduling thread is ready for arrival details and confirmation."
+        : "Choosing a bid creates the message trail for the next step.",
+      ready: hasMessage
+    },
+    {
+      label: "Status",
+      title: "Customer proof path",
+      body: "Open Status after detail review so the customer sees the job, selected bid, and next action in one place.",
+      ready: Boolean(chosenBid || bids.length)
     }
   ];
 }
@@ -12040,6 +12101,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-worker-template") copyText(workerTemplate(state.workers[0]), "Worker follow-up copied.");
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
+  if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
@@ -15040,6 +15102,32 @@ function copyJobFlowBrief(jobId) {
     `Open job: ${roleDemoLink("customer", "detail")}`
   ];
   copyText(lines.join("\n"), "Job flow brief copied.");
+}
+
+function copyDetailHandoff(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosenBid = bids.find((bid) => bid.chosen);
+  const bestBid = chosenBid || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = jobDetailHandoffRows(job, bids, chosenBid, bestBid, hasMessage);
+  const lines = [
+    "Forge job detail handoff",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosenBid ? `Selected bid: ${chosenBid.worker} at ${chosenBid.amount}` : bestBid ? `Next bid to review: ${bestBid.worker} at ${bestBid.amount}` : "Next bid to review: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosenBid ? bidHandoffText(job, chosenBid) : "Next action: choose the best bid from Job Detail, then open the message thread and status page.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`
+  ];
+  copyText(lines.join("\n"), "Detail handoff copied.");
 }
 
 function copyBidHandoff(jobId) {

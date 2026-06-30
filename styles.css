@@ -6664,6 +6664,91 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.detail-handoff-panel {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid #ffd2b0;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.detail-handoff-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-handoff-heading h2 {
+  margin: 4px 0 0;
+  color: var(--blue);
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.detail-handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.detail-handoff-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 132px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.detail-handoff-grid article.waiting {
+  background: #f8fbff;
+}
+
+.detail-handoff-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fff0df;
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.detail-handoff-grid article.ready span {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.detail-handoff-grid strong {
+  color: var(--ink);
+}
+
+.detail-handoff-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.detail-handoff-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.detail-handoff-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .handoff-card {
   display: grid;
   gap: 12px;
@@ -8732,6 +8817,8 @@ td {
   .bid-row,
   .job-flow-grid,
   .job-flow-brief-grid,
+  .detail-handoff-grid,
+  .detail-handoff-actions,
   .handoff-grid,
   .message-flow,
   .demo-handoff-actions,
