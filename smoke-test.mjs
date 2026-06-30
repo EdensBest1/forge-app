@@ -18,6 +18,7 @@ const requiredHtml = [
   "Admin Auth Handoff",
   "authHandoff",
   "Copy Auth Handoff",
+  "operatorGuardPanel",
   "Worker Leads",
   "Export Workers CSV",
   "Copy Daily Brief",
@@ -264,8 +265,8 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=73",
-  "app.js?v=73"
+  "styles.css?v=74",
+  "app.js?v=74"
 ];
 
 const requiredJs = [
@@ -502,6 +503,11 @@ const requiredJs = [
   "Browser-only demo state is not production auth",
   "demoAccounts",
   "loginAs",
+  "lastGuardedRoute",
+  "recordGuardedRoute",
+  "renderOperatorGuard",
+  "Protected operator link",
+  "Forge blocked direct public access to this operator screen.",
   "renderSession",
   "Log in as Forge Admin to open operator tools.",
   "expireAdminSession",
@@ -769,6 +775,7 @@ const missingCss = [
   ["first user path heading", css.includes(".start-path-heading")],
   ["signup readiness panel", css.includes(".signup-readiness-panel") && css.includes(".readiness-grid")],
   ["worker soft launch consent card", css.includes(".worker-soft-launch-card") && css.includes(".worker-soft-launch-grid")],
+  ["public operator link guard", css.includes(".public-link-guard") && css.includes(".public-link-guard-actions")],
   ["launch gate panel", css.includes(".launch-gate") && css.includes(".launch-gate-card.blocked")],
   ["launch decision card", css.includes(".launch-decision-card") && css.includes(".launch-decision-actions")],
   ["deploy preflight panel", css.includes(".deploy-preflight") && css.includes(".deploy-grid")],
@@ -806,7 +813,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v73")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v74")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],

@@ -1697,6 +1697,41 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.55;
 }
 
+.public-link-guard {
+  display: grid;
+  gap: 12px;
+  max-width: 480px;
+  padding: 16px;
+  border: 1px solid #ffd1ad;
+  border-left: 6px solid var(--orange);
+  border-radius: 8px;
+  background: #fff8f1;
+  box-shadow: 0 8px 24px rgba(255, 110, 0, 0.08);
+}
+
+.public-link-guard h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.18rem;
+}
+
+.public-link-guard p {
+  margin: 0;
+  color: #5f6a7c;
+  font-size: 0.9rem;
+}
+
+.public-link-guard-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.public-link-guard-actions .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .login-options {
   display: grid;
   gap: 14px;
@@ -8379,6 +8414,10 @@ td {
   .projects-layout,
   .partner-profile,
   .login-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .public-link-guard-actions {
     grid-template-columns: 1fr;
   }
 

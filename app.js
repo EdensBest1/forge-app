@@ -2023,6 +2023,13 @@ const demoAccounts = [
     visible: "Admin dashboard, lead capture, exports, and Zapier setup"
   }
 ];
+const operatorScreenLabels = {
+  admin: "Admin Dashboard",
+  "admin-projects": "Admin Projects",
+  "admin-building-leads": "Building Leads Admin",
+  capture: "Lead Capture",
+  reports: "Reports"
+};
 const perspectiveCards = [
   {
     role: "customer",
@@ -3138,7 +3145,8 @@ const seedState = {
     nextSteps: ["Choose why you came to Forge", "Submit a real job or worker profile", "Forge keeps the next follow-up visible"],
     primary: { label: "Post a Job", screen: "post" },
     secondary: { label: "Join as a Worker", screen: "signup" }
-  }
+  },
+  lastGuardedRoute: null
 };
 
 const timeline = [
@@ -3495,6 +3503,7 @@ function normalizeState(value) {
   next.forgeCareerProfiles = next.forgeCareerProfiles.map((lead) => ({ sourceApp: "forge", leadType: "Forge Career Profile", status: "New Lead", priority: "Warm", created: "Today", notes: "", ...lead }));
   next.activity = value?.activity || seedState.activity;
   next.lastConfirmation = value?.lastConfirmation || seedState.lastConfirmation;
+  next.lastGuardedRoute = value?.lastGuardedRoute || seedState.lastGuardedRoute;
   return next;
 }
 
@@ -4525,6 +4534,7 @@ function screenExists(screen) {
 
 function navigate(screen, options = {}) {
   screen = normalizeScreen(screen);
+  const requestedScreen = screen;
   const operatorScreens = ["admin", "admin-projects", "admin-building-leads", "capture", "reports"];
   if (screen === "profile" && state.session.role === "guest") {
     showToast("Log in to view profile status.");
@@ -4535,11 +4545,15 @@ function navigate(screen, options = {}) {
     screen = "login";
   }
   if (operatorScreens.includes(screen) && state.session.role !== "admin") {
+    recordGuardedRoute(requestedScreen);
     showToast("Log in as Forge Admin to open operator tools.");
     screen = "login";
   } else if (state.settings.publicMode && state.session.role !== "admin" && operatorScreens.includes(screen)) {
+    recordGuardedRoute(requestedScreen);
     showToast("Operator tools are hidden in Public View.");
     screen = "home";
+  } else if (state.lastGuardedRoute && (screen === "login" || !operatorScreens.includes(screen))) {
+    clearGuardedRoute();
   }
   if (options.jobId) state.activeJobId = options.jobId;
   if (screen === "status" && state.session.role === "customer") loadCustomerStatus(state.session.name);
@@ -4555,6 +4569,24 @@ function navigate(screen, options = {}) {
   } else {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+}
+
+function operatorScreenLabel(screen) {
+  return operatorScreenLabels[normalizeScreen(screen)] || "Operator Tools";
+}
+
+function recordGuardedRoute(screen) {
+  state.lastGuardedRoute = {
+    screen: normalizeScreen(screen),
+    label: operatorScreenLabel(screen),
+    at: "Today"
+  };
+  saveState();
+}
+
+function clearGuardedRoute() {
+  state.lastGuardedRoute = null;
+  saveState();
 }
 
 function screenUrl(screen) {
@@ -4575,6 +4607,7 @@ function appBaseUrl() {
 
 function render() {
   renderSession();
+  renderOperatorGuard();
   renderSelects();
   renderTimeline();
   renderDemoSteps();
@@ -4641,6 +4674,30 @@ function render() {
   renderViewMode();
   renderFollowUpQueue();
   renderNavigationState();
+}
+
+function renderOperatorGuard() {
+  const panel = document.querySelector("#operatorGuardPanel");
+  if (!panel) return;
+  const activeScreen = document.querySelector(".screen.active")?.dataset.screen || "home";
+  const guarded = state.lastGuardedRoute;
+  const shouldShow = activeScreen === "login" && state.session.role !== "admin" && Boolean(guarded?.screen);
+  panel.classList.toggle("hidden", !shouldShow);
+  if (!shouldShow) {
+    panel.innerHTML = "";
+    return;
+  }
+  const label = guarded.label || operatorScreenLabel(guarded.screen);
+  panel.innerHTML = `
+    <span class="split-label">Protected operator link</span>
+    <h2>${escapeHtml(label)} is guarded.</h2>
+    <p>Forge blocked direct public access to this operator screen. Use public paths for first-user demos, or use the controlled admin demo link when Andrew is operating Forge locally.</p>
+    <div class="public-link-guard-actions">
+      <button class="btn orange small" type="button" data-nav="launch-status">Launch Status</button>
+      <button class="btn blue small" type="button" data-nav="perspective">Perspective Demo</button>
+      <button class="btn ghost small" type="button" data-nav="home">Public Home</button>
+    </div>
+  `;
 }
 
 function renderNavigationState() {
