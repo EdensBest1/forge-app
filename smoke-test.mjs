@@ -252,6 +252,10 @@ const requiredHtml = [
   "deployChecklist",
   "launchGate",
   "safetyChecklist",
+  "First-user closeout",
+  "Finish every demo block with the same sequence.",
+  "firstUserCloseout",
+  "Copy Closeout",
   "Launch Command",
   "Who needs action today?",
   "launchCommandCenter",
@@ -265,8 +269,8 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=74",
-  "app.js?v=74"
+  "styles.css?v=76",
+  "app.js?v=76"
 ];
 
 const requiredJs = [
@@ -614,6 +618,10 @@ const requiredJs = [
   "safetyChecks",
   "copySafetyChecklist",
   "lastBackupLeadCount",
+  "renderFirstUserCloseout",
+  "firstUserCloseoutRows",
+  "copyFirstUserCloseout",
+  "Forge first-user closeout",
   "renderLaunchCommandCenter",
   "launchCommandRows",
   "copyLaunchCommand",
@@ -792,6 +800,7 @@ const missingCss = [
   ["delivery status panel", css.includes(".delivery-status") && css.includes(".delivery-grid")],
   ["backend handoff panel", css.includes(".backend-handoff") && css.includes(".backend-grid")],
   ["auth handoff panel", css.includes(".auth-handoff") && css.includes(".auth-grid")],
+  ["first user closeout panel", css.includes(".first-user-closeout-grid") && css.includes(".first-user-closeout-card")],
   ["legal screen", css.includes(".legal-layout") && css.includes(".legal-grid")],
   ["confirmation next steps", css.includes(".confirm-next") && css.includes(".confirm-next article")],
   ["confirmation handoff", css.includes(".confirm-handoff") && css.includes("border-left: 6px solid var(--orange)")],
@@ -813,7 +822,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v74")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v76")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],

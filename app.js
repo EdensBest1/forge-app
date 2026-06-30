@@ -4661,6 +4661,7 @@ function render() {
   renderSoftLaunchRunSheet();
   renderBackendHandoff();
   renderAuthHandoff();
+  renderFirstUserCloseout();
   renderLaunchCommandCenter();
   renderOutreachRecap();
   renderOutreachBatch();
@@ -9063,6 +9064,91 @@ function totalLeadCount() {
   return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.manufacturingSupplierLeads || []).length + (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length + (state.employerTrainingPartners || []).length + (state.schoolPartners || []).length + (state.resumeRequests || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
 }
 
+function renderFirstUserCloseout() {
+  const target = document.querySelector("#firstUserCloseout");
+  if (!target) return;
+  target.innerHTML = firstUserCloseoutRows().map((row) => `
+    <article class="first-user-closeout-card ${row.status}">
+      <span>${escapeHtml(row.step)}</span>
+      <strong>${escapeHtml(row.title)}</strong>
+      <b>${escapeHtml(row.metric)}</b>
+      <p>${escapeHtml(row.body)}</p>
+      <div class="first-user-closeout-actions">
+        ${row.nav
+          ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(row.nav)}">${escapeHtml(row.actionLabel)}</button>`
+          : `<button class="btn ghost small" type="button" data-action="${escapeHtml(row.action)}">${escapeHtml(row.actionLabel)}</button>`}
+      </div>
+    </article>
+  `).join("");
+}
+
+function firstUserCloseoutRows() {
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const batchCount = outreachBatchRows().length;
+  const recap = outreachRecapSummary();
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      step: "1",
+      title: "Review follow-up",
+      metric: `${followUpCount} need touch`,
+      status: followUpCount ? "attention" : "ready",
+      body: followUpCount
+        ? "Copy the queue and contact the highest-priority people before widening the first-user group."
+        : "No urgent follow-up is waiting in the current queue.",
+      action: "copy-follow-up-queue",
+      actionLabel: "Copy Queue"
+    },
+    {
+      step: "2",
+      title: "Run next 10",
+      metric: `${batchCount} in batch`,
+      status: batchCount ? "attention" : "ready",
+      body: batchCount
+        ? "Use the focused outreach batch for the next 20-minute session."
+        : "Capture more leads or switch filters when the next batch is empty.",
+      action: "copy-outreach-batch",
+      actionLabel: "Copy Batch"
+    },
+    {
+      step: "3",
+      title: "Save recap",
+      metric: `${recap.total} actions today`,
+      status: recap.total ? "ready" : "attention",
+      body: recap.total
+        ? "Copy the daily recap so the latest proof is ready for notes, handoff, or a new chat."
+        : "No activity has been recorded for today's local session yet.",
+      action: "copy-outreach-recap",
+      actionLabel: "Copy Recap"
+    },
+    {
+      step: "4",
+      title: "Export backup",
+      metric: backupCurrent ? "Backup current" : "Backup needed",
+      status: backupCurrent ? "ready" : "hold",
+      body: backupCurrent
+        ? `Last backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON now so ${leadCount} current leads are recoverable.`,
+      action: "export-backup",
+      actionLabel: "Export Backup"
+    },
+    {
+      step: "5",
+      title: "Control the link",
+      metric: publicMode ? "Public View on" : "Operator View on",
+      status: publicMode ? "ready" : "attention",
+      body: publicMode
+        ? "Operator screens are hidden for visitor demos. Confirm Launch Status before broad sharing."
+        : "Turn Public View on before handing Forge to someone else.",
+      nav: "launch-status",
+      actionLabel: "Launch Status"
+    }
+  ];
+}
+
 function renderLaunchCommandCenter() {
   const target = document.querySelector("#launchCommandCenter");
   if (!target) return;
@@ -11597,6 +11683,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-outreach-batch") copyOutreachBatch();
   if (action?.dataset.action === "complete-outreach-sprint") completeOutreachSprint();
   if (action?.dataset.action === "copy-session-history") copySessionHistory();
+  if (action?.dataset.action === "copy-first-user-closeout") copyFirstUserCloseout();
   if (action?.dataset.action === "copy-session-note") copySessionNote(action.dataset.sessionIndex);
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
@@ -15976,6 +16063,23 @@ function copySessionHistory() {
   copyText(lines.join("\n"), "Session history copied.");
 }
 
+function copyFirstUserCloseout() {
+  const rows = firstUserCloseoutRows();
+  const lines = [
+    "Forge first-user closeout",
+    "",
+    ...rows.map((row) => `${row.step}. ${row.title}: ${row.metric}. ${row.body}`),
+    "",
+    "Required order:",
+    "1. Copy Follow-Up Queue.",
+    "2. Copy Next 10 Batch.",
+    "3. Copy Outreach Recap.",
+    "4. Export Backup JSON.",
+    "5. Keep Public View on and use Launch Status before broader sharing."
+  ];
+  copyText(lines.join("\n"), "First-user closeout copied.");
+}
+
 function copySessionNote(index) {
   const activity = state.activity[Number(index)];
   if (!activity) {
@@ -16002,6 +16106,7 @@ function exportBackup() {
   addActivity("Full backup JSON exported.");
   saveState();
   renderSafetyCenter();
+  renderFirstUserCloseout();
 }
 
 function exportJson(filename, data) {

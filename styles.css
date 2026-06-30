@@ -22,9 +22,16 @@
   box-sizing: border-box;
 }
 
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
   background: var(--panel);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -6929,8 +6936,13 @@ textarea:focus {
 }
 
 .compact-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   flex-shrink: 0;
   gap: 8px;
+  max-width: 100%;
 }
 
 .admin-heading:first-of-type {
@@ -6957,6 +6969,72 @@ textarea:focus {
 
 .admin-tools h2 {
   margin-bottom: 8px;
+}
+
+.first-user-closeout {
+  border-left: 6px solid var(--orange);
+  background: white;
+}
+
+.first-user-closeout-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.first-user-closeout-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: 198px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.first-user-closeout-card > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.first-user-closeout-card.attention > span {
+  background: var(--orange);
+}
+
+.first-user-closeout-card.hold > span {
+  background: #b42318;
+}
+
+.first-user-closeout-card strong {
+  color: var(--ink);
+}
+
+.first-user-closeout-card b {
+  color: var(--blue);
+  font-size: 0.9rem;
+}
+
+.first-user-closeout-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.first-user-closeout-actions {
+  align-self: end;
+}
+
+.first-user-closeout-actions .btn {
+  width: 100%;
 }
 
 .lead-board {
@@ -8250,7 +8328,11 @@ textarea:focus {
 }
 
 .table-card {
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
   margin-bottom: 16px;
 }
 
@@ -8531,6 +8613,7 @@ td {
   .soft-launch-grid,
   .backend-grid,
   .auth-grid,
+  .first-user-closeout-grid,
   .safety-grid,
   .launch-decision-card,
   .launch-decision-actions,
@@ -8547,6 +8630,21 @@ td {
   .follow-up-list,
   .activity-log article {
     grid-template-columns: 1fr;
+  }
+
+  .admin-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .compact-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .compact-actions .btn {
+    flex: 1 1 140px;
+    min-width: 0;
   }
 
   .launch-run-heading {
