@@ -7973,6 +7973,7 @@ function renderStatusResults() {
           <button class="btn ghost small" type="button" data-message-thread="job-${job.id}">Message Forge</button>
         </div>
         ${customerStatusDemoStrip(job, bids)}
+        ${customerStatusHandoffPanel(job, bids)}
       </article>
     `;
   }).join("") || statusEmptyState();
@@ -7991,6 +7992,71 @@ function customerStatusDemoStrip(job, bids) {
       </div>
     </section>
   `;
+}
+
+function customerStatusHandoffPanel(job, bids) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = customerStatusHandoffRows(job, bids, chosen, bestBid, hasMessage);
+  return `
+    <section class="status-handoff-panel" aria-label="Customer status handoff">
+      <div class="status-handoff-heading">
+        <div>
+          <span class="split-label">Customer handoff</span>
+          <strong>${escapeHtml(chosen ? "Selected bid is ready for scheduling." : bids.length ? "Bids are ready to compare." : "Waiting for the first bid.")}</strong>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-status-handoff" data-job-id="${escapeHtml(job.id)}">Copy Status Handoff</button>
+      </div>
+      <div class="status-handoff-grid">
+        ${rows.map((row) => `
+          <article class="${row.ok ? "ready" : "waiting"}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="status-handoff-actions">
+        <button class="btn ${chosen ? "ghost" : "orange"} small" type="button" data-detail="${escapeHtml(job.id)}">${escapeHtml(chosen ? "Review Detail" : bids.length ? "Choose + Message" : "View Job")}</button>
+        <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
+        <button class="btn ghost small" type="button" data-nav="profile">Profile Status</button>
+      </div>
+    </section>
+  `;
+}
+
+function customerStatusHandoffRows(job, bids, chosen, bestBid, hasMessage) {
+  return [
+    {
+      label: "Bid",
+      title: chosen ? `${chosen.worker} selected` : bestBid ? `${bestBid.worker} ready` : "No bid yet",
+      body: chosen
+        ? `${chosen.amount} bid is active for ${job.title}.`
+        : bestBid
+          ? `${bestBid.amount} bid can be reviewed first.`
+          : "Invite one worker to bid so this status page has proof.",
+      ok: Boolean(chosen || bestBid)
+    },
+    {
+      label: "Message",
+      title: hasMessage ? "Thread ready" : "Thread pending",
+      body: hasMessage
+        ? "Open Messages to confirm schedule, arrival details, and next follow-up."
+        : "Choose a bid to create the scheduling handoff thread.",
+      ok: hasMessage
+    },
+    {
+      label: "Next",
+      title: chosen ? "Confirm schedule" : bids.length ? "Choose + Message" : "Wait for bids",
+      body: chosen
+        ? "Use this status page as the proof that the job is moving."
+        : bids.length
+          ? "Open Job Detail, choose the best bid, then return to Messages."
+          : "Keep the job posted and invite workers from the demo flow.",
+      ok: Boolean(chosen)
+    }
+  ];
 }
 
 function statusEmptyState() {
@@ -11975,6 +12041,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
+  if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
   if (action?.dataset.action === "copy-homebuilding-lead") copyHomebuildingLead(action.dataset.homebuildingId);
@@ -14983,6 +15050,31 @@ function copyBidHandoff(jobId) {
     return;
   }
   copyText(bidHandoffText(job, bid), "Bid handoff copied.");
+}
+
+function copyStatusHandoff(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = customerStatusHandoffRows(job, bids, chosen, bestBid, hasMessage);
+  const lines = [
+    "Forge customer status handoff",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Best next bid: ${bestBid.worker} at ${bestBid.amount}` : "Selected: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen ? bidHandoffText(job, chosen) : "Next action: open Job Detail, choose a bid, then use Messages for schedule and arrival details.",
+    `Open status: ${roleDemoLink("customer", "status")}`
+  ];
+  copyText(lines.join("\n"), "Status handoff copied.");
 }
 
 function copyWorkerDirect(email) {

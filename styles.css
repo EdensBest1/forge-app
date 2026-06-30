@@ -8036,6 +8036,82 @@ textarea:focus {
   padding-left: 8px;
 }
 
+.status-handoff-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.status-handoff-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-handoff-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.status-handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-handoff-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.status-handoff-grid article.waiting {
+  background: #fffaf4;
+}
+
+.status-handoff-grid span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.status-handoff-grid strong {
+  color: var(--blue);
+  font-size: 0.9rem;
+}
+
+.status-handoff-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.status-handoff-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-handoff-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .launch-status-layout {
   display: grid;
   gap: 18px;
@@ -8663,6 +8739,8 @@ td {
   .worker-proof-actions,
   .worker-soft-launch-grid,
   .status-demo-actions,
+  .status-handoff-grid,
+  .status-handoff-actions,
   .profile-meta,
   .profile-brief-grid,
   .profile-proof-path article,
