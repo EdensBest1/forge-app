@@ -1704,7 +1704,8 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.55;
 }
 
-.public-link-guard {
+.public-link-guard,
+.profile-login-prompt {
   display: grid;
   gap: 12px;
   max-width: 480px;
@@ -1716,13 +1717,22 @@ body:not(.role-admin) [data-admin-control] {
   box-shadow: 0 8px 24px rgba(255, 110, 0, 0.08);
 }
 
-.public-link-guard h2 {
+.profile-login-prompt {
+  border-color: #c7d3e5;
+  border-left-color: var(--blue);
+  background: #f8fbff;
+  box-shadow: 0 8px 24px rgba(0, 72, 172, 0.08);
+}
+
+.public-link-guard h2,
+.profile-login-prompt h2 {
   margin: 0;
   color: var(--ink);
   font-size: 1.18rem;
 }
 
-.public-link-guard p {
+.public-link-guard p,
+.profile-login-prompt p {
   margin: 0;
   color: #5f6a7c;
   font-size: 0.9rem;
