@@ -4665,6 +4665,7 @@ function render() {
   renderSoftLaunchPlan();
   renderSoftLaunchInvites();
   renderSoftLaunchRunSheet();
+  renderLaunchDemoPack();
   renderBackendHandoff();
   renderAuthHandoff();
   renderFirstUserCloseout();
@@ -9139,6 +9140,65 @@ function renderSoftLaunchRunSheet() {
       <p>${escapeHtml(item.body)}</p>
     </article>
   `).join("");
+}
+
+function renderLaunchDemoPack() {
+  const target = document.querySelector("#launchDemoPack");
+  if (!target) return;
+  target.innerHTML = launchDemoPackRows().map((row) => `
+    <article class="${row.status}">
+      <span>${escapeHtml(row.label)}</span>
+      <strong>${escapeHtml(row.title)}</strong>
+      <p>${escapeHtml(row.body)}</p>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function launchDemoPackRows() {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  return [
+    {
+      label: "1. Customer",
+      title: "John proof path",
+      body: "Open status, detail, selected bid, messages, and profile proof from the homeowner side.",
+      status: "ready",
+      primary: true,
+      actionLabel: "John Proof",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      label: "2. Worker",
+      title: "Mike proof path",
+      body: "Open worker dashboard, available jobs, submit bid, messages, and profile readiness.",
+      status: "ready",
+      primary: false,
+      actionLabel: "Mike Proof",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      label: "3. Links",
+      title: "Copy demo pack",
+      body: "Copy the exact shareable links, demo order, close ask, and current MVP counts.",
+      status: "ready",
+      primary: false,
+      actionLabel: "Copy Pack",
+      action: { type: "action", name: "copy-demo-pack" }
+    },
+    {
+      label: "4. Guardrail",
+      title: backupCurrent ? "Backup current" : "Backup needed",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads. Export again after the next outreach block.`
+        : `Export JSON before wider sharing so ${leadCount} current leads are recoverable.`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: false,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
 }
 
 function softLaunchRows() {
