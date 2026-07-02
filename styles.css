@@ -2701,6 +2701,38 @@ body:not(.role-admin) [data-admin-control] {
   min-width: 0;
 }
 
+.profile-close-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #b8cef2;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.profile-close-card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  line-height: 1.25;
+}
+
+.profile-close-card p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  line-height: 1.42;
+}
+
+.profile-close-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .profile-brief {
   display: grid;
   gap: 12px;
@@ -8997,6 +9029,7 @@ td {
   .profile-meta,
   .profile-brief-grid,
   .profile-demo-handoff-grid,
+  .profile-close-card,
   .profile-proof-path article,
   .profile-checklist,
   .lead-board,

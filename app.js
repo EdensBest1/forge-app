@@ -4783,6 +4783,8 @@ function renderProfileStatus() {
   document.querySelector("#profileReadiness").innerHTML = readinessCard(profile);
   const profileHandoff = document.querySelector("#profileDemoHandoff");
   if (profileHandoff) profileHandoff.innerHTML = profileDemoHandoff(profile);
+  const profileClose = document.querySelector("#profileCloseCard");
+  if (profileClose) profileClose.innerHTML = profileCloseCard(profile);
   document.querySelector("#profileBrief").innerHTML = profileBriefRows(profile).map((item) => `
     <article>
       <span>${escapeHtml(item.label)}</span>
@@ -5029,6 +5031,55 @@ function profileDemoHandoffRows(profile) {
       action: { type: "login", role: "admin", name: "Forge Admin", screen: "profile" }
     }
   ];
+}
+
+function profileCloseCard(profile) {
+  const close = profileCloseAsk(profile);
+  return `
+    <div>
+      <span class="split-label">Close ask</span>
+      <strong>${escapeHtml(close.title)}</strong>
+      <p>${escapeHtml(close.body)}</p>
+    </div>
+    <div class="profile-close-actions">
+      <button class="btn blue small" type="button" ${profileProofButtonAttrs(close.action)}>${escapeHtml(close.actionLabel)}</button>
+      <button class="btn ghost small" type="button" data-action="copy-profile-close-ask">Copy Ask</button>
+    </div>
+  `;
+}
+
+function profileCloseAsk(profile) {
+  if (state.session.role === "customer") {
+    return {
+      title: "Ask for one real job or one referral.",
+      body: "Can you post one real job you actually need handled, or send one person who needs local work done?",
+      actionLabel: "Post Job",
+      action: { type: "nav", screen: "post" }
+    };
+  }
+  if (state.session.role === "worker") {
+    const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+    return {
+      title: "Ask them to join and bid on one local job.",
+      body: "Can you join the worker list and submit one bid so Forge can test the handoff from job to message?",
+      actionLabel: job ? "Submit Bid" : "Browse Jobs",
+      action: job ? { type: "bidJob", jobId: job.id } : { type: "nav", screen: "jobs" }
+    };
+  }
+  if (state.session.role === "admin") {
+    return {
+      title: "Run the next controlled outreach block.",
+      body: "Copy the launch command, contact the next warm lead, then export a backup before widening the invite list.",
+      actionLabel: "Launch Status",
+      action: { type: "nav", screen: "launch-status" }
+    };
+  }
+  return {
+    title: "Choose a perspective before the ask.",
+    body: "Open John, Mike, or Admin first so the close ask matches what that person just saw.",
+    actionLabel: "Perspective Demo",
+    action: { type: "nav", screen: "perspective" }
+  };
 }
 
 function profileBriefRows(profile) {
@@ -12220,6 +12271,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
+  if (action?.dataset.action === "copy-profile-close-ask") copyProfileCloseAsk();
   if (action?.dataset.action === "copy-follow-up-queue") copyFollowUpQueue();
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
@@ -16399,6 +16451,24 @@ function copyProfileDemoHandoff() {
     `Open profile: ${roleDemoLink(role, "profile")}`
   ];
   copyText(lines.join("\n"), "Profile handoff copied.");
+}
+
+function copyProfileCloseAsk() {
+  const profile = getProfileStatus();
+  const close = profileCloseAsk(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const screen = close.action?.screen
+    || (close.action?.type === "bidJob" ? "bid" : close.action?.type === "thread" ? "messages" : close.action?.type === "detail" ? "detail" : "profile");
+  const lines = [
+    "Forge profile close ask",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    close.title,
+    close.body,
+    "",
+    `Open next step: ${roleDemoLink(role, screen)}`
+  ];
+  copyText(lines.join("\n"), "Profile close ask copied.");
 }
 
 function copySafetyChecklist() {
