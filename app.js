@@ -8214,12 +8214,23 @@ function customerStatusDemoStrip(job, bids) {
       <span>One-minute customer proof</span>
       <strong>${hasBids ? "Review bids, then open the message handoff." : "Show the posted job, then invite one worker to bid."}</strong>
       <div class="status-demo-actions">
-        <button class="btn blue small" type="button" data-detail="${escapeHtml(job.id)}">${hasBids ? "Review Bids" : "View Job"}</button>
-        <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
+        <button class="btn blue small" type="button" ${customerLoginAttrs(job, "detail")}>${hasBids ? "Review Bids" : "View Job"}</button>
+        <button class="btn ghost small" type="button" ${customerLoginAttrs(job, "messages", { threadId: `job-${job.id}` })}>Open Messages</button>
         <button class="btn ghost small" type="button" data-nav="launch-status">Launch Boundary</button>
       </div>
     </section>
   `;
+}
+
+function customerLoginAttrs(job, screen, options = {}) {
+  const attrs = [
+    `data-login-role="customer"`,
+    `data-login-name="${escapeHtml(job.customer || "John Smith")}"`,
+    `data-login-screen="${escapeHtml(screen)}"`
+  ];
+  if (job.id) attrs.push(`data-login-job="${escapeHtml(job.id)}"`);
+  if (options.threadId) attrs.push(`data-login-thread="${escapeHtml(options.threadId)}"`);
+  return attrs.join(" ");
 }
 
 function customerStatusHandoffPanel(job, bids) {
@@ -8246,9 +8257,9 @@ function customerStatusHandoffPanel(job, bids) {
         `).join("")}
       </div>
       <div class="status-handoff-actions">
-        <button class="btn ${chosen ? "ghost" : "orange"} small" type="button" data-detail="${escapeHtml(job.id)}">${escapeHtml(chosen ? "Review Detail" : bids.length ? "Choose + Message" : "View Job")}</button>
-        <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
-        <button class="btn ghost small" type="button" data-nav="profile">Profile Status</button>
+        <button class="btn ${chosen ? "ghost" : "orange"} small" type="button" ${customerLoginAttrs(job, "detail")}>${escapeHtml(chosen ? "Review Detail" : bids.length ? "Choose + Message" : "View Job")}</button>
+        <button class="btn blue small" type="button" ${customerLoginAttrs(job, "messages", { threadId: `job-${job.id}` })}>Open Messages</button>
+        <button class="btn ghost small" type="button" ${customerLoginAttrs(job, "profile")}>Profile Status</button>
       </div>
     </section>
   `;
@@ -9021,11 +9032,13 @@ function configureConfirmButton(selector, config) {
   delete button.dataset.loginName;
   delete button.dataset.loginScreen;
   delete button.dataset.loginJob;
+  delete button.dataset.loginThread;
   if (config.loginRole) {
     button.dataset.loginRole = config.loginRole;
     if (config.loginName) button.dataset.loginName = config.loginName;
     if (config.loginScreen) button.dataset.loginScreen = config.loginScreen;
     if (config.jobId) button.dataset.loginJob = config.jobId;
+    if (config.threadId) button.dataset.loginThread = config.threadId;
   } else if (config.jobId) {
     button.dataset.detail = config.jobId;
   } else if (config.action) {
@@ -12152,6 +12165,7 @@ document.addEventListener("click", (event) => {
   const login = event.target.closest("[data-login-role]");
   if (login) {
     if (login.dataset.loginJob) state.activeJobId = login.dataset.loginJob;
+    if (login.dataset.loginThread) state.activeMessageThreadId = login.dataset.loginThread;
     loginAs(login.dataset.loginRole, login.dataset.loginName, login.dataset.loginScreen);
     return;
   }
@@ -12458,7 +12472,7 @@ function chooseBidForJob(jobId, bidIndex) {
       `${job.title} is ${job.status}`,
       `${selectedBid.timeline} timeline`
     ],
-    primary: { label: "Open John's Messages", loginRole: "customer", loginName: job.customer || "John Smith", loginScreen: "messages", jobId: job.id },
+    primary: { label: "Open John's Messages", loginRole: "customer", loginName: job.customer || "John Smith", loginScreen: "messages", jobId: job.id, threadId: `job-${job.id}` },
     secondary: { label: "Open Customer Status", loginRole: "customer", loginName: job.customer || "John Smith", loginScreen: "status", jobId: job.id }
   };
   addActivity(`Bid selected for ${job.title}: ${selectedBid.worker}.`);
