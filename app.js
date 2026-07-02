@@ -7897,7 +7897,7 @@ function renderDetail() {
     <div class="hero-actions">
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
-      <button class="btn orange" type="button" data-action="choose-best">Choose a Bid</button>
+      <button class="btn ${chosenBid ? "ghost" : "orange"}" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Suggested Bid")}</button>
     </div>
     ${chosenBid ? chosenBidHandoff(job, chosenBid) : ""}
   `;
@@ -8111,7 +8111,7 @@ function jobDetailHandoffPanel(job, bids, chosenBid) {
         `).join("")}
       </div>
       <div class="detail-handoff-actions">
-        <button class="btn ${chosenBid ? "ghost" : "orange"} small" type="button" data-action="${chosenBid ? "message" : "choose-best"}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Bid")}</button>
+        <button class="btn ${chosenBid ? "ghost" : "orange"} small" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Suggested")}</button>
         <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
         <button class="btn ghost small" type="button" data-nav="status">Open Status</button>
       </div>
@@ -9017,7 +9017,16 @@ function configureConfirmButton(selector, config) {
   delete button.dataset.detail;
   delete button.dataset.action;
   delete button.dataset.flexLeadId;
-  if (config.jobId) {
+  delete button.dataset.loginRole;
+  delete button.dataset.loginName;
+  delete button.dataset.loginScreen;
+  delete button.dataset.loginJob;
+  if (config.loginRole) {
+    button.dataset.loginRole = config.loginRole;
+    if (config.loginName) button.dataset.loginName = config.loginName;
+    if (config.loginScreen) button.dataset.loginScreen = config.loginScreen;
+    if (config.jobId) button.dataset.loginJob = config.jobId;
+  } else if (config.jobId) {
     button.dataset.detail = config.jobId;
   } else if (config.action) {
     button.dataset.action = config.action;
@@ -12169,7 +12178,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "switch-user") navigate("login");
   if (action?.dataset.action === "logout") logout();
   if (action?.dataset.action === "message") navigate("messages", { threadId: `job-${state.activeJobId}` });
-  if (action?.dataset.action === "choose-best") showToast("Pick one of the bids on the right.");
+  if (action?.dataset.action === "choose-best") chooseSuggestedBidForJob(action.dataset.jobId || state.activeJobId);
   if (action?.dataset.action === "export-jobs") exportCsv("forge-job-leads.csv", state.jobs);
   if (action?.dataset.action === "export-workers") exportCsv("forge-worker-leads.csv", state.workers);
   if (action?.dataset.action === "export-creative-requests") exportCsv("forge-creative-requests.csv", state.jobs.filter(isCreativeJob));
@@ -12375,46 +12384,88 @@ document.addEventListener("click", (event) => {
 
   const chooseBid = event.target.closest("[data-choose-bid]");
   if (chooseBid) {
-    const job = state.jobs.find((item) => item.id === state.activeJobId);
-    const bids = state.bids.filter((bid) => bid.jobId === state.activeJobId);
-    const selectedBid = bids[Number(chooseBid.dataset.chooseBid)];
-    if (!job || !selectedBid) return;
-    bids.forEach((bid) => bid.chosen = false);
-    selectedBid.chosen = true;
-    selectedBid.status = "Selected";
-    job.status = (isServiceVerticalJob(job) || isManufacturingJob(job)) ? "Provider selected" : "In Progress";
-    if (job.manufacturingRfqId) {
-      const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === job.manufacturingRfqId);
-      if (rfq) rfq.status = "Manufacturing selected";
-    }
-    state.activeMessageThreadId = `job-${job.id}`;
-    state.messages.unshift({
-      id: `${Date.now()}`,
-      threadId: `job-${job.id}`,
-      to: selectedBid.worker,
-      from: job.customer || "Forge customer",
-      body: `${job.customer || "The customer"} chose ${selectedBid.worker}'s ${selectedBid.amount} bid for ${job.title}. Next step: confirm schedule and arrival details.`,
-      sentAt: new Date().toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
-      status: "Sent"
-    });
-    state.lastConfirmation = {
-      type: "bid",
-      title: "Bid chosen.",
-      body: `Forge moved the job to ${job.status} and saved a message so the next step is clear.`,
-      details: [
-        `${selectedBid.worker} · ${selectedBid.amount}`,
-        `${job.title} is ${job.status}`,
-        `${selectedBid.timeline} timeline`
-      ],
-      primary: { label: "Open Messages", screen: "messages" },
-      secondary: { label: "View Job Detail", jobId: job.id }
-    };
-    addActivity(`Bid selected for ${job.title}: ${selectedBid.worker}.`);
-    saveState();
-    showToast(`Bid chosen. Job moved to ${job.status}.`);
-    navigate("confirm");
+    chooseBidForJob(state.activeJobId, Number(chooseBid.dataset.chooseBid));
   }
 });
+
+function suggestedBidIndex(bids) {
+  if (!bids.length) return -1;
+  return bids.reduce((bestIndex, bid, index) => {
+    const bestAmount = moneyNumber(bids[bestIndex]?.amount);
+    const bidAmount = moneyNumber(bid.amount);
+    if (!bestAmount && bidAmount) return index;
+    if (bestAmount && bidAmount && bidAmount < bestAmount) return index;
+    return bestIndex;
+  }, 0);
+}
+
+function openBidMessageThread(job) {
+  state.activeJobId = job.id;
+  state.activeMessageThreadId = `job-${job.id}`;
+  saveState();
+  navigate("messages", { threadId: state.activeMessageThreadId });
+}
+
+function chooseSuggestedBidForJob(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === jobId);
+  if (!job || !bids.length) {
+    showToast("No bids are ready to choose yet.");
+    return;
+  }
+  const chosenIndex = bids.findIndex((bid) => bid.chosen);
+  if (chosenIndex >= 0) {
+    openBidMessageThread(job);
+    return;
+  }
+  chooseBidForJob(job.id, suggestedBidIndex(bids));
+}
+
+function chooseBidForJob(jobId, bidIndex) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === jobId);
+  const selectedBid = bids[Number(bidIndex)];
+  if (!job || !selectedBid) return;
+  if (selectedBid.chosen) {
+    openBidMessageThread(job);
+    return;
+  }
+  bids.forEach((bid) => bid.chosen = false);
+  selectedBid.chosen = true;
+  selectedBid.status = "Selected";
+  job.status = (isServiceVerticalJob(job) || isManufacturingJob(job)) ? "Provider selected" : "In Progress";
+  if (job.manufacturingRfqId) {
+    const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === job.manufacturingRfqId);
+    if (rfq) rfq.status = "Manufacturing selected";
+  }
+  state.activeJobId = job.id;
+  state.activeMessageThreadId = `job-${job.id}`;
+  state.messages.unshift({
+    id: `${Date.now()}`,
+    threadId: `job-${job.id}`,
+    to: selectedBid.worker,
+    from: job.customer || "Forge customer",
+    body: `${job.customer || "The customer"} chose ${selectedBid.worker}'s ${selectedBid.amount} bid for ${job.title}. Next step: confirm schedule and arrival details.`,
+    sentAt: new Date().toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
+    status: "Sent"
+  });
+  state.lastConfirmation = {
+    type: "bid",
+    title: "Bid chosen.",
+    body: `Forge moved the job to ${job.status} and saved a message so the next step is clear.`,
+    details: [
+      `${selectedBid.worker} · ${selectedBid.amount}`,
+      `${job.title} is ${job.status}`,
+      `${selectedBid.timeline} timeline`
+    ],
+    primary: { label: "Open John's Messages", loginRole: "customer", loginName: job.customer || "John Smith", loginScreen: "messages", jobId: job.id },
+    secondary: { label: "Open Customer Status", loginRole: "customer", loginName: job.customer || "John Smith", loginScreen: "status", jobId: job.id }
+  };
+  addActivity(`Bid selected for ${job.title}: ${selectedBid.worker}.`);
+  saveState();
+  showToast(`Bid chosen. Job moved to ${job.status}.`);
+  navigate("confirm");
+}
 
 document.addEventListener("change", (event) => {
   if (event.target.closest("#jobCategory")) renderServiceJobFields();
