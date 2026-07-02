@@ -4666,6 +4666,7 @@ function render() {
   renderSoftLaunchInvites();
   renderSoftLaunchRunSheet();
   renderLaunchDemoPack();
+  renderLaunchDecision();
   renderBackendHandoff();
   renderAuthHandoff();
   renderFirstUserCloseout();
@@ -9228,6 +9229,69 @@ function renderLaunchDemoPack() {
   `).join("");
 }
 
+function renderLaunchDecision() {
+  const target = document.querySelector("#launchDecisionCard");
+  if (!target) return;
+  target.innerHTML = launchDecisionRows().map((row) => `
+    <article class="${escapeHtml(row.status)}">
+      <span>${escapeHtml(row.label)}</span>
+      <strong>${escapeHtml(row.title)}</strong>
+      <p>${escapeHtml(row.body)}</p>
+      <div class="launch-decision-actions">
+        ${row.actions.map((item, index) => `
+          <button class="btn ${index === 0 ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.label)}</button>
+        `).join("")}
+      </div>
+    </article>
+  `).join("");
+}
+
+function launchDecisionRows() {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const blockers = publicReadinessBlockers();
+  return [
+    {
+      status: "go",
+      label: "Use today",
+      title: "Controlled demos and first-user signups",
+      body: `Use Forge with people Andrew can personally follow up with. Current first-user list: ${leadCount}/200. ${publicMode ? "Public View is on for handoff demos." : "Turn on Public View before handing Forge to someone else."}`,
+      actions: [
+        { label: "Demo Paths", action: { type: "nav", screen: "perspective" } },
+        { label: "Copy Invites", action: { type: "action", name: "copy-soft-launch-invite-kit" } }
+      ]
+    },
+    {
+      status: "hold",
+      label: "Hold",
+      title: "Broad public launch and payments",
+      body: blockers.length
+        ? `Do not share broadly yet. Next blocker: ${blockers[0]}`
+        : "Do not collect payments in this MVP. Run the final security review before any broad marketing.",
+      actions: [
+        { label: "Final Gate", action: { type: "action", name: "copy-final-gate" } },
+        { label: "Deploy Plan", action: { type: "action", name: "copy-deploy-plan" } }
+      ]
+    },
+    {
+      status: "next",
+      label: "Run next",
+      title: backupCurrent ? "Capture one next action" : "Export backup before outreach",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads. Show the role path, capture one job, worker, referral, auto, career, or business lead, then follow up.`
+        : `Export JSON now so ${leadCount} current leads are recoverable before the next outreach block.`,
+      actions: [
+        backupCurrent
+          ? { label: "Admin Follow-Up", action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" } }
+          : { label: "Export Backup", action: { type: "action", name: "export-backup" } },
+        { label: "Copy Decision", action: { type: "action", name: "copy-launch-decision" } }
+      ]
+    }
+  ];
+}
+
 function launchDemoPackRows() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
@@ -12275,6 +12339,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-follow-up-queue") copyFollowUpQueue();
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
+  if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
   if (action?.dataset.action === "copy-soft-launch-invite-kit") copySoftLaunchInviteKit();
@@ -16497,6 +16562,17 @@ function copyLaunchGate() {
     "No payment is collected in the MVP."
   ];
   copyText(lines.join("\n"), "Launch gate copied.");
+}
+
+function copyLaunchDecision() {
+  const lines = [
+    "Forge soft launch decision",
+    "",
+    ...launchDecisionRows().map((item) => `${item.label}: ${item.title}. ${item.body}`),
+    "",
+    "Decision: use controlled first-user demos and signups now. Hold broad public launch, payments, and stranger traffic until backend delivery, production admin auth, backup, legal review, and final security review are complete."
+  ];
+  copyText(lines.join("\n"), "Launch decision copied.");
 }
 
 function copySoftLaunchPlan() {
