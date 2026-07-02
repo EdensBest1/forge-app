@@ -357,6 +357,8 @@ const requiredJs = [
   "Post one real job.",
   "followUpConsent",
   "Open Profile Status",
+  "loginRole: \"worker\"",
+  "loginScreen: \"profile\"",
   "copyInviteText",
   "vehicles",
   "autoServiceGroups",

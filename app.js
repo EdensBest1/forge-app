@@ -13469,8 +13469,8 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       providerNorthStarLead ? "North Star Creative Co. can review your website, Google, ads, CRM, and follow-up needs" : "Use the provider dashboard if you want North Star growth help later",
       providerFlexLead ? "Forge Capital Desk can follow up before any Flex referral link is sent" : "Open Worker Dashboard to browse jobs and submit bids"
     ],
-    primary: { label: "Open Profile Status", screen: "profile" },
-    secondary: { label: "Open Worker Dashboard", screen: "worker" }
+    primary: { label: "Open Profile Status", loginRole: "worker", loginName: state.worker.name, loginScreen: "profile" },
+    secondary: { label: "Open Worker Dashboard", loginRole: "worker", loginName: state.worker.name, loginScreen: "worker" }
   };
   saveState();
   sendLead("worker", state.worker);
