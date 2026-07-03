@@ -4672,6 +4672,7 @@ function render() {
   renderFirstUserCloseout();
   renderLaunchCommandCenter();
   renderOutreachRecap();
+  renderOutreachSprintBrief();
   renderOutreachBatch();
   renderSessionHistory();
   renderAdminExtras();
@@ -10062,6 +10063,51 @@ function renderOutreachBatch() {
   `).join("") || `<article class="batch-empty"><h3>No outreach batch yet.</h3><p>Capture a new lead or switch the queue to All Statuses.</p></article>`;
 }
 
+function renderOutreachSprintBrief() {
+  const target = document.querySelector("#outreachSprintBrief");
+  if (!target) return;
+  target.innerHTML = outreachSprintBriefRows().map((row) => `
+    <article class="${escapeHtml(row.status)}">
+      <span>${escapeHtml(row.label)}</span>
+      <strong>${escapeHtml(row.title)}</strong>
+      <p>${escapeHtml(row.body)}</p>
+    </article>
+  `).join("");
+}
+
+function outreachSprintBriefRows() {
+  const rows = outreachBatchRows();
+  const hotCount = rows.filter((row) => row.priority === "Hot").length;
+  const first = rows[0];
+  const remaining = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  return [
+    {
+      label: "Batch",
+      title: `${rows.length}/10 queued`,
+      body: rows.length ? `${remaining} total leads still need touch across the current queue.` : "No urgent follow-ups are queued right now.",
+      status: rows.length ? "attention" : "ready"
+    },
+    {
+      label: "Priority",
+      title: `${hotCount} hot lead${hotCount === 1 ? "" : "s"}`,
+      body: hotCount ? "Start with hot leads before checking warm referrals or slower-moving lanes." : "No hot leads in this batch.",
+      status: hotCount ? "attention" : "ready"
+    },
+    {
+      label: "First contact",
+      title: first ? first.person : "No one queued",
+      body: first ? `${first.kind}: ${first.reason}` : "Capture a lead or switch filters to build the next sprint.",
+      status: first ? "attention" : "ready"
+    },
+    {
+      label: "Closeout",
+      title: "Complete Sprint after contact",
+      body: "Mark each person Contacted or Move Forward, then complete the sprint and export backup if leads changed.",
+      status: "ready"
+    }
+  ];
+}
+
 function outreachBatchRows() {
   return filteredFollowUpRows("All Lead Types", "Needs Follow-Up").slice(0, 10);
 }
@@ -12416,6 +12462,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-command") copyLaunchCommand();
   if (action?.dataset.action === "copy-launch-command-row") copyLaunchCommandRow(action.dataset.commandLane);
   if (action?.dataset.action === "copy-outreach-recap") copyOutreachRecap();
+  if (action?.dataset.action === "copy-outreach-sprint-plan") copyOutreachSprintPlan();
   if (action?.dataset.action === "copy-outreach-batch") copyOutreachBatch();
   if (action?.dataset.action === "complete-outreach-sprint") completeOutreachSprint();
   if (action?.dataset.action === "copy-session-history") copySessionHistory();
@@ -16952,6 +16999,29 @@ function copyOutreachRecap() {
     "Next focus: use Launch Command and Today's Follow-Up to keep the first 200 moving."
   ];
   copyText(lines.join("\n"), "Outreach recap copied.");
+}
+
+function copyOutreachSprintPlan() {
+  const rows = outreachBatchRows();
+  const brief = outreachSprintBriefRows();
+  const lines = [
+    "Forge next 10 sprint plan",
+    "",
+    ...brief.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Run order:",
+    "1. Contact the first person in the batch.",
+    "2. Mark Contacted or Move Forward before moving to the next person.",
+    "3. Stop after 20 minutes or 10 people.",
+    "4. Click Complete Sprint.",
+    "5. Export Backup JSON if new leads or status changes were saved.",
+    "",
+    "First 3 contacts:",
+    ...(rows.length
+      ? rows.slice(0, 3).map((row, index) => `${index + 1}. ${row.person} (${row.kind}, score ${row.score}) - ${row.reason}`)
+      : ["No urgent follow-ups in the current batch."])
+  ];
+  copyText(lines.join("\n"), "Sprint plan copied.");
 }
 
 function copyOutreachBatch() {
