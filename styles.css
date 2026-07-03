@@ -8053,6 +8053,18 @@ textarea:focus {
   background: var(--orange);
 }
 
+.launch-command-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: auto;
+}
+
+.launch-command-actions .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .outreach-recap-grid {
   display: grid;
   grid-template-columns: 0.85fr repeat(3, minmax(0, 0.7fr)) minmax(260px, 1.35fr);
@@ -9113,6 +9125,7 @@ td {
   .launch-status-grid,
   .launch-status-panel,
   .launch-command-grid,
+  .launch-command-actions,
   .auto-admin-grid,
   .auto-admin-columns,
   .operations-vault-grid,

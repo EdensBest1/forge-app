@@ -9885,7 +9885,10 @@ function renderLaunchCommandCenter() {
           <i style="width: ${contactedPct}%"></i>
           <b style="width: ${movingPct}%"></b>
         </div>
-        <button class="btn ghost small" type="button" data-nav="${row.screen}">${escapeHtml(row.action)}</button>
+        <div class="launch-command-actions">
+          <button class="btn ghost small" type="button" data-nav="${row.screen}">${escapeHtml(row.action)}</button>
+          <button class="btn blue small" type="button" data-action="copy-launch-command-row" data-command-lane="${escapeHtml(row.label)}">Copy Lane</button>
+        </div>
       </article>
     `;
   }).join("");
@@ -9984,6 +9987,21 @@ function launchCommandRows() {
       action: "Capture Referral"
     }
   ];
+}
+
+function launchCommandKinds(label) {
+  const map = {
+    "Job posters": ["Jobs"],
+    Workers: ["Workers"],
+    "Career leads": ["Careers"],
+    Homebuilding: ["Homebuilding", "Building"],
+    Projects: ["Projects", "Building"],
+    NorthStar: ["NorthStar"],
+    "Road Rescue": ["Road Rescue"],
+    "Capital Desk": ["Capital Desk"],
+    Referrals: ["Referrals"]
+  };
+  return map[label] || [label];
 }
 
 function renderOutreachRecap() {
@@ -12396,6 +12414,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-final-gate") copyFinalSecurityGate();
   if (action?.dataset.action === "copy-security-review") copySecurityReviewPack();
   if (action?.dataset.action === "copy-launch-command") copyLaunchCommand();
+  if (action?.dataset.action === "copy-launch-command-row") copyLaunchCommandRow(action.dataset.commandLane);
   if (action?.dataset.action === "copy-outreach-recap") copyOutreachRecap();
   if (action?.dataset.action === "copy-outreach-batch") copyOutreachBatch();
   if (action?.dataset.action === "complete-outreach-sprint") completeOutreachSprint();
@@ -16891,6 +16910,28 @@ function copyLaunchCommand() {
     "Goal: get real jobs posted, ready workers confirmed, and warm referrals converted into activity."
   ];
   copyText(lines.join("\n"), "Launch command copied.");
+}
+
+function copyLaunchCommandRow(label) {
+  const row = launchCommandRows().find((item) => item.label === label) || launchCommandRows()[0];
+  const kinds = launchCommandKinds(row.label);
+  const laneQueue = filteredFollowUpRows("All Lead Types", "Needs Follow-Up")
+    .filter((item) => kinds.includes(item.kind))
+    .slice(0, 3);
+  const lines = [
+    `Forge launch command - ${row.label}`,
+    "",
+    `${row.needTouch} need touch, ${row.contacted} contacted, ${row.moving} moving out of ${row.total}.`,
+    `Next move: ${row.next}`,
+    "",
+    "Top lane follow-ups:",
+    ...(laneQueue.length
+      ? laneQueue.map((item, index) => `${index + 1}. ${item.person} (${item.kind}, score ${item.score}) - ${item.reason}`)
+      : ["No urgent follow-ups in this lane right now."]),
+    "",
+    `Open lane: ${roleDemoLink("admin", row.screen)}`
+  ];
+  copyText(lines.join("\n"), `${row.label} lane copied.`);
 }
 
 function copyOutreachRecap() {
