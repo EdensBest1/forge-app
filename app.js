@@ -4622,6 +4622,7 @@ function render() {
   renderDemoCueCards();
   renderDemoPath();
   renderDemoLinks();
+  renderLaunchReceipt();
   renderPerspective();
   renderDemoOutcomes();
   renderFinishChecklist();
@@ -5681,6 +5682,94 @@ function renderDemoLinks() {
       </div>
     </article>
   `).join("");
+}
+
+function renderLaunchReceipt() {
+  const target = document.querySelector("#launchReceiptGrid");
+  if (!target) return;
+  target.innerHTML = launchReceiptRows().map((row) => `
+    <article class="launch-receipt-card ${escapeHtml(row.status)}">
+      <div>
+        <span class="split-label">${escapeHtml(row.label)}</span>
+        <h3>${escapeHtml(row.title)}</h3>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <div class="launch-receipt-meta">
+        <span><strong>Proof</strong>${escapeHtml(row.proof)}</span>
+        <span><strong>Collect</strong>${escapeHtml(row.collect)}</span>
+        <span><strong>Saved in</strong>${escapeHtml(row.savedIn)}</span>
+      </div>
+      <div class="launch-receipt-actions">
+        <b>${escapeHtml(row.metric)}</b>
+        <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function launchReceiptRows() {
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const leadCount = totalLeadCount();
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  return [
+    {
+      label: "Homeowner",
+      title: "Show job status to message handoff",
+      body: "Use John to show a real local job, bid review, selected worker handoff, and the next message.",
+      proof: "Status -> Detail -> Messages",
+      collect: "One real job or one referral",
+      savedIn: "Jobs, bids, messages, follow-up queue",
+      metric: `${state.jobs.length} jobs`,
+      status: state.jobs.length ? "ready" : "attention",
+      primary: true,
+      actionLabel: "Open John",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      label: "Worker",
+      title: "Show worker readiness to first bid",
+      body: "Use Mike to show available jobs, provider profile status, bid submission, and message follow-up.",
+      proof: "Worker -> Bid -> Profile",
+      collect: "Trade, service area, consent",
+      savedIn: "Worker profiles, bid activity, messages",
+      metric: `${state.workers.length} workers`,
+      status: state.workers.length ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Open Mike",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      label: "Expansion",
+      title: "Route autos, careers, and business leads",
+      body: "Use the right lane for vehicle sellers, buyers, career applicants, creatives, NorthStar leads, or Capital Desk leads.",
+      proof: "Autos -> Careers -> NorthStar",
+      collect: "Need, consent, best contact",
+      savedIn: "Specialty queues and admin follow-up",
+      metric: `${leadCount}/200 leads`,
+      status: leadCount ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Open Autos",
+      action: { type: "nav", screen: "autos" }
+    },
+    {
+      label: "Operator",
+      title: backupCurrent ? "Close the demo with current backup" : "Close the demo by exporting backup",
+      body: backupCurrent
+        ? "Copy the follow-up queue, run the next batch, and export again after new conversations."
+        : "Export before broader outreach so the current first-user list is recoverable.",
+      proof: "Admin -> Follow-Up -> Closeout",
+      collect: "Next owner and next touch",
+      savedIn: "Admin queues, reports, backup file",
+      metric: `${followUpCount} need touch`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: false,
+      actionLabel: backupCurrent ? "Open Admin" : "Export Backup",
+      action: backupCurrent
+        ? { type: "login", role: "admin", name: "Forge Admin", screen: "admin" }
+        : { type: "action", name: "export-backup" }
+    }
+  ];
 }
 
 function renderPerspective() {
@@ -12472,6 +12561,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
+  if (action?.dataset.action === "copy-launch-receipt") copyLaunchReceipt();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
   if (action?.dataset.action === "copy-confirmation-handoff") copyConfirmationHandoff();
   if (action?.dataset.action === "copy-profile-proof-path") copyProfileProofPath();
@@ -14319,6 +14409,35 @@ async function copyDemoPack() {
     `Messages: ${state.messages.length}`
   ].join("\n");
   await copyText(pack, "Demo pack copied.");
+}
+
+async function copyLaunchReceipt() {
+  const rows = launchReceiptRows();
+  const lines = [
+    "Forge first-user launch receipt",
+    "",
+    "Use this after a controlled demo or first-user conversation.",
+    "Decision: collect one clear next action, keep payments off, and follow up personally.",
+    "",
+    ...rows.flatMap((row) => [
+      `${row.label}: ${row.title}`,
+      `Proof: ${row.proof}`,
+      `Collect: ${row.collect}`,
+      `Saved in: ${row.savedIn}`,
+      `Current metric: ${row.metric}`,
+      ""
+    ]),
+    "Start links:",
+    `Perspective Demo: ${roleDemoLink("customer", "perspective")}`,
+    `John customer proof: ${roleDemoLink("customer", "status")}`,
+    `Mike worker proof: ${roleDemoLink("worker", "worker")}`,
+    `Autos lane: ${roleDemoLink("customer", "auto")}`,
+    `Training & Careers: ${roleDemoLink("customer", "opportunities")}`,
+    `Admin follow-up: ${roleDemoLink("admin", "admin")}`,
+    "",
+    "Do not broaden public traffic until lead delivery, production admin auth, backup, legal review, and final security review pass."
+  ];
+  await copyText(lines.join("\n"), "Launch receipt copied.");
 }
 
 async function copyCloseAsk() {
