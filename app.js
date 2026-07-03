@@ -8974,8 +8974,53 @@ function renderConfirmation() {
     <strong>${escapeHtml(confirmationHandoffTitle(confirmation))}</strong>
     <p>${escapeHtml(confirmationHandoffText(confirmation))}</p>
   `;
+  document.querySelector("#confirmCloseout").innerHTML = confirmationCloseoutRows(confirmation).map((item) => `
+    <article class="${escapeHtml(item.status)}">
+      <span>${escapeHtml(item.label)}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(item.body)}</p>
+      <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+    </article>
+  `).join("");
   configureConfirmButton("#confirmPrimary", confirmation.primary);
   configureConfirmButton("#confirmSecondary", confirmation.secondary);
+}
+
+function confirmationCloseoutRows(confirmation) {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  return [
+    {
+      label: "Follow-up",
+      title: "Move this into Admin",
+      body: "This confirmation is ready for operator review. Open Admin to review contact status and the next outreach move.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Admin Follow-Up",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Backup needed",
+      body: backupCurrent
+        ? `Current backup covers ${backupCount} leads. Export again after the next outreach block.`
+        : `Export JSON so ${leadCount} saved leads are recoverable before wider sharing.`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Export Backup",
+      action: { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Launch",
+      title: "Keep the next share controlled",
+      body: "Use the live Launch Decision before sending Forge to another person or asking for more signups.",
+      status: "ready",
+      primary: false,
+      actionLabel: "Launch Decision",
+      action: { type: "nav", screen: "launch-status" }
+    }
+  ];
 }
 
 function confirmNextSteps(confirmation) {
@@ -14118,7 +14163,10 @@ async function copyConfirmationHandoff() {
     confirmationHandoffText(confirmation),
     "",
     "Next steps:",
-    ...confirmNextSteps(confirmation).map((step, index) => `${index + 1}. ${step}`)
+    ...confirmNextSteps(confirmation).map((step, index) => `${index + 1}. ${step}`),
+    "",
+    "Operator closeout:",
+    ...confirmationCloseoutRows(confirmation).map((step) => `${step.label}: ${step.title}. ${step.body}`)
   ].join("\n");
   await copyText(text, "Confirmation handoff copied.");
 }

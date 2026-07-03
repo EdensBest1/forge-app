@@ -3141,6 +3141,64 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.5;
 }
 
+.confirm-closeout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  text-align: left;
+}
+
+.confirm-closeout article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 164px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.confirm-closeout article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.confirm-closeout span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.confirm-closeout article.attention span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.confirm-closeout strong {
+  color: var(--ink);
+}
+
+.confirm-closeout p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.38;
+}
+
+.confirm-closeout .btn {
+  align-self: end;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .progress {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -9012,6 +9070,7 @@ td {
   .partner-document-grid,
   .project-lead-list article,
   .confirm-details,
+  .confirm-closeout,
   .bid-row,
   .job-flow-grid,
   .job-flow-brief-grid,
