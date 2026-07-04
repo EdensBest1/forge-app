@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "93";
+const PUBLIC_LINK_VERSION = "94";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4839,6 +4839,7 @@ function render() {
   renderDemoProofSwitchboard();
   renderDemoPath();
   renderDemoLinks();
+  renderPerspectiveReadiness();
   renderLaunchReceipt();
   renderPerspective();
   renderDemoOutcomes();
@@ -6097,6 +6098,76 @@ function renderPerspective() {
       </div>
     </article>
   `).join("");
+}
+
+function renderPerspectiveReadiness() {
+  const target = document.querySelector("#perspectiveReadinessGrid");
+  if (!target) return;
+  target.innerHTML = perspectiveReadinessRows().map((row) => `
+    <article class="${escapeHtml(row.status)}">
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function perspectiveReadinessRows() {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
+  return [
+    {
+      label: "Demo",
+      title: "Controlled demos are ready",
+      body: "Use John, Mike, Admin, Autos, or Careers with people Andrew can personally follow up with.",
+      status: "ready",
+      primary: true,
+      actionLabel: "John Proof",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      label: "Boundary",
+      title: "Public launch is on hold",
+      body: "Broad traffic waits for backend delivery, production admin auth, backup, legal review, and final security review.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Launch Status",
+      action: { type: "nav", screen: "launch-status" }
+    },
+    {
+      label: "First users",
+      title: `${leadCount}/200 saved`,
+      body: webhookReady ? "Webhook delivery is enabled. Test one lead before broader outreach." : "Leads save locally right now. Keep the group controlled and export backups.",
+      status: leadCount ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Copy Count",
+      action: { type: "action", name: "copy-first-user-count" }
+    },
+    {
+      label: "Handoff",
+      title: backupCurrent ? "Backup current" : "Backup before outreach",
+      body: backupCurrent ? `Last backup covers ${backupCount} leads.` : "Export a fresh JSON backup before collecting a new batch of first-user leads.",
+      status: backupCurrent ? "ready" : "attention",
+      primary: false,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Visitor mode",
+      title: publicMode ? "Public View is on" : "Turn on before handoff",
+      body: publicMode ? "Operator-only controls are hidden for visitor demos." : "Use Public View before handing the screen to someone outside the operator flow.",
+      status: publicMode ? "ready" : "attention",
+      primary: false,
+      actionLabel: publicMode ? "Open Demo" : "Turn On",
+      action: publicMode ? { type: "nav", screen: "perspective" } : { type: "action", name: "toggle-public-mode" }
+    }
+  ];
 }
 
 function renderDemoOutcomes() {
