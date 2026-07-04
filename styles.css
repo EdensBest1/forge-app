@@ -546,13 +546,26 @@ body:not(.role-admin) [data-admin-control] {
   color: var(--muted);
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .home-jobs,
 .timeline,
 .audience-split,
 .impact-trust-strip,
 .forge-marketplace-preview,
+.premium-marketplace,
 .role-gateway-panel,
 .service-group-panel,
+.browse-all-services-panel,
 .beta-boundary-panel,
 .job-trust-panel,
 .start-path-panel,
@@ -672,6 +685,203 @@ body:not(.role-admin) [data-admin-control] {
   border-color: rgba(255, 106, 0, 0.24);
   background: #fff7ef;
   color: #9b4700;
+}
+
+.premium-marketplace {
+  display: grid;
+  gap: 28px;
+  padding-top: 38px;
+  padding-bottom: 38px;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.premium-marketplace-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(360px, 0.74fr);
+  gap: 28px;
+  align-items: end;
+}
+
+.premium-marketplace-head h2 {
+  max-width: 620px;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2.15rem, 4vw, 4.35rem);
+  line-height: 1;
+}
+
+.premium-marketplace-head p {
+  max-width: 600px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.premium-service-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #f8fbff;
+  box-shadow: 0 14px 34px rgba(15, 35, 75, 0.08);
+}
+
+.premium-service-search input {
+  min-width: 0;
+  height: 54px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 16px;
+  font-size: 1rem;
+  font-weight: 850;
+  outline: 1px solid transparent;
+}
+
+.premium-service-search input:focus {
+  outline-color: var(--blue);
+}
+
+.premium-service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.premium-service-card {
+  display: grid;
+  gap: 18px;
+  align-content: space-between;
+  min-height: 286px;
+  padding: 26px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(16, 47, 93, 0.08);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.premium-service-card:hover,
+.premium-service-card:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--blue);
+  box-shadow: 0 20px 46px rgba(16, 47, 93, 0.14);
+}
+
+.premium-service-card:first-child {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #0648b7, #0b3d91);
+  color: #fff;
+}
+
+.premium-service-card:first-child span,
+.premium-service-card:first-child p,
+.premium-service-card:first-child .premium-service-tags small {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.premium-service-card:first-child .premium-service-rank,
+.premium-service-card:first-child .premium-service-tags small {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.premium-service-rank {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d8e0ec;
+  border-radius: 50%;
+  background: #f8fbff;
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.premium-service-card span {
+  color: var(--orange);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.premium-service-card h3 {
+  margin: 8px 0 0;
+  color: inherit;
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  line-height: 1.08;
+}
+
+.premium-service-card p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.48;
+}
+
+.premium-service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.premium-service-tags small {
+  padding: 7px 9px;
+  border: 1px solid #d8e0ec;
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #27364d;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.premium-service-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.premium-service-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.browse-all-services-panel {
+  display: grid;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #f8fbff;
+}
+
+.browse-service-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.browse-service-strip button {
+  min-height: 40px;
+  border: 1px solid #d8e0ec;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  padding: 0 14px;
+  font-weight: 900;
+}
+
+.browse-service-strip button:hover,
+.browse-service-strip button:focus-visible {
+  border-color: var(--blue);
+  background: var(--blue-soft);
 }
 
 .role-gateway-panel {
@@ -9330,6 +9540,12 @@ td {
   color: white;
 }
 
+@media (max-width: 1280px) {
+  .search-pill {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .app {
     padding-bottom: calc(104px + env(safe-area-inset-bottom));
@@ -9379,6 +9595,7 @@ td {
   }
 
   .home-hero,
+  .premium-marketplace-head,
   .detail-grid,
   .auto-layout,
   .road-rescue-intro,
@@ -9432,6 +9649,8 @@ td {
 
   .feature-strip,
   .forge-marketplace-preview,
+  .premium-service-grid,
+  .premium-service-actions,
   .audience-split,
   .role-gateway-panel,
   .service-group-grid,
@@ -9588,6 +9807,22 @@ td {
   }
 
   .service-group-grid article {
+    min-height: 0;
+  }
+
+  .premium-marketplace {
+    gap: 22px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  .premium-marketplace-head {
+    align-items: start;
+  }
+
+  .premium-service-card,
+  .premium-service-card:first-child {
+    grid-column: auto;
     min-height: 0;
   }
 
@@ -9955,9 +10190,47 @@ td {
     font-size: 0.68rem;
   }
 
+  .premium-marketplace-head h2 {
+    font-size: 2.18rem;
+  }
+
+  .premium-marketplace-head p {
+    font-size: 0.94rem;
+  }
+
+  .premium-service-search {
+    grid-template-columns: 1fr;
+    padding: 8px;
+  }
+
+  .premium-service-search input {
+    height: 48px;
+    font-size: 0.94rem;
+  }
+
+  .premium-service-card {
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .premium-service-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .browse-service-strip {
+    gap: 8px;
+  }
+
+  .browse-service-strip button {
+    flex: 1 1 145px;
+    border-radius: 8px;
+  }
+
   .home-jobs,
   .timeline,
   .audience-split,
+  .premium-marketplace,
+  .browse-all-services-panel,
   .start-path-panel,
   .share-panel,
   .founding-panel,
@@ -10891,8 +11164,10 @@ body {
 
 .feature-strip,
 .forge-marketplace-preview,
+.premium-marketplace,
 .role-gateway-panel,
 .service-group-panel,
+.browse-all-services-panel,
 .job-trust-panel,
 .timeline,
 .demo-script,
@@ -10905,6 +11180,7 @@ body {
 .feature-strip article,
 .role-gateway-panel article,
 .service-group-grid article,
+.premium-service-card,
 .forge-search-console,
 .job-status-card,
 .provider-preview-card,
@@ -10930,6 +11206,7 @@ body {
 
 .role-gateway-panel,
 .service-group-panel,
+.browse-all-services-panel,
 .job-trust-panel,
 .content-wrap,
 .dashboard-main,

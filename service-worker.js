@@ -1,6 +1,10 @@
-const CACHE_NAME = "forge-mvp-v87";
+const CACHE_NAME = "forge-mvp-v89";
 const CORE_ASSETS = [
   "./",
+  "./request-help/",
+  "./post-job/",
+  "./worker-signup/",
+  "./business/",
   "./auto/",
   "./road-rescue/",
   "./photography/",

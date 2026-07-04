@@ -289,8 +289,12 @@ const requiredHtml = [
   "Session History",
   "Recent outreach sprints.",
   "sessionHistory",
-  "styles.css?v=87",
-  "app.js?v=87"
+  "What project do you need completed?",
+  "premiumServiceGrid",
+  "Browse All Services",
+  "Get Quotes",
+  "styles.css?v=89",
+  "app.js?v=89"
 ];
 
 const requiredJs = [
@@ -365,6 +369,11 @@ const requiredJs = [
   "PUBLIC_LINK_VERSION",
   "versionQuery",
   "PUBLIC_LINK_LABEL",
+  "premiumServiceCategories",
+  "browseAllServiceCategories",
+  "renderPremiumMarketplace",
+  "handlePremiumServiceSearch",
+  "Become a Provider",
   "firstUserLeadCollections",
   "Vehicle seller/listing leads",
   "Auto buyer inquiries",
@@ -766,6 +775,10 @@ const packageJson = await readFile("package.json", "utf8");
 const githubWorkflow = await readFile(".github/workflows/forge-checks.yml", "utf8");
 const finalPublicGate = await readFile("FINAL_PUBLIC_GATE.md", "utf8");
 const autoDealerIntegration = await readFile("AUTO_DEALER_INTEGRATION.md", "utf8");
+const requestHelpRoute = await readFile("request-help/index.html", "utf8");
+const postJobRoute = await readFile("post-job/index.html", "utf8");
+const workerSignupRoute = await readFile("worker-signup/index.html", "utf8");
+const businessRoute = await readFile("business/index.html", "utf8");
 const photographyRoute = await readFile("photography/index.html", "utf8");
 const photographyRequestRoute = await readFile("photography/request/index.html", "utf8");
 const photographyApplyRoute = await readFile("photography/apply/index.html", "utf8");
@@ -871,6 +884,7 @@ const missingCss = [
   ["outreach sprint brief", css.includes(".outreach-sprint-brief") && js.includes("copy-outreach-sprint-plan")],
   ["phone demo order", css.includes(".mobile-demo-flow") && css.includes(".mobile-demo-flow-grid")],
   ["wireframe alignment layer", css.includes("Forge wireframe alignment layer") && css.includes("--wire-blue") && css.includes(".home-top .brand")],
+  ["premium service marketplace", html.includes("premiumServiceGrid") && css.includes(".premium-marketplace") && css.includes(".premium-service-card") && js.includes("renderPremiumMarketplace")],
   ["wireframe orange price accents", css.includes(".job-price,") && css.includes("color: var(--wire-orange)")],
   ["first user start path", css.includes(".start-path-grid") && css.includes(".start-path-card")],
   ["first user path heading", css.includes(".start-path-heading")],
@@ -926,7 +940,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v87")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v89")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -940,7 +954,8 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v87\"") && releaseManifest.includes("/photography?v=87") && releaseManifest.includes("/photography/request?v=87") && releaseManifest.includes("/photography/apply?v=87") && releaseManifest.includes("/photography-videography?v=87") && releaseManifest.includes("/northstar-creative?v=87") && releaseManifest.includes("/forge/capital?v=87") && releaseManifest.includes("/forge/flex?v=87") && releaseManifest.includes("/partners/flex?v=87") && releaseManifest.includes("/personal-driver?v=87") && releaseManifest.includes("/forge-payments?v=87") && releaseManifest.includes("/local-products?v=87") && releaseManifest.includes("/building?v=87") && releaseManifest.includes("/admin/building-leads?v=87") && releaseManifest.includes("/forge-academy?v=87") && releaseManifest.includes("/trade-pathways?v=87") && releaseManifest.includes("/admin/forge-academy?v=87")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v89\"") && releaseManifest.includes("/request-help?v=89") && releaseManifest.includes("/post-job?v=89") && releaseManifest.includes("/worker-signup?v=89") && releaseManifest.includes("/business?v=89") && releaseManifest.includes("/photography?v=89") && releaseManifest.includes("/photography/request?v=89") && releaseManifest.includes("/photography/apply?v=89") && releaseManifest.includes("/photography-videography?v=89") && releaseManifest.includes("/northstar-creative?v=89") && releaseManifest.includes("/forge/capital?v=89") && releaseManifest.includes("/forge/flex?v=89") && releaseManifest.includes("/partners/flex?v=89") && releaseManifest.includes("/personal-driver?v=89") && releaseManifest.includes("/forge-payments?v=89") && releaseManifest.includes("/local-products?v=89") && releaseManifest.includes("/building?v=89") && releaseManifest.includes("/admin/building-leads?v=89") && releaseManifest.includes("/forge-academy?v=89") && releaseManifest.includes("/trade-pathways?v=89") && releaseManifest.includes("/admin/forge-academy?v=89")],
+  ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],
   ["building cached routes", serviceWorker.includes("./building/") && serviceWorker.includes("./admin/building-leads/")],
@@ -954,6 +969,10 @@ const missingDeploy = [
   ["github checks workflow", githubWorkflow.includes("Forge Checks") && githubWorkflow.includes("npm run check")],
   ["final public gate", finalPublicGate.includes("Forge Final Public Gate") && finalPublicGate.includes("Launch Decision")],
   ["auto dealer integration", autoDealerIntegration.includes("Forge Auto Dealer Integration") && autoDealerIntegration.includes("JoCo Auto Sales")],
+  ["request help route alias", requestHelpRoute.includes("Forge Request Help") && requestHelpRoute.includes("/route-loader.js")],
+  ["post job route alias", postJobRoute.includes("Forge Post a Job") && postJobRoute.includes("/route-loader.js")],
+  ["worker signup route alias", workerSignupRoute.includes("Forge Worker Signup") && workerSignupRoute.includes("/route-loader.js")],
+  ["business help route alias", businessRoute.includes("Forge Business Help") && businessRoute.includes("/route-loader.js")],
   ["photography route", photographyRoute.includes("Forge Photography & Videography") && photographyRoute.includes("/route-loader.js")],
   ["photography request route", photographyRequestRoute.includes("Forge Photography & Videography Request") && photographyRequestRoute.includes("/route-loader.js")],
   ["photography apply route", photographyApplyRoute.includes("Forge Photography & Videography Provider Application") && photographyApplyRoute.includes("/route-loader.js")],

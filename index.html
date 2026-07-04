@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=87" />
+    <link rel="stylesheet" href="./styles.css?v=89" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -36,9 +36,11 @@
             <span>FORGE</span>
           </a>
           <nav class="public-nav" aria-label="Forge public navigation">
+            <a class="nav-link" href="/request-help/">Request Help</a>
             <button class="nav-link" type="button" data-nav="services">Services</button>
             <button class="nav-link" type="button" data-nav="signup">For Workers</button>
             <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
+            <a class="nav-link" href="/post-job/">Post a Job</a>
             <a class="nav-link" href="/pricing/">Pricing</a>
             <a class="nav-link" href="/impact/">Impact</a>
             <button class="nav-link" type="button" data-nav="launch-status">Launch Status</button>
@@ -100,9 +102,10 @@
             <p>Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers - starting in Medford and Southern Oregon.</p>
             <p class="hero-trust-line">Controlled beta · Admin-reviewed leads · No payments collected in MVP · Built to help fund House of Heaven impact work</p>
             <div class="hero-actions">
-            <button class="btn orange" type="button" data-nav="post">Post a Job</button>
-            <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
-            <button class="btn ghost" type="button" data-nav="services">Browse Services</button>
+            <button class="btn orange" type="button" data-nav="post">Request Help</button>
+            <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+            <button class="btn ghost" type="button" data-nav="post">Post a Job</button>
+            <button class="btn ghost" type="button" data-nav="northstar">For Businesses</button>
           </div>
           </div>
           <figure class="hero-photo">
@@ -126,34 +129,21 @@
           <button class="btn ghost small" type="button" data-nav="launch-status">Launch Status</button>
         </section>
 
-        <section class="forge-marketplace-preview" aria-label="Forge marketplace search preview">
-          <div class="marketplace-search-copy">
-            <span class="split-label">Marketplace search</span>
-            <h2>Search the work, the service, or the provider type.</h2>
-            <p>Forge keeps the first move simple: choose a category, describe the scope, and let admin review route the lead before money or sensitive documents enter the MVP.</p>
-          </div>
-          <div class="forge-search-console">
-            <label class="forge-search-box">
-              <span>Search services</span>
-              <input type="search" value="roofing repair near Medford" readonly aria-label="Demo Forge service search" />
-            </label>
-            <div class="forge-chip-cloud" aria-label="Forge category shortcuts">
-              <span>Home & Property</span>
-              <span>Skilled Trades</span>
-              <span>Auto & Transport</span>
-              <span>Business Growth</span>
-              <span>Manufacturing</span>
-              <span>Career Pathways</span>
-              <span>Building</span>
+        <section class="premium-marketplace" aria-label="Forge premium service marketplace">
+          <div class="premium-marketplace-head">
+            <div>
+              <span class="split-label">Medford launch marketplace</span>
+              <h2>What project do you need completed?</h2>
+              <p>Start with the highest-value local trades first. Forge keeps the first click simple, then routes every lead into the existing post-job and provider flows.</p>
             </div>
-            <div class="forge-filter-cloud" aria-label="Forge best-for filters">
-              <span>Best for homeowners</span>
-              <span>Best for contractors</span>
-              <span>Best for urgent jobs</span>
-              <span>Best for business growth</span>
-              <span>Best for manufacturing</span>
-            </div>
+            <form class="premium-service-search" id="premiumServiceSearchForm">
+              <label class="visually-hidden" for="homeServiceSearch">Search any Forge service</label>
+              <input id="homeServiceSearch" type="search" list="homeServiceSuggestions" placeholder="Roof leak, water heater, driveway, remodel..." autocomplete="off" />
+              <datalist id="homeServiceSuggestions"></datalist>
+              <button class="btn orange" type="submit">Get Quotes</button>
+            </form>
           </div>
+          <div class="premium-service-grid" id="premiumServiceGrid"></div>
         </section>
 
         <section class="role-gateway-panel" aria-label="Primary Forge paths">
@@ -220,24 +210,16 @@
           </article>
         </section>
 
-        <section class="service-group-panel" aria-label="Forge service groups">
+        <section class="browse-all-services-panel" aria-label="Browse all Forge services">
           <div class="section-title">
             <div>
-              <span class="split-label">Services</span>
-              <h2>Everything stays available, grouped so the first choice is simple.</h2>
-              <p>Pick the closest lane first. Detailed category forms and admin queues remain behind each route.</p>
+              <span class="split-label">Browse All Services</span>
+              <h2>Need something else? The full marketplace is still one click away.</h2>
+              <p>All existing routes, forms, provider profiles, admin queues, and specialty lanes remain available behind the complete services page.</p>
             </div>
-            <button class="btn ghost small" type="button" data-nav="services">Open All Services</button>
+            <button class="btn blue small" type="button" data-nav="services">Browse All Services</button>
           </div>
-          <div class="service-group-grid">
-            <article><h3>Home & Property</h3><p>Handyman, cleaning, Airbnb turnovers, landscaping, junk removal, moving, painting.</p><button class="btn ghost small" type="button" data-nav="post">Post Home Work</button></article>
-            <article><h3>Skilled Trades</h3><p>Electrical, plumbing, HVAC, roofing, carpentry, welding, concrete, masonry, asphalt and pavers.</p><button class="btn ghost small" type="button" data-nav="services">Browse Trades</button></article>
-            <article><h3>Auto & Transport</h3><p>Road rescue, auto repair, sell my car, private driver, luxury and partner routing.</p><button class="btn ghost small" type="button" data-nav="auto">Open Auto</button></article>
-            <article><h3>Business Growth</h3><p>North Star Creative Co., websites, Google Business, ads, CRM, roofing company marketing.</p><button class="btn ghost small" type="button" data-nav="northstar">Business Help</button></article>
-            <article><h3>Manufacturing</h3><p>Nutraceuticals, vitamins, gummies, powders, packaging, labs, fulfillment.</p><button class="btn ghost small" type="button" data-nav="manufacturing">Find a Manufacturer</button></article>
-            <article><h3>Career Pathways</h3><p>Forge Academy, Admitly Trade Pathways, apprenticeships, trade school, unions.</p><button class="btn ghost small" type="button" data-nav="forge-academy">Explore Careers</button></article>
-            <article><h3>Building & Development</h3><p>Homebuilding, major projects, financing review, partner routing.</p><button class="btn ghost small" type="button" data-nav="building">Open Building</button></article>
-          </div>
+          <div class="browse-service-strip" id="browseAllServiceChips"></div>
         </section>
 
         <section class="beta-boundary-panel" aria-label="Forge controlled beta safety">
@@ -4530,6 +4512,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=87"></script>
+    <script src="./app.js?v=89"></script>
   </body>
 </html>

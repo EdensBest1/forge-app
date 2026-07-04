@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "87";
+const PUBLIC_LINK_VERSION = "89";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -437,6 +437,97 @@ function createTradeServiceVertical(category) {
 
 serviceVerticals.push(...requiredTradeCategories.filter((category) => !category.existingServiceVertical).map(createTradeServiceVertical));
 const serviceVerticalCategoryOptions = uniqueValues(serviceVerticals.flatMap((vertical) => vertical.categories));
+const premiumServiceCategories = [
+  {
+    rank: 1,
+    title: "Roofing",
+    verticalId: "roofing",
+    category: "Roofing",
+    body: "Roof replacement, leaks, gutters, inspections, and insurance-claim-ready project intake.",
+    ticket: "$8k-$25k jobs",
+    tags: ["Leaks", "Replacement", "Insurance claims"]
+  },
+  {
+    rank: 2,
+    title: "HVAC",
+    verticalId: "hvac",
+    category: "HVAC",
+    body: "Heating, cooling, mini splits, diagnostics, maintenance, and emergency comfort calls.",
+    ticket: "High lifetime value",
+    tags: ["Repairs", "Installs", "Maintenance"]
+  },
+  {
+    rank: 3,
+    title: "Electrical",
+    verticalId: "electrician",
+    category: "Electrician",
+    body: "Panels, outlets, wiring, lighting, remodel work, residential, and commercial service.",
+    ticket: "Urgent + remodel",
+    tags: ["Panels", "Lighting", "Emergency"]
+  },
+  {
+    rank: 4,
+    title: "Plumbing",
+    verticalId: "plumbing",
+    category: "Plumbing",
+    body: "Leaks, water heaters, drains, fixtures, remodel plumbing, and sewer-related follow-up.",
+    ticket: "Emergency demand",
+    tags: ["Leaks", "Water heaters", "Drains"]
+  },
+  {
+    rank: 5,
+    title: "Concrete & Asphalt",
+    verticalId: "asphalt_concrete",
+    category: "Concrete",
+    body: "Driveways, slabs, sidewalks, parking pads, pavement repair, sealcoating, and removal.",
+    ticket: "$5k-$20k projects",
+    tags: ["Driveways", "Slabs", "Parking lots"]
+  },
+  {
+    rank: 6,
+    title: "Remodeling",
+    verticalId: "general_contracting",
+    category: "General Contracting",
+    body: "Remodels, additions, repairs, multi-trade jobs, project management, and GC review.",
+    ticket: "Major project value",
+    tags: ["Kitchens", "Additions", "Multi-trade"]
+  },
+  {
+    rank: 7,
+    title: "Excavation",
+    verticalId: "heavy_equipment",
+    category: "Excavation",
+    body: "Grading, trenching, land clearing, driveway prep, equipment operators, and site work.",
+    ticket: "Heavy equipment",
+    tags: ["Grading", "Trenching", "Land clearing"]
+  },
+  {
+    rank: 8,
+    title: "Tree Service",
+    verticalId: "arborist",
+    category: "Tree Removal",
+    body: "Tree removal, trimming, stump work, storm cleanup, risk review, and property safety.",
+    ticket: "High urgency",
+    tags: ["Removal", "Trimming", "Storm cleanup"]
+  }
+];
+const browseAllServiceCategories = [
+  "Landscaping",
+  "Junk Removal",
+  "Fencing",
+  "Painting",
+  "Flooring",
+  "Cleaning",
+  "Personal Driver",
+  "Handyman",
+  "Movers",
+  "Pressure Washing",
+  "Window Cleaning",
+  "Auto & Transport",
+  "Manufacturing",
+  "Business Growth",
+  "Trade Pathways"
+];
 const optionalExtraServiceCategories = [
   "Fencing",
   "Custom iron gates",
@@ -1782,6 +1873,9 @@ const forgeCareerPlusFeatures = [
 const academyTradeOptions = ["Electrical", "Welding", "HVAC", "Plumbing", "Roofing / construction", "CDL / logistics", "Diesel / automotive", "Heavy equipment", "Fire / EMS", "CNA / medical assistant", "Agriculture / farm advancement", "Creative media", "Blue-collar AI field tech", "Other"];
 const fundingNeedOptions = ["Not sure", "Needs scholarships/grants", "Needs financial aid", "Can self-pay", "Employer sponsored", "Low-cost options only"];
 const routeByScreen = {
+  post: "/request-help",
+  signup: "/worker-signup",
+  northstar: "/business",
   autos: "/auto",
   "forge-academy": "/forge-academy",
   "trade-pathways": "/trade-pathways",
@@ -1803,6 +1897,14 @@ const routeByScreen = {
   "homebuilding-tracker": "/homebuilding/tracker"
 };
 const screenByPath = {
+  "/request-help": "post",
+  "/request-help/": "post",
+  "/post-job": "post",
+  "/post-job/": "post",
+  "/worker-signup": "signup",
+  "/worker-signup/": "signup",
+  "/business": "northstar",
+  "/business/": "northstar",
   "/privacy": "legal",
   "/privacy/": "legal",
   "/terms": "legal",
@@ -4603,7 +4705,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/request-help", "/request-help/", "/post-job", "/post-job/", "/worker-signup", "/worker-signup/", "/business", "/business/", "/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -4616,6 +4718,7 @@ function render() {
   renderOperatorGuard();
   renderSelects();
   renderTimeline();
+  renderPremiumMarketplace();
   renderDemoSteps();
   renderStartPaths();
   renderDemoGuide();
@@ -6384,6 +6487,71 @@ function renderRequiredTradeCategories() {
       </article>
     `;
   }).join("");
+}
+
+function renderPremiumMarketplace() {
+  const grid = document.querySelector("#premiumServiceGrid");
+  const browse = document.querySelector("#browseAllServiceChips");
+  const suggestions = document.querySelector("#homeServiceSuggestions");
+  if (grid) {
+    grid.innerHTML = premiumServiceCategories.map((category) => `
+      <article class="premium-service-card">
+        <div class="premium-service-rank">${String(category.rank).padStart(2, "0")}</div>
+        <div>
+          <span>${escapeHtml(category.ticket)}</span>
+          <h3>${escapeHtml(category.title)}</h3>
+          <p>${escapeHtml(category.body)}</p>
+        </div>
+        <div class="premium-service-tags">
+          ${category.tags.map((tag) => `<small>${escapeHtml(tag)}</small>`).join("")}
+        </div>
+        <div class="premium-service-actions">
+          <button class="btn orange small" type="button" data-action="start-service-job" data-service-vertical="${escapeHtml(category.verticalId)}" data-service-category="${escapeHtml(category.category)}">Get Quotes</button>
+          <button class="btn ghost small" type="button" data-action="join-service-provider" data-service-vertical="${escapeHtml(category.verticalId)}" data-service-category="${escapeHtml(category.category)}">Become a Provider</button>
+        </div>
+      </article>
+    `).join("");
+  }
+  if (browse) {
+    browse.innerHTML = browseAllServiceCategories.map((category) => `
+      <button type="button" data-action="choose-service-category" data-service-category="${escapeHtml(category)}">${escapeHtml(category)}</button>
+    `).join("");
+  }
+  if (suggestions) {
+    const values = uniqueValues([
+      ...premiumServiceCategories.flatMap((category) => [category.title, category.category, ...category.tags]),
+      ...browseAllServiceCategories,
+      ...serviceVerticalCategoryOptions
+    ]);
+    suggestions.innerHTML = values.slice(0, 80).map((value) => `<option value="${escapeHtml(value)}"></option>`).join("");
+  }
+}
+
+function handlePremiumServiceSearch() {
+  const input = document.querySelector("#homeServiceSearch");
+  const query = normalizeLookup(input?.value || "");
+  if (!query) {
+    navigate("services");
+    return;
+  }
+  const premiumMatch = premiumServiceCategories.find((category) => {
+    const text = normalizeLookup([category.title, category.category, category.body, category.ticket, ...category.tags].join(" "));
+    return text.includes(query) || query.includes(normalizeLookup(category.title)) || query.includes(normalizeLookup(category.category));
+  });
+  if (premiumMatch) {
+    startServiceJob(premiumMatch.verticalId, premiumMatch.category);
+    return;
+  }
+  const verticalMatch = serviceVerticals.find((vertical) => {
+    const text = normalizeLookup([vertical.title, vertical.shortTitle, vertical.publicHeadline, vertical.publicSubheadline, ...vertical.categories, ...vertical.tags].join(" "));
+    return text.includes(query) || query.includes(normalizeLookup(vertical.title)) || vertical.categories.some((category) => query.includes(normalizeLookup(category)));
+  });
+  if (verticalMatch) {
+    startServiceJob(verticalMatch.id, verticalMatch.categories[0]);
+    return;
+  }
+  navigate("services");
+  showToast("Browse all services for that project.");
 }
 
 function renderServiceVerticals() {
@@ -13406,6 +13574,11 @@ document.querySelector("#postBack").addEventListener("click", () => {
 document.querySelector("#postJobForm").addEventListener("submit", (event) => {
   event.preventDefault();
   postJobFromForm();
+});
+
+document.querySelector("#premiumServiceSearchForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  handlePremiumServiceSearch();
 });
 
 document.querySelector("#creativeLeadForm").addEventListener("submit", (event) => {
