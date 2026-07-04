@@ -1297,11 +1297,11 @@ const autoTransportServiceCards = [
     formTarget: "Consign My Vehicle"
   },
   {
-    title: "Request a Vehicle",
+    title: "Find Me a Vehicle",
     tag: "request_vehicle",
-    body: "Tell Forge what you want to buy so the request can be matched with dealer partners and available inventory.",
+    body: "Tell Forge the vehicle type, budget, financing/trade-in plan, mileage limit, must-have features, and timeline so S&A Auto or an approved seller-of-record path can review fit.",
     action: "focus-auto-request",
-    formTarget: "Buyer requests"
+    formTarget: "Find Me a Vehicle"
   },
   {
     title: "Transport My Vehicle",
@@ -1886,8 +1886,8 @@ const autoDealers = [
     region: "Southern Oregon",
     role: "Forge Auto sales partnership",
     status: "Featured sales partner",
-    note: "Use S&A Auto as the featured sales partnership for buyer requests, truck sales, diesel truck sales, and dealer inventory validation.",
-    setup: ["Approved contact", "Lead intake phone/email", "Inventory and listing source", "Dealer terms", "Financing referral boundary", "Response expectation"]
+    note: "S&A Auto is the featured Medford-facing sales partnership for Andrew/Scott buyer requests, trucks, diesel trucks, fleet/work vehicles, auction-watch leads, and dealer inventory validation. Scott's reported $100,000 vehicle-acquisition line of credit remains an internal underwriting note until verified.",
+    setup: ["Approved contact", "Andrew/Scott lead intake path", "MAG Southern Oregon auction sourcing permissions", "Vehicle-acquisition line documentation", "Inventory/listing source", "Dealer terms", "Financing referral boundary", "Response expectation"]
   },
   {
     id: "joco-auto-sales",
@@ -1902,10 +1902,10 @@ const autoDealers = [
     id: "chevelles-auto-sales",
     name: "Chevelles Auto Sales",
     region: "Southern Oregon / Northern California",
-    role: "Dealer partner",
-    status: "Partner lead",
-    note: "Add approved contact details and inventory feed before public launch.",
-    setup: ["Approved contact", "Lead intake phone/email", "Inventory source", "Dealer terms", "Response expectation"]
+    role: "Proposed lot / dealer pathway",
+    status: "Subject to written agreement and legal verification",
+    note: "Use Chevelles Auto only as a proposed lot/dealer pathway until written agreement, seller-of-record rules, dealer licensing, insurance, and legal verification are complete.",
+    setup: ["Written agreement", "Seller-of-record process", "Approved contact", "Lead intake phone/email", "Inventory source", "Dealer terms", "Legal verification", "Response expectation"]
   },
   {
     id: "shasta-lake-auto-sales",
@@ -8352,22 +8352,22 @@ function autoLeadRouteRows() {
     {
       label: "1. Customer request",
       title: "Capture the vehicle need first",
-      body: "Save contact info, vehicle details, mileage, service needed, location, urgency, photos count, and notes."
+      body: "Find Me a Vehicle leads ask for vehicle type, budget, cash/finance/trade-in, down payment, desired year/make/model, mileage limit, use case, must-have features, timeline, and contact information."
     },
     {
       label: "2. Partner path",
-      title: "Route to the qualified partner",
-      body: "Send repair, detailing, transport, inspection, and sales requests to trusted mechanics, auto partners, transport providers, or dealer partners."
+      title: "Route to S&A Auto or a qualified seller-of-record path",
+      body: "MAG Southern Oregon auction sourcing, Andrew/Scott review, Chevelles Auto proposed lot/dealer routing, recon vendors, transport, inspection, and listing support stay admin-reviewed."
     },
     {
       label: "3. Safety boundary",
       title: "Forge is not the licensed provider",
-      body: "Licensed or qualified partners handle regulated sales, financing, repair, towing, transport, and insurance-related work where required."
+      body: "Vehicle transactions must be completed through the authorized seller of record and compliant dealer process. Forge must not present itself as the licensed dealer unless legal entity and licensing are confirmed."
     },
     {
       label: "4. Follow-up",
-      title: "Keep the queue visible",
-      body: "Use Copy Service Queue, Copy Buyer Queue, and dealer handoffs so no Forge Auto request gets lost."
+      title: "Pipeline stays status-driven",
+      body: "New Lead -> Qualified -> Auction Watch -> Vehicle Found -> Bid Approved -> Purchased -> Transport -> Inspection -> Recon -> Photos/Listings -> Appointment -> Sold -> Delivered -> Follow-Up."
     }
   ];
 }
@@ -12370,6 +12370,7 @@ function submitPersonalDriverRequest() {
     privacyNotes: fieldValue("#personalDriverPrivacyNotes"),
     safetyStatus: "Admin review required",
     status: "New",
+    pipeline: document.querySelector("#autoServiceNeeded").value === "Find Me a Vehicle" ? "New Lead" : "New",
     created: "Today"
   };
   state.personalDriverRequests.unshift(request);
@@ -13940,15 +13941,17 @@ document.querySelector("#autoServiceForm").addEventListener("submit", (event) =>
   addActivity(`Forge Auto request saved: ${request.name} needs ${request.service} for ${request.vehicle}.`);
   state.lastConfirmation = {
     type: "auto-service",
-    title: "Auto service request saved.",
-    body: "Forge saved this vehicle request so the operator can route it to the right trusted auto partner.",
+    title: request.service === "Find Me a Vehicle" ? "Vehicle buyer request saved." : "Auto service request saved.",
+    body: request.service === "Find Me a Vehicle"
+      ? "Forge saved this buyer-concierge request for S&A Auto or an approved seller-of-record path to review."
+      : "Forge saved this vehicle request so the operator can route it to the right trusted auto partner.",
     details: [
       `${request.name} · ${request.service}`,
       `${request.vehicle} · ${request.mileage}`,
       `${request.location} · ${request.urgency}`
     ],
     nextSteps: [
-      "Forge saves the request in the Auto service queue",
+      request.service === "Find Me a Vehicle" ? "Forge saves the request in the S&A Auto buyer pipeline" : "Forge saves the request in the Auto service queue",
       "The operator routes it to a trusted mechanic, auto partner, transport provider, or dealer partner",
       "Licensed or qualified partners perform regulated sales, financing, repair, towing, transport, and insurance-related work where required"
     ],
