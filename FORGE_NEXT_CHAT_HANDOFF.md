@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v84`.
+Forge is at `v85`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=84#home`
-- Best demo start: `http://127.0.0.1:4174/?v=84#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=84&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=84&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=84#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=84`
-- Admin demo: `http://127.0.0.1:4174/?v=84&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=85#home`
+- Best demo start: `http://127.0.0.1:4174/?v=85#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=85&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=85&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=85#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=85`
+- Admin demo: `http://127.0.0.1:4174/?v=85&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v84`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v85`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v84:
+These passed after v85:
 
 ```bash
 node --check app.js

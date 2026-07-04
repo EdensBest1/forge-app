@@ -8792,6 +8792,101 @@ textarea:focus {
   padding-left: 8px;
 }
 
+.first-user-breakdown {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.first-user-breakdown-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.first-user-breakdown-heading h2,
+.first-user-breakdown-heading p {
+  margin: 0;
+}
+
+.first-user-breakdown-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.first-user-breakdown-total {
+  display: grid;
+  gap: 8px;
+  min-width: 132px;
+  justify-items: end;
+}
+
+.first-user-breakdown-total strong {
+  color: var(--orange);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.first-user-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.first-user-breakdown-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 150px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.first-user-breakdown-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fff7ef;
+}
+
+.first-user-breakdown-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.first-user-breakdown-grid strong {
+  color: var(--orange);
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.first-user-breakdown-grid h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.25;
+}
+
+.first-user-breakdown-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
 .launch-status-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9179,6 +9274,7 @@ td {
   .demo-command-strip,
   .mobile-demo-flow-grid,
   .launch-receipt-grid,
+  .first-user-breakdown-grid,
   .demo-guide-steps,
   .demo-cue-grid,
   .demo-path-grid,
@@ -9595,6 +9691,14 @@ td {
 
   .launch-receipt-heading {
     display: grid;
+  }
+
+  .first-user-breakdown-heading {
+    display: grid;
+  }
+
+  .first-user-breakdown-total {
+    justify-items: start;
   }
 
   .top-actions::-webkit-scrollbar {

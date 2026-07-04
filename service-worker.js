@@ -1,4 +1,4 @@
-const CACHE_NAME = "forge-mvp-v84";
+const CACHE_NAME = "forge-mvp-v85";
 const CORE_ASSETS = [
   "./",
   "./auto/",

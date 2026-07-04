@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "84";
+const PUBLIC_LINK_VERSION = "85";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4668,6 +4668,7 @@ function render() {
   renderSoftLaunchRunSheet();
   renderLaunchDemoPack();
   renderLaunchDecision();
+  renderFirstUserCountBreakdown();
   renderBackendHandoff();
   renderAuthHandoff();
   renderFirstUserCloseout();
@@ -9427,6 +9428,71 @@ function launchDecisionRows() {
   ];
 }
 
+function renderFirstUserCountBreakdown() {
+  const target = document.querySelector("#firstUserCountBreakdown");
+  if (!target) return;
+  const totalLabel = document.querySelector("#firstUserTotalLabel");
+  if (totalLabel) totalLabel.textContent = `${totalLeadCount()}/200`;
+  target.innerHTML = firstUserLeadBreakdownRows().map((row) => `
+    <article class="${row.count ? "ready" : "attention"}">
+      <span>${escapeHtml(row.label)}</span>
+      <strong>${escapeHtml(String(row.count))}</strong>
+      <h3>${escapeHtml(row.title)}</h3>
+      <p>${escapeHtml(row.body)}</p>
+    </article>
+  `).join("");
+}
+
+function firstUserLeadBreakdownRows() {
+  const collections = Object.fromEntries(firstUserLeadCollections().map(([label, rows]) => [label, rows.length]));
+  const sum = (labels) => labels.reduce((total, label) => total + (collections[label] || 0), 0);
+  const activeCollections = firstUserLeadCollections().filter(([, rows]) => rows.length > 0);
+  return [
+    {
+      label: "Marketplace",
+      title: "Jobs, workers, referrals",
+      count: sum(["Jobs", "Workers", "Referrals"]),
+      body: "Core local work demand, provider profiles, and warm introductions."
+    },
+    {
+      label: "Autos",
+      title: "Vehicle, buyer, service, driver",
+      count: sum(["Vehicle seller/listing leads", "Auto buyer inquiries", "Auto service requests", "Road Rescue requests", "Personal driver requests", "Personal driver providers"]),
+      body: "Car sellers, buyers, auto service, Road Rescue, and driver-related intake."
+    },
+    {
+      label: "Business",
+      title: "NorthStar, Capital, merchants",
+      count: sum(["NorthStar leads", "Capital Desk leads", "Merchant service leads", "Local product vendors"]),
+      body: "Business growth, finance referral fit, merchant services, and local maker leads."
+    },
+    {
+      label: "Manufacturing",
+      title: "RFQs and suppliers",
+      count: sum(["Manufacturing RFQs", "Manufacturing suppliers", "Manufacturing supplier leads"]),
+      body: "Manufacturing, nutraceutical, supplier, packaging, lab, and sourcing opportunities."
+    },
+    {
+      label: "Career",
+      title: "Schools, unions, AI field work",
+      count: sum(["Career leads", "Trade pathway leads", "Forge Academy leads", "Employer training partners", "School partners", "Resume requests"]),
+      body: "Admitly, Forge Academy, resume, school, employer, union, apprenticeship, and blue-collar AI paths."
+    },
+    {
+      label: "Projects",
+      title: "Builds and major opportunities",
+      count: sum(["Homebuilding leads", "Building leads", "Project leads"]),
+      body: "Homebuilding, contractor finance, project review, and larger local opportunity intake."
+    },
+    {
+      label: "Active lanes",
+      title: "Source arrays with leads",
+      count: activeCollections.length,
+      body: activeCollections.map(([label, rows]) => `${label}: ${rows.length}`).join(" | ") || "No saved leads yet."
+    }
+  ];
+}
+
 function launchDemoPackRows() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
@@ -12568,6 +12634,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
+  if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
   if (action?.dataset.action === "copy-soft-launch-invite-kit") copySoftLaunchInviteKit();
@@ -16846,6 +16913,26 @@ function copyLaunchDecision() {
     "Decision: use controlled first-user demos and signups now. Hold broad public launch, payments, and stranger traffic until backend delivery, production admin auth, backup, legal review, and final security review are complete."
   ];
   copyText(lines.join("\n"), "Launch decision copied.");
+}
+
+function copyFirstUserCountBreakdown() {
+  const activeCollections = firstUserLeadCollections().filter(([, rows]) => rows.length > 0);
+  const lines = [
+    "Forge first-user count breakdown",
+    "",
+    `Total: ${totalLeadCount()}/200`,
+    "",
+    "Grouped lanes:",
+    ...firstUserLeadBreakdownRows().map((row) => `${row.label}: ${row.count} - ${row.title}. ${row.body}`),
+    "",
+    "Active source collections:",
+    ...(activeCollections.length
+      ? activeCollections.map(([label, rows]) => `${label}: ${rows.length}`)
+      : ["No saved leads yet."]),
+    "",
+    "Use this count for controlled demos and first-user follow-up. Broad public launch still waits for backend delivery, production admin auth, backup, legal review, and final security review."
+  ];
+  copyText(lines.join("\n"), "First-user count copied.");
 }
 
 function copySoftLaunchPlan() {
