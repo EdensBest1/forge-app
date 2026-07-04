@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "90";
+const PUBLIC_LINK_VERSION = "91";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8782,6 +8782,7 @@ function renderStatusResults() {
         <h3>${escapeHtml(job.title)}</h3>
         <p>${escapeHtml(job.location)} · ${escapeHtml(job.budget)}</p>
         <p>${bids.length} bid${bids.length === 1 ? "" : "s"} received</p>
+        ${customerStatusProofSummary(job, bids)}
         <div class="lead-actions">
           <button class="btn blue small" type="button" data-detail="${job.id}">View Detail</button>
           <button class="btn ghost small" type="button" data-message-thread="job-${job.id}">Message Forge</button>
@@ -8791,6 +8792,59 @@ function renderStatusResults() {
       </article>
     `;
   }).join("") || statusEmptyState();
+}
+
+function customerStatusProofSummary(job, bids) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage);
+  return `
+    <section class="status-proof-summary" aria-label="Customer proof summary">
+      <div class="status-proof-heading">
+        <span class="split-label">Customer proof summary</span>
+        <strong>${escapeHtml(chosen ? "This job has a selected bid and a message handoff." : bids.length ? "This job is ready for bid review." : "This job is posted and waiting for bids.")}</strong>
+      </div>
+      <div class="status-proof-grid">
+        ${rows.map((row) => `
+          <article class="${row.ok ? "ready" : "waiting"}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage) {
+  return [
+    {
+      label: "Job",
+      title: "Posted",
+      body: `${job.location || "Local"} · ${job.budget || "Budget saved"}`,
+      ok: true
+    },
+    {
+      label: "Bids",
+      title: `${bids.length} received`,
+      body: bids.length ? "Customer can compare price, timeline, and worker fit." : "Waiting for the first worker response.",
+      ok: bids.length > 0
+    },
+    {
+      label: "Selected",
+      title: chosen ? chosen.worker : bestBid ? "Ready to choose" : "Pending",
+      body: chosen ? `${chosen.amount} · ${chosen.timeline}` : bestBid ? `${bestBid.worker} can be reviewed first.` : "No selected worker yet.",
+      ok: Boolean(chosen)
+    },
+    {
+      label: "Message",
+      title: hasMessage ? "Thread ready" : "Needs handoff",
+      body: hasMessage ? "Schedule and arrival details have a visible place." : "Choose a bid to create the message handoff.",
+      ok: hasMessage
+    }
+  ];
 }
 
 function customerStatusDemoStrip(job, bids) {

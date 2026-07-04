@@ -8837,6 +8837,66 @@ textarea:focus {
   line-height: 1.28;
 }
 
+.status-proof-summary {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.status-proof-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.status-proof-heading strong {
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.status-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-proof-grid article {
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  min-height: 104px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.status-proof-grid article.waiting {
+  background: #fffaf4;
+}
+
+.status-proof-grid span {
+  color: var(--orange);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.status-proof-grid strong {
+  color: var(--blue);
+  font-size: 0.88rem;
+}
+
+.status-proof-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.32;
+}
+
 .status-demo-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9837,6 +9897,7 @@ td {
   .worker-proof-actions,
   .worker-soft-launch-grid,
   .status-demo-actions,
+  .status-proof-grid,
   .status-handoff-grid,
   .status-handoff-actions,
   .profile-meta,
