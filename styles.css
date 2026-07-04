@@ -10734,6 +10734,7 @@ td {
 
 .manufacturing-intro,
 .manufacturing-paths,
+.manufacturing-path-engine,
 .manufacturing-network,
 .manufacturing-directory,
 .manufacturing-eden,
@@ -10753,6 +10754,7 @@ td {
 
 .manufacturing-intro,
 .manufacturing-paths,
+.manufacturing-path-engine,
 .manufacturing-network,
 .manufacturing-directory,
 .manufacturing-eden,
@@ -10820,6 +10822,94 @@ td {
   color: #073f68;
   font-size: 0.84rem;
   font-weight: 850;
+}
+
+.product-path-tile {
+  display: grid;
+  gap: 6px;
+  min-height: 84px;
+  border: 1px solid #d4e3e3;
+  border-radius: 8px;
+  background: #f8fcfb;
+  color: #073f68;
+  padding: 12px;
+  text-align: left;
+}
+
+.product-path-tile strong {
+  color: #073f68;
+  font-size: 0.93rem;
+}
+
+.product-path-tile span {
+  border: 0;
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.product-path-tile.active,
+.product-path-tile:hover,
+.product-path-tile:focus-visible {
+  border-color: var(--orange);
+  background: #fff7ed;
+  box-shadow: 0 12px 28px rgba(244, 117, 33, 0.14);
+}
+
+.product-path-summary,
+.product-path-match-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.product-path-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.product-path-summary article,
+.product-path-match-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid #d4e3e3;
+  border-radius: 8px;
+  background: #f8fcfb;
+  padding: 14px;
+}
+
+.product-path-summary h3,
+.product-path-match-card strong {
+  margin: 0;
+  color: var(--ink);
+}
+
+.product-path-summary p,
+.product-path-match-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.product-path-match-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.product-path-match-card header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product-path-policy {
+  margin-top: 12px;
+  border: 1px solid #d4e3e3;
+  border-radius: 8px;
+  background: #f8fcfb;
+  padding: 12px;
 }
 
 .manufacturing-filters {
@@ -10970,6 +11060,8 @@ td {
   .manufacturing-filters,
   .manufacturing-filter-flags,
   .manufacturing-support-grid,
+  .product-path-summary,
+  .product-path-match-grid,
   .manufacturing-eden-grid,
   .manufacturing-doc-grid {
     grid-template-columns: 1fr;

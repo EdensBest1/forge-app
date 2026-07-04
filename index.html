@@ -98,14 +98,14 @@
 
         <section class="home-hero">
           <div class="hero-copy">
-            <h1>Post the job.<span>Get the crew.</span></h1>
-            <p>Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers - starting in Medford and Southern Oregon.</p>
-            <p class="hero-trust-line">Controlled beta · Admin-reviewed leads · No payments collected in MVP · Built to help fund House of Heaven impact work</p>
+            <h1>Medford's Marketplace for Work, Workers, and Local Services.</h1>
+            <p>Forge connects homeowners, businesses, farms, crews, contractors, and service providers in one simple local platform.</p>
+            <p class="hero-trust-line">Post the job. Get the crew. Need Help? Need Work? Use Forge. · Admin-reviewed leads · No payments collected in MVP · Built for Medford first</p>
             <div class="hero-actions">
-            <button class="btn orange" type="button" data-nav="post">Request Help</button>
-            <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
-            <button class="btn ghost" type="button" data-nav="post">Post a Job</button>
-            <button class="btn ghost" type="button" data-nav="northstar">For Businesses</button>
+            <button class="btn orange" type="button" data-nav="post">I Need Help</button>
+            <button class="btn blue" type="button" data-nav="signup">I Need Work</button>
+            <button class="btn ghost" type="button" data-nav="northstar">I Own a Business</button>
+            <button class="btn ghost" type="button" data-nav="manufacturing">Request a Quote</button>
           </div>
           </div>
           <figure class="hero-photo">
@@ -122,7 +122,7 @@
         <section class="impact-trust-strip" aria-label="House of Heaven impact tracker">
           <div>
             <span class="split-label">Built to serve</span>
-            <p>A portion of profit supports House of Heaven work to feed children and help build orphanages and churches in India and around the world.</p>
+            <p>10% of net profit goes to Mountain Church. 10% of net profit goes to House of Heaven orphanages in India.</p>
           </div>
           <strong>Impact tracker coming soon - verified updates will be published after launch.</strong>
           <a class="btn ghost small" href="/impact/">Impact Page</a>
@@ -1659,10 +1659,21 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Product paths</span>
-                  <h2>Supplements, vitamins, private label, packaging, labs, and support partners.</h2>
+                  <h2>Click a path. See three public supplier matches. Request a quote.</h2>
                 </div>
               </div>
               <div class="manufacturing-chip-grid" id="manufacturingProductGrid"></div>
+            </section>
+            <section class="manufacturing-path-engine" id="productPathMatchEngine">
+              <div class="section-title compact">
+                <div>
+                  <span class="split-label">Product Paths Supplier Match Engine</span>
+                  <h2 id="selectedProductPathTitle">Choose a product path to compare public matches.</h2>
+                  <p class="muted">Public cards use supplier codes only. Real supplier names, contact details, base cost, and internal notes stay admin-only until approval.</p>
+                </div>
+                <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
+              </div>
+              <div class="product-path-detail" id="productPathDetail"></div>
             </section>
             <section class="manufacturing-network">
               <div class="section-title compact">

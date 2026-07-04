@@ -767,6 +767,87 @@ const manufacturingProductCategories = [
   "Compliance consulting",
   "Fulfillment/3PL"
 ];
+const productPathMatchTypes = ["Fastest Lead Time", "Best Startup MOQ", "Premium / cGMP / High Volume"];
+const productPathSupplierCodes = [
+  ["Vitamin Manufacturing", "EB-VIT", "standard"],
+  ["Supplement Manufacturing", "EB-SUP", "standard"],
+  ["Nutraceutical Manufacturing", "EB-NUT", "standard"],
+  ["Private Label Supplements", "EB-PLS", "standard"],
+  ["Contract Manufacturing", "EB-CMO", "standard"],
+  ["White Label Vitamins", "EB-WLV", "standard"],
+  ["Capsule Manufacturing", "EB-CAP", "standard"],
+  ["Tablet Manufacturing", "EB-TAB", "standard"],
+  ["Gummy Manufacturing", "EB-GUM", "standard"],
+  ["Powder Manufacturing", "EB-PWD", "standard"],
+  ["Protein Powder Manufacturing", "EB-PRO", "standard"],
+  ["Pre-Workout Manufacturing", "EB-PRE", "standard"],
+  ["Creatine Product Manufacturing", "EB-CRT", "standard"],
+  ["Collagen Product Manufacturing", "EB-COL", "standard"],
+  ["Electrolyte Product Manufacturing", "EB-ELY", "standard"],
+  ["Greens Powder Manufacturing", "EB-GRN", "standard"],
+  ["CBD / Hemp Product Manufacturing", "EB-HEM", "hemp_cbd"],
+  ["Pet Supplement Manufacturing", "EB-PET", "pet"],
+  ["Sports Nutrition Manufacturing", "EB-SPN", "standard"],
+  ["Packaging & Labeling", "EB-PAL", "standard"],
+  ["Bottling", "EB-BOT", "standard"],
+  ["Pouch Packaging", "EB-POU", "standard"],
+  ["Stick Pack Packaging", "EB-STK", "standard"],
+  ["Blister Packaging", "EB-BLI", "standard"],
+  ["Fulfillment", "EB-FUL", "standard"],
+  ["Formulation Support", "EB-FRM", "standard"],
+  ["Flavoring Support", "EB-FLV", "standard"],
+  ["Ingredient Sourcing", "EB-ING", "standard"],
+  ["Lab Testing", "EB-LAB", "testing"],
+  ["COA / Certificate of Analysis Support", "EB-COA", "testing"],
+  ["cGMP Manufacturing", "EB-CGM", "standard"],
+  ["FDA-Registered Facility Support", "EB-FDA", "standard"]
+];
+const productPaths = productPathSupplierCodes.map(([title, prefix, regulatoryLevel], index) => ({
+  id: `product-path-${index + 1}`,
+  slug: title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+  title,
+  categoryGroup: /Packaging|Bottling|Pouch|Stick|Blister|Fulfillment/.test(title)
+    ? "Packaging / operations"
+    : /Lab|COA|cGMP|FDA/.test(title)
+      ? "Testing / compliance"
+      : "Manufacturing",
+  regulatoryLevel,
+  description: `${title} requests are routed through anonymous public match cards first, then admin verifies supplier fit, compliance, quote math, and approval before any customer-facing final quote.`,
+  supplierCodes: [1, 2, 3].map((rank) => `${prefix}-00${rank}`)
+}));
+const productPathBySlug = (slug) => productPaths.find((path) => path.slug === slug) || productPaths[0];
+const productPathComplianceCopy = {
+  standard: "Manufacturing, ingredients, claims, labeling, COAs, testing, and facility documentation must be reviewed before production.",
+  testing: "Testing, COA, lab, chain-of-custody, claims, and documentation scope must be reviewed before production or customer quote release.",
+  pet: "Pet supplement projects may require ingredient, claims, labeling, safety, species, testing, and facility documentation review before production.",
+  hemp_cbd: "CBD / hemp projects are available only where legal and compliant. Product classification, jurisdiction, COA, THC limits, labeling, and supplier documentation must be reviewed before acceptance."
+};
+function productPathSupplierMatches(path) {
+  const moqs = ["Pilot to 2,500 units", "Low startup MOQ", "High-volume MOQ"];
+  const leadTimes = ["3-6 weeks after approval", "6-10 weeks after approval", "8-14 weeks after approval"];
+  return path.supplierCodes.map((code, index) => ({
+    code,
+    matchType: productPathMatchTypes[index],
+    capabilitySummary: `${path.title} support with anonymous supplier routing, admin review, compliance checks, and quote approval before any identity reveal.`,
+    moqRange: moqs[index],
+    leadTimeRange: leadTimes[index],
+    badges: index === 0
+      ? ["Fast route", "Admin review", "No identity reveal"]
+      : index === 1
+        ? ["Startup MOQ", "Quote gate", "Compliance review"]
+        : ["cGMP ready", "High volume", "Approved quote only"]
+  }));
+}
+function productPathQuotePolicy(path) {
+  return {
+    path: path.title,
+    base_supplier_quote: "admin_only",
+    markup_percent_default: 20,
+    customer_quote: "base_supplier_quote * 1.20 after admin approval",
+    expedited_service_fee: "customer_quote - base_supplier_quote",
+    display_mode: "admin can show bundled final price or 20% expedited sourcing and project-management fee"
+  };
+}
 const manufacturingDosageForms = ["Capsule", "Tablet", "Gummy", "Chew", "Powder", "Liquid", "Beverage", "Softgel", "Stick pack", "Sachet", "Shot", "Tincture", "Topical", "Pet product", "Other"];
 const manufacturingFormulaStatuses = ["Need help creating formula", "Have rough idea", "Have final formula", "Need white label product", "Idea only", "Existing formula", "Needs formulation", "Ready for production"];
 const manufacturingCleanLabelOptions = ["Organic", "Vegan", "Non-GMO", "Gluten-free", "Sugar-free", "Clean-label"];
@@ -6139,6 +6220,8 @@ function renderCapitalPage() {
 function renderManufacturingPage() {
   const stats = document.querySelector("#manufacturingStats");
   const productGrid = document.querySelector("#manufacturingProductGrid");
+  const productPathTitle = document.querySelector("#selectedProductPathTitle");
+  const productPathDetail = document.querySelector("#productPathDetail");
   const supplierTypes = document.querySelector("#manufacturingSupplierTypes");
   const flags = document.querySelector("#manufacturingFilterFlags");
   const directory = document.querySelector("#manufacturingSupplierDirectory");
@@ -6168,7 +6251,17 @@ function renderManufacturingPage() {
     ["Open Pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
   ]);
 
-  productGrid.innerHTML = manufacturingProductCategories.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
+  const activeProductPath = productPathBySlug(state.activeProductPathSlug);
+  productGrid.innerHTML = productPaths.map((path) => `
+    <button class="product-path-tile ${path.slug === activeProductPath.slug ? "active" : ""}" type="button" data-action="select-product-path" data-product-path="${escapeHtml(path.slug)}">
+      <strong>${escapeHtml(path.title)}</strong>
+      <span>${escapeHtml(path.categoryGroup)} · ${escapeHtml(path.regulatoryLevel.replaceAll("_", " "))}</span>
+    </button>
+  `).join("");
+  if (productPathTitle && productPathDetail) {
+    productPathTitle.textContent = `${activeProductPath.title}: 3 public supplier matches`;
+    productPathDetail.innerHTML = productPathDetailHtml(activeProductPath);
+  }
   supplierTypes.innerHTML = manufacturingSupplierTypes.map((type) => `<span>${escapeHtml(type)}</span>`).join("");
 
   const activeFlags = Array.from(document.querySelectorAll("input[name='manufacturingFilterFlag']:checked")).map((input) => input.value);
@@ -6229,6 +6322,69 @@ function renderManufacturingPage() {
   supplierLeadList.innerHTML = supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`;
   supplierLeadDetail.innerHTML = manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId);
   outreachTemplate.textContent = MANUFACTURING_OUTREACH_TEMPLATE;
+}
+
+function productPathDetailHtml(path) {
+  const matches = productPathSupplierMatches(path);
+  const policy = productPathQuotePolicy(path);
+  return `
+    <div class="product-path-summary">
+      <article>
+        <span class="split-label">Selected path</span>
+        <h3>${escapeHtml(path.title)}</h3>
+        <p>${escapeHtml(path.description)}</p>
+      </article>
+      <article>
+        <span class="split-label">Compliance gate</span>
+        <p>${escapeHtml(productPathComplianceCopy[path.regulatoryLevel] || productPathComplianceCopy.standard)}</p>
+      </article>
+      <article>
+        <span class="split-label">Quote math</span>
+        <p>Default markup is 20%. Customer quote equals base supplier quote times 1.20. Expedited service fee equals customer quote minus base supplier quote. Admin must approve before a customer sees final quote.</p>
+      </article>
+    </div>
+    <div class="product-path-match-grid">
+      ${matches.map((match) => `
+        <article class="product-path-match-card">
+          <header>
+            <span class="split-label">${escapeHtml(match.matchType)}</span>
+            <strong>${escapeHtml(match.code)}</strong>
+          </header>
+          <p>${escapeHtml(match.capabilitySummary)}</p>
+          <div class="service-category-mini">
+            <span>MOQ: ${escapeHtml(match.moqRange)}</span>
+            <span>Lead time: ${escapeHtml(match.leadTimeRange)}</span>
+            ${match.badges.map((badge) => `<span>${escapeHtml(badge)}</span>`).join("")}
+          </div>
+          <button class="btn orange small" type="button" data-action="start-product-path-quote" data-product-path="${escapeHtml(path.slug)}" data-supplier-code="${escapeHtml(match.code)}">Request Quote</button>
+        </article>
+      `).join("")}
+    </div>
+    <pre class="copy-block product-path-policy">${escapeHtml(JSON.stringify(policy, null, 2))}</pre>
+  `;
+}
+
+function selectProductPath(slug) {
+  const path = productPathBySlug(slug);
+  state.activeProductPathSlug = path.slug;
+  setFieldValue("#manufacturingProductType", path.title);
+  saveState();
+  renderManufacturingPage();
+  document.querySelector("#productPathMatchEngine")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  showToast(`${path.title} matches loaded.`);
+}
+
+function startProductPathQuote(slug, supplierCode = "") {
+  const path = productPathBySlug(slug);
+  state.activeProductPathSlug = path.slug;
+  setFieldValue("#manufacturingProductType", path.title);
+  if (!fieldValue("#manufacturingProductIdea")) setFieldValue("#manufacturingProductIdea", path.title);
+  if (!fieldValue("#manufacturingRfqNotes")) {
+    setFieldValue("#manufacturingRfqNotes", `Product Path selected: ${path.title}. Public supplier code: ${supplierCode}. Admin must approve supplier identity, base quote, 20% markup, final quote display mode, and compliance gates before customer quote release.`);
+  }
+  saveState();
+  renderManufacturingPage();
+  focusAutoPanel("#manufacturingRfqForm", "#manufacturingCustomerCompanyName");
 }
 
 function manufacturingSupplierLeadCard(lead) {
@@ -13019,6 +13175,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
   if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");
   if (action?.dataset.action === "focus-manufacturing-lead") focusAutoPanel("#manufacturingSupplierLeadForm", "#manufacturingLeadCompany");
+  if (action?.dataset.action === "select-product-path") selectProductPath(action.dataset.productPath);
+  if (action?.dataset.action === "start-product-path-quote") startProductPathQuote(action.dataset.productPath, action.dataset.supplierCode);
   if (action?.dataset.action === "copy-manufacturing-brief") copyManufacturingBrief();
   if (action?.dataset.action === "copy-manufacturing-queue") copyManufacturingQueue();
   if (action?.dataset.action === "copy-manufacturing-rfq") copyManufacturingRfq(action.dataset.manufacturingRfqId);
