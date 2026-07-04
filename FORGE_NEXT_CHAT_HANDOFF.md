@@ -129,17 +129,18 @@ curl -I http://127.0.0.1:4174/
 
 Browser verification also confirmed:
 
-- Admin loads at `?v=69&demo=admin#admin`.
-- Admin Soft Launch Tomorrow panel renders, and Copy Soft Launch Plan copies the controlled-launch script with v69 Perspective, Careers, Autos, and Admin links.
-- Admin Invite Kit renders with five copy buttons, and Copy Full Invite Kit copies homeowner, worker, Careers, Autos, and referral messages with v69 links.
-- Admin Launch Day Run Sheet renders, and Copy Run Sheet copies the v69 launch-day sequence with Admin, Perspective, Post Job, Worker Signup, Careers, and Autos links.
-- Training & Careers loads at `?v=69#opportunities` with trade school, union/apprenticeship, and blue-collar AI job tracks visible.
-- Training & Careers Copy Application Plan fires successfully, shows the success toast, and the template content is covered by `npm run check`.
-- Mobile Training & Careers verification at 390px confirmed no horizontal overflow and clean stacked cards.
-- Perspective Demo loads at `?v=69#perspective` with the Auto marketplace proof path, Autos cue card, Autos readiness check, and no console errors.
-- Autos cue copies the v69 Autos link: `?v=69&demo=customer#autos`.
-- Autos loads at `?v=69&demo=customer#autos` with the Soft Launch Auto Route, buyer inquiry route, dealer handoff boundary, and no console errors.
-- Direct Autos route loads at `?v=69&demo=customer#autos` with vehicle listings, JoCo Auto Sales, buyer inquiries, and dealer setup checklist visible.
+- Home loads at `?v=89#home` with `styles.css?v=89` and `app.js?v=89`.
+- The redesigned homepage marketplace renders 8 premium Medford launch service cards: Roofing, HVAC, Electrical, Plumbing, Concrete & Asphalt, Remodeling, Excavation, and Tree Service.
+- The homepage search renders with 80 service suggestions and routes matched service intent into the existing post-job flow.
+- Browse All Services renders 15 lower-priority service chips behind the premium category grid.
+- Desktop verification at 1280px confirmed no horizontal overflow and no console errors.
+- Mobile verification at 390px confirmed the premium cards stack cleanly, the search becomes one column, and no horizontal overflow appears.
+- Admin loads at `?v=89&demo=admin#admin`.
+- Perspective Demo loads at `?v=89#perspective`.
+- Training & Careers loads at `?v=89#opportunities`.
+- Forge Auto & Transport loads at `/auto?v=89`.
+- Route-loader aliases are available for `/request-help`, `/post-job`, `/worker-signup`, and `/business`.
+- Copy/action templates remain covered by `npm run check`.
 - Home shows a Start Here path chooser with Post Job, Join Worker List, Training & Careers, and Check Status routes.
 - Copy First User Links copies the post, worker, careers, status, and home routes plus early-access note.
 - Confirmation screen explains what Forge does next after job, worker, referral, and bid submissions.
@@ -187,4 +188,4 @@ Browser verification also confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v69 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v89 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
