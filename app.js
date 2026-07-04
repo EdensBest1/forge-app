@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "91";
+const PUBLIC_LINK_VERSION = "92";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8814,8 +8814,23 @@ function customerStatusProofSummary(job, bids) {
           </article>
         `).join("")}
       </div>
+      <div class="status-proof-actions">
+        ${statusProofPrimaryAction(job, bids, chosen)}
+        <button class="btn ghost small" type="button" data-action="copy-status-proof" data-job-id="${escapeHtml(job.id)}">Copy Status Proof</button>
+        <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
+      </div>
     </section>
   `;
+}
+
+function statusProofPrimaryAction(job, bids, chosen) {
+  if (chosen) {
+    return `<button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Review Handoff</button>`;
+  }
+  if (bids.length) {
+    return `<button class="btn orange small" type="button" data-action="choose-best" data-job-id="${escapeHtml(job.id)}">Choose Suggested Bid</button>`;
+  }
+  return `<button class="btn blue small" type="button" data-detail="${escapeHtml(job.id)}">View Job Detail</button>`;
 }
 
 function statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage) {
@@ -13425,6 +13440,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
+  if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
@@ -16576,6 +16592,32 @@ function copyStatusHandoff(jobId) {
     `Open status: ${roleDemoLink("customer", "status")}`
   ];
   copyText(lines.join("\n"), "Status handoff copied.");
+}
+
+function copyStatusProofSummary(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage);
+  const lines = [
+    "Forge customer status proof",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected bid: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Suggested next bid: ${bestBid.worker} at ${bestBid.amount}` : "Suggested next bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen ? bidHandoffText(job, chosen) : bids.length ? "Next action: choose the suggested bid to create the customer message handoff." : "Next action: get the first worker bid so the proof path can move forward.",
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Status proof copied.");
 }
 
 function copyMessageHandoff(threadId = state.activeMessageThreadId) {

@@ -296,8 +296,8 @@ const requiredHtml = [
   "premiumServiceGrid",
   "Browse All Services",
   "Get Quotes",
-  "styles.css?v=91",
-  "app.js?v=91"
+  "styles.css?v=92",
+  "app.js?v=92"
 ];
 
 const requiredJs = [
@@ -577,7 +577,11 @@ const requiredJs = [
   "loadCustomerStatus",
   "renderReports",
   "customerStatusProofSummary",
+  "statusProofPrimaryAction",
   "statusProofSummaryRows",
+  "Copy Status Proof",
+  "copyStatusProofSummary",
+  "Status proof copied.",
   "confirmNextSteps",
   "confirmationCloseoutRows",
   "confirmationHandoffTitle",
@@ -934,7 +938,7 @@ const missingCss = [
   ["status empty guidance", css.includes(".status-empty")],
   ["customer status demo card", css.includes(".status-demo-card") && css.includes("#fff7ef")],
   ["customer status flow panel", css.includes(".status-flow-panel")],
-  ["customer status proof summary", css.includes(".status-proof-summary") && css.includes(".status-proof-grid") && js.includes("customerStatusProofSummary")],
+  ["customer status proof summary", css.includes(".status-proof-summary") && css.includes(".status-proof-grid") && css.includes(".status-proof-actions") && js.includes("customerStatusProofSummary") && js.includes("copyStatusProofSummary")],
   ["customer status handoff panel", css.includes(".status-handoff-panel") && css.includes(".status-handoff-grid") && css.includes(".status-handoff-actions")],
   ["admin safety grid", css.includes(".safety-grid") && css.includes(".safety-item.attention")],
   ["follow-up audit panel", html.includes("followUpAuditGrid") && css.includes(".follow-up-audit-grid") && js.includes("renderFollowUpAudit") && js.includes("copyFollowUpAudit")],
@@ -951,7 +955,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v91")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v92")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -965,7 +969,7 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v91\"") && releaseManifest.includes("/request-help?v=91") && releaseManifest.includes("/post-job?v=91") && releaseManifest.includes("/worker-signup?v=91") && releaseManifest.includes("/business?v=91") && releaseManifest.includes("/photography?v=91") && releaseManifest.includes("/photography/request?v=91") && releaseManifest.includes("/photography/apply?v=91") && releaseManifest.includes("/photography-videography?v=91") && releaseManifest.includes("/northstar-creative?v=91") && releaseManifest.includes("/forge/capital?v=91") && releaseManifest.includes("/forge/flex?v=91") && releaseManifest.includes("/partners/flex?v=91") && releaseManifest.includes("/personal-driver?v=91") && releaseManifest.includes("/forge-payments?v=91") && releaseManifest.includes("/local-products?v=91") && releaseManifest.includes("/building?v=91") && releaseManifest.includes("/admin/building-leads?v=91") && releaseManifest.includes("/forge-academy?v=91") && releaseManifest.includes("/trade-pathways?v=91") && releaseManifest.includes("/admin/forge-academy?v=91")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v92\"") && releaseManifest.includes("/request-help?v=92") && releaseManifest.includes("/post-job?v=92") && releaseManifest.includes("/worker-signup?v=92") && releaseManifest.includes("/business?v=92") && releaseManifest.includes("/photography?v=92") && releaseManifest.includes("/photography/request?v=92") && releaseManifest.includes("/photography/apply?v=92") && releaseManifest.includes("/photography-videography?v=92") && releaseManifest.includes("/northstar-creative?v=92") && releaseManifest.includes("/forge/capital?v=92") && releaseManifest.includes("/forge/flex?v=92") && releaseManifest.includes("/partners/flex?v=92") && releaseManifest.includes("/personal-driver?v=92") && releaseManifest.includes("/forge-payments?v=92") && releaseManifest.includes("/local-products?v=92") && releaseManifest.includes("/building?v=92") && releaseManifest.includes("/admin/building-leads?v=92") && releaseManifest.includes("/forge-academy?v=92") && releaseManifest.includes("/trade-pathways?v=92") && releaseManifest.includes("/admin/forge-academy?v=92")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],

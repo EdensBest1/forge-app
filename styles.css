@@ -8897,6 +8897,18 @@ textarea:focus {
   line-height: 1.32;
 }
 
+.status-proof-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-proof-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .status-demo-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9898,6 +9910,7 @@ td {
   .worker-soft-launch-grid,
   .status-demo-actions,
   .status-proof-grid,
+  .status-proof-actions,
   .status-handoff-grid,
   .status-handoff-actions,
   .profile-meta,
