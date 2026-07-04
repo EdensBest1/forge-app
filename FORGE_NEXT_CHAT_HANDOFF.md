@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v89`.
+Forge is at `v90`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=89#home`
-- Best demo start: `http://127.0.0.1:4174/?v=89#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=89&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=89&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=89#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=89`
-- Admin demo: `http://127.0.0.1:4174/?v=89&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=90#home`
+- Best demo start: `http://127.0.0.1:4174/?v=90#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=90&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=90&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=90#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=90`
+- Admin demo: `http://127.0.0.1:4174/?v=90&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v89`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v90`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v89:
+These passed after v90:
 
 ```bash
 node --check app.js
@@ -127,7 +127,13 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Browser verification also confirmed:
+Automated verification after v90 also covers:
+
+- Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
+- The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
+- The in-app browser did not attach during the v90 heartbeat pass, so no new browser screenshot was recorded for this specific switchboard change.
+
+The preceding browser pass confirmed:
 
 - Home loads at `?v=89#home` with `styles.css?v=89` and `app.js?v=89`.
 - The redesigned homepage marketplace renders 8 premium Medford launch service cards: Roofing, HVAC, Electrical, Plumbing, Concrete & Asphalt, Remodeling, Excavation, and Tree Service.
@@ -188,4 +194,4 @@ Browser verification also confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v89 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v90 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

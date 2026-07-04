@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "89";
+const PUBLIC_LINK_VERSION = "90";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4836,6 +4836,7 @@ function render() {
   renderStartPaths();
   renderDemoGuide();
   renderDemoCueCards();
+  renderDemoProofSwitchboard();
   renderDemoPath();
   renderDemoLinks();
   renderLaunchReceipt();
@@ -5849,6 +5850,91 @@ function renderDemoCueCards() {
       <p><strong>Proof:</strong> ${escapeHtml(card.proof)}</p>
       <p><strong>Ask:</strong> ${escapeHtml(card.ask)}</p>
       <button class="btn ghost small" type="button" data-action="copy-demo-cue" data-demo-cue-role="${escapeHtml(card.role)}">Copy Cue</button>
+    </article>
+  `).join("");
+}
+
+function demoProofSwitchboardRows() {
+  const demoJob = state.jobs[0] || {};
+  const demoBids = state.bids.filter((bid) => bid.jobId === demoJob.id);
+  const chosenBid = demoBids.find((bid) => bid.chosen);
+  const availableJobs = state.jobs.filter((job) => job.status !== "Completed").length;
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const autoProofCount = (state.autoRequests || []).length + (state.autoInquiries || []).length + (state.vehicles || []).length;
+  return [
+    {
+      label: "Customer",
+      title: "John customer proof",
+      body: "Show status, bids, selected handoff, and the next message from the customer's side.",
+      metric: `${demoBids.length} bids ${chosenBid ? "with one selected" : "ready to review"}`,
+      proof: "Status -> Detail -> Messages",
+      role: "customer",
+      name: "John Smith",
+      screen: "status",
+      secondaryLabel: "Readiness",
+      secondaryScreen: "profile",
+      tone: "blue"
+    },
+    {
+      label: "Worker",
+      title: "Mike worker proof",
+      body: "Show available jobs, bid flow, profile readiness, and where the worker can take action.",
+      metric: `${availableJobs} jobs visible`,
+      proof: "Worker -> Jobs -> Bid",
+      role: "worker",
+      name: "Mike Jones",
+      screen: "worker",
+      secondaryLabel: "Profile",
+      secondaryScreen: "profile",
+      tone: "orange"
+    },
+    {
+      label: "Operator",
+      title: "Admin follow-up proof",
+      body: "Show the first-200 queue, safety gate, exports, and what needs follow-up today.",
+      metric: `${followUpCount} follow-ups queued`,
+      proof: "Admin -> Launch Command -> Safety",
+      role: "admin",
+      name: "Forge Admin",
+      screen: "admin",
+      secondaryLabel: "Launch",
+      secondaryScreen: "launch-status",
+      tone: "blue"
+    },
+    {
+      label: "Auto",
+      title: "Auto marketplace proof",
+      body: "Show vehicle requests, seller capture, buyer interest, dealer setup, and partner routing.",
+      metric: `${autoProofCount} auto leads`,
+      proof: "Auto -> Dealer Network -> Buyer Queue",
+      role: "customer",
+      name: "Forge Auto Services",
+      screen: "auto",
+      secondaryLabel: "Launch Route",
+      secondaryScreen: "launch-status",
+      tone: "ghost"
+    }
+  ];
+}
+
+function renderDemoProofSwitchboard() {
+  const target = document.querySelector("#demoProofSwitchboard");
+  if (!target) return;
+  target.innerHTML = demoProofSwitchboardRows().map((row) => `
+    <article class="demo-proof-card" data-demo-proof-role="${escapeHtml(row.label)}">
+      <div>
+        <span class="split-label">${escapeHtml(row.label)}</span>
+        <h3>${escapeHtml(row.title)}</h3>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <div class="demo-proof-meta">
+        <span><strong>Proof</strong>${escapeHtml(row.proof)}</span>
+        <span><strong>Current</strong>${escapeHtml(row.metric)}</span>
+      </div>
+      <div class="demo-proof-actions">
+        <button class="btn ${escapeHtml(row.tone)} small" type="button" data-login-role="${escapeHtml(row.role)}" data-login-name="${escapeHtml(row.name)}" data-login-screen="${escapeHtml(row.screen)}">Open Proof</button>
+        <button class="btn ghost small" type="button" data-login-role="${escapeHtml(row.role)}" data-login-name="${escapeHtml(row.name)}" data-login-screen="${escapeHtml(row.secondaryScreen)}">${escapeHtml(row.secondaryLabel)}</button>
+      </div>
     </article>
   `).join("");
 }
