@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "86";
+const PUBLIC_LINK_VERSION = "87";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8462,8 +8462,9 @@ function renderMessages() {
   const select = document.querySelector("#messageThreadSelect");
   const body = document.querySelector("#messageBody");
   const summary = document.querySelector("#messageSummary");
+  const handoff = document.querySelector("#messageHandoffPanel");
   const sentList = document.querySelector("#sentMessageList");
-  if (!list || !select || !body || !summary || !sentList) return;
+  if (!list || !select || !body || !summary || !handoff || !sentList) return;
 
   const threads = getMessageThreads();
   if (!threads.find((thread) => thread.id === state.activeMessageThreadId)) {
@@ -8480,6 +8481,7 @@ function renderMessages() {
   select.innerHTML = threads.map((thread) => `<option value="${escapeHtml(thread.id)}" ${thread.id === state.activeMessageThreadId ? "selected" : ""}>${escapeHtml(thread.title)}</option>`).join("");
   if (active && document.activeElement !== body) body.value = active.draft;
   summary.innerHTML = active ? messageSummary(active) : `<p class="muted">Choose a conversation to see the next follow-up.</p>`;
+  handoff.innerHTML = active ? messageHandoffPanel(active) : "";
   const orderedMessages = [
     ...state.messages.filter((message) => message.threadId === state.activeMessageThreadId),
     ...state.messages.filter((message) => message.threadId !== state.activeMessageThreadId)
@@ -8515,6 +8517,89 @@ function messageSummary(thread) {
       </div>
     </article>
   `;
+}
+
+function messageHandoffPanel(thread) {
+  const related = messageContext(thread);
+  const rows = messageHandoffRows(thread, related);
+  return `
+    <section aria-label="Message handoff closeout">
+      <div class="message-handoff-heading">
+        <div>
+          <span class="split-label">Message handoff closeout</span>
+          <h3>${escapeHtml(related.jobId ? "Confirm schedule, then keep the proof path visible." : "Turn this conversation into the next saved action.")}</h3>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-message-handoff" data-thread-id="${escapeHtml(thread.id)}">Copy Handoff</button>
+      </div>
+      <div class="message-handoff-grid">
+        ${rows.map((row) => `
+          <article class="${row.status}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="message-handoff-actions">
+        ${related.jobId ? `<button class="btn blue small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Detail</button>` : ""}
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Open Status</button>` : ""}
+        ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
+      </div>
+    </section>
+  `;
+}
+
+function messageHandoffRows(thread, related) {
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        label: "Job",
+        title: job ? job.status : "Job context missing",
+        body: job ? `${job.title} for ${job.customer || "the customer"}.` : thread.subtitle,
+        status: job ? "ready" : "waiting"
+      },
+      {
+        label: "Bid",
+        title: chosen ? `${chosen.worker} selected` : bids.length ? "Choose a bid" : "No bid yet",
+        body: chosen
+          ? `${chosen.amount} bid is ready for schedule confirmation.`
+          : bids.length
+            ? `${bids.length} bid${bids.length === 1 ? "" : "s"} available. Open Detail and choose one before closing the demo.`
+            : "Invite a worker bid before this thread can prove the full handoff.",
+        status: chosen ? "ready" : "attention"
+      },
+      {
+        label: "Next",
+        title: related.next,
+        body: lastMessage ? `Last saved touch: ${lastMessage.sentAt}.` : "Copy or save the next message so the follow-up is visible.",
+        status: lastMessage ? "ready" : "attention"
+      }
+    ];
+  }
+  return [
+    {
+      label: "Thread",
+      title: thread.kind,
+      body: thread.subtitle,
+      status: "ready"
+    },
+    {
+      label: "Next",
+      title: related.next,
+      body: "Use the draft, then save a sent message or move the lead forward from the related screen.",
+      status: "attention"
+    },
+    {
+      label: "Log",
+      title: lastMessage ? "Message saved" : "No saved message",
+      body: lastMessage ? `Last saved touch: ${lastMessage.sentAt}.` : "Copy or save the message before closing the follow-up block.",
+      status: lastMessage ? "ready" : "waiting"
+    }
+  ];
 }
 
 function messageFlowMarkup(thread, related) {
@@ -12727,6 +12812,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-first-user-closeout") copyFirstUserCloseout();
   if (action?.dataset.action === "copy-session-note") copySessionNote(action.dataset.sessionIndex);
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
+  if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
@@ -15984,6 +16070,28 @@ function copyStatusHandoff(jobId) {
     `Open status: ${roleDemoLink("customer", "status")}`
   ];
   copyText(lines.join("\n"), "Status handoff copied.");
+}
+
+function copyMessageHandoff(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  const rows = messageHandoffRows(thread, related);
+  const lines = [
+    "Forge message handoff closeout",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `To: ${thread.to || "Contact"}`,
+    `Next: ${related.next}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Draft:",
+    thread.draft,
+    "",
+    related.jobId ? `Open detail: ${roleDemoLink("customer", "detail")}` : related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
+  ].filter(Boolean);
+  copyText(lines.join("\n"), "Message handoff copied.");
 }
 
 function copyWorkerDirect(email) {
