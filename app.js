@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "83";
+const PUBLIC_LINK_VERSION = "84";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9863,8 +9863,38 @@ function safetyChecks() {
   ];
 }
 
+function firstUserLeadCollections() {
+  return [
+    ["Jobs", state.jobs],
+    ["Workers", state.workers],
+    ["Referrals", state.referrals],
+    ["Vehicle seller/listing leads", state.vehicles],
+    ["Auto buyer inquiries", state.autoInquiries],
+    ["Auto service requests", state.autoRequests],
+    ["Road Rescue requests", state.roadRescueRequests],
+    ["Personal driver requests", state.personalDriverRequests],
+    ["Personal driver providers", state.personalDriverProviders],
+    ["Merchant service leads", state.merchantServiceLeads],
+    ["Local product vendors", state.localProductVendors],
+    ["NorthStar leads", state.northstarLeads],
+    ["Capital Desk leads", state.flexLeads],
+    ["Manufacturing RFQs", state.manufacturingRfqs],
+    ["Manufacturing suppliers", state.manufacturingSuppliers],
+    ["Manufacturing supplier leads", state.manufacturingSupplierLeads],
+    ["Career leads", state.opportunityLeads],
+    ["Trade pathway leads", state.tradePathwayLeads],
+    ["Forge Academy leads", state.forgeAcademyLeads],
+    ["Employer training partners", state.employerTrainingPartners],
+    ["School partners", state.schoolPartners],
+    ["Resume requests", state.resumeRequests],
+    ["Homebuilding leads", state.homebuildingLeads],
+    ["Building leads", state.buildingLeads],
+    ["Project leads", state.projectLeads]
+  ].map(([label, rows]) => [label, Array.isArray(rows) ? rows : []]);
+}
+
 function totalLeadCount() {
-  return state.jobs.length + state.workers.length + state.referrals.length + (state.northstarLeads || []).length + (state.roadRescueRequests || []).length + (state.flexLeads || []).length + (state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length + (state.manufacturingSupplierLeads || []).length + (state.opportunityLeads || []).length + (state.tradePathwayLeads || []).length + (state.forgeAcademyLeads || []).length + (state.employerTrainingPartners || []).length + (state.schoolPartners || []).length + (state.resumeRequests || []).length + (state.homebuildingLeads || []).length + (state.buildingLeads || []).length + (state.projectLeads || []).length;
+  return firstUserLeadCollections().reduce((total, [, rows]) => total + rows.length, 0);
 }
 
 function renderFirstUserCloseout() {
@@ -14398,6 +14428,12 @@ async function copyDemoPack() {
     `Jobs: ${state.jobs.length}`,
     `Workers: ${state.workers.length}`,
     `NorthStar Leads: ${(state.northstarLeads || []).length}`,
+    `Vehicle Seller Leads: ${(state.vehicles || []).length}`,
+    `Auto Buyer Inquiries: ${(state.autoInquiries || []).length}`,
+    `Auto Service Requests: ${(state.autoRequests || []).length}`,
+    `Personal Driver Requests: ${(state.personalDriverRequests || []).length}`,
+    `Merchant Service Leads: ${(state.merchantServiceLeads || []).length}`,
+    `Local Product Vendors: ${(state.localProductVendors || []).length}`,
     `Manufacturing RFQs: ${(state.manufacturingRfqs || []).length}`,
     `Manufacturing Suppliers: ${(state.manufacturingSuppliers || []).length}`,
     `Road Rescue Requests: ${(state.roadRescueRequests || []).length}`,
@@ -14453,6 +14489,8 @@ async function copyFirst200Plan() {
     `Job posters: ${state.jobs.length}/60`,
     `Workers: ${state.workers.length}/60`,
     `NorthStar leads: ${(state.northstarLeads || []).length}/20`,
+    `Auto sellers, buyers, and service requests: ${((state.vehicles || []).length + (state.autoInquiries || []).length + (state.autoRequests || []).length)}/30`,
+    `Driver, merchant, and local product leads: ${((state.personalDriverRequests || []).length + (state.personalDriverProviders || []).length + (state.merchantServiceLeads || []).length + (state.localProductVendors || []).length)}/25`,
     `Capital Desk leads: ${(state.flexLeads || []).length}/20`,
     `Manufacturing RFQs and suppliers: ${((state.manufacturingRfqs || []).length + (state.manufacturingSuppliers || []).length)}/30`,
     `Homebuilding leads: ${(state.homebuildingLeads || []).length}/25`,
@@ -14466,10 +14504,12 @@ async function copyFirst200Plan() {
     "3. Ask 3 people about a home build, ADU, remodel, or contractor partnership.",
     "4. Ask 3 people about home projects, major builds, multifamily, mixed-use, commercial, land, or investment-backed opportunities.",
     "5. Ask 3 service businesses whether NorthStar can help with websites, branding, CRM, lead follow-up, job tracking, or operations.",
-    "6. Ask 3 business owners whether they need breathing room around cash flow, bill pay, vendor payments, employee cards, or working capital.",
-    "7. Ask 3 founders, retailers, health stores, gyms, brands, suppliers, labs, formulators, packaging providers, or compliance consultants about manufacturing and nutraceutical opportunities.",
-    "8. Ask 3 people about trade school, union, apprenticeship, or AI field work.",
-    "9. Ask every interested person for one referral.",
+    "6. Ask 3 people about vehicle selling, buying, service, inspection, detailing, customization, or transport.",
+    "7. Ask 3 people about personal driver, merchant services, or local product/maker opportunities.",
+    "8. Ask 3 business owners whether they need breathing room around cash flow, bill pay, vendor payments, employee cards, or working capital.",
+    "9. Ask 3 founders, retailers, health stores, gyms, brands, suppliers, labs, formulators, packaging providers, or compliance consultants about manufacturing and nutraceutical opportunities.",
+    "10. Ask 3 people about trade school, union, apprenticeship, or AI field work.",
+    "11. Ask every interested person for one referral.",
     "",
     "Use this link to start demos:",
     roleDemoLink("admin", "perspective")
