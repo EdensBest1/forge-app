@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "85";
+const PUBLIC_LINK_VERSION = "86";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4669,6 +4669,7 @@ function render() {
   renderLaunchDemoPack();
   renderLaunchDecision();
   renderFirstUserCountBreakdown();
+  renderFollowUpAudit();
   renderBackendHandoff();
   renderAuthHandoff();
   renderFirstUserCloseout();
@@ -9493,6 +9494,76 @@ function firstUserLeadBreakdownRows() {
   ];
 }
 
+function renderFollowUpAudit() {
+  const target = document.querySelector("#followUpAuditGrid");
+  if (!target) return;
+  target.innerHTML = followUpAuditRows().map((row) => `
+    <article class="follow-up-audit-card ${escapeHtml(row.status)}">
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function followUpAuditRows() {
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const batchCount = outreachBatchRows().length;
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      label: "Queue",
+      title: followUpCount ? `${followUpCount} need touch` : "Queue clear",
+      body: followUpCount
+        ? "Copy the follow-up queue and contact the highest-priority people before widening the demo group."
+        : "No urgent follow-up is waiting in the current queue.",
+      status: followUpCount ? "attention" : "ready",
+      primary: Boolean(followUpCount),
+      actionLabel: "Copy Queue",
+      action: { type: "action", name: "copy-follow-up-queue" }
+    },
+    {
+      label: "Next 10",
+      title: batchCount ? `${batchCount} in next batch` : "No batch queued",
+      body: batchCount
+        ? "Run one focused outreach sprint, then mark each person contacted or moved forward."
+        : "Capture more leads or switch filters before starting the next outreach sprint.",
+      status: batchCount ? "attention" : "ready",
+      primary: false,
+      actionLabel: "Copy Batch",
+      action: { type: "action", name: "copy-outreach-batch" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Backup needed",
+      body: backupCurrent
+        ? `Last backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON now so ${leadCount} current leads are recoverable before the next outreach block.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Public View",
+      title: publicMode ? "Visitor-safe mode on" : "Operator view on",
+      body: publicMode
+        ? "Operator screens are hidden for visitor demos. Keep using controlled links until backend and auth are ready."
+        : "Turn Public View on before handing Forge to someone else.",
+      status: publicMode ? "ready" : "attention",
+      primary: !publicMode,
+      actionLabel: publicMode ? "Launch Status" : "Turn On",
+      action: publicMode ? { type: "nav", screen: "launch-status" } : { type: "action", name: "toggle-public-mode" }
+    }
+  ];
+}
+
 function launchDemoPackRows() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
@@ -12635,6 +12706,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
+  if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
   if (action?.dataset.action === "copy-soft-launch-invite-kit") copySoftLaunchInviteKit();
@@ -17320,6 +17392,19 @@ function copyFirstUserCloseout() {
   copyText(lines.join("\n"), "First-user closeout copied.");
 }
 
+function copyFollowUpAudit() {
+  const rows = followUpAuditRows();
+  const lines = [
+    "Forge first-user follow-up audit",
+    "",
+    `First-user count: ${totalLeadCount()}/200`,
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Operating rule: show the right perspective, capture one next action, clear the follow-up queue, and export backup after outreach."
+  ];
+  copyText(lines.join("\n"), "Follow-up audit copied.");
+}
+
 function copySessionNote(index) {
   const activity = state.activity[Number(index)];
   if (!activity) {
@@ -17346,6 +17431,9 @@ function exportBackup() {
   addActivity("Full backup JSON exported.");
   saveState();
   renderSafetyCenter();
+  renderLaunchDecision();
+  renderLaunchDemoPack();
+  renderFollowUpAudit();
   renderFirstUserCloseout();
 }
 

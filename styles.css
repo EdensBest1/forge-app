@@ -8887,6 +8887,98 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.follow-up-audit {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.follow-up-audit-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.follow-up-audit-heading h2,
+.follow-up-audit-heading p {
+  margin: 0;
+}
+
+.follow-up-audit-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.follow-up-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.follow-up-audit-card {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  min-height: 156px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.follow-up-audit-card.attention {
+  border-left-color: var(--orange);
+  background: #fff7ef;
+}
+
+.follow-up-audit-card.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.follow-up-audit-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.follow-up-audit-card.attention span,
+.follow-up-audit-card.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.follow-up-audit-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.follow-up-audit-card p {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.follow-up-audit-card .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .launch-status-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -9275,6 +9367,7 @@ td {
   .mobile-demo-flow-grid,
   .launch-receipt-grid,
   .first-user-breakdown-grid,
+  .follow-up-audit-grid,
   .demo-guide-steps,
   .demo-cue-grid,
   .demo-path-grid,
@@ -9698,6 +9791,11 @@ td {
   }
 
   .first-user-breakdown-total {
+    justify-items: start;
+  }
+
+  .follow-up-audit-heading {
+    display: grid;
     justify-items: start;
   }
 
