@@ -11494,3 +11494,476 @@ th {
     padding: 0 14px;
   }
 }
+
+/* Luxury-tech design addendum: original Forge/Stitch-inspired showroom language. */
+:root {
+  --luxury-navy: #071428;
+  --luxury-blue: #0b48b5;
+  --luxury-black: #07080b;
+  --luxury-silver: #d9dee8;
+  --luxury-paper: #f8fafc;
+  --luxury-gold: #c7a34d;
+  --luxury-shadow: 0 22px 70px rgba(7, 20, 40, 0.13);
+  --luxury-shadow-hover: 0 30px 90px rgba(7, 20, 40, 0.2);
+}
+
+.home-screen {
+  background: var(--luxury-black);
+}
+
+.home-top {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(90deg, rgba(7, 20, 40, 0.96), rgba(7, 8, 11, 0.93)),
+    var(--luxury-black);
+}
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: min(560px, calc(100vh - 160px));
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(120deg, rgba(7, 8, 11, 0.96) 0%, rgba(7, 20, 40, 0.84) 44%, rgba(7, 20, 40, 0.34) 100%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0 1px, transparent 1px 24px),
+    var(--luxury-navy);
+  color: #fff;
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(255, 106, 0, 0.28) 0 1px, transparent 1px 100%),
+    repeating-linear-gradient(90deg, transparent 0 92px, rgba(199, 163, 77, 0.18) 92px 93px, transparent 93px 186px);
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  right: clamp(18px, 5vw, 80px);
+  bottom: clamp(18px, 5vw, 80px);
+  width: min(34vw, 340px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(199, 163, 77, 0.28);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  align-content: center;
+  width: min(920px, 100%);
+  min-height: inherit;
+  padding: clamp(34px, 4vw, 54px) clamp(22px, 6vw, 86px);
+}
+
+.hero-copy h1 {
+  max-width: 860px;
+  color: #fff;
+  font-size: clamp(2.8rem, 5vw, 5.6rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.hero-copy p {
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(0.98rem, 1.35vw, 1.18rem);
+}
+
+.hero-trust-line {
+  border-color: rgba(199, 163, 77, 0.42);
+  background: rgba(7, 20, 40, 0.72);
+  color: #f9df9d !important;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+}
+
+.hero-actions {
+  flex-wrap: wrap;
+}
+
+.home-hero .hero-actions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: min(920px, 100%);
+}
+
+.hero-actions .btn,
+.btn {
+  min-height: 48px;
+  border-radius: 8px;
+  font-weight: 920;
+  letter-spacing: 0;
+}
+
+.hero-copy .hero-actions .btn {
+  min-height: 50px;
+  padding-inline: 10px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+.btn.orange {
+  background: linear-gradient(180deg, #ff8126, #f05f00);
+}
+
+.btn.blue {
+  background: linear-gradient(180deg, #145bd2, #063d9b);
+}
+
+.btn.ghost {
+  border-color: rgba(7, 20, 40, 0.12);
+  background: #fff;
+  color: var(--luxury-navy);
+}
+
+.home-hero .btn.ghost {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 54px rgba(7, 20, 40, 0.18);
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  min-height: 100%;
+  border-left: 0;
+  opacity: 0.46;
+  filter: saturate(0.86) contrast(1.06);
+}
+
+.hero-photo::before {
+  display: none;
+}
+
+.feature-strip,
+.premium-marketplace,
+.role-gateway-panel,
+.vertical-showroom-panel,
+.browse-all-services-panel,
+.job-trust-panel,
+.start-path-panel,
+.audience-split {
+  background: var(--luxury-paper);
+}
+
+.premium-marketplace,
+.role-gateway-panel,
+.vertical-showroom-panel,
+.browse-all-services-panel,
+.job-trust-panel,
+.start-path-panel {
+  padding: clamp(30px, 5vw, 64px) clamp(22px, 5vw, 72px);
+}
+
+.premium-marketplace-head h2,
+.section-title h2,
+.role-gateway-panel h2,
+.vertical-showroom-panel h2 {
+  color: var(--luxury-navy);
+  letter-spacing: 0;
+}
+
+.premium-marketplace-head h2 {
+  max-width: 760px;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+}
+
+.premium-service-search {
+  border-color: rgba(7, 20, 40, 0.12);
+  background: #fff;
+  box-shadow: var(--luxury-shadow);
+}
+
+.premium-service-card,
+.role-gateway-panel article,
+.vertical-showroom-panel article,
+.job-status-card,
+.provider-preview-card,
+.start-path-card {
+  border: 1px solid rgba(7, 20, 40, 0.1);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
+    #fff;
+  box-shadow: var(--luxury-shadow);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.premium-service-card:hover,
+.premium-service-card:focus-within,
+.role-gateway-panel article:hover,
+.vertical-showroom-panel article:hover,
+.product-path-tile:hover,
+.product-path-tile:focus-visible,
+.product-path-match-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(199, 163, 77, 0.48);
+  box-shadow: var(--luxury-shadow-hover);
+}
+
+.premium-service-card:first-child {
+  background:
+    linear-gradient(140deg, rgba(255, 106, 0, 0.18), transparent 48%),
+    linear-gradient(135deg, #071428, #0b48b5);
+}
+
+.vertical-showroom-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  border-bottom: 1px solid rgba(7, 20, 40, 0.1);
+}
+
+.vertical-showroom-panel article {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  min-height: 260px;
+  padding: 26px;
+}
+
+.vertical-showroom-panel p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.impact-trust-strip {
+  background:
+    linear-gradient(90deg, var(--luxury-navy), #0b2c69),
+    var(--luxury-navy);
+}
+
+.manufacturing-hero {
+  min-height: 520px;
+  background:
+    linear-gradient(130deg, rgba(7, 20, 40, 0.98), rgba(11, 72, 181, 0.72)),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 24px);
+}
+
+.manufacturing-hero-copy {
+  padding: clamp(46px, 7vw, 90px);
+}
+
+.manufacturing-hero-copy h1 {
+  max-width: 880px;
+  font-size: clamp(2.8rem, 6vw, 6.2rem);
+  line-height: 0.95;
+}
+
+.manufacturing-layout {
+  padding: clamp(26px, 5vw, 60px);
+  background: #f7f9fc;
+}
+
+.manufacturing-intro,
+.manufacturing-paths,
+.manufacturing-path-engine,
+.manufacturing-network,
+.manufacturing-directory,
+.manufacturing-eden,
+.manufacturing-documents,
+.manufacturing-pipeline,
+.manufacturing-compliance,
+.manufacturing-form,
+.manufacturing-supplier-card {
+  border-color: rgba(7, 20, 40, 0.1);
+  box-shadow: var(--luxury-shadow);
+}
+
+.product-path-tile {
+  min-height: 104px;
+  padding: 16px;
+  background:
+    linear-gradient(180deg, #fff, #f8fafc),
+    #fff;
+  box-shadow: 0 12px 34px rgba(7, 20, 40, 0.07);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.product-path-tile.active {
+  border-color: var(--orange);
+  background:
+    linear-gradient(180deg, #fff, #fff7ef),
+    #fff;
+}
+
+.product-path-summary article,
+.product-path-match-card {
+  min-height: 190px;
+  border-color: rgba(7, 20, 40, 0.1);
+  background:
+    linear-gradient(180deg, #fff, #f8fafc),
+    #fff;
+  box-shadow: 0 14px 42px rgba(7, 20, 40, 0.08);
+}
+
+.product-path-match-card header strong {
+  color: var(--luxury-navy);
+  font-size: 1.08rem;
+}
+
+.product-path-policy {
+  border-color: rgba(199, 163, 77, 0.36);
+  background: #fffdf7;
+}
+
+.auto-screen {
+  background:
+    linear-gradient(180deg, #07080b 0%, #071428 46%, #f5f7fb 46%, #f5f7fb 100%);
+}
+
+.auto-bar {
+  background: linear-gradient(180deg, #07080b, #071428);
+}
+
+.auto-hero::before {
+  background:
+    linear-gradient(90deg, rgba(7, 8, 11, 0.96) 0%, rgba(7, 20, 40, 0.82) 42%, rgba(7, 20, 40, 0.18) 76%),
+    repeating-linear-gradient(90deg, rgba(217, 222, 232, 0.13) 0 1px, transparent 1px 110px);
+}
+
+.auto-hero-copy .split-label,
+.auto-section-heading .split-label,
+.auto-services .split-label,
+.auto-request-section .split-label,
+.auto-compliance .split-label {
+  color: var(--luxury-silver);
+}
+
+.auto-hero h1 {
+  font-size: clamp(3.4rem, 7vw, 7rem);
+}
+
+.auto-service-grid article,
+.auto-admin-grid article,
+.auto-admin-columns > section {
+  border-color: rgba(7, 20, 40, 0.12);
+  box-shadow: var(--luxury-shadow);
+}
+
+.northstar-screen {
+  background: #f7f9fc;
+}
+
+.northstar-hero {
+  min-height: 600px;
+  background:
+    linear-gradient(118deg, rgba(4, 22, 45, 0.98), rgba(6, 49, 98, 0.88)),
+    repeating-linear-gradient(135deg, rgba(199, 163, 77, 0.18) 0 1px, transparent 1px 28px),
+    url("./assets/forge-hero.png") center / cover;
+}
+
+.northstar-hero-copy h1 {
+  font-size: clamp(3rem, 7vw, 7rem);
+  line-height: 0.93;
+}
+
+.northstar-main,
+.northstar-intake-panel,
+.northstar-form,
+.northstar-lead-list,
+.northstar-intro,
+.northstar-services,
+.northstar-packages {
+  border-color: rgba(4, 22, 45, 0.12);
+  box-shadow: var(--luxury-shadow);
+}
+
+.admin-tools,
+.admin-heading,
+.dashboard-card,
+.table-card,
+.project-admin-board,
+.flex-admin-section {
+  border-color: rgba(7, 20, 40, 0.12);
+  background:
+    linear-gradient(180deg, #fff, #f8fafc),
+    #fff;
+  box-shadow: var(--luxury-shadow);
+}
+
+@media (max-width: 1000px) {
+  .vertical-showroom-panel,
+  .product-path-summary,
+  .product-path-match-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .home-top {
+    background: rgba(7, 20, 40, 0.98);
+    color: #fff;
+  }
+
+  .home-top .brand {
+    color: #fff;
+  }
+
+  .home-hero {
+    display: grid;
+    min-height: 560px;
+  }
+
+  .hero-copy {
+    padding: 42px 20px 34px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.15rem, 10vw, 3.4rem);
+  }
+
+  .hero-copy p {
+    font-size: 0.96rem;
+    line-height: 1.42;
+  }
+
+  .hero-trust-line {
+    font-size: 0.82rem;
+  }
+
+  .home-hero .hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-photo {
+    display: block;
+    min-height: 100%;
+  }
+
+  .premium-service-grid,
+  .role-gateway-panel,
+  .vertical-showroom-panel,
+  .product-path-summary,
+  .product-path-match-grid,
+  .manufacturing-eden-grid,
+  .manufacturing-doc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-marketplace,
+  .role-gateway-panel,
+  .vertical-showroom-panel,
+  .browse-all-services-panel,
+  .job-trust-panel,
+  .start-path-panel {
+    padding: 28px 18px;
+  }
+}
