@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "92";
+const PUBLIC_LINK_VERSION = "93";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9051,6 +9051,7 @@ function messageHandoffPanel(thread) {
           </article>
         `).join("")}
       </div>
+      ${messageProofReceipt(thread, related)}
       <div class="message-handoff-actions">
         ${related.jobId ? `<button class="btn blue small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Detail</button>` : ""}
         ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Open Status</button>` : ""}
@@ -9058,6 +9059,45 @@ function messageHandoffPanel(thread) {
       </div>
     </section>
   `;
+}
+
+function messageProofReceipt(thread, related) {
+  return `
+    <div class="message-proof-receipt" aria-label="Message proof receipt">
+      <span>Demo close</span>
+      <strong>${escapeHtml(messageProofReceiptTitle(thread, related))}</strong>
+      <p>${escapeHtml(messageProofReceiptText(thread, related))}</p>
+      <div class="message-proof-actions">
+        <button class="btn blue small" type="button" data-action="copy-message-proof" data-thread-id="${escapeHtml(thread.id)}">Copy Message Proof</button>
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Customer Status</button>` : ""}
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Job Detail</button>` : ""}
+        ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function messageProofReceiptTitle(thread, related) {
+  if (related.jobId) {
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    return chosen ? `Ready to confirm the schedule with ${chosen.worker}.` : "Choose a bid before closing this thread.";
+  }
+  return `${thread.kind} next step is ready.`;
+}
+
+function messageProofReceiptText(thread, related) {
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    if (chosen) {
+      return `${job?.customer || "The customer"} can see the selected ${chosen.amount} bid, this thread, and the next schedule step in one place.`;
+    }
+    return bids.length ? "Use Job Detail to choose the bid, then this thread becomes the schedule handoff." : "Get one worker bid first so the message thread can prove the marketplace flow.";
+  }
+  return lastMessage ? `Last saved touch: ${lastMessage.sentAt}. Copy this proof before moving the conversation forward.` : "Use the draft and save the touch so the follow-up is visible.";
 }
 
 function messageHandoffRows(thread, related) {
@@ -13325,6 +13365,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-session-note") copySessionNote(action.dataset.sessionIndex);
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
+  if (action?.dataset.action === "copy-message-proof") copyMessageProof(action.dataset.threadId);
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
@@ -16640,6 +16681,26 @@ function copyMessageHandoff(threadId = state.activeMessageThreadId) {
     related.jobId ? `Open detail: ${roleDemoLink("customer", "detail")}` : related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
   ].filter(Boolean);
   copyText(lines.join("\n"), "Message handoff copied.");
+}
+
+function copyMessageProof(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  const lines = [
+    "Forge message proof",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `Next step: ${related.next}`,
+    "",
+    messageProofReceiptTitle(thread, related),
+    messageProofReceiptText(thread, related),
+    "",
+    related.jobId ? `Open status: ${roleDemoLink("customer", "status")}` : "",
+    related.jobId ? `Open detail: ${roleDemoLink("customer", "detail")}` : "",
+    related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
+  ].filter(Boolean);
+  copyText(lines.join("\n"), "Message proof copied.");
 }
 
 function copyWorkerDirect(email) {

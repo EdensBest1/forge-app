@@ -2934,6 +2934,44 @@ body:not(.role-admin) [data-admin-control] {
   padding-left: 8px;
 }
 
+.message-proof-receipt {
+  display: grid;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid #bfd0e7;
+}
+
+.message-proof-receipt > span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-proof-receipt > strong {
+  color: var(--blue);
+  line-height: 1.28;
+}
+
+.message-proof-receipt > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.message-proof-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-proof-actions .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .message-next {
   display: grid;
   gap: 3px;
@@ -9913,6 +9951,7 @@ td {
   .status-proof-actions,
   .status-handoff-grid,
   .status-handoff-actions,
+  .message-proof-actions,
   .profile-meta,
   .profile-brief-grid,
   .profile-demo-handoff-grid,
