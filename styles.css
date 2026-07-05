@@ -2647,6 +2647,54 @@ body:not(.role-admin) [data-admin-control] {
   min-width: 0;
 }
 
+.mobile-demo-closeout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #ffd2b0;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.mobile-demo-closeout span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 4px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fff0df;
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.mobile-demo-closeout strong {
+  display: block;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.mobile-demo-closeout p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.38;
+}
+
+.mobile-demo-closeout-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 112px));
+  gap: 8px;
+}
+
+.mobile-demo-closeout-actions .btn {
+  min-width: 0;
+}
+
 .launch-receipt {
   display: grid;
   gap: 14px;
@@ -10393,6 +10441,8 @@ td {
   .demo-proof-heading,
   .demo-proof-grid,
   .mobile-demo-flow-grid,
+  .mobile-demo-closeout,
+  .mobile-demo-closeout-actions,
   .perspective-readiness-heading,
   .perspective-readiness-grid,
   .launch-receipt-grid,
