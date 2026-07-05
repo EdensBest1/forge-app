@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "98";
+const PUBLIC_LINK_VERSION = "99";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -11895,6 +11895,7 @@ function renderFollowUpQueue() {
   const typeFilter = document.querySelector("#queueTypeFilter")?.value || "All Lead Types";
   const statusFilter = document.querySelector("#queueStatusFilter")?.value || "Needs Follow-Up";
   const rows = filteredFollowUpRows(typeFilter, statusFilter);
+  renderFollowUpCommandStrip();
   renderFollowUpProgress();
   renderTodayFollowUp(rows.slice(0, 3));
 
@@ -11923,6 +11924,71 @@ function renderFollowUpQueue() {
       </div>
     </article>
   `).join("") || `<article class="queue-card"><div><h3>No leads match this filter.</h3><p>Switch to All Statuses or capture a new lead.</p></div></article>`;
+}
+
+function renderFollowUpCommandStrip() {
+  const target = document.querySelector("#followUpCommandStrip");
+  if (!target) return;
+  target.innerHTML = followUpCommandRows().map((row) => `
+    <article class="follow-up-command-card ${escapeHtml(row.status)}">
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function followUpCommandRows() {
+  const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up");
+  const batch = outreachBatchRows();
+  const first = batch[0];
+  const hotCount = batch.filter((row) => row.priority === "Hot").length;
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  return [
+    {
+      label: "Queue",
+      title: needsTouch.length ? `${needsTouch.length} need touch` : "Queue clear",
+      body: first ? `Start with ${first.person}: ${first.reason}.` : "No urgent first-user follow-up is waiting.",
+      status: needsTouch.length ? "attention" : "ready",
+      primary: Boolean(needsTouch.length),
+      actionLabel: "Copy Queue",
+      action: { type: "action", name: "copy-follow-up-queue" }
+    },
+    {
+      label: "Sprint",
+      title: `${batch.length}/10 ready`,
+      body: hotCount ? `${hotCount} hot lead${hotCount === 1 ? "" : "s"} in the next batch. Run a focused outreach block.` : "Copy the batch when a focused outreach block is ready.",
+      status: batch.length ? "attention" : "ready",
+      primary: false,
+      actionLabel: "Copy Batch",
+      action: { type: "action", name: "copy-outreach-batch" }
+    },
+    {
+      label: "Closeout",
+      title: "Record movement",
+      body: "After calls, texts, or emails, mark each lead Contacted or Move Forward, then complete the sprint.",
+      status: "ready",
+      primary: false,
+      actionLabel: "Complete Sprint",
+      action: { type: "action", name: "complete-outreach-sprint" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Backup after sprint",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads. Export again after new captures or status changes.`
+        : `Export Backup JSON so ${leadCount} saved leads are recoverable.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
 }
 
 function renderFollowUpProgress() {
@@ -13625,6 +13691,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
   if (action?.dataset.action === "copy-profile-close-ask") copyProfileCloseAsk();
+  if (action?.dataset.action === "copy-follow-up-command") copyFollowUpCommand();
   if (action?.dataset.action === "copy-follow-up-queue") copyFollowUpQueue();
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
@@ -18402,6 +18469,24 @@ function copyOutreachBatch() {
     "After each contact: mark Contacted or Move Forward so Outreach Recap and Launch Command update."
   ];
   copyText(lines.join("\n\n"), "Next 10 batch copied.");
+}
+
+function copyFollowUpCommand() {
+  const rows = followUpCommandRows();
+  const batch = outreachBatchRows();
+  const lines = [
+    "Forge follow-up command",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "First contacts:",
+    ...(batch.length
+      ? batch.slice(0, 5).map((row, index) => `${index + 1}. ${row.person} (${row.kind}, score ${row.score}) - ${row.reason}`)
+      : ["No urgent follow-ups in the current batch."]),
+    "",
+    "Operating order: copy the batch, contact the highest-priority people, mark each Contacted or Move Forward, complete the sprint, then export Backup JSON if anything changed."
+  ];
+  copyText(lines.join("\n"), "Follow-up command copied.");
 }
 
 function copySessionHistory() {

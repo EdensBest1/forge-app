@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=98" />
+    <link rel="stylesheet" href="./styles.css?v=99" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -4084,8 +4084,12 @@
                   <h2>Follow-Up Queue</h2>
                   <p class="muted">Filter who needs attention next across jobs, workers, and referrals.</p>
                 </div>
-                <button class="btn ghost small" type="button" data-action="copy-follow-up-queue">Copy Queue</button>
+                <div class="compact-actions">
+                  <button class="btn ghost small" type="button" data-action="copy-follow-up-command">Copy Command</button>
+                  <button class="btn ghost small" type="button" data-action="copy-follow-up-queue">Copy Queue</button>
+                </div>
               </div>
+              <div class="follow-up-command-strip" id="followUpCommandStrip"></div>
               <div class="filter-row">
                 <select id="queueTypeFilter">
                   <option>All Lead Types</option>
@@ -4616,6 +4620,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=98"></script>
+    <script src="./app.js?v=99"></script>
   </body>
 </html>
