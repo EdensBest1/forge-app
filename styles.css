@@ -9486,6 +9486,104 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.first-200-queue {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.first-200-queue-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.first-200-queue-heading h2,
+.first-200-queue-heading p {
+  margin: 0;
+}
+
+.first-200-queue-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.first-200-queue-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.first-200-queue-card {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  min-height: 166px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.first-200-queue-card.attention {
+  border-left-color: var(--orange);
+  background: #fff7ef;
+}
+
+.first-200-queue-card.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.first-200-queue-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.first-200-queue-card.attention span,
+.first-200-queue-card.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.first-200-queue-card strong {
+  color: var(--orange);
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.first-200-queue-card h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.25;
+}
+
+.first-200-queue-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.first-200-queue-card .btn {
+  width: 100%;
+  min-width: 0;
+}
+
 .follow-up-audit {
   display: grid;
   gap: 14px;
@@ -9979,6 +10077,7 @@ td {
   .perspective-readiness-grid,
   .launch-receipt-grid,
   .first-user-breakdown-grid,
+  .first-200-queue-grid,
   .follow-up-audit-grid,
   .demo-guide-steps,
   .demo-cue-grid,
@@ -10429,6 +10528,11 @@ td {
   }
 
   .first-user-breakdown-total {
+    justify-items: start;
+  }
+
+  .first-200-queue-heading {
+    display: grid;
     justify-items: start;
   }
 

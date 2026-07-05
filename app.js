@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "96";
+const PUBLIC_LINK_VERSION = "97";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4887,6 +4887,7 @@ function render() {
   renderLaunchDemoPack();
   renderLaunchDecision();
   renderFirstUserCountBreakdown();
+  renderFirst200LaunchQueue();
   renderFollowUpAudit();
   renderBackendHandoff();
   renderAuthHandoff();
@@ -10201,6 +10202,95 @@ function firstUserLeadBreakdownRows() {
   ];
 }
 
+function renderFirst200LaunchQueue() {
+  const target = document.querySelector("#first200QueueGrid");
+  if (!target) return;
+  target.innerHTML = first200LaunchQueueRows().map((row) => `
+    <article class="first-200-queue-card ${escapeHtml(row.status)}">
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.metric)}</strong>
+        <h3>${escapeHtml(row.title)}</h3>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function first200ManualReviewCount() {
+  const reviewCollections = [
+    state.vehicles,
+    state.autoInquiries,
+    state.autoRequests,
+    state.roadRescueRequests,
+    state.personalDriverRequests,
+    state.personalDriverProviders,
+    state.flexLeads,
+    state.manufacturingRfqs,
+    state.manufacturingSuppliers,
+    state.manufacturingSupplierLeads,
+    state.homebuildingLeads,
+    state.buildingLeads,
+    state.projectLeads
+  ];
+  return reviewCollections.reduce((total, rows) => total + (Array.isArray(rows) ? rows.length : 0), 0);
+}
+
+function first200LaunchQueueRows() {
+  const leadCount = totalLeadCount();
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const reviewCount = first200ManualReviewCount();
+  const demoReadyCount = Math.max(0, leadCount - Math.min(leadCount, followUpCount + reviewCount));
+  const remaining = Math.max(0, 200 - leadCount);
+  return [
+    {
+      label: "Target",
+      metric: `${leadCount}/200`,
+      title: remaining ? `${remaining} spots left` : "First 200 reached",
+      body: "Keep adding real job posters, workers, referrals, auto leads, career leads, and business leads only when follow-up consent is clear.",
+      status: leadCount ? "ready" : "attention",
+      primary: !leadCount,
+      actionLabel: "Capture Lead",
+      action: { type: "nav", screen: "capture" }
+    },
+    {
+      label: "Demo ready",
+      metric: String(demoReadyCount),
+      title: "Safe for a normal proof path",
+      body: "Use these conversations for the John/Mike proof path, profile status, message handoff, and one clear next ask.",
+      status: demoReadyCount ? "ready" : "attention",
+      primary: Boolean(demoReadyCount),
+      actionLabel: "Demo Pack",
+      action: { type: "action", name: "copy-demo-pack" }
+    },
+    {
+      label: "Follow-up",
+      metric: String(followUpCount),
+      title: followUpCount ? "Contact before widening" : "No urgent touches",
+      body: followUpCount
+        ? "Call, text, or email the warmest people before sending the link to a wider group."
+        : "No urgent first-user follow-up is waiting in the current queue.",
+      status: followUpCount ? "attention" : "ready",
+      primary: Boolean(followUpCount),
+      actionLabel: "Copy Queue",
+      action: { type: "action", name: "copy-follow-up-queue" }
+    },
+    {
+      label: "Manual review",
+      metric: String(reviewCount),
+      title: reviewCount ? "Keep guarded" : "No guarded leads",
+      body: reviewCount
+        ? "Autos, drivers, finance, manufacturing, building, and major project leads stay operator-reviewed before any match, referral, or partner handoff."
+        : "No sensitive auto, driver, finance, manufacturing, building, or major project leads are waiting in review.",
+      status: reviewCount ? "hold" : "ready",
+      primary: false,
+      actionLabel: "Launch Boundary",
+      action: { type: "nav", screen: "launch-status" }
+    }
+  ];
+}
+
 function renderFollowUpAudit() {
   const target = document.querySelector("#followUpAuditGrid");
   if (!target) return;
@@ -13414,6 +13504,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
+  if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
@@ -17793,6 +17884,23 @@ function copyFirstUserCountBreakdown() {
     "Use this count for controlled demos and first-user follow-up. Broad public launch still waits for backend delivery, production admin auth, backup, legal review, and final security review."
   ];
   copyText(lines.join("\n"), "First-user count copied.");
+}
+
+function copyFirst200LaunchQueue() {
+  const lines = [
+    "Forge First 200 launch queue",
+    "",
+    `First-user count: ${totalLeadCount()}/200`,
+    "",
+    ...first200LaunchQueueRows().map((row) => `${row.label}: ${row.metric} - ${row.title}. ${row.body}`),
+    "",
+    "Operating order:",
+    "1. Demo-ready people get the John/Mike proof path and one clear ask.",
+    "2. Follow-up-needed people get contacted before the link spreads wider.",
+    "3. Manual-review leads stay guarded until safety, consent, licensing, finance, partner, or project rules are checked.",
+    "4. Export Backup JSON after every outreach block."
+  ];
+  copyText(lines.join("\n"), "First 200 queue copied.");
 }
 
 function copySoftLaunchPlan() {

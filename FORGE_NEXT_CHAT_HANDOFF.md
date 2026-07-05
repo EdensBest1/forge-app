@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v96`.
+Forge is at `v97`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=96#home`
-- Best demo start: `http://127.0.0.1:4174/?v=96#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=96&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=96&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=96#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=96`
-- Admin demo: `http://127.0.0.1:4174/?v=96&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=97#home`
+- Best demo start: `http://127.0.0.1:4174/?v=97#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=97&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=97&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=97#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=97`
+- Admin demo: `http://127.0.0.1:4174/?v=97&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v96`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v97`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v96:
+These passed after v97:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v96 also covers:
+Automated verification after v97 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -138,6 +138,7 @@ Automated verification after v96 also covers:
 - v94 adds a Perspective Demo readiness receipt for controlled demos, public launch boundary, first-user count, backup state, and Public View state.
 - v95 adds mobile demo shortcuts for Customer Status and Messages so the phone proof path matches the Status -> Message handoff flow.
 - v96 adds the four-step Phone Demo Order: John Status, John Messages, Mike Worker proof, then Launch Boundary.
+- v97 adds the First 200 launch queue for target count, demo-ready leads, follow-up-needed leads, and manual safety review.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -201,4 +202,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v96 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v97 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
