@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "99";
+const PUBLIC_LINK_VERSION = "100";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -5005,6 +5005,7 @@ function renderProfileStatus() {
   document.querySelector("#profileStatusPill").textContent = profile.status;
   document.querySelector("#profileSummary").textContent = profile.summary;
   document.querySelector("#profileReadiness").innerHTML = readinessCard(profile);
+  renderProfileCommandStrip(profile);
   const profileHandoff = document.querySelector("#profileDemoHandoff");
   if (profileHandoff) profileHandoff.innerHTML = profileDemoHandoff(profile);
   const profileClose = document.querySelector("#profileCloseCard");
@@ -5051,6 +5052,111 @@ function renderProfileStatus() {
       <p>${escapeHtml(item.text)}</p>
     </article>
   `).join("") || `<p class="muted">No activity yet.</p>`;
+}
+
+function renderProfileCommandStrip(profile) {
+  const target = document.querySelector("#profileCommandStrip");
+  if (!target) return;
+  target.innerHTML = profileCommandRows(profile).map((row) => `
+    <article class="${escapeHtml(row.state)}">
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
+function profileCommandRows(profile) {
+  const readiness = profileReadiness(profile);
+  const nextGap = profile.checklist.find(([done]) => !done)?.[1];
+  const role = state.session.role || "visitor";
+  const proof = profileCommandProof(profile);
+  return [
+    {
+      label: "Role",
+      title: profile.roleLabel,
+      body: `${profile.name} is ${profile.status}.`,
+      state: role === "visitor" ? "waiting" : "ready",
+      primary: true,
+      actionLabel: "Copy Command",
+      action: { type: "action", name: "copy-profile-command" }
+    },
+    {
+      label: "Readiness",
+      title: `${readiness}% ready`,
+      body: nextGap ? `Next gap: ${nextGap}.` : "Visible profile checks are complete for this demo path.",
+      state: readiness >= 75 ? "ready" : "waiting",
+      primary: false,
+      actionLabel: "Copy Brief",
+      action: { type: "action", name: "copy-profile-brief" }
+    },
+    {
+      label: "Proof",
+      title: proof.title,
+      body: proof.body,
+      state: proof.state,
+      primary: false,
+      actionLabel: proof.actionLabel,
+      action: proof.action
+    },
+    {
+      label: "Boundary",
+      title: "Controlled MVP",
+      body: "Use for personally followed-up demos. Keep payments, contracts, passwords, and sensitive documents outside this build.",
+      state: "guarded",
+      primary: false,
+      actionLabel: "Launch Boundary",
+      action: { type: "nav", screen: "launch-status" }
+    }
+  ];
+}
+
+function profileCommandProof(profile) {
+  if (state.session.role === "customer") {
+    const jobs = state.jobs.filter((job) => samePerson(job.customer, profile.name));
+    const job = jobs[0] || state.jobs[0];
+    const bids = job ? state.bids.filter((bid) => bid.jobId === job.id) : [];
+    const chosen = bids.find((bid) => bid.chosen);
+    return {
+      title: chosen ? "Bid handoff ready" : bids.length ? `${bids.length} bids visible` : "Bid proof pending",
+      body: chosen ? `${chosen.worker} is selected; open Messages for scheduling.` : bids.length ? "Open Job Detail and choose the next handoff." : "Post or match one bid before showing bid selection.",
+      state: bids.length ? "ready" : "waiting",
+      actionLabel: job ? "Open Detail" : "Post Job",
+      action: job ? { type: "detail", jobId: job.id } : { type: "nav", screen: "post" }
+    };
+  }
+  if (state.session.role === "worker") {
+    const worker = findWorkerByName(profile.name) || state.worker;
+    const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+    const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+    return {
+      title: bids.length ? `${bids.length} bid${bids.length === 1 ? "" : "s"} submitted` : "Submit one bid",
+      body: bids.length ? "Worker proof shows bid activity and message follow-up." : "Open the bid form to show the worker-side action.",
+      state: bids.length ? "ready" : "waiting",
+      actionLabel: bids.length ? "Open Messages" : "Submit Bid",
+      action: bids.length && job ? { type: "thread", threadId: `job-${job.id}` } : job ? { type: "bidJob", jobId: job.id } : { type: "nav", screen: "jobs" }
+    };
+  }
+  if (state.session.role === "admin") {
+    const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+    return {
+      title: needsTouch ? `${needsTouch} follow-up${needsTouch === 1 ? "" : "s"}` : "Queue clear",
+      body: needsTouch ? "Use the Admin follow-up command strip before outreach." : "Admin can show launch status, closeout, and backup flow.",
+      state: needsTouch ? "waiting" : "ready",
+      actionLabel: needsTouch ? "Copy Queue" : "Admin Center",
+      action: needsTouch ? { type: "action", name: "copy-follow-up-queue" } : { type: "nav", screen: "admin" }
+    };
+  }
+  return {
+    title: "Choose a demo role",
+    body: "Open John, Mike, or Admin before showing profile status.",
+    state: "waiting",
+    actionLabel: "Perspective Demo",
+    action: { type: "nav", screen: "perspective" }
+  };
 }
 
 function renderMiniProfile(selector, profile) {
@@ -13688,6 +13794,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-delivery-status") copyDeliveryStatus();
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
+  if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
   if (action?.dataset.action === "copy-profile-close-ask") copyProfileCloseAsk();
@@ -17961,6 +18068,27 @@ function copyAuthHandoff() {
     "Public beta requirement: admin, capture, reports, exports, imports, backups, and webhook setup must be behind production-grade authentication before broad public traffic."
   ];
   copyText(lines.join("\n"), "Auth handoff copied.");
+}
+
+function copyProfileCommand() {
+  const profile = getProfileStatus();
+  const rows = profileCommandRows(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const lines = [
+    "Forge profile command",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    profile.summary,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Next action: ${profile.nextAction}`,
+    `Open profile: ${roleDemoLink(role, "profile")}`
+  ];
+  copyText(lines.join("\n"), "Profile command copied.");
 }
 
 function copyProfileBrief() {

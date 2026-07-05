@@ -3245,6 +3245,71 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.profile-command-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-command-strip article {
+  display: grid;
+  gap: 10px;
+  align-content: space-between;
+  min-height: 166px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.profile-command-strip article.waiting {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.profile-command-strip article.guarded {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.profile-command-strip span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.profile-command-strip article.waiting span,
+.profile-command-strip article.guarded span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.profile-command-strip strong {
+  display: block;
+  color: var(--ink);
+  line-height: 1.22;
+}
+
+.profile-command-strip p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.profile-command-strip .btn {
+  align-self: end;
+  width: 100%;
+  min-width: 0;
+}
+
 .profile-demo-handoff {
   display: grid;
   gap: 12px;
@@ -10314,6 +10379,7 @@ td {
   .status-handoff-grid,
   .status-handoff-actions,
   .message-proof-actions,
+  .profile-command-strip,
   .profile-meta,
   .profile-brief-grid,
   .profile-demo-handoff-grid,
