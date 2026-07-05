@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "100";
+const PUBLIC_LINK_VERSION = "101";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8658,6 +8658,7 @@ function renderDetail() {
     ${jobFlowTracker(job, bids, chosenBid)}
     ${jobFlowBrief(job, bids, chosenBid)}
     ${jobDetailHandoffPanel(job, bids, chosenBid)}
+    ${jobCloseoutPanel(job, bids, chosenBid)}
     <div class="hero-actions">
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
@@ -8908,6 +8909,81 @@ function jobDetailHandoffRows(job, bids, chosenBid, bestBid, hasMessage) {
       title: "Customer proof path",
       body: "Open Status after detail review so the customer sees the job, selected bid, and next action in one place.",
       ready: Boolean(chosenBid || bids.length)
+    }
+  ];
+}
+
+function jobCloseoutPanel(job, bids, chosenBid) {
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const closeoutReady = Boolean(chosenBid && hasMessage);
+  const rows = jobCloseoutRows(job, bids, chosenBid, hasMessage);
+  return `
+    <section class="job-closeout-panel" aria-label="Job closeout receipt">
+      <div class="job-closeout-heading">
+        <div>
+          <span class="split-label">Closeout receipt</span>
+          <h2>${escapeHtml(closeoutReady ? "This job has a visible bid, message, and next step." : chosenBid ? "The bid is selected; finish the message closeout." : bids.length ? "Choose the bid, then close the handoff." : "Get a bid before closing this job demo.")}</h2>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-job-closeout" data-job-id="${escapeHtml(job.id)}">Copy Closeout</button>
+      </div>
+      <div class="job-closeout-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="job-closeout-actions">
+        ${bids.length
+          ? `<button class="btn ${chosenBid ? "blue" : "orange"} small" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Suggested")}</button>`
+          : `<button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>`}
+        <button class="btn ghost small" type="button" data-nav="status">Open Status</button>
+        <button class="btn ghost small" type="button" data-action="copy-job-closeout" data-job-id="${escapeHtml(job.id)}">Copy Closeout</button>
+      </div>
+    </section>
+  `;
+}
+
+function jobCloseoutRows(job, bids, chosenBid, hasMessage) {
+  const bestBid = chosenBid || bids[0];
+  return [
+    {
+      label: "Job",
+      title: job.status,
+      body: `${job.title} is saved for ${job.customer || "the customer"} in ${job.location || "the local area"}.`,
+      status: "ready"
+    },
+    {
+      label: "Bid",
+      title: chosenBid ? `${chosenBid.worker} selected` : bestBid ? `${bestBid.worker} ready` : "Needs bid",
+      body: chosenBid
+        ? `${chosenBid.amount} at ${chosenBid.timeline}; ready for schedule confirmation.`
+        : bestBid
+          ? `${bestBid.amount} can be selected to create the customer handoff.`
+          : "Invite a worker or submit a demo bid before closing the proof path.",
+      status: chosenBid ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "Message",
+      title: hasMessage ? "Thread saved" : "Needs thread",
+      body: hasMessage
+        ? "The message thread can carry schedule, arrival, and follow-up details."
+        : "Choosing a bid creates the thread that connects Detail to Status and Messages.",
+      status: hasMessage ? "ready" : chosenBid ? "attention" : "waiting"
+    },
+    {
+      label: "Closeout",
+      title: chosenBid && hasMessage ? "Confirm schedule" : chosenBid ? "Save schedule note" : bids.length ? "Choose bid first" : "Get one bid",
+      body: chosenBid && hasMessage
+        ? "Customer can leave Detail with the next action visible."
+        : chosenBid
+          ? "Open Messages and save the schedule or follow-up note."
+          : bids.length
+            ? "Select the best bid so the handoff becomes real."
+            : "Keep the job open and get one worker response.",
+      status: chosenBid && hasMessage ? "ready" : "attention"
     }
   ];
 }
@@ -13943,6 +14019,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
+  if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
@@ -17080,6 +17157,32 @@ function copyDetailHandoff(jobId) {
     `Open status: ${roleDemoLink("customer", "status")}`
   ];
   copyText(lines.join("\n"), "Detail handoff copied.");
+}
+
+function copyJobCloseout(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosenBid = bids.find((bid) => bid.chosen);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = jobCloseoutRows(job, bids, chosenBid, hasMessage);
+  const lines = [
+    "Forge job closeout receipt",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosenBid ? `Selected bid: ${chosenBid.worker} at ${chosenBid.amount}` : "Selected bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosenBid ? bidHandoffText(job, chosenBid) : bids.length ? "Next action: choose the suggested bid, then open Messages and Status." : "Next action: get one worker bid, then close the job-to-message proof path.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Job closeout copied.");
 }
 
 function copyBidHandoff(jobId) {

@@ -309,8 +309,8 @@ const requiredHtml = [
   "premiumServiceGrid",
   "Browse All Services",
   "Get Quotes",
-  "styles.css?v=100",
-  "app.js?v=100"
+  "styles.css?v=101",
+  "app.js?v=101"
 ];
 
 const requiredJs = [
@@ -794,6 +794,10 @@ const requiredJs = [
   "chosenBidHandoff",
   "bidHandoffText",
   "copyBidHandoff",
+  "jobCloseoutPanel",
+  "jobCloseoutRows",
+  "copyJobCloseout",
+  "Forge job closeout receipt",
   "messageHandoffPanel",
   "messageHandoffRows",
   "copyMessageHandoff",
@@ -982,6 +986,7 @@ const missingCss = [
   ["job flow tracker", css.includes(".job-flow-grid") && css.includes(".job-flow-grid article.active")],
   ["job flow brief", css.includes(".job-flow-brief-grid") && css.includes(".job-flow-brief-heading")],
   ["job detail handoff panel", css.includes(".detail-handoff-panel") && css.includes(".detail-handoff-grid") && css.includes(".detail-handoff-actions")],
+  ["job closeout panel", css.includes(".job-closeout-panel") && css.includes(".job-closeout-grid") && css.includes(".job-closeout-actions") && js.includes("jobCloseoutPanel") && js.includes("copyJobCloseout")],
   ["status empty guidance", css.includes(".status-empty")],
   ["customer status demo card", css.includes(".status-demo-card") && css.includes("#fff7ef")],
   ["customer status flow panel", css.includes(".status-flow-panel")],
@@ -1004,7 +1009,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v100")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v101")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -1018,7 +1023,7 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v100\"") && releaseManifest.includes("/request-help?v=100") && releaseManifest.includes("/post-job?v=100") && releaseManifest.includes("/worker-signup?v=100") && releaseManifest.includes("/business?v=100") && releaseManifest.includes("/photography?v=100") && releaseManifest.includes("/photography/request?v=100") && releaseManifest.includes("/photography/apply?v=100") && releaseManifest.includes("/photography-videography?v=100") && releaseManifest.includes("/northstar-creative?v=100") && releaseManifest.includes("/forge/capital?v=100") && releaseManifest.includes("/forge/flex?v=100") && releaseManifest.includes("/partners/flex?v=100") && releaseManifest.includes("/personal-driver?v=100") && releaseManifest.includes("/forge-payments?v=100") && releaseManifest.includes("/local-products?v=100") && releaseManifest.includes("/building?v=100") && releaseManifest.includes("/admin/building-leads?v=100") && releaseManifest.includes("/forge-academy?v=100") && releaseManifest.includes("/trade-pathways?v=100") && releaseManifest.includes("/admin/forge-academy?v=100")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v101\"") && releaseManifest.includes("/request-help?v=101") && releaseManifest.includes("/post-job?v=101") && releaseManifest.includes("/worker-signup?v=101") && releaseManifest.includes("/business?v=101") && releaseManifest.includes("/photography?v=101") && releaseManifest.includes("/photography/request?v=101") && releaseManifest.includes("/photography/apply?v=101") && releaseManifest.includes("/photography-videography?v=101") && releaseManifest.includes("/northstar-creative?v=101") && releaseManifest.includes("/forge/capital?v=101") && releaseManifest.includes("/forge/flex?v=101") && releaseManifest.includes("/partners/flex?v=101") && releaseManifest.includes("/personal-driver?v=101") && releaseManifest.includes("/forge-payments?v=101") && releaseManifest.includes("/local-products?v=101") && releaseManifest.includes("/building?v=101") && releaseManifest.includes("/admin/building-leads?v=101") && releaseManifest.includes("/forge-academy?v=101") && releaseManifest.includes("/trade-pathways?v=101") && releaseManifest.includes("/admin/forge-academy?v=101")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],
