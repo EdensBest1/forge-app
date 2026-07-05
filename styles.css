@@ -3790,6 +3790,53 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.35;
 }
 
+.admin-control-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.admin-control-strip article {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid rgba(12, 35, 64, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
+    #fff;
+  padding: 16px;
+  box-shadow: 0 16px 42px rgba(7, 20, 40, 0.08);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-control-strip article:hover {
+  transform: translateY(-2px);
+  border-color: rgba(199, 163, 77, 0.44);
+  box-shadow: 0 22px 56px rgba(7, 20, 40, 0.12);
+}
+
+.admin-control-strip span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.admin-control-strip strong {
+  color: var(--blue);
+  font-size: 1rem;
+}
+
+.admin-control-strip p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 .worker-proof-card {
   display: grid;
   gap: 10px;
@@ -12126,6 +12173,56 @@ td {
   padding: 12px;
 }
 
+.product-path-private-client {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(199, 163, 77, 0.3);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.98), rgba(255, 255, 255, 0.96)),
+    #fff;
+  padding: 18px;
+  box-shadow: 0 18px 48px rgba(7, 20, 40, 0.08);
+}
+
+.product-path-private-client span {
+  color: #9a6b17;
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.product-path-private-client strong {
+  color: var(--ink);
+  font-size: 1.28rem;
+  line-height: 1.08;
+}
+
+.product-path-private-client p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.product-path-private-client div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-path-private-client mark {
+  border: 1px solid rgba(12, 35, 64, 0.12);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  padding: 7px 10px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
 .manufacturing-filters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -13145,10 +13242,56 @@ th {
   box-shadow: var(--luxury-shadow);
 }
 
+.product-path-tile,
+.product-path-match-card,
+.auto-buyer-guide article,
+.northstar-package-grid article,
+.northstar-lead-list article,
+.admin-control-strip article {
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.product-path-tile:hover,
+.product-path-match-card:hover,
+.auto-buyer-guide article:hover,
+.northstar-package-grid article:hover,
+.northstar-lead-list article:hover {
+  transform: translateY(-3px);
+  border-color: rgba(199, 163, 77, 0.42);
+  box-shadow: 0 24px 62px rgba(7, 20, 40, 0.14);
+}
+
+.auto-buyer-guide article:first-child {
+  background:
+    linear-gradient(145deg, rgba(7, 20, 40, 0.96), rgba(13, 38, 70, 0.92)),
+    #071428;
+  color: #fff;
+}
+
+.auto-buyer-guide article:first-child h2,
+.auto-buyer-guide article:first-child p {
+  color: #fff;
+}
+
+.auto-buyer-guide article:first-child p {
+  opacity: 0.78;
+}
+
+.northstar-package-grid article strong::after,
+.product-path-match-card header strong::after {
+  content: "";
+  display: block;
+  width: 38px;
+  height: 2px;
+  margin-top: 10px;
+  background: linear-gradient(90deg, rgba(199, 163, 77, 0.95), rgba(247, 126, 38, 0));
+}
+
 @media (max-width: 1000px) {
   .vertical-showroom-panel,
   .product-path-summary,
-  .product-path-match-grid {
+  .product-path-match-grid,
+  .admin-control-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -13200,6 +13343,7 @@ th {
   .auto-buyer-guide,
   .product-path-summary,
   .product-path-match-grid,
+  .admin-control-strip,
   .manufacturing-eden-grid,
   .manufacturing-doc-grid {
     grid-template-columns: 1fr;
