@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "102";
+const PUBLIC_LINK_VERSION = "103";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4886,6 +4886,7 @@ function render() {
   renderSoftLaunchRunSheet();
   renderLaunchDemoPack();
   renderLaunchDecision();
+  renderLaunchFinalChecklist();
   renderFirstUserCountBreakdown();
   renderFirst200LaunchQueue();
   renderFollowUpAudit();
@@ -10445,6 +10446,88 @@ function launchDecisionRows() {
   ];
 }
 
+function renderLaunchFinalChecklist() {
+  const target = document.querySelector("#launchFinalChecklist");
+  if (!target) return;
+  const rows = launchFinalChecklistRows();
+  target.innerHTML = `
+    <div class="launch-final-heading">
+      <div>
+        <span class="split-label">Final first-user checklist</span>
+        <h2>Run this before inviting the next person.</h2>
+        <p class="muted">This compresses proof, capture, follow-up, backup, and safe handoff mode into one operator check.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-launch-final-checklist">Copy Checklist</button>
+    </div>
+    <div class="launch-final-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchFinalChecklistRows() {
+  const leadCount = totalLeadCount();
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const hasCustomerProof = state.jobs.length > 0 && state.bids.length > 0;
+  return [
+    {
+      label: "Proof",
+      title: hasCustomerProof ? "Demo proof ready" : "Proof needs a job",
+      body: hasCustomerProof ? "John status, bid review, messages, Mike worker proof, and launch boundary are available." : "Post or preserve one job with bids before showing the first-user proof path.",
+      status: hasCustomerProof ? "ready" : "attention",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      label: "Capture",
+      title: `${leadCount}/200 saved`,
+      body: leadCount ? "Lead count is visible. Capture one real next action before ending each demo." : "Capture the first job, worker, referral, auto, career, or business lead.",
+      status: leadCount ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Capture",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "capture" }
+    },
+    {
+      label: "Follow-up",
+      title: followUpCount ? `${followUpCount} need touch` : "Queue clear",
+      body: followUpCount ? "Copy the queue and contact the highest-priority people before widening the invite list." : "No urgent first-user follow-up is waiting in the current queue.",
+      status: followUpCount ? "attention" : "ready",
+      primary: false,
+      actionLabel: "Copy Queue",
+      action: { type: "action", name: "copy-follow-up-queue" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Backup needed",
+      body: backupCurrent ? `Backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.` : `Export JSON before collecting the next batch of ${leadCount} saved leads.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Handoff",
+      title: publicMode ? "Public View on" : "Operator View on",
+      body: publicMode ? "Operator-only screens are hidden for handoff demos." : "Turn Public View on before handing Forge to another person.",
+      status: publicMode ? "ready" : "attention",
+      primary: false,
+      actionLabel: publicMode ? "Copy Gate" : "Public View",
+      action: publicMode ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    }
+  ];
+}
+
 function renderFirstUserCountBreakdown() {
   const target = document.querySelector("#firstUserCountBreakdown");
   if (!target) return;
@@ -13879,6 +13962,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
+  if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
@@ -18308,6 +18392,19 @@ function copyLaunchDecision() {
     "Decision: use controlled first-user demos and signups now. Hold broad public launch, payments, and stranger traffic until backend delivery, production admin auth, backup, legal review, and final security review are complete."
   ];
   copyText(lines.join("\n"), "Launch decision copied.");
+}
+
+function copyLaunchFinalChecklist() {
+  const rows = launchFinalChecklistRows();
+  const lines = [
+    "Forge final first-user checklist",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Run order: open the proof path, capture one real next action, clear or copy the follow-up queue, export a backup if needed, and use Public View before handing Forge to someone else.",
+    `Open launch status: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Final checklist copied.");
 }
 
 function copyFirstUserCountBreakdown() {

@@ -9759,6 +9759,98 @@ textarea:focus {
   padding-left: 8px;
 }
 
+.launch-final-checklist {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.launch-final-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-final-heading h2,
+.launch-final-heading p {
+  margin: 0;
+}
+
+.launch-final-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.launch-final-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-final-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: space-between;
+  min-height: 174px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.launch-final-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.launch-final-grid article.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.launch-final-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-final-grid article.attention span,
+.launch-final-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-final-grid strong {
+  color: var(--ink);
+  line-height: 1.22;
+}
+
+.launch-final-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.launch-final-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .first-user-breakdown {
   display: grid;
   gap: 14px;
@@ -10446,6 +10538,8 @@ td {
   .perspective-readiness-heading,
   .perspective-readiness-grid,
   .launch-receipt-grid,
+  .launch-final-heading,
+  .launch-final-grid,
   .first-user-breakdown-grid,
   .first-200-queue-grid,
   .follow-up-audit-grid,
