@@ -257,6 +257,8 @@ const requiredHtml = [
   "launchFinalChecklist",
   "Final first-user checklist",
   "Copy Checklist",
+  "launchSendBoard",
+  "First-user send board",
   "Choose + Message",
   "Copy Demo Pack",
   "Copy Close Ask",
@@ -315,8 +317,8 @@ const requiredHtml = [
   "premiumServiceGrid",
   "Browse All Services",
   "Get Quotes",
-  "styles.css?v=103",
-  "app.js?v=103"
+  "styles.css?v=104",
+  "app.js?v=104"
 ];
 
 const requiredJs = [
@@ -712,6 +714,12 @@ const requiredJs = [
   "launchFinalChecklistRows",
   "copyLaunchFinalChecklist",
   "Forge final first-user checklist",
+  "renderLaunchSendBoard",
+  "firstUserSendBoardRows",
+  "copyLaunchSendBoard",
+  "copyLaunchSendLink",
+  "Forge first-user send board",
+  "Copy Send Board",
   "renderFirstUserCountBreakdown",
   "firstUserLeadBreakdownRows",
   "copyFirstUserCountBreakdown",
@@ -967,6 +975,7 @@ const missingCss = [
   ["launch gate panel", css.includes(".launch-gate") && css.includes(".launch-gate-card.blocked")],
   ["launch decision card", css.includes(".launch-decision-card") && css.includes(".launch-decision-actions")],
   ["launch final checklist", html.includes("launchFinalChecklist") && css.includes(".launch-final-checklist") && css.includes(".launch-final-grid") && js.includes("renderLaunchFinalChecklist") && js.includes("copyLaunchFinalChecklist")],
+  ["launch send board", html.includes("launchSendBoard") && css.includes(".launch-send-board") && css.includes(".launch-send-grid") && js.includes("renderLaunchSendBoard") && js.includes("copyLaunchSendBoard")],
   ["launch command lane actions", css.includes(".launch-command-actions") && js.includes("copy-launch-command-row")],
   ["deploy preflight panel", css.includes(".deploy-preflight") && css.includes(".deploy-grid")],
   ["readiness score panel", css.includes(".readiness-score") && css.includes(".readiness-score h3")],
@@ -1020,7 +1029,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v103")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v104")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -1034,7 +1043,7 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v103\"") && releaseManifest.includes("/request-help?v=103") && releaseManifest.includes("/post-job?v=103") && releaseManifest.includes("/worker-signup?v=103") && releaseManifest.includes("/business?v=103") && releaseManifest.includes("/photography?v=103") && releaseManifest.includes("/photography/request?v=103") && releaseManifest.includes("/photography/apply?v=103") && releaseManifest.includes("/photography-videography?v=103") && releaseManifest.includes("/northstar-creative?v=103") && releaseManifest.includes("/forge/capital?v=103") && releaseManifest.includes("/forge/flex?v=103") && releaseManifest.includes("/partners/flex?v=103") && releaseManifest.includes("/personal-driver?v=103") && releaseManifest.includes("/forge-payments?v=103") && releaseManifest.includes("/local-products?v=103") && releaseManifest.includes("/building?v=103") && releaseManifest.includes("/admin/building-leads?v=103") && releaseManifest.includes("/forge-academy?v=103") && releaseManifest.includes("/trade-pathways?v=103") && releaseManifest.includes("/admin/forge-academy?v=103")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v104\"") && releaseManifest.includes("/request-help?v=104") && releaseManifest.includes("/post-job?v=104") && releaseManifest.includes("/worker-signup?v=104") && releaseManifest.includes("/business?v=104") && releaseManifest.includes("/photography?v=104") && releaseManifest.includes("/photography/request?v=104") && releaseManifest.includes("/photography/apply?v=104") && releaseManifest.includes("/photography-videography?v=104") && releaseManifest.includes("/northstar-creative?v=104") && releaseManifest.includes("/forge/capital?v=104") && releaseManifest.includes("/forge/flex?v=104") && releaseManifest.includes("/partners/flex?v=104") && releaseManifest.includes("/personal-driver?v=104") && releaseManifest.includes("/forge-payments?v=104") && releaseManifest.includes("/local-products?v=104") && releaseManifest.includes("/building?v=104") && releaseManifest.includes("/admin/building-leads?v=104") && releaseManifest.includes("/forge-academy?v=104") && releaseManifest.includes("/trade-pathways?v=104") && releaseManifest.includes("/admin/forge-academy?v=104")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],

@@ -9851,6 +9851,126 @@ textarea:focus {
   margin-top: auto;
 }
 
+.launch-send-board {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+  box-shadow: var(--shadow);
+}
+
+.launch-send-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-send-heading h2,
+.launch-send-heading p {
+  margin: 0;
+}
+
+.launch-send-heading h2 {
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.launch-send-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 252px;
+}
+
+.launch-send-actions .btn {
+  min-width: 0;
+}
+
+.launch-send-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-send-grid article {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  min-height: 218px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-send-grid article.review {
+  border-left-color: var(--orange);
+  background: #fffdf9;
+}
+
+.launch-send-grid article > div:first-child {
+  display: grid;
+  gap: 8px;
+}
+
+.launch-send-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-send-grid article.review span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-send-grid strong {
+  color: var(--blue);
+  line-height: 1.22;
+}
+
+.launch-send-grid b {
+  color: var(--orange);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.launch-send-grid p,
+.launch-send-grid small {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.launch-send-grid small {
+  color: #44536b;
+}
+
+.launch-send-card-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.launch-send-card-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .first-user-breakdown {
   display: grid;
   gap: 14px;
@@ -10540,6 +10660,10 @@ td {
   .launch-receipt-grid,
   .launch-final-heading,
   .launch-final-grid,
+  .launch-send-heading,
+  .launch-send-actions,
+  .launch-send-grid,
+  .launch-send-card-actions,
   .first-user-breakdown-grid,
   .first-200-queue-grid,
   .follow-up-audit-grid,

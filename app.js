@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "103";
+const PUBLIC_LINK_VERSION = "104";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4887,6 +4887,7 @@ function render() {
   renderLaunchDemoPack();
   renderLaunchDecision();
   renderLaunchFinalChecklist();
+  renderLaunchSendBoard();
   renderFirstUserCountBreakdown();
   renderFirst200LaunchQueue();
   renderFollowUpAudit();
@@ -10528,6 +10529,128 @@ function launchFinalChecklistRows() {
   ];
 }
 
+function renderLaunchSendBoard() {
+  const target = document.querySelector("#launchSendBoard");
+  if (!target) return;
+  const rows = firstUserSendBoardRows();
+  const summary = firstUserSendBoardSummary();
+  target.innerHTML = `
+    <div class="launch-send-heading">
+      <div>
+        <span class="split-label">First-user send board</span>
+        <h2>Send the right link without losing the guardrail.</h2>
+        <p class="muted">${escapeHtml(summary)}</p>
+      </div>
+      <div class="launch-send-actions">
+        <button class="btn blue small" type="button" data-action="copy-launch-send-board">Copy Send Board</button>
+        <button class="btn ghost small" type="button" data-action="copy-first-user-links">Copy All Links</button>
+      </div>
+    </div>
+    <div class="launch-send-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <div>
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <b>${escapeHtml(row.metric)}</b>
+            <p>${escapeHtml(row.body)}</p>
+            <small>${escapeHtml(row.guardrail)}</small>
+          </div>
+          <div class="launch-send-card-actions">
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+            <button class="btn ghost small" type="button" data-action="copy-launch-send-link" data-send-lane="${escapeHtml(row.id)}">Copy Link</button>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function firstUserSendBoardSummary() {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const mode = state.settings.publicMode ? "Public View is on" : "turn Public View on before handoff";
+  const backup = backupCurrent ? `backup covers ${backupCount} leads` : "export backup after the next conversation";
+  return `Current launch list: ${leadCount}/200. ${mode}; ${backup}.`;
+}
+
+function firstUserSendBoardRows() {
+  const count = (rows) => rows.reduce((total, item) => total + (Array.isArray(item) ? item.length : 0), 0);
+  return [
+    {
+      id: "homeowner",
+      label: "Homeowner",
+      title: "Post one real job",
+      metric: `${state.jobs.length} jobs saved`,
+      body: "Use this when someone needs work done around a home, rental, business, yard, vehicle, or jobsite.",
+      guardrail: "Close with one real job or one referral. No payment is collected in the MVP.",
+      status: "ready",
+      primary: true,
+      role: "customer",
+      screen: "post",
+      actionLabel: "Post Job",
+      action: { type: "nav", screen: "post" }
+    },
+    {
+      id: "worker",
+      label: "Worker",
+      title: "Join the worker list",
+      metric: `${state.workers.length} workers saved`,
+      body: "Use this for handymen, landscapers, cleaners, movers, painters, trades, crews, and side-work providers.",
+      guardrail: "Ask for trade, service area, insurance/license notes, and best follow-up contact.",
+      status: "ready",
+      primary: false,
+      role: "worker",
+      screen: "signup",
+      actionLabel: "Worker Signup",
+      action: { type: "nav", screen: "signup" }
+    },
+    {
+      id: "auto",
+      label: "Auto",
+      title: "Cars, Road Rescue, drivers",
+      metric: `${count([state.vehicles, state.autoInquiries, state.autoRequests, state.roadRescueRequests, state.personalDriverRequests, state.personalDriverProviders])} auto leads`,
+      body: "Use this for buyers, sellers, JoCo-style dealer conversations, auto service, roadside help, and driver interest.",
+      guardrail: "Keep titles, payments, identity documents, and final sale terms outside Forge until production review.",
+      status: "review",
+      primary: false,
+      role: "customer",
+      screen: "autos",
+      actionLabel: "Auto Lane",
+      action: { type: "nav", screen: "autos" }
+    },
+    {
+      id: "career",
+      label: "Career",
+      title: "Schools, unions, AI field jobs",
+      metric: `${count([state.opportunityLeads, state.tradePathwayLeads, state.forgeAcademyLeads, state.employerTrainingPartners, state.schoolPartners, state.resumeRequests])} career leads`,
+      body: "Use this for Admitly-style trade paths, blue-collar schools, unions, apprenticeships, resumes, and AI field work.",
+      guardrail: "Forge can organize next steps; official applications and sensitive documents stay outside the MVP.",
+      status: "ready",
+      primary: false,
+      role: "customer",
+      screen: "opportunities",
+      actionLabel: "Careers",
+      action: { type: "nav", screen: "opportunities" }
+    },
+    {
+      id: "business",
+      label: "Business",
+      title: "Business, projects, manufacturing",
+      metric: `${count([state.northstarLeads, state.flexLeads, state.merchantServiceLeads, state.localProductVendors, state.manufacturingRfqs, state.manufacturingSuppliers, state.manufacturingSupplierLeads, state.homebuildingLeads, state.buildingLeads, state.projectLeads])} guarded leads`,
+      body: "Use this for NorthStar, Capital Desk, payments, local products, manufacturing, homebuilding, and major project intake.",
+      guardrail: "Manual review before partner handoff, referral, financing, construction, or supplier matching.",
+      status: "review",
+      primary: false,
+      role: "customer",
+      screen: "northstar",
+      actionLabel: "Business Lane",
+      action: { type: "nav", screen: "northstar" }
+    }
+  ];
+}
+
 function renderFirstUserCountBreakdown() {
   const target = document.querySelector("#firstUserCountBreakdown");
   if (!target) return;
@@ -13963,6 +14086,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
+  if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
+  if (action?.dataset.action === "copy-launch-send-link") copyLaunchSendLink(action.dataset.sendLane);
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
@@ -18405,6 +18530,34 @@ function copyLaunchFinalChecklist() {
     `Open launch status: ${roleDemoLink("admin", "launch-status")}`
   ];
   copyText(lines.join("\n"), "Final checklist copied.");
+}
+
+function copyLaunchSendBoard() {
+  const rows = firstUserSendBoardRows();
+  const lines = [
+    "Forge first-user send board",
+    "",
+    firstUserSendBoardSummary(),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.metric}. Link: ${roleDemoLink(row.role, row.screen)} Guardrail: ${row.guardrail}`),
+    "",
+    "Run order: pick the person's lane, send one link, capture one real next action, keep guarded lanes in manual review, and export Backup JSON after each outreach block."
+  ];
+  copyText(lines.join("\n"), "Send board copied.");
+}
+
+function copyLaunchSendLink(lane) {
+  const row = firstUserSendBoardRows().find((item) => item.id === lane) || firstUserSendBoardRows()[0];
+  const lines = [
+    `Forge ${row.label.toLowerCase()} link`,
+    "",
+    row.title,
+    roleDemoLink(row.role, row.screen),
+    "",
+    row.body,
+    `Guardrail: ${row.guardrail}`
+  ];
+  copyText(lines.join("\n"), `${row.label} link copied.`);
 }
 
 function copyFirstUserCountBreakdown() {
