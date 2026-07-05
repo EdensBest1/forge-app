@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=95" />
+    <link rel="stylesheet" href="./styles.css?v=96" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -722,7 +722,7 @@
           <section class="mobile-demo-flow" aria-label="Phone demo order">
             <div>
               <span class="split-label">Phone demo order</span>
-              <h2>Tap these three if you only have a minute.</h2>
+              <h2>Tap these four if you only have a minute.</h2>
             </div>
             <div class="mobile-demo-flow-grid">
               <article>
@@ -733,12 +733,18 @@
               </article>
               <article>
                 <span>2</span>
+                <strong>Message handoff</strong>
+                <p>Open the active thread and copy the message proof receipt.</p>
+                <button class="btn ghost small" type="button" data-login-role="customer" data-login-name="John Smith" data-login-screen="messages">Open Msgs</button>
+              </article>
+              <article>
+                <span>3</span>
                 <strong>Worker proof</strong>
                 <p>Show Mike's dashboard, available jobs, and bid path.</p>
                 <button class="btn ghost small" type="button" data-login-role="worker" data-login-name="Mike Jones" data-login-screen="worker">Open Mike</button>
               </article>
               <article>
-                <span>3</span>
+                <span>4</span>
                 <strong>Launch boundary</strong>
                 <p>Show what is ready today and what waits for public launch.</p>
                 <button class="btn ghost small" type="button" data-nav="launch-status">Launch Status</button>
@@ -4598,6 +4604,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=95"></script>
+    <script src="./app.js?v=96"></script>
   </body>
 </html>

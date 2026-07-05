@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "95";
+const PUBLIC_LINK_VERSION = "96";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -6201,7 +6201,7 @@ function renderFinishChecklist() {
     ["Forge Projects", (state.projectLeads || []).length > 0, "Projects has public intake, major review routing, Forge Pros routing, and Seneca review gating."],
     ["Admin follow-up", state.jobs.length > 0 && state.workers.length > 0, "Admin can manage jobs, workers, referrals, exports, and reports."],
     ["Mobile demo", true, "Bottom tab bar includes Home, Services, Post, Jobs, Account, plus Demo, Launch, Status, Messages, and Profile shortcuts."],
-    ["Phone demo order", true, "On mobile, run John customer proof, Mike worker proof, then Launch Status in under one minute."],
+    ["Phone demo order", true, "On mobile, run John Status, John Messages, Mike Worker proof, then Launch Status in under one minute."],
     ["Launch ask", true, "After-demo cards ask for a job, worker signup, or referral."]
   ];
   const complete = checks.filter(([, done]) => done).length;
@@ -15272,7 +15272,7 @@ async function copyDemoPack() {
     "",
     "Demo order:",
     "1. Open Perspective Demo and ask who they are: job poster, worker, or operator.",
-    "2. If you only have a phone and one minute, open John customer proof, Mike worker proof, then Launch Status.",
+    "2. If you only have a phone and one minute, open John Status, John Messages, Mike Worker proof, then Launch Status.",
     "3. Show their Profile Status so they understand where they stand.",
     "4. Show the core action: post/check job, browse/bid, or follow up/admin.",
     "5. End with one ask: post a job, join as a worker, request homebuilding review, request manufacturing help, request auto service, get Road Rescue help, book creative work, request NorthStar help, save career interest, or give one referral.",
@@ -17909,10 +17909,11 @@ function copySoftLaunchRunSheet() {
     "",
     "Phone demo order:",
     "1. Perspective Demo: pick the person's side.",
-    "2. John customer proof: status, bids, messages, launch boundary.",
-    "3. Mike worker proof: dashboard, jobs, Submit Bid, messages.",
-    "4. Bid handoff: open the bathroom job and show Choose + Message.",
-    "5. Save one next action, then export Backup JSON.",
+    "2. John Status: show bids, selected bid, and status proof.",
+    "3. John Messages: show the message proof receipt.",
+    "4. Mike worker proof: dashboard, jobs, Submit Bid, messages.",
+    "5. Launch boundary: show controlled demo readiness and public launch blockers.",
+    "6. Save one next action, then export Backup JSON.",
     "",
     ...softLaunchRunSheetRows().map((item) => `${item.label}: ${item.title}. ${item.body}`),
     "",

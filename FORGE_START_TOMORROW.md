@@ -8,15 +8,15 @@ Workspace:
 
 `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`
 
-Current build: `v95`
+Current build: `v96`
 
 Local app:
 
-- Home: `http://127.0.0.1:4174/?v=95#home`
-- Perspective Demo: `http://127.0.0.1:4174/?v=95#perspective`
-- Training & Careers: `http://127.0.0.1:4174/?v=95#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=95`
-- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=95&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=96#home`
+- Perspective Demo: `http://127.0.0.1:4174/?v=96#perspective`
+- Training & Careers: `http://127.0.0.1:4174/?v=96#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=96`
+- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=96&demo=admin#admin`
 
 If the server is not running:
 
@@ -27,7 +27,7 @@ npm start
 Then open:
 
 ```text
-http://127.0.0.1:4174/?v=95#perspective
+http://127.0.0.1:4174/?v=96#perspective
 ```
 
 ## What Is Saved
@@ -42,7 +42,7 @@ http://127.0.0.1:4174/?v=95#perspective
 
 ## Current State
 
-Forge v95 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
+Forge v96 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
 
 - Connect backend or Zapier lead delivery
 - Enable production-grade admin authentication
@@ -76,5 +76,5 @@ Upload both:
 Use this tomorrow:
 
 ```text
-This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v95 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
+This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v96 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
 ```

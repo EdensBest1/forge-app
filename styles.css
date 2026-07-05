@@ -2589,7 +2589,7 @@ body:not(.role-admin) [data-admin-control] {
 
 .mobile-demo-flow-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -2613,6 +2613,10 @@ body:not(.role-admin) [data-admin-control] {
 
 .mobile-demo-flow-grid article:nth-child(3) {
   border-left: 5px solid var(--blue-2);
+}
+
+.mobile-demo-flow-grid article:nth-child(4) {
+  border-left: 5px solid var(--blue);
 }
 
 .mobile-demo-flow-grid span {
