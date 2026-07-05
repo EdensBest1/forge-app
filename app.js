@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "105";
+const PUBLIC_LINK_VERSION = "106";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8660,6 +8660,7 @@ function renderDetail() {
     </div>
     ${jobFlowTracker(job, bids, chosenBid)}
     ${jobFlowBrief(job, bids, chosenBid)}
+    ${jobProofTicketPanel(job, bids, chosenBid)}
     ${jobDetailHandoffPanel(job, bids, chosenBid)}
     ${jobCloseoutPanel(job, bids, chosenBid)}
     <div class="hero-actions">
@@ -8852,6 +8853,71 @@ function jobFlowBriefRows(job, bids, chosenBid) {
         ? "Forge has a job message thread that can carry the scheduling handoff."
         : "Choose a bid to create the scheduling message and move the job forward.",
       ok: hasMessage
+    }
+  ];
+}
+
+function jobProofTicketPanel(job, bids, chosenBid) {
+  const rows = jobProofTicketRows(job, bids, chosenBid);
+  return `
+    <section class="job-proof-ticket" aria-label="Job proof ticket">
+      <div class="job-proof-ticket-heading">
+        <div>
+          <span class="split-label">Proof ticket</span>
+          <h2>Show the complete marketplace story in one glance.</h2>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-job-proof-ticket" data-job-id="${escapeHtml(job.id)}">Copy Ticket</button>
+      </div>
+      <div class="job-proof-ticket-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <b>${escapeHtml(row.metric)}</b>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="job-proof-ticket-actions">
+        <button class="btn ${chosenBid ? "blue" : "orange"} small" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Open Messages" : "Choose Suggested")}</button>
+        <button class="btn ghost small" type="button" data-nav="status">Open Status</button>
+        <button class="btn ghost small" type="button" data-action="copy-job-proof-ticket" data-job-id="${escapeHtml(job.id)}">Copy Ticket</button>
+      </div>
+    </section>
+  `;
+}
+
+function jobProofTicketRows(job, bids, chosenBid) {
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const bestBid = chosenBid || bids[0];
+  return [
+    {
+      label: "Posted",
+      title: job.customer || "Customer",
+      metric: job.status,
+      body: `${job.title} is saved in ${job.location || "the local area"} with a ${job.budget || "saved"} budget.`,
+      status: "ready"
+    },
+    {
+      label: "Bids",
+      title: bids.length ? "Worker prices visible" : "Needs worker response",
+      metric: `${bids.length}`,
+      body: bids.length ? "The customer can compare price, timeline, crew, and message details." : "Get one bid so the marketplace proof path can start.",
+      status: bids.length ? "ready" : "waiting"
+    },
+    {
+      label: "Choice",
+      title: chosenBid ? chosenBid.worker : bestBid ? "Suggested bid ready" : "No choice yet",
+      metric: chosenBid ? chosenBid.amount : bestBid ? bestBid.amount : "Pending",
+      body: chosenBid ? `${chosenBid.worker} is selected for the next handoff.` : bestBid ? `${bestBid.worker} can be selected to create the handoff.` : "Submit or invite a worker bid before choosing.",
+      status: chosenBid ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "Message",
+      title: hasMessage ? "Thread ready" : "Handoff pending",
+      metric: hasMessage ? "Ready" : "Pending",
+      body: hasMessage ? "Messages can carry schedule, arrival, and follow-up details." : "Choose a bid, then use Messages to make the next step visible.",
+      status: hasMessage ? "ready" : chosenBid ? "attention" : "waiting"
     }
   ];
 }
@@ -14301,6 +14367,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-worker-template") copyText(workerTemplate(state.workers[0]), "Worker follow-up copied.");
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
+  if (action?.dataset.action === "copy-job-proof-ticket") copyJobProofTicket(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
@@ -17414,6 +17481,32 @@ function copyJobFlowBrief(jobId) {
     `Open job: ${roleDemoLink("customer", "detail")}`
   ];
   copyText(lines.join("\n"), "Job flow brief copied.");
+}
+
+function copyJobProofTicket(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosenBid = bids.find((bid) => bid.chosen);
+  const rows = jobProofTicketRows(job, bids, chosenBid);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const lines = [
+    "Forge job proof ticket",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids visible: ${bids.length}`,
+    chosenBid ? `Selected bid: ${chosenBid.worker} at ${chosenBid.amount}` : "Selected bid: none yet",
+    `Message handoff: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.metric}. ${row.body}`),
+    "",
+    chosenBid ? bidHandoffText(job, chosenBid) : bids.length ? "Next action: choose the suggested bid, then open Messages and Status." : "Next action: get one worker bid so the proof path can move forward.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Job proof ticket copied.");
 }
 
 function copyDetailHandoff(jobId) {
