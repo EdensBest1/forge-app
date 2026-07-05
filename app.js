@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "97";
+const PUBLIC_LINK_VERSION = "98";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9774,6 +9774,26 @@ function renderConfirmation() {
     <strong>${escapeHtml(confirmationHandoffTitle(confirmation))}</strong>
     <p>${escapeHtml(confirmationHandoffText(confirmation))}</p>
   `;
+  document.querySelector("#confirmFollowUp").innerHTML = `
+    <div class="confirm-follow-up-heading">
+      <div>
+        <span class="split-label">First-user next touch</span>
+        <strong>${escapeHtml(confirmationNextTouchTitle(confirmation))}</strong>
+        <p>${escapeHtml(confirmationNextTouchSummary(confirmation))}</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-confirmation-next-touch">Copy Next Touch</button>
+    </div>
+    <div class="confirm-follow-up-grid">
+      ${confirmationNextTouchRows(confirmation).map((item) => `
+        <article class="${escapeHtml(item.status)}">
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+          <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
   document.querySelector("#confirmCloseout").innerHTML = confirmationCloseoutRows(confirmation).map((item) => `
     <article class="${escapeHtml(item.status)}">
       <span>${escapeHtml(item.label)}</span>
@@ -9819,6 +9839,112 @@ function confirmationCloseoutRows(confirmation) {
       primary: false,
       actionLabel: "Launch Decision",
       action: { type: "nav", screen: "launch-status" }
+    }
+  ];
+}
+
+function confirmationRequiresManualReview(type) {
+  return [
+    "auto-service",
+    "vehicle",
+    "auto-inquiry",
+    "personal-driver-request",
+    "personal-driver-provider",
+    "project",
+    "homebuilding",
+    "building",
+    "flex",
+    "manufacturing-rfq",
+    "manufacturing-supplier"
+  ].includes(type);
+}
+
+function confirmationQueueName(confirmation) {
+  if (confirmation.type === "job") return "Job leads and Customer Status";
+  if (confirmation.type === "worker") return "Worker leads and Profile Status";
+  if (confirmation.type === "referral") return "Referral queue and Next 10 Batch";
+  if (confirmation.type === "bid") return "Bids, Job Detail, and Messages";
+  if (["auto-service", "vehicle", "auto-inquiry", "personal-driver-request", "personal-driver-provider"].includes(confirmation.type)) return "Auto Ops manual review";
+  if (confirmation.type === "opportunity") return "Training and Careers queue";
+  if (["project", "homebuilding", "building"].includes(confirmation.type)) return "Projects and Building review";
+  if (["creative", "creative-provider"].includes(confirmation.type)) return "Creative matching queue";
+  if (confirmation.type === "northstar") return "NorthStar business-growth queue";
+  if (confirmation.type === "flex") return "Capital Desk manual review";
+  if (["manufacturing-rfq", "manufacturing-supplier"].includes(confirmation.type)) return "Manufacturing manual review";
+  return "Admin follow-up queue";
+}
+
+function confirmationOwnerName(confirmation) {
+  if (["auto-service", "vehicle", "auto-inquiry", "personal-driver-request", "personal-driver-provider"].includes(confirmation.type)) return "Forge Auto operator";
+  if (["project", "homebuilding", "building"].includes(confirmation.type)) return "Forge Projects operator";
+  if (["creative", "creative-provider"].includes(confirmation.type)) return "Creative operator";
+  if (confirmation.type === "northstar") return "NorthStar operator";
+  if (confirmation.type === "flex") return "Capital Desk operator";
+  if (["manufacturing-rfq", "manufacturing-supplier"].includes(confirmation.type)) return "Manufacturing operator";
+  return "Forge Admin";
+}
+
+function confirmationNextTouchTitle(confirmation) {
+  if (confirmationRequiresManualReview(confirmation.type)) return "Manual review before any outside handoff.";
+  if (confirmation.type === "worker") return "Follow up when the worker has a matching job.";
+  if (confirmation.type === "job") return "Move the job poster toward bids and messages.";
+  if (confirmation.type === "referral") return "Contact the referral before the moment cools off.";
+  return "Keep the next follow-up visible.";
+}
+
+function confirmationNextTouchSummary(confirmation) {
+  const leadCount = totalLeadCount();
+  const queue = confirmationQueueName(confirmation);
+  return `${queue} now has this lead. Current first-user total: ${leadCount}/200.`;
+}
+
+function confirmationNextTouchRows(confirmation) {
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const manualReview = confirmationRequiresManualReview(confirmation.type);
+  return [
+    {
+      label: "Owner",
+      title: confirmationOwnerName(confirmation),
+      body: manualReview
+        ? "Review consent, safety, licensing, partner rules, payment boundaries, and required documents before any outside match."
+        : "Review the lead, confirm consent, and choose the next outreach move from Admin.",
+      status: manualReview ? "hold" : "ready",
+      primary: manualReview,
+      actionLabel: "Open Admin",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" }
+    },
+    {
+      label: "Queue",
+      title: confirmationQueueName(confirmation),
+      body: manualReview
+        ? "Keep this guarded until the operator confirms the right path and no sensitive data is needed in the MVP."
+        : "This can move through the normal first-user proof path, follow-up queue, and next ask.",
+      status: manualReview ? "hold" : "ready",
+      primary: false,
+      actionLabel: "Launch Status",
+      action: { type: "nav", screen: "launch-status" }
+    },
+    {
+      label: "Message",
+      title: "Copy the next touch",
+      body: "Use the handoff text while the conversation is fresh, then mark the lead contacted or move it forward from Admin.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Copy Message",
+      action: { type: "action", name: "copy-confirmation-next-touch" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Backup after this block",
+      body: backupCurrent
+        ? `Last backup covers ${backupCount} leads. Export again after collecting more people.`
+        : `Export Backup JSON so ${leadCount} saved leads are recoverable before the link spreads.`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: !backupCurrent,
+      actionLabel: "Export Backup",
+      action: { type: "action", name: "export-backup" }
     }
   ];
 }
@@ -13534,6 +13660,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-receipt") copyLaunchReceipt();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
   if (action?.dataset.action === "copy-confirmation-handoff") copyConfirmationHandoff();
+  if (action?.dataset.action === "copy-confirmation-next-touch") copyConfirmationNextTouch();
   if (action?.dataset.action === "copy-profile-proof-path") copyProfileProofPath();
   if (action?.dataset.action === "copy-demo-link") copyDemoLink(action.dataset.demoRole, action.dataset.demoScreen, action.dataset.demoLabel);
   if (action?.dataset.action === "copy-perspective-link") copyPerspectiveLink(action.dataset.perspectiveRole);
@@ -15305,6 +15432,25 @@ async function copyConfirmationHandoff() {
     ...confirmationCloseoutRows(confirmation).map((step) => `${step.label}: ${step.title}. ${step.body}`)
   ].join("\n");
   await copyText(text, "Confirmation handoff copied.");
+}
+
+async function copyConfirmationNextTouch() {
+  const confirmation = state.lastConfirmation || seedState.lastConfirmation;
+  const text = [
+    "Forge first-user next touch",
+    "",
+    confirmationNextTouchTitle(confirmation),
+    confirmationNextTouchSummary(confirmation),
+    "",
+    "Suggested message:",
+    confirmationHandoffText(confirmation),
+    "",
+    "Operator routing:",
+    ...confirmationNextTouchRows(confirmation).map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Closeout: copy the message, record contact in Admin, keep manual-review leads guarded, and export Backup JSON after the outreach block."
+  ].join("\n");
+  await copyText(text, "Next touch copied.");
 }
 
 async function copyDemoScript() {

@@ -3763,6 +3763,103 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.5;
 }
 
+.confirm-follow-up {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #f8fbff;
+  text-align: left;
+}
+
+.confirm-follow-up-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.confirm-follow-up-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  font-size: 1.05rem;
+  line-height: 1.22;
+}
+
+.confirm-follow-up-heading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.confirm-follow-up-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.confirm-follow-up-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 162px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.confirm-follow-up-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.confirm-follow-up-grid article.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.confirm-follow-up-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.confirm-follow-up-grid article.attention span,
+.confirm-follow-up-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.confirm-follow-up-grid strong {
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.22;
+}
+
+.confirm-follow-up-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.36;
+}
+
+.confirm-follow-up-grid .btn {
+  align-self: end;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .confirm-closeout {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -10129,6 +10226,7 @@ td {
   .partner-document-grid,
   .project-lead-list article,
   .confirm-details,
+  .confirm-follow-up-grid,
   .confirm-closeout,
   .bid-row,
   .job-flow-grid,
@@ -10520,6 +10618,10 @@ td {
   }
 
   .message-handoff-heading {
+    display: grid;
+  }
+
+  .confirm-follow-up-heading {
     display: grid;
   }
 
