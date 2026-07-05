@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v104`.
+Forge is at `v105`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=104#home`
-- Best demo start: `http://127.0.0.1:4174/?v=104#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=104&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=104&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=104#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=104`
-- Admin demo: `http://127.0.0.1:4174/?v=104&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=105#home`
+- Best demo start: `http://127.0.0.1:4174/?v=105#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=105&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=105&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=105#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=105`
+- Admin demo: `http://127.0.0.1:4174/?v=105&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v104`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v105`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v104:
+These passed after v105:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v104 also covers:
+Automated verification after v105 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -146,6 +146,7 @@ Automated verification after v104 also covers:
 - v102 adds the Phone Demo closeout strip for Copy Ask, Capture, and Launch Boundary.
 - v103 adds the Launch Status final first-user checklist for proof, capture, follow-up, backup, and safe handoff mode.
 - v104 adds the Launch Status first-user send board for homeowner, worker, auto, career, and business/project links with guardrails.
+- v105 adds the Quick Capture triage board for consent, lane selection, latest lead copy, and backup closeout.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -209,4 +210,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v104 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v105 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

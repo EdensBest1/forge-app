@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "104";
+const PUBLIC_LINK_VERSION = "105";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4903,6 +4903,7 @@ function render() {
   renderAcademyAdmin();
   renderFlexLeadsAdmin();
   renderLaunchGoals();
+  renderCaptureTriageBoard();
   renderFounding200();
   renderReports();
   renderViewMode();
@@ -12230,6 +12231,77 @@ function renderLaunchGoals() {
   }).join("");
 }
 
+function renderCaptureTriageBoard() {
+  const target = document.querySelector("#captureTriageBoard");
+  if (!target) return;
+  target.innerHTML = `
+    <div class="capture-triage-heading">
+      <span class="split-label">Quick capture triage</span>
+      <button class="btn ghost small" type="button" data-action="copy-capture-triage">Copy Script</button>
+    </div>
+    <div class="capture-triage-grid">
+      ${captureTriageRows().map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <b>${escapeHtml(row.metric)}</b>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function captureTriageRows() {
+  const latest = state.referrals[0];
+  const leadCount = totalLeadCount();
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  return [
+    {
+      label: "1. Consent",
+      title: "Ask before saving",
+      metric: "Required",
+      body: "Confirm they agreed Forge can follow up by text, call, or email about early access.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Copy Script",
+      action: { type: "action", name: "copy-capture-triage" }
+    },
+    {
+      label: "2. Lane",
+      title: "Pick the right path",
+      metric: "5 lanes",
+      body: "Homeowner, worker, auto, career, or business/project. Send one link after the lead is saved.",
+      status: "attention",
+      primary: false,
+      actionLabel: "Send Board",
+      action: { type: "nav", screen: "launch-status" }
+    },
+    {
+      label: "3. Latest",
+      title: latest ? latest.name : "No quick lead yet",
+      metric: latest ? latest.priority : "Empty",
+      body: latest ? `${latest.type}. ${latest.note || "No note saved yet."}` : "Save the first consented referral or interest lead from this screen.",
+      status: latest ? "ready" : "hold",
+      primary: Boolean(latest),
+      actionLabel: latest ? "Copy Lead" : "Capture",
+      action: latest ? { type: "action", name: "copy-latest-captured-lead" } : { type: "nav", screen: "capture" }
+    },
+    {
+      label: "4. Closeout",
+      title: backupCurrent ? "Backup current" : "Backup after block",
+      metric: `${leadCount}/200`,
+      body: backupCurrent ? `Backup covers ${backupCount} leads.` : "Export JSON after the next restaurant-mode capture block.",
+      status: backupCurrent ? "ready" : "attention",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
 function foundingSegments() {
   return [
     ["Job posters", state.jobs.length, 60, "People with real work to post.", "post", "Post Job"],
@@ -14109,6 +14181,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "complete-outreach-sprint") completeOutreachSprint();
   if (action?.dataset.action === "copy-session-history") copySessionHistory();
   if (action?.dataset.action === "copy-first-user-closeout") copyFirstUserCloseout();
+  if (action?.dataset.action === "copy-capture-triage") copyCaptureTriage();
+  if (action?.dataset.action === "copy-latest-captured-lead") copyLatestCapturedLead();
   if (action?.dataset.action === "copy-session-note") copySessionNote(action.dataset.sessionIndex);
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
@@ -19001,6 +19075,49 @@ function copyFirstUserCloseout() {
   copyText(lines.join("\n"), "First-user closeout copied.");
 }
 
+function copyCaptureTriage() {
+  const rows = captureTriageRows();
+  const lines = [
+    "Forge quick capture triage",
+    "",
+    "Use this before saving a person from a live conversation:",
+    "1. Ask: Is it okay if Forge follows up by text, call, or email about early access?",
+    "2. Save name, phone, optional email, lead type, priority, and the exact words they used.",
+    "3. Pick the lane: homeowner, worker, auto, career, or business/project.",
+    "4. Send one matching link from the Launch Status send board.",
+    "5. Keep payments, titles, official applications, sensitive documents, and contracts outside this MVP.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.metric}. ${row.body}`),
+    "",
+    `Open capture: ${roleDemoLink("admin", "capture")}`,
+    `Open send board: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Capture triage copied.");
+}
+
+function copyLatestCapturedLead() {
+  const lead = state.referrals[0];
+  if (!lead) {
+    copyCaptureTriage();
+    return;
+  }
+  const lines = [
+    "Forge latest quick-captured lead",
+    "",
+    `Name: ${lead.name}`,
+    `Type: ${lead.type}`,
+    `Priority: ${lead.priority}`,
+    `Phone: ${lead.phone || "Not saved"}`,
+    `Email: ${lead.email || "Not saved"}`,
+    `Note: ${lead.note || "No note saved."}`,
+    `Status: ${lead.status || "New"}`,
+    "",
+    "Next action: contact them while the conversation is warm, send the right lane link, mark Contacted or Converted in Admin, then export Backup JSON after the outreach block.",
+    `Admin queue: ${roleDemoLink("admin", "admin")}`
+  ];
+  copyText(lines.join("\n"), "Latest quick lead copied.");
+}
+
 function copyFollowUpAudit() {
   const rows = followUpAuditRows();
   const lines = [
@@ -19042,6 +19159,8 @@ function exportBackup() {
   renderSafetyCenter();
   renderLaunchDecision();
   renderLaunchDemoPack();
+  renderCaptureTriageBoard();
+  renderLaunchSendBoard();
   renderFollowUpAudit();
   renderFirstUserCloseout();
 }
