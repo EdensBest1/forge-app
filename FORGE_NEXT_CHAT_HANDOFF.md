@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v106`.
+Forge is at `v107`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=106#home`
-- Best demo start: `http://127.0.0.1:4174/?v=106#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=106&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=106&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=106#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=106`
-- Admin demo: `http://127.0.0.1:4174/?v=106&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=107#home`
+- Best demo start: `http://127.0.0.1:4174/?v=107#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=107&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=107&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=107#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=107`
+- Admin demo: `http://127.0.0.1:4174/?v=107&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v106`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v107`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v106:
+These passed after v107:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v106 also covers:
+Automated verification after v107 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -148,6 +148,7 @@ Automated verification after v106 also covers:
 - v104 adds the Launch Status first-user send board for homeowner, worker, auto, career, and business/project links with guardrails.
 - v105 adds the Quick Capture triage board for consent, lane selection, latest lead copy, and backup closeout.
 - v106 adds the Job Detail proof ticket for posted job, bids, selected choice, and message handoff proof.
+- v107 adds the Product Paths Supplier Match Engine/fencing regression coverage and a Messages reply kit for copying the next schedule/status reply from the active thread.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -211,4 +212,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v106 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v107 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

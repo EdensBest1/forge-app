@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "106";
+const PUBLIC_LINK_VERSION = "107";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9375,6 +9375,7 @@ function messageHandoffPanel(thread) {
         `).join("")}
       </div>
       ${messageProofReceipt(thread, related)}
+      ${messageReplyKit(thread, related)}
       <div class="message-handoff-actions">
         ${related.jobId ? `<button class="btn blue small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Detail</button>` : ""}
         ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Open Status</button>` : ""}
@@ -9421,6 +9422,107 @@ function messageProofReceiptText(thread, related) {
     return bids.length ? "Use Job Detail to choose the bid, then this thread becomes the schedule handoff." : "Get one worker bid first so the message thread can prove the marketplace flow.";
   }
   return lastMessage ? `Last saved touch: ${lastMessage.sentAt}. Copy this proof before moving the conversation forward.` : "Use the draft and save the touch so the follow-up is visible.";
+}
+
+function messageReplyKit(thread, related) {
+  const rows = messageReplyKitRows(thread, related);
+  return `
+    <div class="message-reply-kit" aria-label="Forge message reply kit">
+      <div class="message-reply-heading">
+        <div>
+          <span>Reply kit</span>
+          <strong>${escapeHtml(related.jobId ? "Send the next schedule/status reply." : "Send the next saved follow-up.")}</strong>
+        </div>
+        <button class="btn orange small" type="button" data-action="copy-message-reply-kit" data-thread-id="${escapeHtml(thread.id)}">Copy Reply Kit</button>
+      </div>
+      <p>${escapeHtml(messageReplyText(thread, related))}</p>
+      <div class="message-reply-grid">
+        ${rows.map((row) => `
+          <article class="${row.status}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+      <div class="message-reply-actions">
+        <button class="btn blue small" type="button" data-action="copy-message-reply-kit" data-thread-id="${escapeHtml(thread.id)}">Copy Reply</button>
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Status</button>` : ""}
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Detail</button>` : ""}
+        ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function messageReplyKitRows(thread, related) {
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        label: "Reply",
+        title: chosen ? "Confirm schedule" : bids.length ? "Help choose bid" : "Get first bid",
+        body: chosen
+          ? `Reply centers on ${chosen.worker}, ${chosen.amount}, and scheduling.`
+          : bids.length
+            ? "Reply asks the customer to pick a bid before schedule confirmation."
+            : "Reply keeps the customer warm while Forge gets worker bids.",
+        status: chosen ? "ready" : "attention"
+      },
+      {
+        label: "Proof",
+        title: chosen ? `${chosen.amount} selected` : bids.length ? `${bids.length} bid${bids.length === 1 ? "" : "s"} visible` : "Bid pending",
+        body: job ? `${job.title} stays connected to status, detail, and messages.` : thread.subtitle,
+        status: chosen || bids.length ? "ready" : "waiting"
+      },
+      {
+        label: "Log",
+        title: lastMessage ? "Last touch saved" : "Save after send",
+        body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "After sending, use Save as Sent so the demo has a record.",
+        status: lastMessage ? "ready" : "attention"
+      }
+    ];
+  }
+  return [
+    {
+      label: "Reply",
+      title: related.next,
+      body: "Use the draft as the first sentence, then confirm the one next action.",
+      status: "attention"
+    },
+    {
+      label: "Thread",
+      title: thread.kind,
+      body: thread.subtitle,
+      status: "ready"
+    },
+    {
+      label: "Log",
+      title: lastMessage ? "Last touch saved" : "Save after send",
+      body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "Save the sent message so follow-up stays visible.",
+      status: lastMessage ? "ready" : "waiting"
+    }
+  ];
+}
+
+function messageReplyText(thread, related) {
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    const customer = job?.customer || "there";
+    if (chosen) {
+      return `Hi ${customer}, Forge has ${chosen.worker} selected at ${chosen.amount}. Reply with the best schedule window and any access notes, and we will keep your status page updated.`;
+    }
+    if (bids.length) {
+      return `Hi ${customer}, Forge has ${bids.length} bid${bids.length === 1 ? "" : "s"} ready for ${job?.title || "your job"}. Review the bids, choose the best fit, then we will help confirm schedule details.`;
+    }
+    return `Hi ${customer}, Forge has your job saved and is working to get it in front of the right local workers. We will update you as soon as bids are ready.`;
+  }
+  return `${thread.draft} Next step: ${related.next}.`;
 }
 
 function messageHandoffRows(thread, related) {
@@ -14253,6 +14355,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
   if (action?.dataset.action === "copy-message-proof") copyMessageProof(action.dataset.threadId);
+  if (action?.dataset.action === "copy-message-reply-kit") copyMessageReplyKit(action.dataset.threadId);
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
@@ -17662,6 +17765,31 @@ function copyMessageProof(threadId = state.activeMessageThreadId) {
     related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
   ].filter(Boolean);
   copyText(lines.join("\n"), "Message proof copied.");
+}
+
+function copyMessageReplyKit(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  const rows = messageReplyKitRows(thread, related);
+  const lines = [
+    "Forge message reply kit",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `To: ${thread.to || "Contact"}`,
+    `Next: ${related.next}`,
+    "",
+    "Reply to send:",
+    messageReplyText(thread, related),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    related.jobId ? `Open messages: ${roleDemoLink("customer", "messages")}` : "",
+    related.jobId ? `Open status: ${roleDemoLink("customer", "status")}` : "",
+    related.jobId ? `Open detail: ${roleDemoLink("customer", "detail")}` : "",
+    related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
+  ].filter(Boolean);
+  copyText(lines.join("\n"), "Message reply kit copied.");
 }
 
 function copyWorkerDirect(email) {

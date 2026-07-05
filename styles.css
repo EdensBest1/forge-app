@@ -3209,6 +3209,100 @@ body:not(.role-admin) [data-admin-control] {
   padding-left: 8px;
 }
 
+.message-reply-kit {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: white;
+}
+
+.message-reply-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.message-reply-heading div {
+  display: grid;
+  gap: 3px;
+}
+
+.message-reply-heading span,
+.message-reply-grid span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-reply-heading strong {
+  color: var(--blue);
+  line-height: 1.28;
+}
+
+.message-reply-kit > p {
+  margin: 0;
+  padding: 10px;
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.message-reply-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-reply-grid article {
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.message-reply-grid article.ready {
+  background: #f8fbff;
+}
+
+.message-reply-grid article.waiting {
+  background: white;
+}
+
+.message-reply-grid strong {
+  color: var(--blue);
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.message-reply-grid small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.message-reply-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-reply-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .message-next {
   display: grid;
   gap: 3px;
@@ -10974,6 +11068,8 @@ td {
   .message-flow,
   .message-handoff-grid,
   .message-handoff-actions,
+  .message-reply-grid,
+  .message-reply-actions,
   .demo-handoff-actions,
   .demo-route-actions,
   .demo-proof-actions,
