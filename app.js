@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "110";
+const PUBLIC_LINK_VERSION = "111";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9505,6 +9505,7 @@ function messageHandoffPanel(thread) {
           </article>
         `).join("")}
       </div>
+      ${messageProofBridge(thread, related)}
       ${messageProofReceipt(thread, related)}
       ${messageReplyKit(thread, related)}
       <div class="message-handoff-actions">
@@ -9514,6 +9515,69 @@ function messageHandoffPanel(thread) {
       </div>
     </section>
   `;
+}
+
+function messageProofBridge(thread, related) {
+  if (!related.jobId) return "";
+  const rows = messageBridgeRows(thread, related);
+  return `
+    <div class="message-bridge" aria-label="Message proof bridge">
+      <div class="message-bridge-heading">
+        <div>
+          <span>Proof bridge</span>
+          <strong>Detail to selected bid to message to status.</strong>
+        </div>
+        <button class="btn blue small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+      <div class="message-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+      <div class="message-bridge-actions">
+        <button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Job Detail</button>
+        <button class="btn ghost small" type="button" data-nav="status">Customer Status</button>
+        <button class="btn orange small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+    </div>
+  `;
+}
+
+function messageBridgeRows(thread, related) {
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  const chosen = bids.find((bid) => bid.chosen);
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  return [
+    {
+      label: "Detail",
+      title: job ? job.status : "Job context",
+      body: job ? `${job.title} is the source of truth for scope and budget.` : thread.subtitle,
+      status: job ? "ready" : "waiting"
+    },
+    {
+      label: "Choice",
+      title: chosen ? `${chosen.worker}` : bids.length ? `${bids.length} bids` : "No bid yet",
+      body: chosen ? `${chosen.amount} at ${chosen.timeline}.` : bids.length ? "Open Detail and choose the bid before schedule confirmation." : "Get one worker bid before proving the handoff.",
+      status: chosen ? "ready" : bids.length ? "attention" : "waiting"
+    },
+    {
+      label: "Reply",
+      title: lastMessage ? "Touch saved" : "Draft ready",
+      body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "Copy or save the reply so the next touch is visible.",
+      status: lastMessage ? "ready" : "attention"
+    },
+    {
+      label: "Status",
+      title: "Customer proof",
+      body: "Status shows job, bids, selected handoff, and next action from the customer's side.",
+      status: chosen ? "ready" : "attention"
+    }
+  ];
 }
 
 function messageProofReceipt(thread, related) {
@@ -14671,6 +14735,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
   if (action?.dataset.action === "copy-message-proof") copyMessageProof(action.dataset.threadId);
+  if (action?.dataset.action === "copy-message-bridge") copyMessageBridge(action.dataset.threadId);
   if (action?.dataset.action === "copy-message-reply-kit") copyMessageReplyKit(action.dataset.threadId);
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
@@ -18081,6 +18146,32 @@ function copyMessageProof(threadId = state.activeMessageThreadId) {
     related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
   ].filter(Boolean);
   copyText(lines.join("\n"), "Message proof copied.");
+}
+
+function copyMessageBridge(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  if (!related.jobId) {
+    copyMessageHandoff(threadId);
+    return;
+  }
+  const lines = [
+    "Forge message proof bridge",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `Next step: ${related.next}`,
+    "",
+    ...messageBridgeRows(thread, related).map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Reply to send:",
+    messageReplyText(thread, related),
+    "",
+    `Open job detail: ${roleDemoLink("customer", "detail")}`,
+    `Open customer status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Message bridge copied.");
 }
 
 function copyMessageReplyKit(threadId = state.activeMessageThreadId) {

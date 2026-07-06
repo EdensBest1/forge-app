@@ -3171,6 +3171,106 @@ body:not(.role-admin) [data-admin-control] {
   padding-left: 8px;
 }
 
+.message-bridge {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: white;
+}
+
+.message-bridge-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.message-bridge-heading span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-bridge-heading strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--blue);
+  line-height: 1.25;
+}
+
+.message-bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-bridge-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 118px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.message-bridge-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.message-bridge-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.message-bridge-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-bridge-grid article.attention span,
+.message-bridge-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.message-bridge-grid strong {
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.24;
+}
+
+.message-bridge-grid small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.32;
+}
+
+.message-bridge-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-bridge-actions .btn,
+.message-bridge-heading .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .message-proof-receipt {
   display: grid;
   gap: 6px;
@@ -11336,6 +11436,9 @@ td {
   .message-flow,
   .message-handoff-grid,
   .message-handoff-actions,
+  .message-bridge-heading,
+  .message-bridge-grid,
+  .message-bridge-actions,
   .message-reply-grid,
   .message-reply-actions,
   .demo-handoff-actions,
