@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "108";
+const PUBLIC_LINK_VERSION = "109";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -5009,6 +5009,8 @@ function renderProfileStatus() {
   document.querySelector("#profileSummary").textContent = profile.summary;
   document.querySelector("#profileReadiness").innerHTML = readinessCard(profile);
   renderProfileCommandStrip(profile);
+  const profileVisibility = document.querySelector("#profileVisibilityPanel");
+  if (profileVisibility) profileVisibility.innerHTML = profileVisibilityPanel(profile);
   const profileHandoff = document.querySelector("#profileDemoHandoff");
   if (profileHandoff) profileHandoff.innerHTML = profileDemoHandoff(profile);
   const profileClose = document.querySelector("#profileCloseCard");
@@ -5179,6 +5181,134 @@ function renderMiniProfile(selector, profile) {
     </div>
     <button class="btn ghost small" type="button" data-nav="profile">View Status</button>
   `;
+}
+
+function profileVisibilityPanel(profile) {
+  const rows = profileVisibilityRows(profile);
+  return `
+    <div class="profile-visibility-heading">
+      <div>
+        <span class="split-label">Profile visibility</span>
+        <strong>${escapeHtml(profileVisibilityTitle(profile))}</strong>
+      </div>
+      <button class="btn orange small" type="button" data-action="copy-profile-visibility">Copy Visibility</button>
+    </div>
+    <div class="profile-visibility-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function profileVisibilityTitle(profile) {
+  if (state.session.role === "worker") return "Mike can see his status, bids, and next work action.";
+  if (state.session.role === "customer") return "John can see where his job stands and what to do next.";
+  if (state.session.role === "admin") return "Admin can see what is safe to run before outreach.";
+  return "Choose a role to reveal the profile status view.";
+}
+
+function profileVisibilityRows(profile) {
+  const readiness = profileReadiness(profile);
+  const nextGap = profile.checklist.find(([done]) => !done)?.[1];
+  if (state.session.role === "worker") {
+    const worker = findWorkerByName(profile.name) || state.worker;
+    const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+    const chosen = bids.filter((bid) => bid.chosen);
+    return [
+      {
+        label: "Worker sees",
+        title: `${worker.trade} status`,
+        body: `${worker.name} sees ${profile.status}, ${worker.area}, ${bids.length} bid${bids.length === 1 ? "" : "s"}, and profile readiness.`,
+        state: "ready"
+      },
+      {
+        label: "Forge sees",
+        title: `${readiness}% profile ready`,
+        body: nextGap ? `Next trust gap: ${nextGap}.` : `${chosen.length} won bid${chosen.length === 1 ? "" : "s"} and contact info are visible for follow-up.`,
+        state: nextGap ? "attention" : "ready"
+      },
+      {
+        label: "Next unlock",
+        title: bids.length ? "Keep messages moving" : "Submit first bid",
+        body: profile.nextAction,
+        state: bids.length ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "customer") {
+    const jobs = state.jobs.filter((job) => samePerson(job.customer, profile.name));
+    const latest = jobs[0];
+    const bids = latest ? state.bids.filter((bid) => bid.jobId === latest.id) : [];
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        label: "Customer sees",
+        title: latest ? latest.status : "No job posted",
+        body: latest ? `${latest.title} has ${bids.length} bid${bids.length === 1 ? "" : "s"} and a status page.` : "John needs one posted job before status proof is visible.",
+        state: latest ? "ready" : "attention"
+      },
+      {
+        label: "Forge sees",
+        title: chosen ? "Selected bid" : bids.length ? "Bids ready" : "Waiting",
+        body: chosen ? `${chosen.worker} is selected at ${chosen.amount}; Messages can confirm schedule.` : bids.length ? "Job Detail should be used to choose the next handoff." : "The job can stay posted until workers bid.",
+        state: chosen || bids.length ? "ready" : "attention"
+      },
+      {
+        label: "Next unlock",
+        title: chosen ? "Schedule handoff" : bids.length ? "Choose + Message" : "Collect bids",
+        body: profile.nextAction,
+        state: chosen ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "admin") {
+    const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+    return [
+      {
+        label: "Admin sees",
+        title: `${totalLeadCount()}/200 first users`,
+        body: "Operator status includes jobs, workers, referrals, messages, reports, backup, and launch command.",
+        state: "ready"
+      },
+      {
+        label: "Guarded",
+        title: needsTouch ? `${needsTouch} need touch` : "Queue clear",
+        body: needsTouch ? "Follow-up queue should be copied before widening outreach." : "No urgent first-user follow-up is blocking the next demo.",
+        state: needsTouch ? "attention" : "ready"
+      },
+      {
+        label: "Next unlock",
+        title: "Run Launch Status",
+        body: profile.nextAction,
+        state: "ready"
+      }
+    ];
+  }
+  return [
+    {
+      label: "Visitor sees",
+      title: "Public profile locked",
+      body: "Profile Status unlocks after choosing John, Mike, or Forge Admin.",
+      state: "attention"
+    },
+    {
+      label: "Forge sees",
+      title: "No role selected",
+      body: "No private account, payment, or password is needed in this MVP demo.",
+      state: "ready"
+    },
+    {
+      label: "Next unlock",
+      title: "Choose demo login",
+      body: profile.nextAction,
+      state: "attention"
+    }
+  ];
 }
 
 function readinessCard(profile) {
@@ -14391,6 +14521,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
   if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
+  if (action?.dataset.action === "copy-profile-visibility") copyProfileVisibility();
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
   if (action?.dataset.action === "copy-profile-close-ask") copyProfileCloseAsk();
@@ -18792,6 +18923,27 @@ function copyProfileBrief() {
     `Open profile: ${roleDemoLink(role, "profile")}`
   ];
   copyText(lines.join("\n"), "Status brief copied.");
+}
+
+function copyProfileVisibility() {
+  const profile = getProfileStatus();
+  const rows = profileVisibilityRows(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const lines = [
+    "Forge profile visibility",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    profileVisibilityTitle(profile),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Next action: ${profile.nextAction}`,
+    `Open profile: ${roleDemoLink(role, "profile")}`
+  ];
+  copyText(lines.join("\n"), "Profile visibility copied.");
 }
 
 function copyProfileProofPath() {
