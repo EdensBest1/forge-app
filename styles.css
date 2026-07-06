@@ -10461,6 +10461,114 @@ textarea:focus {
   padding-left: 8px;
 }
 
+.launch-handoff-receipt {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.launch-handoff-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-handoff-heading h2,
+.launch-handoff-heading p {
+  margin: 0;
+}
+
+.launch-handoff-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.launch-handoff-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 244px;
+}
+
+.launch-handoff-actions .btn {
+  min-width: 0;
+}
+
+.launch-handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-handoff-grid article {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  min-height: 184px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.launch-handoff-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.launch-handoff-grid article.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.launch-handoff-grid article > div:first-child {
+  display: grid;
+  gap: 8px;
+}
+
+.launch-handoff-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-handoff-grid article.attention span,
+.launch-handoff-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-handoff-grid strong {
+  color: var(--ink);
+  line-height: 1.22;
+}
+
+.launch-handoff-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.launch-handoff-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .first-user-breakdown {
   display: grid;
   gap: 14px;
@@ -11157,6 +11265,9 @@ td {
   .launch-send-actions,
   .launch-send-grid,
   .launch-send-card-actions,
+  .launch-handoff-heading,
+  .launch-handoff-actions,
+  .launch-handoff-grid,
   .first-user-breakdown-grid,
   .first-200-queue-grid,
   .follow-up-audit-grid,

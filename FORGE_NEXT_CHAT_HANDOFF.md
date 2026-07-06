@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v109`.
+Forge is at `v110`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=109#home`
-- Best demo start: `http://127.0.0.1:4174/?v=109#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=109&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=109&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=109#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=109`
-- Admin demo: `http://127.0.0.1:4174/?v=109&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=110#home`
+- Best demo start: `http://127.0.0.1:4174/?v=110#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=110&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=110&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=110#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=110`
+- Admin demo: `http://127.0.0.1:4174/?v=110&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v109`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v110`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v109:
+These passed after v110:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v109 also covers:
+Automated verification after v110 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -151,6 +151,7 @@ Automated verification after v109 also covers:
 - v107 adds the Product Paths Supplier Match Engine/fencing regression coverage and a Messages reply kit for copying the next schedule/status reply from the active thread.
 - v108 adds a Launch Status demo run order with a copyable six-step first-user walkthrough: Perspective Demo, John Status, Job Detail, Messages reply kit, Mike Worker, and Capture.
 - v109 adds Profile visibility cards so John, Mike, Admin, and visitor views explain what the person sees, what Forge sees, and what unlocks next.
+- v110 adds a Launch Status First-user Handoff receipt with proof, next touch, boundary, backup cards, and a copyable safe follow-up note for controlled demos.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -214,4 +215,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v109 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v110 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

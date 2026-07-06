@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "109";
+const PUBLIC_LINK_VERSION = "110";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4888,6 +4888,7 @@ function render() {
   renderLaunchDecision();
   renderLaunchFinalChecklist();
   renderLaunchSendBoard();
+  renderLaunchHandoffReceipt();
   renderFirstUserCountBreakdown();
   renderFirst200LaunchQueue();
   renderFollowUpAudit();
@@ -10939,6 +10940,114 @@ function renderLaunchSendBoard() {
   `;
 }
 
+function renderLaunchHandoffReceipt() {
+  const target = document.querySelector("#launchHandoffReceipt");
+  if (!target) return;
+  const rows = launchHandoffReceiptRows();
+  target.innerHTML = `
+    <div class="launch-handoff-heading">
+      <div>
+        <span class="split-label">First-user handoff receipt</span>
+        <h2>Close the demo with one safe next step.</h2>
+        <p class="muted">Copy this after each conversation so the person hears the same beta boundary, follow-up path, and backup rule.</p>
+      </div>
+      <div class="launch-handoff-actions">
+        <button class="btn blue small" type="button" data-action="copy-launch-handoff-receipt">Copy Handoff</button>
+        <button class="btn ghost small" type="button" data-action="copy-first-user-closeout">Copy Closeout</button>
+      </div>
+    </div>
+    <div class="launch-handoff-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <div>
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </div>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchHandoffReceiptRows() {
+  const leadCount = totalLeadCount();
+  const followUps = filteredFollowUpRows("All Lead Types", "Needs Follow-Up");
+  const nextTouch = followUps[0];
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const reviewCount = first200ManualReviewCount();
+  return [
+    {
+      label: "Proof shown",
+      title: "John + Mike path ready",
+      body: "Use Perspective Demo, John Status, Job Detail, Messages, and Mike Worker before asking for the next action.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Run Order",
+      action: { type: "action", name: "copy-launch-run-order" }
+    },
+    {
+      label: "Next touch",
+      title: nextTouch ? `${nextTouch.person}` : "Capture one real lead",
+      body: nextTouch
+        ? `${nextTouch.kind}: ${nextTouch.title}. Contact this person before widening the invite list.`
+        : "No urgent queue item is waiting. End the demo by capturing one consented job, worker, referral, auto, career, or business lead.",
+      status: nextTouch ? "attention" : "ready",
+      primary: Boolean(nextTouch),
+      actionLabel: nextTouch ? "Copy Queue" : "Capture",
+      action: nextTouch ? { type: "action", name: "copy-follow-up-queue" } : { type: "nav", screen: "capture" }
+    },
+    {
+      label: "Boundary",
+      title: publicMode ? "Visitor-safe mode on" : "Turn on Public View",
+      body: publicMode
+        ? `${reviewCount} guarded lead${reviewCount === 1 ? "" : "s"} stay in manual review. No payments or sensitive documents belong in the MVP.`
+        : "Operator screens are still visible. Turn on Public View before handing Forge to someone else.",
+      status: publicMode ? "ready" : "attention",
+      primary: !publicMode,
+      actionLabel: publicMode ? "Copy Gate" : "Public View",
+      action: publicMode ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Export after block",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON after this outreach block so ${leadCount} saved first-user records are recoverable.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Closeout" : "Export",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
+function firstUserHandoffNote() {
+  const leadCount = totalLeadCount();
+  const followUps = filteredFollowUpRows("All Lead Types", "Needs Follow-Up");
+  const nextTouch = followUps[0];
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const nextStep = nextTouch
+    ? `Andrew follows up with ${nextTouch.person} about ${nextTouch.title}.`
+    : "Capture one consented job, worker, referral, auto, career, or business lead before ending the conversation.";
+  return [
+    "Thanks for looking at Forge. This is a controlled local beta for people Andrew can personally follow up with.",
+    `Next safe step: ${nextStep}`,
+    "Forge is not collecting payments, deposits, sensitive identity documents, title paperwork, or final contracts in the MVP.",
+    publicMode
+      ? "Public View is on for handoff demos, with operator screens hidden."
+      : "Before handing over the device, turn on Public View so operator screens stay hidden.",
+    backupCurrent
+      ? `Backup status: current through ${state.settings.lastBackupAt} for ${backupCount} leads.`
+      : `Backup status: export JSON after this block so ${leadCount} saved leads are recoverable.`
+  ].join("\n");
+}
+
 function firstUserSendBoardSummary() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
@@ -14534,6 +14643,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
   if (action?.dataset.action === "copy-launch-send-link") copyLaunchSendLink(action.dataset.sendLane);
+  if (action?.dataset.action === "copy-launch-handoff-receipt") copyLaunchHandoffReceipt();
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
@@ -19096,6 +19206,22 @@ function copyLaunchSendLink(lane) {
     `Guardrail: ${row.guardrail}`
   ];
   copyText(lines.join("\n"), `${row.label} link copied.`);
+}
+
+function copyLaunchHandoffReceipt() {
+  const lines = [
+    "Forge first-user handoff receipt",
+    "",
+    `First-user count: ${totalLeadCount()}/200`,
+    "",
+    ...launchHandoffReceiptRows().map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Follow-up note:",
+    firstUserHandoffNote(),
+    "",
+    `Open launch status: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Launch handoff copied.");
 }
 
 function copyFirstUserCountBreakdown() {
