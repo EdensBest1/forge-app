@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "111";
+const PUBLIC_LINK_VERSION = "112";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4837,6 +4837,7 @@ function render() {
   renderDemoGuide();
   renderDemoCueCards();
   renderDemoProofSwitchboard();
+  renderPhoneFastPass();
   renderDemoPath();
   renderDemoLinks();
   renderPerspectiveReadiness();
@@ -6179,6 +6180,69 @@ function renderDemoProofSwitchboard() {
       </div>
     </article>
   `).join("");
+}
+
+function renderPhoneFastPass() {
+  const target = document.querySelector("#phoneFastPass");
+  if (!target) return;
+  const rows = phoneFastPassRows();
+  target.innerHTML = `
+    <div class="phone-fast-pass-heading">
+      <div>
+        <span class="split-label">Phone demo fast pass</span>
+        <h2>Run the strongest proof path without scrolling around.</h2>
+        <p class="muted">Use this when Andrew has one minute, one phone, and one person asking what Forge does from their side.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-phone-fast-pass">Copy Fast Pass</button>
+    </div>
+    <div class="phone-fast-pass-grid">
+      ${rows.map((row, index) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function phoneFastPassRows() {
+  return [
+    {
+      title: "John Status",
+      body: "Show the customer side first: saved job, bids, selected path, privacy boundary, and next step.",
+      actionLabel: "Open Status",
+      status: "ready",
+      primary: true,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      title: "Message bridge",
+      body: "Open Messages and copy the bridge so Detail, bid choice, reply, and Status stay connected.",
+      actionLabel: "Messages",
+      status: "ready",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "messages" }
+    },
+    {
+      title: "Mike worker",
+      body: "Switch to Mike so workers see available jobs, profile readiness, and how bids become follow-up.",
+      actionLabel: "Worker",
+      status: "ready",
+      primary: false,
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      title: "Safe close",
+      body: "Finish with Launch Status, one captured next action, and the controlled-beta boundary.",
+      actionLabel: "Launch",
+      status: "attention",
+      primary: false,
+      action: { type: "nav", screen: "launch-status" }
+    }
+  ];
 }
 
 function renderDemoPath() {
@@ -14740,6 +14804,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
+  if (action?.dataset.action === "copy-phone-fast-pass") copyPhoneFastPass();
   if (action?.dataset.action === "copy-launch-receipt") copyLaunchReceipt();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
   if (action?.dataset.action === "copy-confirmation-handoff") copyConfirmationHandoff();
@@ -16568,6 +16633,30 @@ async function copyDemoCue(role) {
     roleDemoLink(demoRole, screen)
   ].join("\n");
   await copyText(text, `${cue.audience} cue copied.`);
+}
+
+async function copyPhoneFastPass() {
+  const lines = [
+    "Forge phone demo fast pass",
+    "",
+    "Use this when someone has one minute and the phone is in your hand.",
+    "",
+    ...phoneFastPassRows().map((row, index) => `${index + 1}. ${row.title}: ${row.body}`),
+    "",
+    "Live words:",
+    "Forge connects local jobs, local workers, and follow-up in one simple flow.",
+    "First I will show the customer side, then the selected-bid message handoff, then the worker side, then the safe launch boundary.",
+    "If this makes sense, the next step is one real action: post a job, join as a worker, ask for auto/career/business help, or give one referral.",
+    "",
+    "Open links:",
+    `John Status: ${roleDemoLink("customer", "status")}`,
+    `John Messages: ${roleDemoLink("customer", "messages")}`,
+    `Mike Worker: ${roleDemoLink("worker", "worker")}`,
+    `Launch Status: ${roleDemoLink("admin", "launch-status")}`,
+    "",
+    "Safety boundary: controlled first-user demo only. No payments, deposits, sensitive identity documents, title paperwork, or final contracts in the MVP."
+  ];
+  await copyText(lines.join("\n"), "Phone fast pass copied.");
 }
 
 async function copyDemoPack() {

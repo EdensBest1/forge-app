@@ -34,8 +34,8 @@ const checks = [
   ["deploy files present", files.includes("netlify.toml") && files.includes("vercel.json") && files.includes("robots.txt")],
   ["ci package scripts present", files.includes("package.json")],
   ["github checks workflow present", workflowExists],
-  ["fresh cache version", contents["service-worker.js"].includes("forge-mvp-v111")],
-  ["html asset version", contents["index.html"].includes("styles.css?v=111") && contents["index.html"].includes("app.js?v=111")]
+  ["fresh cache version", contents["service-worker.js"].includes("forge-mvp-v112")],
+  ["html asset version", contents["index.html"].includes("styles.css?v=112") && contents["index.html"].includes("app.js?v=112")]
 ];
 
 const failed = checks.filter(([, ok]) => !ok);
