@@ -3668,6 +3668,104 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.profile-perspective-switch {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.profile-perspective-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile-perspective-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  line-height: 1.28;
+}
+
+.profile-perspective-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profile-perspective-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 176px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.profile-perspective-grid article.active {
+  border-color: #9dbcf0;
+  border-left: 5px solid var(--blue);
+  background: white;
+}
+
+.profile-perspective-grid article.guarded {
+  background: #fffaf4;
+}
+
+.profile-perspective-grid article.waiting {
+  background: #fbfcff;
+}
+
+.profile-perspective-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.profile-perspective-grid article.guarded span,
+.profile-perspective-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.profile-perspective-grid strong {
+  color: var(--ink);
+  line-height: 1.22;
+}
+
+.profile-perspective-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.profile-perspective-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: auto;
+}
+
+.profile-perspective-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 6px;
+  padding-left: 6px;
+}
+
 .profile-command-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -11543,6 +11641,9 @@ td {
   .status-handoff-grid,
   .status-handoff-actions,
   .message-proof-actions,
+  .profile-perspective-heading,
+  .profile-perspective-grid,
+  .profile-perspective-actions,
   .profile-command-strip,
   .profile-visibility-heading,
   .profile-visibility-grid,

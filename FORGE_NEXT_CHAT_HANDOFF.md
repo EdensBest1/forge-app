@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v112`.
+Forge is at `v113`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=112#home`
-- Best demo start: `http://127.0.0.1:4174/?v=112#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=112&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=112&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=112#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=112`
-- Admin demo: `http://127.0.0.1:4174/?v=112&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=113#home`
+- Best demo start: `http://127.0.0.1:4174/?v=113#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=113&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=113&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=113#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=113`
+- Admin demo: `http://127.0.0.1:4174/?v=113&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v112`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v113`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v112:
+These passed after v113:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v112 also covers:
+Automated verification after v113 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -154,6 +154,7 @@ Automated verification after v112 also covers:
 - v110 adds a Launch Status First-user Handoff receipt with proof, next touch, boundary, backup cards, and a copyable safe follow-up note for controlled demos.
 - v111 adds a Messages proof bridge that ties Job Detail, selected bid, reply, and Customer Status into one copyable demo path.
 - v112 adds a Perspective Demo Phone Fast Pass with four one-tap proof steps and a copyable one-minute phone demo script.
+- v113 adds a Profile Status perspective switcher for John, Mike, Admin, and Public views with a copyable profile perspective lens.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -217,4 +218,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v112 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v113 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

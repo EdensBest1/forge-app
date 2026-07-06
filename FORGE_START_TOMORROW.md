@@ -8,15 +8,15 @@ Workspace:
 
 `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`
 
-Current build: `v112`
+Current build: `v113`
 
 Local app:
 
-- Home: `http://127.0.0.1:4174/?v=112#home`
-- Perspective Demo: `http://127.0.0.1:4174/?v=112#perspective`
-- Training & Careers: `http://127.0.0.1:4174/?v=112#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=112`
-- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=112&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=113#home`
+- Perspective Demo: `http://127.0.0.1:4174/?v=113#perspective`
+- Training & Careers: `http://127.0.0.1:4174/?v=113#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=113`
+- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=113&demo=admin#admin`
 
 If the server is not running:
 
@@ -27,7 +27,7 @@ npm start
 Then open:
 
 ```text
-http://127.0.0.1:4174/?v=112#perspective
+http://127.0.0.1:4174/?v=113#perspective
 ```
 
 ## What Is Saved
@@ -42,7 +42,7 @@ http://127.0.0.1:4174/?v=112#perspective
 
 ## Current State
 
-Forge v112 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
+Forge v113 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
 
 - Connect backend or Zapier lead delivery
 - Enable production-grade admin authentication
@@ -54,18 +54,19 @@ Forge v112 is a local static MVP. It is good for controlled demos and early sign
 
 1. Open Launch Status and copy the Demo Run Order before showing Forge to someone.
 2. Open Perspective Demo and copy the Phone Demo Fast Pass when showing Forge from a phone.
-3. Open Admin and use the Soft Launch Tomorrow panel.
-4. Use Quick Capture for consented live conversations, then copy the triage script or latest lead handoff.
-5. Open Job Detail and copy the proof ticket to show the job-to-bid-to-message path.
-6. Open Messages and copy the reply kit so the selected-bid handoff has a clear next text/email.
-7. Open Messages and copy the Message Proof Bridge so Detail, selected bid, reply, and Customer Status stay connected.
-8. Open Profile Status and copy Profile Visibility so John, Mike, or Admin can understand what they see and what unlocks next.
-9. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
-10. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
-11. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
-12. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
-13. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
-14. Re-run:
+3. Open Profile Status and use the Perspective Switch to jump between John, Mike, Admin, and Public views.
+4. Open Admin and use the Soft Launch Tomorrow panel.
+5. Use Quick Capture for consented live conversations, then copy the triage script or latest lead handoff.
+6. Open Job Detail and copy the proof ticket to show the job-to-bid-to-message path.
+7. Open Messages and copy the reply kit so the selected-bid handoff has a clear next text/email.
+8. Open Messages and copy the Message Proof Bridge so Detail, selected bid, reply, and Customer Status stay connected.
+9. Open Profile Status and copy Profile Visibility so John, Mike, or Admin can understand what they see and what unlocks next.
+10. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
+11. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
+12. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
+13. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
+14. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
+15. Re-run:
 
 ```bash
 npm run check
@@ -84,5 +85,5 @@ Upload both:
 Use this tomorrow:
 
 ```text
-This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v112 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
+This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v113 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
 ```

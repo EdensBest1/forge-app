@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "112";
+const PUBLIC_LINK_VERSION = "113";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -5010,6 +5010,7 @@ function renderProfileStatus() {
   document.querySelector("#profileStatusPill").textContent = profile.status;
   document.querySelector("#profileSummary").textContent = profile.summary;
   document.querySelector("#profileReadiness").innerHTML = readinessCard(profile);
+  renderProfilePerspectiveSwitch(profile);
   renderProfileCommandStrip(profile);
   const profileVisibility = document.querySelector("#profileVisibilityPanel");
   if (profileVisibility) profileVisibility.innerHTML = profileVisibilityPanel(profile);
@@ -5059,6 +5060,95 @@ function renderProfileStatus() {
       <p>${escapeHtml(item.text)}</p>
     </article>
   `).join("") || `<p class="muted">No activity yet.</p>`;
+}
+
+function renderProfilePerspectiveSwitch(profile) {
+  const target = document.querySelector("#profilePerspectiveSwitch");
+  if (!target) return;
+  const rows = profilePerspectiveRows();
+  target.innerHTML = `
+    <div class="profile-perspective-heading">
+      <div>
+        <span class="split-label">Perspective switch</span>
+        <strong>${escapeHtml(profilePerspectiveTitle(profile))}</strong>
+        <p class="muted">Jump between the views a real homeowner, worker, operator, or public visitor would see.</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-profile-perspective">Copy Lens</button>
+    </div>
+    <div class="profile-perspective-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.role === state.session.role ? "active" : row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <div class="profile-perspective-actions">
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+            ${row.secondaryAction ? `<button class="btn ghost small" type="button" ${profileProofButtonAttrs(row.secondaryAction)}>${escapeHtml(row.secondaryLabel)}</button>` : ""}
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function profilePerspectiveTitle(profile) {
+  if (state.session.role === "customer") return `${profile.name} is viewing job status, bids, messages, and next steps.`;
+  if (state.session.role === "worker") return `${profile.name} is viewing worker readiness, bids, jobs, and messages.`;
+  if (state.session.role === "admin") return "Forge Admin is viewing launch, safety, follow-up, and operations.";
+  return "No account is selected, so private profile status stays locked.";
+}
+
+function profilePerspectiveRows() {
+  return [
+    {
+      role: "customer",
+      label: "John",
+      title: "Customer status",
+      body: "Job poster view: saved job, bids received, selected-bid handoff, messages, and safe next action.",
+      state: "ready",
+      primary: true,
+      actionLabel: "Profile",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "profile" },
+      secondaryLabel: "Status",
+      secondaryAction: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      role: "worker",
+      label: "Mike",
+      title: "Worker readiness",
+      body: "Worker view: local jobs, profile readiness, bids submitted, earnings proof, and message follow-up.",
+      state: "ready",
+      primary: false,
+      actionLabel: "Profile",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "profile" },
+      secondaryLabel: "Jobs",
+      secondaryAction: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      role: "admin",
+      label: "Admin",
+      title: "Operator view",
+      body: "Operator view: first-user queue, launch command, safety boundary, backups, and follow-up controls.",
+      state: "guarded",
+      primary: false,
+      actionLabel: "Profile",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "profile" },
+      secondaryLabel: "Launch",
+      secondaryAction: { type: "login", role: "admin", name: "Forge Admin", screen: "launch-status" }
+    },
+    {
+      role: "guest",
+      label: "Public",
+      title: "Private status locked",
+      body: "Public visitors see the marketplace and calls to action, but not private job, bid, or operator data.",
+      state: "waiting",
+      primary: false,
+      actionLabel: "Guest",
+      action: { type: "action", name: "logout" },
+      secondaryLabel: "Home",
+      secondaryAction: { type: "nav", screen: "home" }
+    }
+  ];
 }
 
 function renderProfileCommandStrip(profile) {
@@ -14758,6 +14848,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
   if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
+  if (action?.dataset.action === "copy-profile-perspective") copyProfilePerspective();
   if (action?.dataset.action === "copy-profile-visibility") copyProfileVisibility();
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
@@ -19192,6 +19283,32 @@ function copyProfileCommand() {
     `Open profile: ${roleDemoLink(role, "profile")}`
   ];
   copyText(lines.join("\n"), "Profile command copied.");
+}
+
+function copyProfilePerspective() {
+  const profile = getProfileStatus();
+  const rows = profilePerspectiveRows();
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : null;
+  const currentLink = role ? roleDemoLink(role, "profile") : `${appBaseUrl()}${versionQuery()}#profile`;
+  const lines = [
+    "Forge profile perspective lens",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    "Use this when someone asks what Forge looks like from their side.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Current profile link: ${currentLink}`,
+    `Customer profile: ${roleDemoLink("customer", "profile")}`,
+    `Worker profile: ${roleDemoLink("worker", "profile")}`,
+    `Admin profile: ${roleDemoLink("admin", "profile")}`,
+    "",
+    "Safety boundary: public visitors do not see private jobs, bids, messages, phone/email details, operator queues, payments, passwords, sensitive documents, or final contracts in this MVP."
+  ];
+  copyText(lines.join("\n"), "Profile perspective copied.");
 }
 
 function copyProfileBrief() {
