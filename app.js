@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "113";
+const PUBLIC_LINK_VERSION = "114";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4885,6 +4885,7 @@ function render() {
   renderSoftLaunchPlan();
   renderSoftLaunchInvites();
   renderSoftLaunchRunSheet();
+  renderLaunchShowPlan();
   renderLaunchDemoPack();
   renderLaunchDecision();
   renderLaunchFinalChecklist();
@@ -10902,6 +10903,78 @@ function renderLaunchDemoPack() {
   `).join("");
 }
 
+function renderLaunchShowPlan() {
+  const target = document.querySelector("#launchShowPlan");
+  if (!target) return;
+  const rows = launchShowPlanRows();
+  target.innerHTML = `
+    <div class="launch-show-plan-heading">
+      <div>
+        <span class="split-label">Show plan</span>
+        <h2>Run Forge safely when someone is ready to see it.</h2>
+        <p class="muted">Use this from a phone or laptop before asking for one real next action.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-launch-show-plan">Copy Show Plan</button>
+    </div>
+    <div class="launch-show-plan-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchShowPlanRows() {
+  const leadCount = totalLeadCount();
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      label: "1. Mode",
+      title: publicMode ? "Visitor-safe mode on" : "Turn Public View on",
+      body: publicMode ? "Operator-only screens are hidden before handing the device over." : "Turn this on before someone else touches the app.",
+      status: publicMode ? "ready" : "attention",
+      primary: !publicMode,
+      actionLabel: publicMode ? "Copy Gate" : "Public View",
+      action: publicMode ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "2. Proof",
+      title: "Use the one-minute path",
+      body: "Copy the Phone Fast Pass or open Perspective Demo, then show John Status, Messages, Mike Worker, and Launch.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Copy Fast Pass",
+      action: { type: "action", name: "copy-phone-fast-pass" }
+    },
+    {
+      label: "3. Capture",
+      title: `${leadCount}/200 saved`,
+      body: followUpCount ? `${followUpCount} lead${followUpCount === 1 ? "" : "s"} need touch. Capture one next action before widening outreach.` : "Capture one job, worker, referral, auto, career, or business lead.",
+      status: followUpCount ? "attention" : "ready",
+      primary: false,
+      actionLabel: "Capture",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "capture" }
+    },
+    {
+      label: "4. Stop",
+      title: backupCurrent ? "Close with boundary" : "Back up after block",
+      body: backupCurrent ? "No payments, deposits, sensitive documents, title paperwork, or final contracts in the MVP." : `Export JSON after this block so ${leadCount} saved records are recoverable.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Boundary" : "Export",
+      action: backupCurrent ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
 function renderLaunchDecision() {
   const target = document.querySelector("#launchDecisionCard");
   if (!target) return;
@@ -14857,6 +14930,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-follow-up-queue") copyFollowUpQueue();
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
+  if (action?.dataset.action === "copy-launch-show-plan") copyLaunchShowPlan();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
   if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
@@ -19446,6 +19520,26 @@ function copyLaunchDecision() {
     "Decision: use controlled first-user demos and signups now. Hold broad public launch, payments, and stranger traffic until backend delivery, production admin auth, backup, legal review, and final security review are complete."
   ];
   copyText(lines.join("\n"), "Launch decision copied.");
+}
+
+function copyLaunchShowPlan() {
+  const rows = launchShowPlanRows();
+  const lines = [
+    "Forge launch show plan",
+    "",
+    "Use this when someone is ready to see Forge and Andrew needs the safest shortest path.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Open proof links:",
+    `Perspective Demo: ${roleDemoLink("customer", "perspective")}`,
+    `John Status: ${roleDemoLink("customer", "status")}`,
+    `Mike Worker: ${roleDemoLink("worker", "worker")}`,
+    `Launch Status: ${roleDemoLink("admin", "launch-status")}`,
+    "",
+    "Close: capture one real next action, keep payments and sensitive documents out of the MVP, follow up personally, and export backup after the outreach block."
+  ];
+  copyText(lines.join("\n"), "Launch show plan copied.");
 }
 
 function copyLaunchFinalChecklist() {

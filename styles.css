@@ -10298,6 +10298,100 @@ textarea:focus {
   margin-top: auto;
 }
 
+.launch-show-plan {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.launch-show-plan-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-show-plan-heading h2,
+.launch-show-plan-heading p {
+  margin: 0;
+}
+
+.launch-show-plan-heading h2 {
+  color: var(--blue);
+  font-size: 1.25rem;
+}
+
+.launch-show-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-show-plan-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: space-between;
+  min-height: 174px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.launch-show-plan-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.launch-show-plan-grid article.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.launch-show-plan-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-show-plan-grid article.attention span,
+.launch-show-plan-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-show-plan-grid strong {
+  color: var(--ink);
+  line-height: 1.22;
+}
+
+.launch-show-plan-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.launch-show-plan-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .launch-demo-pack {
   display: grid;
   gap: 14px;
@@ -11549,6 +11643,8 @@ td {
   .launch-final-heading,
   .launch-run-order-heading,
   .launch-run-order-grid,
+  .launch-show-plan-heading,
+  .launch-show-plan-grid,
   .launch-final-grid,
   .launch-send-heading,
   .launch-send-actions,
