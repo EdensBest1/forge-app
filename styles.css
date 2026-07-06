@@ -10122,6 +10122,88 @@ textarea:focus {
   font-size: 1.25rem;
 }
 
+.launch-run-order {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.launch-run-order-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.launch-run-order-heading h3,
+.launch-run-order-heading p {
+  margin: 0;
+}
+
+.launch-run-order-heading h3 {
+  color: var(--ink);
+  font-size: 1.08rem;
+}
+
+.launch-run-order-heading p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.42;
+}
+
+.launch-run-order-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.launch-run-order-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 174px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-run-order-grid span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.launch-run-order-grid strong {
+  color: var(--blue);
+  font-size: 0.9rem;
+  line-height: 1.22;
+}
+
+.launch-run-order-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.34;
+}
+
+.launch-run-order-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .launch-final-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -10995,6 +11077,8 @@ td {
   .perspective-readiness-grid,
   .launch-receipt-grid,
   .launch-final-heading,
+  .launch-run-order-heading,
+  .launch-run-order-grid,
   .launch-final-grid,
   .launch-send-heading,
   .launch-send-actions,

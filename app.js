@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "107";
+const PUBLIC_LINK_VERSION = "108";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -10629,6 +10629,7 @@ function renderLaunchFinalChecklist() {
       </div>
       <button class="btn blue small" type="button" data-action="copy-launch-final-checklist">Copy Checklist</button>
     </div>
+    ${launchRunOrderPanel()}
     <div class="launch-final-grid">
       ${rows.map((row) => `
         <article class="${escapeHtml(row.status)}">
@@ -10640,6 +10641,79 @@ function renderLaunchFinalChecklist() {
       `).join("")}
     </div>
   `;
+}
+
+function launchRunOrderPanel() {
+  const rows = launchRunOrderRows();
+  return `
+    <section class="launch-run-order" aria-label="First-user demo run order">
+      <div class="launch-run-order-heading">
+        <div>
+          <span class="split-label">Demo run order</span>
+          <h3>Show the same proof path every time.</h3>
+          <p>Use this when someone is standing next to you and you need to make Forge clear in under five minutes.</p>
+        </div>
+        <button class="btn orange small" type="button" data-action="copy-launch-run-order">Copy Run Order</button>
+      </div>
+      <div class="launch-run-order-grid">
+        ${rows.map((row, index) => `
+          <article>
+            <span>${index + 1}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function launchRunOrderRows() {
+  return [
+    {
+      title: "Start with Perspective Demo",
+      body: "Pick the person in front of you: homeowner, worker, operator, auto, career, or business.",
+      actionLabel: "Open Demo",
+      primary: true,
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      title: "Show customer status",
+      body: "Open John status so they see a saved job, bid state, privacy boundary, and next step.",
+      actionLabel: "John Status",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      title: "Show job detail proof",
+      body: "Open Job Detail, show bids, proof ticket, chosen bid, and the handoff into Messages.",
+      actionLabel: "Job Detail",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "detail" }
+    },
+    {
+      title: "Copy the message reply kit",
+      body: "Open Messages, use the reply kit, and show how Forge turns a selected bid into a schedule reply.",
+      actionLabel: "Messages",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "messages" }
+    },
+    {
+      title: "Show worker profile",
+      body: "Switch to Mike Jones so workers see jobs, bids, profile readiness, and what they can do next.",
+      actionLabel: "Mike Worker",
+      primary: false,
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      title: "Capture one next action",
+      body: "Finish with Quick Capture, the Send Board, or one invite link, then export backup after the block.",
+      actionLabel: "Capture",
+      primary: false,
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "capture" }
+    }
+  ];
 }
 
 function launchFinalChecklistRows() {
@@ -14326,6 +14400,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
+  if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
   if (action?.dataset.action === "copy-launch-send-link") copyLaunchSendLink(action.dataset.sendLane);
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
@@ -18821,10 +18896,26 @@ function copyLaunchFinalChecklist() {
     "",
     ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
     "",
+    "Demo run order:",
+    ...launchRunOrderRows().map((row, index) => `${index + 1}. ${row.title}. ${row.body} Link: ${roleDemoLink(row.action.role || "admin", row.action.screen || "launch-status")}`),
+    "",
     "Run order: open the proof path, capture one real next action, clear or copy the follow-up queue, export a backup if needed, and use Public View before handing Forge to someone else.",
     `Open launch status: ${roleDemoLink("admin", "launch-status")}`
   ];
   copyText(lines.join("\n"), "Final checklist copied.");
+}
+
+function copyLaunchRunOrder() {
+  const lines = [
+    "Forge first-user demo run order",
+    "",
+    "Use this when someone is watching and you need Forge to make sense quickly.",
+    "",
+    ...launchRunOrderRows().map((row, index) => `${index + 1}. ${row.title}: ${row.body}\n   ${roleDemoLink(row.action.role || "admin", row.action.screen || "launch-status")}`),
+    "",
+    "Close: capture one real next action, keep payments off, use controlled first-user follow-up, and export backup after the outreach block."
+  ];
+  copyText(lines.join("\n"), "Run order copied.");
 }
 
 function copyLaunchSendBoard() {
