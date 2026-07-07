@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "116";
+const PUBLIC_LINK_VERSION = "117";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -10386,6 +10386,7 @@ function renderDashboards() {
     ["Jobs Won", chosenBids.length],
     ["Earnings", chosenBids.length ? "$2,450" : "$0"]
   ]);
+  renderWorkerOpportunityBridge(sessionWorkerName, workerBids);
   renderProviderNorthStarDashboard();
   document.querySelector("#adminStats").innerHTML = statCards([
     ["New Jobs", newJobs],
@@ -10589,6 +10590,98 @@ function renderDashboards() {
     status: bid.chosen ? "Chosen" : bid.status
   })));
   renderLeadPipelines();
+}
+
+function renderWorkerOpportunityBridge(workerName = state.worker.name, workerBids = []) {
+  const target = document.querySelector("#workerOpportunityBridge");
+  if (!target) return;
+  const worker = findWorkerByName(workerName) || state.worker;
+  const bids = workerBids.length ? workerBids : state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const rows = workerOpportunityBridgeRows(worker, bids);
+  target.innerHTML = `
+    <div class="worker-opportunity-heading">
+      <div>
+        <span class="split-label">Worker opportunity bridge</span>
+        <strong>${escapeHtml(workerOpportunityBridgeTitle(worker, bids))}</strong>
+        <p>Use this when showing a worker what Forge looks like from their side: profile, jobs, bid, message, and next step.</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-worker-opportunity-bridge" data-worker-name="${escapeHtml(worker.name)}">Copy Bridge</button>
+    </div>
+    <div class="worker-opportunity-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${row.attrs}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function workerOpportunityBridgeTitle(worker, bids) {
+  const chosen = bids.filter((bid) => bid.chosen).length;
+  if (chosen) return `${worker.name} has a won bid and a follow-up path.`;
+  if (bids.length) return `${worker.name} has submitted bid proof and can open messages.`;
+  return `${worker.name} can review jobs and submit the first bid.`;
+}
+
+function workerOpportunityBridgeRows(worker, workerBids = []) {
+  const openJobs = state.jobs.filter((job) => job.status !== "Completed");
+  const activeJob = state.jobs.find((job) => job.id === state.activeJobId) || openJobs[0] || state.jobs[0];
+  const activeBid = activeJob ? workerBids.find((bid) => bid.jobId === activeJob.id) : null;
+  const firstBid = activeBid || workerBids[0];
+  const relatedJob = firstBid ? state.jobs.find((job) => job.id === firstBid.jobId) : activeJob;
+  const hasMessage = relatedJob ? state.messages.some((message) => message.threadId === `job-${relatedJob.id}`) : false;
+  const trust = workerTrustProfile(worker);
+  return [
+    {
+      label: "1. Profile",
+      title: worker.status || trust.decision,
+      body: `${worker.trade || "Worker"} in ${worker.area || "service area pending"}; trust route: ${trust.tier} / ${trust.rank}.`,
+      status: worker.phone && worker.email ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Profile",
+      attrs: `data-nav="profile"`
+    },
+    {
+      label: "2. Jobs",
+      title: `${openJobs.length} open job${openJobs.length === 1 ? "" : "s"}`,
+      body: relatedJob ? `${relatedJob.title} is available in ${relatedJob.location || "the local area"}.` : "No active job is available yet.",
+      status: relatedJob ? "ready" : "waiting",
+      primary: false,
+      actionLabel: relatedJob ? "View Job" : "Jobs",
+      attrs: relatedJob ? `data-detail="${escapeHtml(relatedJob.id)}"` : `data-nav="jobs"`
+    },
+    {
+      label: "3. Bid",
+      title: firstBid ? `${firstBid.amount} submitted` : "Submit first bid",
+      body: firstBid ? `${firstBid.status || "Bid"} on ${relatedJob?.title || "a Forge job"}; ${firstBid.timeline || "timeline pending"}.` : "Open the bid form so the worker can show real action.",
+      status: firstBid ? "ready" : relatedJob ? "attention" : "waiting",
+      primary: Boolean(!firstBid && relatedJob),
+      actionLabel: firstBid ? "Open Thread" : "Submit Bid",
+      attrs: firstBid && relatedJob ? `data-message-thread="job-${escapeHtml(relatedJob.id)}"` : relatedJob ? `data-bid-job="${escapeHtml(relatedJob.id)}"` : `data-nav="jobs"`
+    },
+    {
+      label: "4. Message",
+      title: hasMessage ? "Thread ready" : firstBid ? "Follow-up pending" : "Needs bid first",
+      body: hasMessage ? "Messages show the bid handoff and customer follow-up." : firstBid ? "Open Messages after the customer responds or bid is selected." : "Submit a bid before message proof is complete.",
+      status: hasMessage ? "ready" : firstBid ? "attention" : "waiting",
+      primary: Boolean(hasMessage && relatedJob),
+      actionLabel: "Messages",
+      attrs: relatedJob ? `data-message-thread="job-${escapeHtml(relatedJob.id)}"` : `data-nav="messages"`
+    },
+    {
+      label: "5. Next",
+      title: firstBid?.chosen ? "Confirm work details" : firstBid ? "Watch for response" : "Bid on one job",
+      body: firstBid?.chosen ? "Use Messages to confirm schedule, materials, and arrival details." : firstBid ? "Keep profile ready and follow up from Messages." : "Review jobs, submit one bid, and keep profile status complete.",
+      status: firstBid ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Copy Bridge",
+      attrs: `data-action="copy-worker-opportunity-bridge" data-worker-name="${escapeHtml(worker.name)}"`
+    }
+  ];
 }
 
 function renderProviderNorthStarDashboard() {
@@ -15299,6 +15392,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-message-bridge") copyStatusMessageBridge(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
+  if (action?.dataset.action === "copy-worker-opportunity-bridge") copyWorkerOpportunityBridge(action.dataset.workerName);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
   if (action?.dataset.action === "copy-homebuilding-lead") copyHomebuildingLead(action.dataset.homebuildingId);
@@ -18716,6 +18810,30 @@ function copyMessageReplyKit(threadId = state.activeMessageThreadId) {
     related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
   ].filter(Boolean);
   copyText(lines.join("\n"), "Message reply kit copied.");
+}
+
+function copyWorkerOpportunityBridge(workerName = state.session.name || state.worker.name) {
+  const worker = findWorkerByName(workerName) || state.worker;
+  const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const chosen = bids.filter((bid) => bid.chosen);
+  const rows = workerOpportunityBridgeRows(worker, bids);
+  const lines = [
+    "Forge worker opportunity bridge",
+    "",
+    `${worker.name} - ${worker.trade || "Forge worker"}`,
+    `Status: ${worker.status || "Profile saved"}`,
+    `Service area: ${worker.area || worker.serviceArea || "Not provided"}`,
+    `Bids submitted: ${bids.length}`,
+    `Jobs won: ${chosen.length}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen.length ? "Next action: confirm schedule and job details through Messages." : bids.length ? "Next action: watch Messages and keep profile readiness current." : "Next action: review available jobs and submit one bid.",
+    `Open worker dashboard: ${roleDemoLink("worker", "worker")}`,
+    `Open worker profile: ${roleDemoLink("worker", "profile")}`,
+    `Open worker messages: ${roleDemoLink("worker", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Worker opportunity bridge copied.");
 }
 
 function copyWorkerDirect(email) {

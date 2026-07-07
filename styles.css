@@ -4423,6 +4423,110 @@ body:not(.role-admin) [data-admin-control] {
   padding-left: 8px;
 }
 
+.worker-opportunity-bridge {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.worker-opportunity-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.worker-opportunity-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  line-height: 1.28;
+}
+
+.worker-opportunity-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.worker-opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.worker-opportunity-grid article {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  min-height: 158px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.worker-opportunity-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.worker-opportunity-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.worker-opportunity-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.worker-opportunity-grid article.attention span,
+.worker-opportunity-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.worker-opportunity-grid strong {
+  color: var(--ink);
+  font-size: 0.85rem;
+  line-height: 1.23;
+}
+
+.worker-opportunity-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.32;
+}
+
+.worker-opportunity-grid .btn,
+.worker-opportunity-heading .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.worker-opportunity-grid .btn {
+  align-self: end;
+  width: 100%;
+  margin-top: auto;
+}
+
 .capture-card h1 {
   margin-bottom: 0;
   font-size: clamp(1.8rem, 4vw, 3.1rem);
@@ -12036,6 +12140,8 @@ td {
   .profile-demo-handoff-grid,
   .profile-close-card,
   .profile-proof-path article,
+  .worker-opportunity-heading,
+  .worker-opportunity-grid,
   .profile-checklist,
   .lead-board,
   .outreach-grid,
