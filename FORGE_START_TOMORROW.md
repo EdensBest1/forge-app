@@ -8,15 +8,15 @@ Workspace:
 
 `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`
 
-Current build: `v115`
+Current build: `v116`
 
 Local app:
 
-- Home: `http://127.0.0.1:4174/?v=115#home`
-- Perspective Demo: `http://127.0.0.1:4174/?v=115#perspective`
-- Training & Careers: `http://127.0.0.1:4174/?v=115#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=115`
-- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=115&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=116#home`
+- Perspective Demo: `http://127.0.0.1:4174/?v=116#perspective`
+- Training & Careers: `http://127.0.0.1:4174/?v=116#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=116`
+- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=116&demo=admin#admin`
 
 If the server is not running:
 
@@ -27,7 +27,7 @@ npm start
 Then open:
 
 ```text
-http://127.0.0.1:4174/?v=115#perspective
+http://127.0.0.1:4174/?v=116#perspective
 ```
 
 ## What Is Saved
@@ -42,7 +42,7 @@ http://127.0.0.1:4174/?v=115#perspective
 
 ## Current State
 
-Forge v115 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
+Forge v116 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
 
 - Connect backend or Zapier lead delivery
 - Enable production-grade admin authentication
@@ -61,13 +61,14 @@ Forge v115 is a local static MVP. It is good for controlled demos and early sign
 7. Open Job Detail and copy the proof ticket to show the job-to-bid-to-message path.
 8. Open Messages and copy the reply kit so the selected-bid handoff has a clear next text/email.
 9. Open Messages and copy the Message Proof Bridge so Detail, selected bid, reply, and Customer Status stay connected.
-10. Open Profile Status and copy Profile Visibility so John, Mike, or Admin can understand what they see and what unlocks next.
-11. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
-12. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
-13. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
-14. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
-15. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
-16. Re-run:
+10. Open Customer Status and copy the Status to Message Bridge so the customer can see job, bid, message, and next action from one place.
+11. Open Profile Status and copy Profile Visibility so John, Mike, or Admin can understand what they see and what unlocks next.
+12. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
+13. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
+14. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
+15. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
+16. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
+17. Re-run:
 
 ```bash
 npm run check
@@ -86,5 +87,5 @@ Upload both:
 Use this tomorrow:
 
 ```text
-This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v115 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
+This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v116 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
 ```

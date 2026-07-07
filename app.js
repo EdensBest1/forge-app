@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "115";
+const PUBLIC_LINK_VERSION = "116";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9469,6 +9469,7 @@ function renderStatusResults() {
         <p>${escapeHtml(job.location)} · ${escapeHtml(job.budget)}</p>
         <p>${bids.length} bid${bids.length === 1 ? "" : "s"} received</p>
         ${customerStatusProofSummary(job, bids)}
+        ${statusMessageBridge(job, bids)}
         <div class="lead-actions">
           <button class="btn blue small" type="button" data-detail="${job.id}">View Detail</button>
           <button class="btn ghost small" type="button" data-message-thread="job-${job.id}">Message Forge</button>
@@ -9544,6 +9545,79 @@ function statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage) {
       title: hasMessage ? "Thread ready" : "Needs handoff",
       body: hasMessage ? "Schedule and arrival details have a visible place." : "Choose a bid to create the message handoff.",
       ok: hasMessage
+    }
+  ];
+}
+
+function statusMessageBridge(job, bids) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage);
+  return `
+    <section class="status-message-bridge" aria-label="Status to message bridge">
+      <div class="status-message-bridge-heading">
+        <div>
+          <span class="split-label">Status to message bridge</span>
+          <strong>${escapeHtml(chosen && hasMessage ? "This customer can move from status to scheduling." : bids.length ? "Next step is visible before the customer leaves status." : "Status stays honest while Forge gets bids.")}</strong>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-status-message-bridge" data-job-id="${escapeHtml(job.id)}">Copy Bridge</button>
+      </div>
+      <div class="status-message-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="status-message-bridge-actions">
+        <button class="btn ${chosen ? "ghost" : "orange"} small" type="button" data-detail="${escapeHtml(job.id)}">${escapeHtml(chosen ? "Review Detail" : bids.length ? "Choose Bid" : "View Job")}</button>
+        <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
+        <button class="btn ghost small" type="button" data-action="copy-status-message-bridge" data-job-id="${escapeHtml(job.id)}">Copy Bridge</button>
+      </div>
+    </section>
+  `;
+}
+
+function statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage) {
+  return [
+    {
+      label: "1. Job",
+      title: job.status,
+      body: `${job.title} is visible with ${job.budget || "budget"} and ${job.location || "local"} context.`,
+      status: "ready"
+    },
+    {
+      label: "2. Bid",
+      title: chosen ? `${chosen.worker} selected` : bestBid ? `${bestBid.worker} ready` : "No bid yet",
+      body: chosen
+        ? `${chosen.amount} is active for the customer handoff.`
+        : bestBid
+          ? `${bestBid.amount} can be selected from Job Detail.`
+          : "Get one worker response before schedule proof is complete.",
+      status: chosen ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "3. Message",
+      title: hasMessage ? "Thread ready" : chosen ? "Open thread" : "Pending choice",
+      body: hasMessage
+        ? "Messages can carry schedule, arrival, and follow-up."
+        : chosen
+          ? "Open Messages and save the next schedule note."
+          : "Choose a bid before message proof is complete.",
+      status: hasMessage ? "ready" : chosen ? "attention" : "waiting"
+    },
+    {
+      label: "4. Next",
+      title: chosen && hasMessage ? "Confirm schedule" : bids.length ? "Move the handoff" : "Invite bids",
+      body: chosen && hasMessage
+        ? "The customer has a clear next action from this status screen."
+        : bids.length
+          ? "Use Detail to choose, then Messages to confirm the next touch."
+          : "Keep status accurate while Forge gets the first bid.",
+      status: chosen && hasMessage ? "ready" : "attention"
     }
   ];
 }
@@ -9708,12 +9782,71 @@ function messageSummary(thread) {
         <small>${escapeHtml(lastMessage ? `Last touch: ${lastMessage.sentAt}` : "No saved message yet")}</small>
       </div>
       ${messageFlowMarkup(thread, related)}
+      ${messageContextBridge(thread, related)}
       <div class="hero-actions">
         ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Job</button>` : ""}
         ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
       </div>
     </article>
   `;
+}
+
+function messageContextBridge(thread, related) {
+  if (!related.jobId) return "";
+  const rows = messageContextBridgeRows(thread, related);
+  return `
+    <div class="message-context-bridge" aria-label="Message context bridge">
+      <div class="message-context-bridge-heading">
+        <div>
+          <span>Thread bridge</span>
+          <strong>Keep job detail, selected bid, message, and status in one path.</strong>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+      <div class="message-context-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function messageContextBridgeRows(thread, related) {
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  const chosen = bids.find((bid) => bid.chosen);
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  return [
+    {
+      label: "Detail",
+      title: job ? job.status : "Missing job",
+      body: job ? `${job.title} remains the scope source.` : thread.subtitle,
+      status: job ? "ready" : "waiting"
+    },
+    {
+      label: "Bid",
+      title: chosen ? chosen.worker : bids.length ? "Needs choice" : "Needs bid",
+      body: chosen ? `${chosen.amount} selected for scheduling.` : bids.length ? "Choose one bid before closing the message." : "Get a bid before the message proves handoff.",
+      status: chosen ? "ready" : bids.length ? "attention" : "waiting"
+    },
+    {
+      label: "Message",
+      title: lastMessage ? "Touch saved" : "Draft ready",
+      body: lastMessage ? `${lastMessage.sentAt} is recorded.` : "Save the next touch after sending.",
+      status: lastMessage ? "ready" : "attention"
+    },
+    {
+      label: "Status",
+      title: chosen && lastMessage ? "Customer proof" : "Return after update",
+      body: "Status should show the same job, bid, and next action.",
+      status: chosen && lastMessage ? "ready" : "attention"
+    }
+  ];
 }
 
 function messageHandoffPanel(thread) {
@@ -15164,6 +15297,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
+  if (action?.dataset.action === "copy-status-message-bridge") copyStatusMessageBridge(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
@@ -18462,6 +18596,33 @@ function copyStatusProofSummary(jobId) {
     `Open messages: ${roleDemoLink("customer", "messages")}`
   ];
   copyText(lines.join("\n"), "Status proof copied.");
+}
+
+function copyStatusMessageBridge(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage);
+  const lines = [
+    "Forge status to message bridge",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected bid: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Next bid to review: ${bestBid.worker} at ${bestBid.amount}` : "Next bid to review: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen && hasMessage ? "Next action: confirm the schedule window and keep status updated." : bids.length ? "Next action: choose a bid from Detail, then confirm through Messages." : "Next action: get one worker bid, then continue the handoff.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Status-message bridge copied.");
 }
 
 function copyMessageHandoff(threadId = state.activeMessageThreadId) {

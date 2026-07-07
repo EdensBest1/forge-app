@@ -3179,6 +3179,100 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.message-context-bridge {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.message-context-bridge-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.message-context-bridge-heading span {
+  color: var(--orange);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-context-bridge-heading strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--blue);
+  line-height: 1.25;
+}
+
+.message-context-bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.message-context-bridge-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 110px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.message-context-bridge-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.message-context-bridge-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.message-context-bridge-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.message-context-bridge-grid article.attention span,
+.message-context-bridge-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.message-context-bridge-grid strong {
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.24;
+}
+
+.message-context-bridge-grid small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.32;
+}
+
+.message-context-bridge-heading .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .message-handoff-panel {
   display: grid;
   gap: 12px;
@@ -10198,6 +10292,102 @@ textarea:focus {
   padding-left: 8px;
 }
 
+.status-message-bridge {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: white;
+}
+
+.status-message-bridge-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-message-bridge-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.status-message-bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-message-bridge-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 112px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.status-message-bridge-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.status-message-bridge-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.status-message-bridge-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.status-message-bridge-grid article.attention span,
+.status-message-bridge-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.status-message-bridge-grid strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.24;
+}
+
+.status-message-bridge-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.32;
+}
+
+.status-message-bridge-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-message-bridge-actions .btn,
+.status-message-bridge-heading .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .status-demo-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -11812,6 +12002,8 @@ td {
   .job-closeout-actions,
   .handoff-grid,
   .message-flow,
+  .message-context-bridge-heading,
+  .message-context-bridge-grid,
   .message-handoff-grid,
   .message-handoff-actions,
   .message-bridge-heading,
@@ -11827,6 +12019,9 @@ td {
   .status-demo-actions,
   .status-proof-grid,
   .status-proof-actions,
+  .status-message-bridge-heading,
+  .status-message-bridge-grid,
+  .status-message-bridge-actions,
   .status-handoff-grid,
   .status-handoff-actions,
   .message-proof-actions,
