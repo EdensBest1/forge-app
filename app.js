@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "114";
+const PUBLIC_LINK_VERSION = "115";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -8944,6 +8944,7 @@ function renderDetail() {
       <div><span>Job ID</span><strong>#JOB-${job.id.slice(0, 4).toUpperCase()}</strong></div>
       <div><span>Status</span><strong>${escapeHtml(job.status)}</strong></div>
     </div>
+    ${jobHandoffRail(job, bids, chosenBid)}
     ${jobFlowTracker(job, bids, chosenBid)}
     ${jobFlowBrief(job, bids, chosenBid)}
     ${jobProofTicketPanel(job, bids, chosenBid)}
@@ -9055,6 +9056,82 @@ function jobFlowTracker(job, bids, chosenBid) {
       </div>
     </section>
   `;
+}
+
+function jobHandoffRail(job, bids, chosenBid) {
+  const rows = jobHandoffRailRows(job, bids, chosenBid);
+  return `
+    <section class="job-handoff-rail" aria-label="Job handoff rail">
+      <div class="job-handoff-rail-heading">
+        <div>
+          <span class="split-label">Handoff rail</span>
+          <h2>Show the job, bid, message, and closeout in order.</h2>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-job-handoff-rail" data-job-id="${escapeHtml(job.id)}">Copy Rail</button>
+      </div>
+      <div class="job-handoff-rail-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${row.attrs}>${escapeHtml(row.actionLabel)}</button>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function jobHandoffRailRows(job, bids, chosenBid) {
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const bestBid = chosenBid || bids[0];
+  return [
+    {
+      label: "1. Status",
+      title: job.status,
+      body: `${job.customer || "Customer"} can see the saved job and next step.`,
+      status: "ready",
+      primary: false,
+      actionLabel: "Open Status",
+      attrs: `data-nav="status"`
+    },
+    {
+      label: "2. Bid",
+      title: chosenBid ? `${chosenBid.worker} selected` : bestBid ? `${bestBid.worker} ready` : "Needs first bid",
+      body: chosenBid
+        ? `${chosenBid.amount} is the active handoff bid.`
+        : bestBid
+          ? `${bestBid.amount} can be selected to create the handoff.`
+          : "Submit or invite one worker bid before showing selection.",
+      status: chosenBid ? "ready" : bestBid ? "attention" : "waiting",
+      primary: Boolean(bestBid && !chosenBid),
+      actionLabel: chosenBid ? "Copy Bid" : bestBid ? "Choose" : "Submit Bid",
+      attrs: chosenBid
+        ? `data-action="copy-bid-handoff" data-job-id="${escapeHtml(job.id)}"`
+        : bestBid
+          ? `data-action="choose-best" data-job-id="${escapeHtml(job.id)}"`
+          : `data-bid-job="${escapeHtml(job.id)}"`
+    },
+    {
+      label: "3. Message",
+      title: hasMessage ? "Thread ready" : chosenBid ? "Open thread" : "Pending choice",
+      body: hasMessage ? "Schedule and follow-up can move through Messages." : chosenBid ? "Open Messages to save the schedule note." : "Choose a bid before message proof is complete.",
+      status: hasMessage ? "ready" : chosenBid ? "attention" : "waiting",
+      primary: Boolean(chosenBid),
+      actionLabel: "Open Thread",
+      attrs: `data-message-thread="job-${escapeHtml(job.id)}"`
+    },
+    {
+      label: "4. Close",
+      title: chosenBid && hasMessage ? "Proof complete" : "Closeout pending",
+      body: chosenBid && hasMessage ? "Copy the receipt and move to the next action." : "Use the closeout to explain what is still missing.",
+      status: chosenBid && hasMessage ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Copy Rail",
+      attrs: `data-action="copy-job-handoff-rail" data-job-id="${escapeHtml(job.id)}"`
+    }
+  ];
 }
 
 function jobFlowSteps(job, bids, chosenBid) {
@@ -15081,6 +15158,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-worker-template") copyText(workerTemplate(state.workers[0]), "Worker follow-up copied.");
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
+  if (action?.dataset.action === "copy-job-handoff-rail") copyJobHandoffRail(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-proof-ticket") copyJobProofTicket(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
@@ -18219,6 +18297,32 @@ function copyJobFlowBrief(jobId) {
     `Open job: ${roleDemoLink("customer", "detail")}`
   ];
   copyText(lines.join("\n"), "Job flow brief copied.");
+}
+
+function copyJobHandoffRail(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosenBid = bids.find((bid) => bid.chosen);
+  const rows = jobHandoffRailRows(job, bids, chosenBid);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const lines = [
+    "Forge job handoff rail",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosenBid ? `Selected bid: ${chosenBid.worker} at ${chosenBid.amount}` : "Selected bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosenBid ? bidHandoffText(job, chosenBid) : bids.length ? "Next action: choose the suggested bid, then open Messages and Status." : "Next action: get one worker bid before showing the full handoff.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Job handoff rail copied.");
 }
 
 function copyJobProofTicket(jobId) {

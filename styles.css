@@ -8123,6 +8123,97 @@ textarea:focus {
   font-size: 0.78rem;
 }
 
+.job-handoff-rail {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.job-handoff-rail-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.job-handoff-rail-heading h2 {
+  margin: 4px 0 0;
+  color: var(--blue);
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.job-handoff-rail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.job-handoff-rail-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: space-between;
+  min-height: 150px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.job-handoff-rail-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.job-handoff-rail-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.job-handoff-rail-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.job-handoff-rail-grid article.attention span,
+.job-handoff-rail-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.job-handoff-rail-grid strong {
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.job-handoff-rail-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.job-handoff-rail-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .job-flow {
   display: grid;
   gap: 12px;
@@ -11711,6 +11802,8 @@ td {
   .bid-row,
   .job-flow-grid,
   .job-flow-brief-grid,
+  .job-handoff-rail-heading,
+  .job-handoff-rail-grid,
   .job-proof-ticket-grid,
   .job-proof-ticket-actions,
   .detail-handoff-grid,
