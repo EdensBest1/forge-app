@@ -1,6 +1,6 @@
 # Forge Start Tomorrow
 
-Saved: June 26, 2026
+Saved: July 10, 2026
 
 ## Start Here
 
@@ -8,15 +8,15 @@ Workspace:
 
 `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`
 
-Current build: `v122`
+Current build: `v123`
 
 Local app:
 
-- Home: `http://127.0.0.1:4174/?v=122#home`
-- Perspective Demo: `http://127.0.0.1:4174/?v=122#perspective`
-- Training & Careers: `http://127.0.0.1:4174/?v=122#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=122`
-- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=122&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=123#home`
+- Perspective Demo: `http://127.0.0.1:4174/?v=123#perspective`
+- Training & Careers: `http://127.0.0.1:4174/?v=123#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=123`
+- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=123&demo=admin#admin`
 
 If the server is not running:
 
@@ -27,7 +27,7 @@ npm start
 Then open:
 
 ```text
-http://127.0.0.1:4174/?v=122#perspective
+http://127.0.0.1:4174/?v=123#perspective
 ```
 
 ## What Is Saved
@@ -42,7 +42,7 @@ http://127.0.0.1:4174/?v=122#perspective
 
 ## Current State
 
-Forge v122 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
+Forge v123 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
 
 - Connect backend or Zapier lead delivery
 - Enable production-grade admin authentication
@@ -67,11 +67,12 @@ Forge v122 is a local static MVP. It is good for controlled demos and early sign
 13. Open Profile Status and copy Profile Visibility so John, Mike, or Admin can understand what they see and what unlocks next.
 14. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
 15. Open Launch Status and copy the Next 10 Invite Sprint before a focused outreach block.
-16. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
-17. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
-18. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
-19. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
-19. Re-run:
+16. Verify Public View redaction before sharing: admin queues, outreach batches, reports, webhook fields, templates, capture triage, and project/building operator surfaces should show hidden-data placeholders until Forge Admin switches to Operator View.
+17. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
+18. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
+19. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
+20. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
+21. Re-run:
 
 ```bash
 npm run check
@@ -90,5 +91,5 @@ Upload both:
 Use this tomorrow:
 
 ```text
-This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v122 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
+This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v123 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
 ```

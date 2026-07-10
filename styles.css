@@ -12291,6 +12291,41 @@ textarea:focus {
   gap: 10px;
 }
 
+.operator-redaction-card {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  padding: 14px;
+  border: 1px dashed #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.operator-redaction-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.operator-redaction-card strong {
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.operator-redaction-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
 .queue-card h3 {
   margin: 4px 0 6px;
 }

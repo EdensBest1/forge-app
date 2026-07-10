@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "122";
+const PUBLIC_LINK_VERSION = "123";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4918,9 +4918,7 @@ function render() {
   renderRoadRescue();
   renderOpportunities();
   renderBuildingPage();
-  renderAdminBuildingLeadsPage();
   renderProjectsPage();
-  renderAdminProjectsPage();
   renderHomebuildingPage();
   renderBuildTrackerPage();
   renderDetail();
@@ -4929,7 +4927,6 @@ function render() {
   renderMessages();
   renderDashboards();
   renderConfirmation();
-  renderSettings();
   renderSafetyCenter();
   renderDeliveryStatus();
   renderSoftLaunchPlan();
@@ -4949,6 +4946,25 @@ function render() {
   renderBackendHandoff();
   renderAuthHandoff();
   renderFirstUserCloseout();
+  renderLaunchGoals();
+  renderFounding200();
+  renderPrivateOperatorSurfaces();
+  renderViewMode();
+  renderNavigationState();
+}
+
+function canRenderPrivateOperatorData() {
+  return state.session.role === "admin" && !state.settings.publicMode;
+}
+
+function renderPrivateOperatorSurfaces() {
+  if (!canRenderPrivateOperatorData()) {
+    redactPrivateOperatorSurfaces();
+    return;
+  }
+  renderAdminBuildingLeadsPage();
+  renderAdminProjectsPage();
+  renderSettings();
   renderLaunchCommandCenter();
   renderOutreachRecap();
   renderOutreachSprintBrief();
@@ -4957,13 +4973,88 @@ function render() {
   renderAdminExtras();
   renderAcademyAdmin();
   renderFlexLeadsAdmin();
-  renderLaunchGoals();
   renderCaptureTriageBoard();
-  renderFounding200();
   renderReports();
-  renderViewMode();
   renderFollowUpQueue();
-  renderNavigationState();
+}
+
+function redactPrivateOperatorSurfaces() {
+  const publicToggle = document.querySelector("#publicModeToggle");
+  if (publicToggle) publicToggle.textContent = state.settings.publicMode ? "Operator View" : "Public View";
+  const webhookUrl = document.querySelector("#webhookUrl");
+  const webhookEnabled = document.querySelector("#webhookEnabled");
+  if (webhookUrl) webhookUrl.value = "";
+  if (webhookEnabled) webhookEnabled.checked = false;
+  ["#jobTemplatePreview", "#workerTemplatePreview", "#adminSenecaPartnerSummary", "#adminBuildingPartnerSummary"].forEach((selector) => {
+    const target = document.querySelector(selector);
+    if (target) target.textContent = "Private operator data is hidden in Public View.";
+  });
+  ["#adminSenecaPartnerBadge", "#adminBuildingPartnerBadge"].forEach((selector) => {
+    const target = document.querySelector(selector);
+    if (target) target.textContent = "Hidden";
+  });
+  document.querySelectorAll("#admin-screen table, #admin-projects-screen table, #admin-building-leads-screen table").forEach((table) => {
+    table.innerHTML = `<tbody><tr><td>Private operator rows are hidden in Public View. Switch to Operator View as Forge Admin to load this table.</td></tr></tbody>`;
+  });
+  document.querySelectorAll([
+    "#adminProfileMini",
+    "#adminStats",
+    "#adminMarketplaceControl",
+    "#adminFoundingGrid",
+    "#launchCommandCenter",
+    "#autoRevenueSummary",
+    "#vehicleListingReview",
+    "#forgePlatinumDealDesk",
+    "#auctionDealDesk",
+    "#operationsVaultGrid",
+    "#outreachRecap",
+    "#outreachSprintBrief",
+    "#outreachBatch",
+    "#sessionHistory",
+    "#followUpCommandStrip",
+    "#followUpProgress",
+    "#todayFollowUp",
+    "#followUpQueue",
+    "#adminJobPipeline",
+    "#adminWorkerPipeline",
+    "#adminCreativeRequestsPipeline",
+    "#adminCreativeProvidersPipeline",
+    "#adminNorthstarPipeline",
+    "#adminRoadRescuePipeline",
+    "#adminForgeAcademyPipeline",
+    "#adminTradePathwaysPipeline",
+    "#adminAcademyPartners",
+    "#adminManufacturingRfqsPipeline",
+    "#adminManufacturingSuppliersPipeline",
+    "#adminManufacturingSupplierLeadsPipeline",
+    "#adminReferralPipeline",
+    "#adminHomebuildingPipeline",
+    "#adminBuildingLeadsPipeline",
+    "#adminProjectsPipeline",
+    "#adminProjectStats",
+    "#adminPartnerDocuments",
+    "#adminProjectsFullPipeline",
+    "#adminBuildingStats",
+    "#adminBuildingPartnerCards",
+    "#adminBuildingFullPipeline",
+    "#captureTriageBoard",
+    "#reportStats",
+    "#reportActions",
+    "#reportHealth",
+    "#activityLog"
+  ].join(",")).forEach((target) => {
+    target.innerHTML = operatorRedactionCard();
+  });
+}
+
+function operatorRedactionCard() {
+  return `
+    <article class="operator-redaction-card">
+      <span>Public View</span>
+      <strong>Private operator data hidden</strong>
+      <p>Forge keeps follow-up names, admin queues, webhook settings, reports, templates, and partner routing details out of visitor-safe rendering. Switch to Operator View as Forge Admin to load this section.</p>
+    </article>
+  `;
 }
 
 function renderOperatorGuard() {
@@ -12699,7 +12790,7 @@ function launchNext10SprintSummary() {
 }
 
 function launchNext10CanShowLeads() {
-  return state.session.role === "admin" && !state.settings.publicMode;
+  return canRenderPrivateOperatorData();
 }
 
 function launchNext10SprintRows() {

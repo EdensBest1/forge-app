@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-10 - Public View operator redaction
+
+- Added a reusable private operator data gate so hidden admin/operator surfaces do not render sensitive seeded lead details while Forge is in Public View or guest mode.
+- Public View now redacts admin tables, follow-up queues, outreach batches, reports, webhook fields, templates, capture triage, project/building admin pipelines, and partner routing summaries.
+- Admin Operator View still loads the full private queues after Andrew switches out of Public View as Forge Admin.
+- Bumped the local static asset/cache release references to v123.
+
 ## 2026-07-10 - Launch next 10 invite sprint
 
 - Added a Launch Status Next 10 Invite Sprint so Andrew can see and copy the next outreach block directly from the launch screen.
