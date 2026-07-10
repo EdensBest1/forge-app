@@ -1,0 +1,39 @@
+name: Unified compliance baseline integrity
+
+on:
+  pull_request:
+    paths:
+      - "docs/compliance/**"
+      - "scripts/check-unified-compliance-baseline.mjs"
+      - "ADMIN_AUTH_PLAN.md"
+      - "SECURITY_REVIEW_CHECKLIST.md"
+      - "index.html"
+      - ".github/workflows/unified-compliance-baseline.yml"
+  push:
+    branches:
+      - "feature/forge-building-seneca-flex-network"
+      - "compliance/unified-soc2-iso27001-gdpr"
+    paths:
+      - "docs/compliance/**"
+      - "scripts/check-unified-compliance-baseline.mjs"
+      - "ADMIN_AUTH_PLAN.md"
+      - "SECURITY_REVIEW_CHECKLIST.md"
+      - "index.html"
+      - ".github/workflows/unified-compliance-baseline.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  baseline-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify unified compliance baseline
+        run: node scripts/check-unified-compliance-baseline.mjs
