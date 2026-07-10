@@ -8,15 +8,15 @@ Workspace:
 
 `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge`
 
-Current build: `v124`
+Current build: `v125`
 
 Local app:
 
-- Home: `http://127.0.0.1:4174/?v=124#home`
-- Perspective Demo: `http://127.0.0.1:4174/?v=124#perspective`
-- Training & Careers: `http://127.0.0.1:4174/?v=124#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=124`
-- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=124&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=125#home`
+- Perspective Demo: `http://127.0.0.1:4174/?v=125#perspective`
+- Training & Careers: `http://127.0.0.1:4174/?v=125#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=125`
+- Admin Auto Ops / Operations Vault: `http://127.0.0.1:4174/?v=125&demo=admin#admin`
 
 If the server is not running:
 
@@ -27,7 +27,7 @@ npm start
 Then open:
 
 ```text
-http://127.0.0.1:4174/?v=124#perspective
+http://127.0.0.1:4174/?v=125#perspective
 ```
 
 ## What Is Saved
@@ -42,7 +42,7 @@ http://127.0.0.1:4174/?v=124#perspective
 
 ## Current State
 
-Forge v124 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
+Forge v125 is a local static MVP. It is good for controlled demos and early signup conversations. It is not ready for broad public launch until the remaining gates are finished:
 
 - Connect backend or Zapier lead delivery
 - Enable production-grade admin authentication
@@ -68,12 +68,13 @@ Forge v124 is a local static MVP. It is good for controlled demos and early sign
 14. Open Launch Status and copy the First-user Handoff receipt after every demo so the close, boundary, follow-up, and backup step are clear.
 15. Open Launch Status and copy the Next 10 Invite Sprint before a focused outreach block.
 16. Open Launch Status and copy the Public Share Safety Sweep before any wider sharing decision.
-17. Verify Public View redaction before sharing: admin queues, outreach batches, reports, webhook fields, templates, capture triage, and project/building operator surfaces should show hidden-data placeholders until Forge Admin switches to Operator View.
-18. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
-19. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
-20. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
-21. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
-22. Re-run:
+17. Open Admin and copy the Lead Delivery Drill before connecting or testing Zapier/backend delivery.
+18. Verify Public View redaction before sharing: admin queues, outreach batches, reports, webhook fields, templates, capture triage, and project/building operator surfaces should show hidden-data placeholders until Forge Admin switches to Operator View.
+19. Use the Invite Kit to copy the right message for homeowners, workers, career applicants, auto leads, or referrals.
+20. Open Training & Careers for people interested in trade schools, unions, apprenticeships, or blue-collar AI field jobs.
+21. Open Forge Auto & Transport for Sell My Car, listing, consignment, transport, executive transport, auction sourcing, and Forge Platinum Auto Concierge demos.
+22. Open Admin and review Auto Ops plus the Forge Operations Vault before any real partner routing.
+23. Re-run:
 
 ```bash
 npm run check
@@ -92,5 +93,5 @@ Upload both:
 Use this tomorrow:
 
 ```text
-This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v124 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
+This chat is for Forge. Please open /Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md and FORGE_NEXT_CHAT_HANDOFF.md, then continue from the v125 Forge MVP. Keep building toward tomorrow's soft launch, preserve existing work, run npm run check after code changes, and keep the wireframe style: white, Forge orange, and strong blue.
 ```

@@ -10160,6 +10160,7 @@ textarea:focus {
   border-color: #bfd0e7;
 }
 
+.delivery-drill-grid,
 .backend-grid,
 .auth-grid {
   display: grid;
@@ -10167,6 +10168,11 @@ textarea:focus {
   gap: 10px;
 }
 
+.delivery-drill-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.delivery-drill-grid article,
 .backend-grid article,
 .auth-grid article {
   display: grid;
@@ -10180,6 +10186,11 @@ textarea:focus {
   background: #f8fbff;
 }
 
+.delivery-drill-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
 .auth-handoff {
   border-color: #bfd0e7;
 }
@@ -10189,6 +10200,7 @@ textarea:focus {
   background: #fffaf4;
 }
 
+.delivery-drill-grid span,
 .backend-grid span,
 .auth-grid span {
   width: fit-content;
@@ -10201,22 +10213,31 @@ textarea:focus {
   text-transform: uppercase;
 }
 
+.delivery-drill-grid article.attention span,
 .auth-grid span {
   background: #fff0df;
   color: var(--orange);
 }
 
+.delivery-drill-grid strong,
 .backend-grid strong,
 .auth-grid strong {
   color: var(--ink);
 }
 
+.delivery-drill-grid p,
 .backend-grid p,
 .auth-grid p {
   margin: 0;
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.35;
+}
+
+.delivery-drill-grid .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
 }
 
 .safety-grid {
@@ -12901,6 +12922,7 @@ td {
   .final-gate,
   .deploy-grid,
   .delivery-grid,
+  .delivery-drill-grid,
   .soft-launch-grid,
   .backend-grid,
   .auth-grid,

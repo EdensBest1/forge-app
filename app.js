@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "124";
+const PUBLIC_LINK_VERSION = "125";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4929,6 +4929,7 @@ function render() {
   renderConfirmation();
   renderSafetyCenter();
   renderDeliveryStatus();
+  renderLeadDeliveryDrill();
   renderSoftLaunchPlan();
   renderSoftLaunchInvites();
   renderSoftLaunchRunSheet();
@@ -5003,6 +5004,8 @@ function redactPrivateOperatorSurfaces() {
     "#adminMarketplaceControl",
     "#adminFoundingGrid",
     "#launchCommandCenter",
+    "#deliveryStatus",
+    "#leadDeliveryDrill",
     "#autoRevenueSummary",
     "#vehicleListingReview",
     "#forgePlatinumDealDesk",
@@ -12016,6 +12019,19 @@ function renderDeliveryStatus() {
   `).join("");
 }
 
+function renderLeadDeliveryDrill() {
+  const target = document.querySelector("#leadDeliveryDrill");
+  if (!target) return;
+  target.innerHTML = leadDeliveryDrillRows().map((item, index) => `
+    <article class="${item.ok ? "ready" : "attention"}">
+      <span>${index + 1}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(item.body)}</p>
+      <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
 function renderSoftLaunchPlan() {
   const target = document.querySelector("#softLaunchPlan");
   if (!target) return;
@@ -13182,6 +13198,54 @@ function deliveryStatusRows() {
   ];
 }
 
+function leadDeliveryDrillRows() {
+  const enabled = Boolean(state.settings.webhookEnabled);
+  const hasUrl = Boolean(state.settings.webhookUrl);
+  const configured = enabled && hasUrl;
+  const sent = ["Sent", "Attempted"].includes(state.settings.webhookLastStatus);
+  const last = state.settings.webhookLastAt ? `${state.settings.webhookLastType || "Lead"} at ${state.settings.webhookLastAt}` : "No test recorded yet";
+  return [
+    {
+      title: configured ? "Webhook setup is saved" : "Configure delivery first",
+      body: configured
+        ? "Forge will save locally first, then attempt webhook delivery for the next lead."
+        : "Paste the approved Zapier/backend URL, enable delivery, and save before sending the public link.",
+      ok: configured,
+      primary: !configured,
+      actionLabel: configured ? "Copy Status" : "Backend Handoff",
+      action: configured ? { type: "action", name: "copy-delivery-status" } : { type: "action", name: "copy-backend-handoff" }
+    },
+    {
+      title: "Send one test lead",
+      body: configured
+        ? "Use Send Test Lead from Lead Capture Setup, then confirm the destination received it."
+        : "Do not send a test until the approved endpoint is saved.",
+      ok: sent,
+      primary: configured && !sent,
+      actionLabel: "Send Test",
+      action: { type: "action", name: "test-webhook" }
+    },
+    {
+      title: sent ? "Delivery attempt recorded" : "Verify the destination",
+      body: sent
+        ? `${state.settings.webhookLastStatus}: ${last}. Check Zapier/Supabase/Monday before broad sharing.`
+        : "The destination must show the test lead outside this browser before public traffic grows.",
+      ok: sent,
+      primary: false,
+      actionLabel: "Copy Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
+    },
+    {
+      title: "Keep a local fallback",
+      body: "Every lead should still save locally first. Export Backup JSON after the test and after each outreach block.",
+      ok: Boolean(state.settings.lastBackupAt),
+      primary: !state.settings.lastBackupAt,
+      actionLabel: state.settings.lastBackupAt ? "Copy Closeout" : "Export Backup",
+      action: state.settings.lastBackupAt ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
 function renderBackendHandoff() {
   const target = document.querySelector("#backendHandoff");
   if (!target) return;
@@ -13456,8 +13520,8 @@ function launchSecuritySweepRows() {
         : "Connect Zapier, Supabase, or another backend so public leads do not live only in local storage.",
       status: webhookReady ? "ready" : "hold",
       primary: !webhookReady,
-      actionLabel: "Backend Handoff",
-      action: { type: "action", name: "copy-backend-handoff" }
+      actionLabel: "Delivery Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
     },
     {
       label: "Admin",
@@ -16451,6 +16515,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "toggle-public-mode") togglePublicMode();
   if (action?.dataset.action === "copy-daily-brief") copyDailyBrief();
   if (action?.dataset.action === "copy-delivery-status") copyDeliveryStatus();
+  if (action?.dataset.action === "copy-lead-delivery-drill") copyLeadDeliveryDrill();
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
   if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
@@ -21321,6 +21386,21 @@ function copyDeliveryStatus() {
     "Reminder: every lead saves locally first. Public beta should verify webhook or backend delivery before broad sharing."
   ];
   copyText(lines.join("\n"), "Delivery status copied.");
+}
+
+function copyLeadDeliveryDrill() {
+  const rows = leadDeliveryDrillRows();
+  const lines = [
+    "Forge lead delivery drill",
+    "",
+    "Goal: prove one public lead leaves the browser before broad sharing.",
+    "",
+    ...rows.map((row, index) => `${index + 1}. ${row.ok ? "[Ready]" : "[Do first]"} ${row.title}. ${row.body}`),
+    "",
+    "Pass rule: a test lead is visible in the approved backend/Zapier destination, the local Forge copy remains available, and a fresh backup is exported.",
+    "Stop rule: if delivery is local-only, failed, unverified, or not backed up, keep the launch controlled and personally followed up."
+  ];
+  copyText(lines.join("\n"), "Lead delivery drill copied.");
 }
 
 function copyBackendHandoff() {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Lead delivery drill
+
+- Added an Admin Lead Delivery Drill so Andrew can prove one public lead leaves the browser, confirm the external destination, and preserve a local backup before broad sharing.
+- Connected the Launch Status Public Share Safety Sweep backend gate to the copyable lead delivery drill.
+- Bumped the local static asset/cache release references to v125.
+
 ## 2026-07-10 - Public share safety sweep
 
 - Added a Launch Status Public Share Safety Sweep that summarizes controlled-demo safety, Public View redaction, backend lead delivery, production admin auth, backup freshness, and legal/security review status.
