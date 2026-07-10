@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Public share safety sweep
+
+- Added a Launch Status Public Share Safety Sweep that summarizes controlled-demo safety, Public View redaction, backend lead delivery, production admin auth, backup freshness, and legal/security review status.
+- Added a copyable Forge public share safety sweep so Andrew has a concise operator script before sending Forge beyond personally followed-up first users.
+- Bumped the local static asset/cache release references to v124.
+
 ## 2026-07-10 - Public View operator redaction
 
 - Added a reusable private operator data gate so hidden admin/operator surfaces do not render sensitive seeded lead details while Forge is in Public View or guest mode.

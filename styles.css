@@ -11379,6 +11379,102 @@ textarea:focus {
   margin-top: auto;
 }
 
+.launch-security-sweep {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+  box-shadow: var(--shadow);
+}
+
+.launch-security-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.launch-security-heading h2,
+.launch-security-heading p {
+  margin: 0;
+}
+
+.launch-security-heading h2 {
+  margin-bottom: 5px;
+  color: var(--ink);
+}
+
+.launch-security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-security-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 176px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-security-grid article.ready {
+  border-left: 5px solid var(--blue);
+}
+
+.launch-security-grid article.attention {
+  border-left: 5px solid var(--orange);
+  background: #fffaf4;
+}
+
+.launch-security-grid article.hold {
+  border-left: 5px solid var(--orange);
+  background: #fff7ef;
+}
+
+.launch-security-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-security-grid article.attention span,
+.launch-security-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-security-grid strong {
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.launch-security-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.36;
+}
+
+.launch-security-grid .btn,
+.launch-security-heading .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .launch-final-checklist {
   display: grid;
   gap: 14px;
@@ -12800,6 +12896,8 @@ td {
   .public-launch-heading,
   .public-launch-score,
   .public-launch-blocker-grid,
+  .launch-security-heading,
+  .launch-security-grid,
   .final-gate,
   .deploy-grid,
   .delivery-grid,
@@ -13167,6 +13265,7 @@ td {
   .first-user-breakdown,
   .first-200-queue,
   .launch-next-10-sprint,
+  .launch-security-sweep,
   .follow-up-audit,
   .public-launch-blockers {
     padding: 16px;

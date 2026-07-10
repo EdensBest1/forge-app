@@ -15,6 +15,7 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for profile clarity: Profile Status now includes a role-aware Profile Status Receipt for customer, worker, and admin views, while public visitors remain routed to the locked login/profile prompt.
 - Implemented / Live in UI for first-200 outreach: Launch Status now includes a Next 10 Invite Sprint with ranked follow-up leads in Admin Operator View and public-safe starter lanes for homeowner, worker, referral, auto, and career outreach.
 - Implemented / Live in UI for Public View safety: private operator/admin data surfaces redact unless Forge Admin is in Operator View.
+- Implemented / Live in UI for public-share safety: Launch Status now includes a Public Share Safety Sweep with controlled-demo, Public View, backend, admin auth, backup, legal, and security gates.
 - Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes

@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "123";
+const PUBLIC_LINK_VERSION = "124";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4936,6 +4936,7 @@ function render() {
   renderLaunchDemoPack();
   renderLaunchDecision();
   renderPublicLaunchBlockers();
+  renderLaunchSecuritySweep();
   renderLaunchFinalChecklist();
   renderLaunchSendBoard();
   renderLaunchHandoffReceipt();
@@ -13393,6 +13394,103 @@ function publicLaunchBlockerRow(blocker) {
   };
 }
 
+function renderLaunchSecuritySweep() {
+  const target = document.querySelector("#launchSecuritySweep");
+  if (!target) return;
+  const rows = launchSecuritySweepRows();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  target.innerHTML = `
+    <div class="launch-security-heading">
+      <div>
+        <span class="split-label">Public share safety sweep</span>
+        <h2>${readyCount}/${rows.length} gates are safe for controlled demos.</h2>
+        <p class="muted">Run this before sending Forge beyond people Andrew can personally follow up with.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-launch-security-sweep">Copy Sweep</button>
+    </div>
+    <div class="launch-security-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchSecuritySweepRows() {
+  const leadCount = totalLeadCount();
+  const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const privateOperatorHidden = !canRenderPrivateOperatorData();
+  return [
+    {
+      label: "Demo",
+      title: "Controlled beta only",
+      body: `Use with known first users and personal follow-up. Current launch list: ${leadCount}/200.`,
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      label: "View",
+      title: privateOperatorHidden ? "Operator data hidden" : "Turn on Public View",
+      body: privateOperatorHidden
+        ? "Hidden admin tables, follow-up queues, outreach batches, reports, webhook fields, templates, and project pipelines are redacted."
+        : "Switch to Public View before handing Forge to anyone outside the operator seat.",
+      status: privateOperatorHidden ? "ready" : "attention",
+      primary: !privateOperatorHidden,
+      actionLabel: privateOperatorHidden ? "Copy Gate" : "Public View",
+      action: privateOperatorHidden ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Leads",
+      title: webhookReady ? "Lead delivery configured" : "Backend still required",
+      body: webhookReady
+        ? "Webhook is enabled; submit a test lead and confirm it arrives outside the browser before broad sharing."
+        : "Connect Zapier, Supabase, or another backend so public leads do not live only in local storage.",
+      status: webhookReady ? "ready" : "hold",
+      primary: !webhookReady,
+      actionLabel: "Backend Handoff",
+      action: { type: "action", name: "copy-backend-handoff" }
+    },
+    {
+      label: "Admin",
+      title: "Production auth not connected",
+      body: "Demo guards exist, but broad public traffic requires real admin authentication for admin, capture, reports, exports, imports, backup, and webhook setup.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Handoff",
+      action: { type: "action", name: "copy-auth-handoff" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Export backup",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON before collecting the next public-facing batch of ${leadCount} saved records.`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Review",
+      title: "Legal and security review remain",
+      body: "Keep payments, deposits, title paperwork, bank/card data, sensitive identity documents, and final contracts outside Forge until human review passes.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    }
+  ];
+}
+
 function finalSecurityGateRows() {
   const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
   const backupCurrent = state.settings.lastBackupAt && Number(state.settings.lastBackupLeadCount || 0) >= totalLeadCount();
@@ -16369,6 +16467,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-show-plan") copyLaunchShowPlan();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-public-launch-blockers") copyPublicLaunchBlockers();
+  if (action?.dataset.action === "copy-launch-security-sweep") copyLaunchSecuritySweep();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
   if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
@@ -21870,6 +21969,24 @@ function copyPublicLaunchBlockers() {
     "Verification command before public launch: npm run check"
   ];
   copyText(lines.join("\n"), "Public launch blocker receipt copied.");
+}
+
+function copyLaunchSecuritySweep() {
+  const rows = launchSecuritySweepRows();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  const lines = [
+    "Forge public share safety sweep",
+    "",
+    `${readyCount}/${rows.length} gates are safe for controlled demos.`,
+    "Decision: keep controlled first-user demos moving, but hold broad public sharing until lead delivery, production admin auth, backup, legal review, and final security review are complete.",
+    "",
+    ...rows.map((row) => `${row.status === "ready" ? "[Ready]" : "[Hold]"} ${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Operator rule: Public View must be on before handing Forge to another person.",
+    "MVP boundary: no payments, deposits, title paperwork, bank/card data, sensitive identity documents, or final contracts inside Forge.",
+    "Verification command before public launch: npm run check"
+  ];
+  copyText(lines.join("\n"), "Public share safety sweep copied.");
 }
 
 function copySecurityReviewPack() {
