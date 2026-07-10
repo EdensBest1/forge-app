@@ -11974,6 +11974,158 @@ textarea:focus {
   min-width: 0;
 }
 
+.launch-next-10-sprint {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #ffd2b0;
+  border-left: 6px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+  box-shadow: var(--shadow);
+}
+
+.launch-next-10-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.launch-next-10-heading h2,
+.launch-next-10-heading p {
+  margin: 0;
+}
+
+.launch-next-10-heading h2 {
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.launch-next-10-summary {
+  display: grid;
+  gap: 7px;
+  min-width: 142px;
+  justify-items: end;
+}
+
+.launch-next-10-summary strong {
+  color: var(--blue);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.launch-next-10-summary span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.launch-next-10-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.launch-next-10-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: 214px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.launch-next-10-card.attention {
+  border-left-color: var(--orange);
+  background: #fff7ef;
+}
+
+.launch-next-10-card.hold {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.launch-next-10-rank {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-weight: 950;
+}
+
+.launch-next-10-card.attention .launch-next-10-rank,
+.launch-next-10-card.hold .launch-next-10-rank {
+  background: var(--orange);
+}
+
+.launch-next-10-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launch-next-10-card.attention span,
+.launch-next-10-card.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.launch-next-10-card strong {
+  display: block;
+  margin: 6px 0;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.launch-next-10-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.launch-next-10-message {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.launch-next-10-message span {
+  background: transparent;
+  padding: 0;
+  color: var(--orange);
+}
+
+.launch-next-10-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: auto;
+}
+
+.launch-next-10-actions .btn,
+.launch-next-10-card.lane .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .follow-up-audit {
   display: grid;
   gap: 14px;
@@ -12489,6 +12641,8 @@ td {
   .launch-handoff-grid,
   .first-user-breakdown-grid,
   .first-200-queue-grid,
+  .launch-next-10-grid,
+  .launch-next-10-actions,
   .follow-up-audit-grid,
   .demo-guide-steps,
   .demo-cue-grid,
@@ -12977,6 +13131,7 @@ td {
   .launch-handoff-receipt,
   .first-user-breakdown,
   .first-200-queue,
+  .launch-next-10-sprint,
   .follow-up-audit,
   .public-launch-blockers {
     padding: 16px;
@@ -13011,6 +13166,15 @@ td {
 
   .first-200-queue-heading {
     display: grid;
+    justify-items: start;
+  }
+
+  .launch-next-10-heading {
+    display: grid;
+    justify-items: start;
+  }
+
+  .launch-next-10-summary {
     justify-items: start;
   }
 

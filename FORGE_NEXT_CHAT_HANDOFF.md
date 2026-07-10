@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v121`.
+Forge is at `v122`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=121#home`
-- Best demo start: `http://127.0.0.1:4174/?v=121#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=121&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=121&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=121#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=121`
-- Admin demo: `http://127.0.0.1:4174/?v=121&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=122#home`
+- Best demo start: `http://127.0.0.1:4174/?v=122#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=122&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=122&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=122#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=122`
+- Admin demo: `http://127.0.0.1:4174/?v=122&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v121`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v122`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v121:
+These passed after v122:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v121 also covers:
+Automated verification after v122 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -163,6 +163,7 @@ Automated verification after v121 also covers:
 - v119 adds a Launch Status Public Launch Blocker Receipt so controlled demos, lead delivery, admin auth, backup, legal review, and security review gates are visible and copyable from one panel.
 - v120 adds a reusable Demo Close Loop on Customer Status, Job Detail, and Messages so status, bid detail, message handoff, and profile proof are one visible/copyable flow.
 - v121 adds a role-aware Profile Status Receipt above the profile panels so John, Mike, and Admin views immediately show what is visible, ready, pending, and safe to do next; public visitors still route to the locked login/profile prompt.
+- v122 adds a Launch Status Next 10 Invite Sprint so the next outreach block is visible and copyable from the launch screen; private ranked leads appear only in Admin Operator View, while public-safe views show starter lanes.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -226,4 +227,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v121 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v122 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

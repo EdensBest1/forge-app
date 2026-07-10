@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "121";
+const PUBLIC_LINK_VERSION = "122";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4944,6 +4944,7 @@ function render() {
   renderLaunchHandoffReceipt();
   renderFirstUserCountBreakdown();
   renderFirst200LaunchQueue();
+  renderLaunchNext10Sprint();
   renderFollowUpAudit();
   renderBackendHandoff();
   renderAuthHandoff();
@@ -12648,6 +12649,163 @@ function first200LaunchQueueRows() {
   ];
 }
 
+function renderLaunchNext10Sprint() {
+  const target = document.querySelector("#launchNext10Sprint");
+  if (!target) return;
+  const rows = launchNext10SprintRows();
+  const summary = launchNext10SprintSummary();
+  target.innerHTML = `
+    <div class="launch-next-10-heading">
+      <div>
+        <span class="split-label">Next 10 invite sprint</span>
+        <h2>${escapeHtml(summary.title)}</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <div class="launch-next-10-summary">
+        <strong>${escapeHtml(summary.metric)}</strong>
+        <span>${escapeHtml(summary.label)}</span>
+        <button class="btn blue small" type="button" data-action="copy-launch-next-10-sprint">Copy Sprint</button>
+      </div>
+    </div>
+    <div class="launch-next-10-grid">
+      ${rows.map((row) => row.type === "lead" ? launchNext10LeadCard(row) : launchNext10LaneCard(row)).join("")}
+    </div>
+  `;
+}
+
+function launchNext10SprintSummary() {
+  const canShowLeads = launchNext10CanShowLeads();
+  const rows = canShowLeads ? outreachBatchRows() : [];
+  const hotCount = rows.filter((row) => row.priority === "Hot").length;
+  const leadCount = totalLeadCount();
+  const first = rows[0];
+  return rows.length
+    ? {
+      title: `${rows.length} contacts ready for the next outreach sprint.`,
+      body: first
+        ? `Start with ${first.person}: ${first.reason}. Keep the link controlled, then mark each person Contacted or Move Forward.`
+        : "Copy the sprint, contact the highest-priority people, and save movement before inviting a wider group.",
+      metric: `${hotCount} hot`,
+      label: `${leadCount}/200 saved`
+    }
+    : {
+      title: canShowLeads ? "No saved follow-ups yet. Invite from these starter lanes." : "Starter lanes are safe to show publicly.",
+      body: canShowLeads
+        ? "Use the lane prompts below to find the next homeowner, worker, auto, business, or career conversation, then capture consent before follow-up."
+        : "Private lead names stay hidden outside Admin Operator View. Use these lanes to explain who Andrew should invite next without exposing contact details.",
+      metric: "5 lanes",
+      label: `${leadCount}/200 saved`
+    };
+}
+
+function launchNext10CanShowLeads() {
+  return state.session.role === "admin" && !state.settings.publicMode;
+}
+
+function launchNext10SprintRows() {
+  const batch = launchNext10CanShowLeads() ? outreachBatchRows() : [];
+  if (batch.length) {
+    return batch.map((row, index) => ({
+      ...row,
+      type: "lead",
+      rank: index + 1
+    }));
+  }
+  return launchNext10StarterLanes();
+}
+
+function launchNext10StarterLanes() {
+  return [
+    {
+      type: "lane",
+      rank: 1,
+      label: "Homeowner",
+      title: "Ask for one real job",
+      body: "Find someone with a fence, yard, cleaning, moving, repair, restaurant, or small business task and post it with clear follow-up consent.",
+      status: "ready",
+      actionLabel: "Post Job",
+      action: { type: "nav", screen: "post" }
+    },
+    {
+      type: "lane",
+      rank: 2,
+      label: "Worker",
+      title: "Add one local provider",
+      body: "Invite a worker, contractor, handyman, cleaner, mover, mechanic, creative, or blue-collar operator to join the first local worker list.",
+      status: "ready",
+      actionLabel: "Worker Signup",
+      action: { type: "nav", screen: "signup" }
+    },
+    {
+      type: "lane",
+      rank: 3,
+      label: "Referral",
+      title: "Ask for one warm intro",
+      body: "Use the Perspective Demo, then ask who should see Forge next. Capture the referral instead of relying on memory.",
+      status: "attention",
+      actionLabel: "Perspective",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      type: "lane",
+      rank: 4,
+      label: "Auto",
+      title: "Route a vehicle lead",
+      body: "Capture buyer, seller, dealer, transport, repair, detailing, or Road Rescue interest and keep any transaction handoff in manual review.",
+      status: "hold",
+      actionLabel: "Forge Auto",
+      action: { type: "nav", screen: "auto" }
+    },
+    {
+      type: "lane",
+      rank: 5,
+      label: "Career",
+      title: "Open a training path",
+      body: "Ask about trade school, union apprenticeship, resume help, or blue-collar AI field work and save the next career step.",
+      status: "ready",
+      actionLabel: "Careers",
+      action: { type: "nav", screen: "opportunities" }
+    }
+  ];
+}
+
+function launchNext10LeadCard(row) {
+  return `
+    <article class="launch-next-10-card lead ${row.priority === "Hot" ? "attention" : "ready"}">
+      <div class="launch-next-10-rank">${escapeHtml(String(row.rank))}</div>
+      <div>
+        <span>${escapeHtml(row.kind)} · ${escapeHtml(row.priority)} · score ${escapeHtml(String(row.score))}</span>
+        <strong>${escapeHtml(row.person)}</strong>
+        <p>${escapeHtml(row.reason)}</p>
+      </div>
+      <div class="launch-next-10-message">
+        <span>Next message</span>
+        <p>${escapeHtml(row.message)}</p>
+      </div>
+      <div class="launch-next-10-actions">
+        ${contactLinks(row.phone, row.email, row.message)}
+        <button class="btn ghost small" type="button" data-action="${escapeHtml(row.copyAction)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">Copy</button>
+        <button class="btn blue small" type="button" data-action="${escapeHtml(row.action)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">Contacted</button>
+        <button class="btn orange small" type="button" data-action="${escapeHtml(row.forwardAction)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">${escapeHtml(row.forwardLabel)}</button>
+      </div>
+    </article>
+  `;
+}
+
+function launchNext10LaneCard(row) {
+  return `
+    <article class="launch-next-10-card lane ${escapeHtml(row.status)}">
+      <div class="launch-next-10-rank">${escapeHtml(String(row.rank))}</div>
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.status === "ready" ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `;
+}
+
 function renderFollowUpAudit() {
   const target = document.querySelector("#followUpAuditGrid");
   if (!target) return;
@@ -16128,6 +16286,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
+  if (action?.dataset.action === "copy-launch-next-10-sprint") copyLaunchNext10Sprint();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
   if (action?.dataset.action === "copy-soft-launch-invite-kit") copySoftLaunchInviteKit();
@@ -21346,6 +21505,38 @@ function copyFirst200LaunchQueue() {
     "4. Export Backup JSON after every outreach block."
   ];
   copyText(lines.join("\n"), "First 200 queue copied.");
+}
+
+function copyLaunchNext10Sprint() {
+  const rows = launchNext10CanShowLeads() ? outreachBatchRows() : [];
+  const summary = launchNext10SprintSummary();
+  const lines = [
+    "Forge next 10 invite sprint",
+    "",
+    `${summary.title} ${summary.body}`,
+    `First-user count: ${totalLeadCount()}/200`,
+    "",
+    ...(rows.length
+      ? rows.map((row, index) => [
+        `${index + 1}. ${row.person} (${row.kind}, ${row.priority}, score ${row.score})`,
+        `Need: ${row.title}`,
+        `Why now: ${row.reason}`,
+        `Message: ${row.message}`
+      ].join("\n"))
+      : launchNext10StarterLanes().map((row) => [
+        `${row.rank}. ${row.label}: ${row.title}`,
+        row.body,
+        `Open: ${roleDemoLink("customer", row.action.screen || "perspective")}`
+      ].join("\n"))),
+    "",
+    launchNext10CanShowLeads()
+      ? "Privacy mode: Admin Operator View can include private lead names for Andrew's follow-up."
+      : "Privacy mode: private lead names are hidden outside Admin Operator View; use starter lanes only.",
+    "",
+    "Closeout rule: mark each real contact as Contacted or Move Forward, copy the recap, then export Backup JSON before inviting a wider group.",
+    "Safety boundary: keep payments, deposits, title documents, sensitive identity documents, and bank/card details outside Forge during the MVP soft launch."
+  ];
+  copyText(lines.join("\n\n"), "Next 10 invite sprint copied.");
 }
 
 function copySoftLaunchPlan() {

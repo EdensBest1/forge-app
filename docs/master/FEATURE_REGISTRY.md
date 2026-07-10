@@ -13,6 +13,7 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for launch safety: Launch Status now includes a Public Launch Blocker Receipt with copyable gates for backend lead delivery, admin auth, backup, legal review, and final security review.
 - Implemented / Live in UI for demo closeout: Customer Status, Job Detail, and Messages now include a Demo Close Loop that keeps status, bid detail, message handoff, and profile proof visible and copyable.
 - Implemented / Live in UI for profile clarity: Profile Status now includes a role-aware Profile Status Receipt for customer, worker, and admin views, while public visitors remain routed to the locked login/profile prompt.
+- Implemented / Live in UI for first-200 outreach: Launch Status now includes a Next 10 Invite Sprint with ranked follow-up leads in Admin Operator View and public-safe starter lanes for homeowner, worker, referral, auto, and career outreach.
 - Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes

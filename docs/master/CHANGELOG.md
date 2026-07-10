@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Launch next 10 invite sprint
+
+- Added a Launch Status Next 10 Invite Sprint so Andrew can see and copy the next outreach block directly from the launch screen.
+- The sprint shows ranked follow-up leads only in Admin Operator View; public/guest-safe views show starter lanes for homeowner, worker, referral, auto, and career outreach without exposing private contact details.
+- Bumped the local static asset/cache release references to v122.
+
 ## 2026-07-10 - Profile status receipt
 
 - Added a role-aware Profile Status Receipt above the profile panels so John, Mike, and Admin views immediately explain what is visible, ready, pending, and safe to do next; public visitors still route to the locked login/profile prompt.
