@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "117";
+const PUBLIC_LINK_VERSION = "118";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4837,6 +4837,7 @@ function render() {
   renderDemoGuide();
   renderDemoCueCards();
   renderDemoProofSwitchboard();
+  renderPerspectiveSwitchRail();
   renderPhoneFastPass();
   renderDemoPath();
   renderDemoLinks();
@@ -6271,6 +6272,95 @@ function renderDemoProofSwitchboard() {
       </div>
     </article>
   `).join("");
+}
+
+function renderPerspectiveSwitchRail() {
+  const target = document.querySelector("#perspectiveSwitchRail");
+  if (!target) return;
+  const rows = perspectiveSwitchRailRows();
+  target.innerHTML = `
+    <div class="perspective-switch-heading">
+      <div>
+        <span class="split-label">Perspective switch rail</span>
+        <h2>Choose the side in front of you, then stay on that person's path.</h2>
+        <p>Use this rail when the demo needs to move quickly between homeowner, worker, operator, and public views.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-perspective-switch-rail">Copy Switch Rail</button>
+    </div>
+    <div class="perspective-switch-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <small>${escapeHtml(row.proof)}</small>
+          <div class="perspective-switch-actions">
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+            <button class="btn ghost small" type="button" ${profileProofButtonAttrs(row.secondaryAction)}>${escapeHtml(row.secondaryLabel)}</button>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function perspectiveSwitchRailRows() {
+  const activeRole = state.session.role || "guest";
+  const demoJob = state.jobs[0] || {};
+  const demoBids = state.bids.filter((bid) => bid.jobId === demoJob.id);
+  const worker = findWorkerByName("Mike Jones") || state.worker;
+  const workerBids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  return [
+    {
+      label: "John",
+      title: "Customer proof",
+      body: `${demoJob.title || "Saved job"} with ${demoBids.length} bid${demoBids.length === 1 ? "" : "s"}, status, messages, and profile clarity.`,
+      proof: "Status -> Detail -> Messages -> Profile",
+      state: activeRole === "customer" ? "active" : "ready",
+      primary: true,
+      actionLabel: "Open Status",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" },
+      secondaryLabel: "Profile",
+      secondaryAction: { type: "login", role: "customer", name: "John Smith", screen: "profile" }
+    },
+    {
+      label: "Mike",
+      title: "Worker proof",
+      body: `${worker.trade || "Worker"} view with ${workerBids.length} bid${workerBids.length === 1 ? "" : "s"}, opportunity bridge, messages, and readiness.`,
+      proof: "Worker Dashboard -> Bid -> Messages -> Profile",
+      state: activeRole === "worker" ? "active" : "ready",
+      primary: false,
+      actionLabel: "Open Worker",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" },
+      secondaryLabel: "Profile",
+      secondaryAction: { type: "login", role: "worker", name: "Mike Jones", screen: "profile" }
+    },
+    {
+      label: "Admin",
+      title: "Operator proof",
+      body: `${followUpCount} follow-up${followUpCount === 1 ? "" : "s"} queued with launch, safety, backup, and admin controls visible.`,
+      proof: "Admin -> Launch Status -> Capture -> Backup",
+      state: activeRole === "admin" ? "active" : "guarded",
+      primary: false,
+      actionLabel: "Open Admin",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" },
+      secondaryLabel: "Launch",
+      secondaryAction: { type: "login", role: "admin", name: "Forge Admin", screen: "launch-status" }
+    },
+    {
+      label: "Public",
+      title: "Public boundary",
+      body: "Show the marketplace without private jobs, bids, messages, admin queues, payments, or sensitive data.",
+      proof: "Home -> Post Job -> Worker Signup -> Legal",
+      state: activeRole === "guest" ? "active" : "waiting",
+      primary: false,
+      actionLabel: "Public View",
+      action: { type: "action", name: "logout" },
+      secondaryLabel: "Home",
+      secondaryAction: { type: "nav", screen: "home" }
+    }
+  ];
 }
 
 function renderPhoneFastPass() {
@@ -15272,6 +15362,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
+  if (action?.dataset.action === "copy-perspective-switch-rail") copyPerspectiveSwitchRail();
   if (action?.dataset.action === "copy-phone-fast-pass") copyPhoneFastPass();
   if (action?.dataset.action === "copy-launch-receipt") copyLaunchReceipt();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
@@ -17128,6 +17219,29 @@ async function copyPhoneFastPass() {
     "Safety boundary: controlled first-user demo only. No payments, deposits, sensitive identity documents, title paperwork, or final contracts in the MVP."
   ];
   await copyText(lines.join("\n"), "Phone fast pass copied.");
+}
+
+async function copyPerspectiveSwitchRail() {
+  const rows = perspectiveSwitchRailRows();
+  const lines = [
+    "Forge perspective switch rail",
+    "",
+    "Use this to choose the right Forge view for the person in front of you.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body} Proof path: ${row.proof}.`),
+    "",
+    "Open links:",
+    `John status: ${roleDemoLink("customer", "status")}`,
+    `John profile: ${roleDemoLink("customer", "profile")}`,
+    `Mike worker dashboard: ${roleDemoLink("worker", "worker")}`,
+    `Mike profile: ${roleDemoLink("worker", "profile")}`,
+    `Admin dashboard: ${roleDemoLink("admin", "admin")}`,
+    `Launch status: ${roleDemoLink("admin", "launch-status")}`,
+    `Public home: ${appBaseUrl()}${versionQuery()}#home`,
+    "",
+    "Boundary: public visitors should not see private jobs, bids, messages, admin queues, payments, passwords, sensitive documents, or final contracts in this MVP."
+  ];
+  await copyText(lines.join("\n"), "Perspective switch rail copied.");
 }
 
 async function copyDemoPack() {
