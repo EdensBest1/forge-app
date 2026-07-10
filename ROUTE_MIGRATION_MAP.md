@@ -59,3 +59,46 @@ Generated: 2026-07-10T04:50:44.136Z
 | Stitch | /admin/stitch/listings | /admin/stitch/listings | admin/stitch/listings/index.html | scaffolded | Created safe route scaffold with no private data exposure. |
 | Stitch | /admin/stitch/compliance | /admin/stitch/compliance | admin/stitch/compliance/index.html | scaffolded | Created safe route scaffold with no private data exposure. |
 | Admitly | /admitly/college-weekly | /admitly-os/college-weekly | admitly-os/college-weekly/index.html | scaffolded | College Weekly landing page added to separate Admitly repo. |
+
+
+## 6-Hour Sprint Delta
+
+| App | Route | File | Status |
+| --- | --- | --- | --- |
+| Forge | /admin/forge/front-office/leads | admin/forge/front-office/leads/index.html | scaffolded |
+| Forge | /admin/forge/front-office/partners | admin/forge/front-office/partners/index.html | scaffolded |
+| Forge | /admin/forge/front-office/jobs | admin/forge/front-office/jobs/index.html | scaffolded |
+| Forge | /admin/forge/front-office/documents | admin/forge/front-office/documents/index.html | scaffolded |
+| Forge | /admin/forge/front-office/sops | admin/forge/front-office/sops/index.html | scaffolded |
+| Forge | /admin/forge/front-office/commissions | admin/forge/front-office/commissions/index.html | scaffolded |
+| Forge | /admin/forge/front-office/reports | admin/forge/front-office/reports/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/leads | admin/forge/mechanics/leads/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/shops | admin/forge/mechanics/shops/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/jobs | admin/forge/mechanics/jobs/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/documents | admin/forge/mechanics/documents/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/sops | admin/forge/mechanics/sops/index.html | scaffolded |
+| Forge | /admin/forge/mechanics/outreach | admin/forge/mechanics/outreach/index.html | scaffolded |
+| Forge | /admin/forge/barbers/leads | admin/forge/barbers/leads/index.html | scaffolded |
+| Forge | /admin/forge/barbers/shops | admin/forge/barbers/shops/index.html | scaffolded |
+| Forge | /admin/forge/barbers/appointments | admin/forge/barbers/appointments/index.html | scaffolded |
+| Forge | /admin/forge/barbers/documents | admin/forge/barbers/documents/index.html | scaffolded |
+| Forge | /admin/forge/barbers/sops | admin/forge/barbers/sops/index.html | scaffolded |
+| Forge | /admin/forge/barbers/outreach | admin/forge/barbers/outreach/index.html | scaffolded |
+| Forge | /admin/forge/templates | admin/forge/templates/index.html | scaffolded |
+| Forge | /admin/forge/contracts | admin/forge/contracts/index.html | scaffolded |
+| Forge | /admin/forge/training | admin/forge/training/index.html | scaffolded |
+| Forge | /admin/forge/ai-front-desk | admin/forge/ai-front-desk/index.html | scaffolded |
+| Forge | /admin/admitly/leads | admin/admitly/leads/index.html | scaffolded |
+| Forge | /admin/admitly/schools | admin/admitly/schools/index.html | scaffolded |
+| Forge | /admin/admitly/applications | admin/admitly/applications/index.html | scaffolded |
+| Forge | /admin/admitly/ambassadors | admin/admitly/ambassadors/index.html | scaffolded |
+| Stitch | /dispensaries/oregon | dispensaries/oregon/index.html | scaffolded |
+| Stitch | /dispensaries/new-york | dispensaries/new-york/index.html | scaffolded |
+| Stitch | /dispensaries/washington | dispensaries/washington/index.html | scaffolded |
+| Stitch | /dispensaries/california | dispensaries/california/index.html | scaffolded |
+| Stitch | /dispensaries/florida | dispensaries/florida/index.html | scaffolded |
+| Stitch | /admin/stitch/buyers | admin/stitch/buyers/index.html | scaffolded |
+| Stitch | /admin/stitch/suppliers | admin/stitch/suppliers/index.html | scaffolded |
+| Stitch | /admin/stitch/services | admin/stitch/services/index.html | scaffolded |
+| Stitch | /admin/stitch/quotes | admin/stitch/quotes/index.html | scaffolded |
+| Stitch | /admin/stitch/dispensaries | admin/stitch/dispensaries/index.html | scaffolded |
