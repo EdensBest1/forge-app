@@ -12295,6 +12295,15 @@ td {
     grid-template-columns: 1fr;
   }
 
+  .perspective-readiness-heading {
+    align-items: stretch;
+  }
+
+  .perspective-readiness-actions {
+    min-width: 0;
+    width: 100%;
+  }
+
   .admin-heading {
     align-items: stretch;
     flex-direction: column;
@@ -14629,6 +14638,8 @@ th {
 .marketplace-discovery-panel,
 .worker-marketplace-readiness,
 .marketplace-command,
+.account-auth-panel,
+.customer-profile-form,
 .admitly-panel {
   border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 8px;
@@ -14739,6 +14750,38 @@ th {
 .marketplace-command {
   margin: 18px 0;
   padding: 18px;
+}
+
+.account-auth-panel,
+.customer-profile-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.account-auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.account-auth-status {
+  display: grid;
+  gap: 8px;
+}
+
+.account-auth-status article {
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.account-auth-status span,
+.customer-profile-form .split-label {
+  color: #64748b;
 }
 
 .marketplace-command .table-card {

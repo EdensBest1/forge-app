@@ -7,6 +7,14 @@
 - Added route-loader shells and smoke-test markers for the new marketplace and Admitly presentation surfaces.
 - Scope remains local/static MVP only: no production auth, payments, dispatch, backend storage, or verified-provider claims were activated.
 
+## 2026-07-09 - Forge account and quote lifecycle slice
+
+- Added local role-based account shell on the Forge login screen for Customer, Individual Provider, Company Provider, and Admin Invite Request, with terms consent and explicit production-auth-required/no-password-storage MVP boundary.
+- Added customer profile save flow on `/customer-dashboard` for contact info, preferred contact method, address, saved project locations, and profile image placeholder.
+- Expanded quote submission with labor/material line items, exclusions, estimated start/completion dates, payment milestones, quote validity, and quote versioning.
+- Added quote revise/withdraw actions plus job lifecycle actions for Awaiting Approval, Completed, and Disputed.
+- Added account/onboarding visibility to the protected admin marketplace command center.
+
 ## 2026-06-26 - Launch reconciliation checkpoint
 
 - Added Forge-to-North Star Creative Co. client acquisition system: expanded `/northstar-creative` page, provider signup growth question and business-size classification, richer North Star marketing intake, automatic classifications, Forge Marketing Score, four service package cards, roofing-company marketing subsection, admin lead table fields, webhook/schema/migration/validation updates, and docs clarifying North Star leads stay separate from normal Forge job requests.

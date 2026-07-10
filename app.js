@@ -26,12 +26,18 @@ const workerTrustTiers = [
   { tier: "Gold", meaning: "expert/crew lead/business track", steps: ["Crew Lead 1", "Crew Lead 2", "Expert Operator", "Business Ready", "Master Lead"] }
 ];
 const dispatchDecisionLabels = ["Ready to Invite", "Crew-Lead Ready", "Mentor-Only", "Supervised Helper", "Admin Review"];
-const forgeMarketplaceJobStatuses = ["Draft", "Published", "Receiving Quotes", "Provider Selected", "Scheduled", "In Progress", "Completed", "Needs Admin Review"];
-const forgeMarketplaceVerificationStates = ["Identity Pending", "Business Verification Pending", "License Review Pending", "Insurance Review Pending", "Admin Reviewed", "Approved for Controlled Beta"];
+const forgeMarketplaceJobStatuses = ["Draft", "Published", "Receiving Quotes", "Provider Selected", "Scheduled", "In Progress", "Awaiting Approval", "Completed", "Cancelled", "Disputed", "Needs Admin Review"];
+const forgeMarketplaceVerificationStates = ["Unverified", "Identity Pending", "Business Verification Pending", "License Verification Pending", "Insurance Verification Pending", "Verified", "Verification Expired", "Suspended"];
 const forgePricingTypes = ["Hourly", "Fixed Bid", "Starting At", "Estimate After Review", "Emergency Rate", "Recurring Plan"];
 const forgeJobTypes = ["One-time Job", "Recurring Service", "Emergency Request", "Bid Walk Needed", "Quote Only", "Maintenance Plan"];
 const forgeJobVisibilityOptions = ["Public Marketplace", "Admin Review Only", "Invite Only"];
 const forgePreferredContactMethods = ["Phone", "Text", "Email", "Forge Message"];
+const forgeAccountRoles = [
+  { id: "customer", label: "Customer", sessionRole: "customer", screen: "customer-dashboard" },
+  { id: "individual-provider", label: "Individual Provider", sessionRole: "worker", screen: "worker" },
+  { id: "company-provider", label: "Company Provider", sessionRole: "worker", screen: "worker" },
+  { id: "admin-request", label: "Forge Admin Invite Request", sessionRole: "guest", screen: "login" }
+];
 const yesNoOptions = ["No", "Yes"];
 const serviceJobStatusLabels = ["Open for bids", "Bid submitted", "Provider selected", "Scheduled", "In progress", "Completed", "Cancelled"];
 const serviceVerticals = [
@@ -2397,6 +2403,16 @@ const seedState = {
     role: "guest",
     name: "",
     label: "Visitor"
+  },
+  accounts: [],
+  customerProfile: {
+    name: "John Smith",
+    email: "john.smith@email.com",
+    phone: "(541) 555-1234",
+    address: "Medford, OR",
+    preferredContact: "Phone",
+    locations: "Primary home - Medford, OR",
+    profileImageSummary: ""
   },
   worker: {
     name: "Mike Jones",
@@ -4856,6 +4872,8 @@ function versionQuery(extra = "") {
 
 function render() {
   renderSession();
+  renderAccountPrototype();
+  renderCustomerProfileForm();
   renderOperatorGuard();
   renderSelects();
   renderTimeline();
@@ -4889,6 +4907,7 @@ function render() {
   renderAdmitlyTradePathways();
   renderAdmitlyPresentation();
   renderMarketplaceCommandCenter();
+  renderAccountPrototype();
   renderProviderGrowthTools();
   renderRequiredTradeCategories();
   renderServiceVerticals();
@@ -5011,6 +5030,52 @@ function renderSession() {
       <button class="btn ghost small" type="button" data-action="logout">Log Out</button>
     </div>
   `;
+}
+
+function accountRoleConfig(roleId) {
+  return forgeAccountRoles.find((role) => role.id === roleId) || forgeAccountRoles[0];
+}
+
+function renderAccountPrototype() {
+  const panel = document.querySelector("#accountPrototypePanel");
+  if (panel) {
+    const accounts = state.accounts || [];
+    panel.innerHTML = accounts.length
+      ? accounts.slice(0, 4).map((account) => `
+        <article>
+          <strong>${escapeHtml(account.name)}</strong>
+          <span>${escapeHtml(account.roleLabel)} · ${escapeHtml(account.status)}</span>
+        </article>
+      `).join("")
+      : `<article><strong>No local accounts yet.</strong><span>Create one to test role-based onboarding.</span></article>`;
+  }
+  const table = document.querySelector("#adminAccountsTable");
+  if (table) {
+    renderTable("#adminAccountsTable", (state.accounts || []).map((account) => ({
+      name: account.name,
+      role: account.roleLabel,
+      email: account.email,
+      phone: account.phone,
+      status: account.status,
+      consent: account.termsAccepted ? "Yes" : "No"
+    })));
+  }
+}
+
+function renderCustomerProfileForm() {
+  const form = document.querySelector("#customerProfileForm");
+  if (!form || form.contains(document.activeElement)) return;
+  const profile = {
+    ...seedState.customerProfile,
+    ...(state.customerProfile || {})
+  };
+  if (state.session.role === "customer" && state.session.name && (!profile.name || profile.name === seedState.customerProfile.name)) profile.name = state.session.name;
+  setFieldValue("#customerProfileName", profile.name);
+  setFieldValue("#customerProfileEmail", profile.email);
+  setFieldValue("#customerProfilePhone", profile.phone);
+  setFieldValue("#customerProfileAddress", profile.address);
+  setFieldValue("#customerProfileContact", profile.preferredContact);
+  setFieldValue("#customerProfileLocations", profile.locations);
 }
 
 function renderWorkerProfile() {
@@ -7614,13 +7679,24 @@ function renderMarketplaceCommandCenter() {
   const nextAction = document.querySelector("#customerDashboardNextAction");
   if (nextAction) {
     const newest = jobs[0];
+    const awaitingApproval = jobs.find((job) => marketplaceStatus(job) === "Awaiting Approval");
+    const disputed = jobs.find((job) => marketplaceStatus(job) === "Disputed");
+    const focusJob = disputed || awaitingApproval || newest;
+    const actionCopy = disputed
+      ? "A dispute is open. Review messages, scope, quote terms, and admin notes before moving forward."
+      : awaitingApproval
+        ? "Work is marked complete. Confirm completion, request changes, or open a dispute before closing the job."
+        : newest
+          ? "Check quotes, provider fit, schedule readiness, and message handoff before any real dispatch."
+          : "Create a scoped job request so the marketplace has a real customer workflow to review.";
     nextAction.innerHTML = `
       <article>
         <span class="split-label">Next action</span>
-        <h3>${escapeHtml(newest ? `Review ${newest.title}` : "Post the first customer job")}</h3>
-        <p>${escapeHtml(newest ? "Check quotes, provider fit, schedule readiness, and message handoff before any real dispatch." : "Create a scoped job request so the marketplace has a real customer workflow to review.")}</p>
+        <h3>${escapeHtml(focusJob ? `Review ${focusJob.title}` : "Post the first customer job")}</h3>
+        <p>${escapeHtml(actionCopy)}</p>
         <div class="hero-actions">
-          <button class="btn orange small" type="button" data-nav="${newest ? "jobs" : "post"}">${escapeHtml(newest ? "Open Marketplace" : "Post Job")}</button>
+          <button class="btn orange small" type="button" data-nav="${focusJob ? "jobs" : "post"}">${escapeHtml(focusJob ? "Open Marketplace" : "Post Job")}</button>
+          ${awaitingApproval ? `<button class="btn blue small" type="button" data-action="confirm-job-complete" data-job-id="${escapeHtml(awaitingApproval.id)}">Confirm Completion</button>` : ""}
           <button class="btn ghost small" type="button" data-nav="messages">Messages</button>
         </div>
       </article>
@@ -7674,6 +7750,10 @@ function renderMarketplaceCommandCenter() {
             `).join("")}
           </tbody>
         </table>
+      </div>
+      <div class="table-card compact">
+        <h3>Account and onboarding queue</h3>
+        <table id="adminAccountsTable"></table>
       </div>
     `;
   }
@@ -9328,6 +9408,9 @@ function renderDetail() {
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
       <button class="btn ${chosenBid ? "ghost" : "orange"}" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Suggested Bid")}</button>
+      ${chosenBid ? `<button class="btn ghost" type="button" data-action="mark-job-awaiting-approval" data-job-id="${escapeHtml(job.id)}">Mark Work Complete</button>` : ""}
+      ${job.status === "Awaiting Approval" ? `<button class="btn orange" type="button" data-action="confirm-job-complete" data-job-id="${escapeHtml(job.id)}">Confirm Completion</button>` : ""}
+      ${chosenBid ? `<button class="btn ghost" type="button" data-action="open-job-dispute" data-job-id="${escapeHtml(job.id)}">Open Dispute</button>` : ""}
     </div>
     ${chosenBid ? chosenBidHandoff(job, chosenBid) : ""}
   `;
@@ -9345,6 +9428,8 @@ function renderDetail() {
         <span>${bid.chosen ? "Message handoff ready" : "Choose to create handoff"}</span>
         <button class="btn ${bid.chosen ? "blue" : "orange"} small" type="button" data-choose-bid="${index}">${bid.chosen ? "Selected" : "Choose + Message"}</button>
         <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
+        <button class="btn ghost small" type="button" data-action="revise-bid" data-bid-id="${escapeHtml(bid.id)}">Revise</button>
+        <button class="btn ghost small" type="button" data-action="withdraw-bid" data-bid-id="${escapeHtml(bid.id)}">Withdraw</button>
       </div>
     </article>
   `).join("") || `<p class="muted">No bids yet.</p>`;
@@ -9377,7 +9462,15 @@ function bidDetailMeta(bid) {
   const rows = [
     ["Earliest availability", bid.earliestAvailability],
     ["Estimated duration", bid.estimatedDuration],
+    ["Estimated start", bid.estimatedStartDate],
+    ["Estimated completion", bid.estimatedCompletionDate],
     ["Crew members", bid.crewMembers],
+    ["Labor line items", bid.laborLineItems],
+    ["Materials line items", bid.materialLineItems],
+    ["Exclusions", bid.exclusions],
+    ["Payment milestones", bid.paymentMilestones],
+    ["Quote valid until", bid.validUntil],
+    ["Quote version", bid.quoteVersion],
     ["Materials included", bid.materialsIncluded],
     ["Supplies included", bid.suppliesIncluded],
     ["Equipment included", bid.equipmentIncluded],
@@ -10743,6 +10836,7 @@ function renderDashboards() {
   const merchantServiceLeads = state.merchantServiceLeads || [];
   const localProductVendors = state.localProductVendors || [];
   const flexLeads = state.flexLeads || [];
+  const accounts = state.accounts || [];
   const manufacturingRfqs = state.manufacturingRfqs || [];
   const manufacturingSuppliers = state.manufacturingSuppliers || [];
   const manufacturingSupplierLeads = state.manufacturingSupplierLeads || [];
@@ -10764,6 +10858,7 @@ function renderDashboards() {
   renderProviderNorthStarDashboard();
   document.querySelector("#adminStats").innerHTML = statCards([
     ["New Jobs", newJobs],
+    ["Accounts", accounts.length],
     ["Workers", workers],
     ["Creative Requests", creativeRequests.length],
     ["Creative Providers", creativeProviders.length],
@@ -15780,11 +15875,18 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-opportunity-bridge") copyWorkerOpportunityBridge(action.dataset.workerName);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
+  if (action?.dataset.action === "revise-bid") reviseBid(action.dataset.bidId);
+  if (action?.dataset.action === "withdraw-bid") withdrawBid(action.dataset.bidId);
+  if (action?.dataset.action === "mark-job-awaiting-approval") setJobLifecycleStatus(action.dataset.jobId, "Awaiting Approval", "Job marked complete and awaiting customer approval.");
+  if (action?.dataset.action === "confirm-job-complete") setJobLifecycleStatus(action.dataset.jobId, "Completed", "Job marked completed.");
+  if (action?.dataset.action === "open-job-dispute") setJobLifecycleStatus(action.dataset.jobId, "Disputed", "Job moved to disputed status.");
   if (action?.dataset.action === "copy-marketplace-job") copyMarketplaceJob(action.dataset.jobId);
   if (action?.dataset.action === "copy-marketplace-command") copyMarketplaceCommand();
   if (action?.dataset.action === "request-provider-quote") requestProviderQuote(action.dataset.workerEmail);
   if (action?.dataset.action === "invite-provider-to-job") inviteProviderToJob(action.dataset.workerEmail);
   if (action?.dataset.action === "save-provider") saveProvider(action.dataset.workerEmail);
+  if (action?.dataset.action === "copy-auth-prototype") copyAuthPrototype();
+  if (action?.dataset.action === "start-company-profile") startCompanyProfile();
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
   if (action?.dataset.action === "copy-homebuilding-lead") copyHomebuildingLead(action.dataset.homebuildingId);
   if (action?.dataset.action === "send-homebuilding-seneca") sendHomebuildingToSeneca(action.dataset.homebuildingId);
@@ -15833,6 +15935,8 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("submit", (event) => {
+  if (event.target.matches("#accountSignupForm")) submitLocalAccountSignup(event);
+  if (event.target.matches("#customerProfileForm")) submitCustomerProfile(event);
   if (event.target.matches("#admitlyStudentInterestForm")) submitAdmitlyStudentInterest(event);
   if (event.target.matches("#admitlyEducatorInterestForm")) submitAdmitlyEducatorInterest(event);
 });
@@ -15882,7 +15986,8 @@ function chooseBidForJob(jobId, bidIndex) {
   bids.forEach((bid) => bid.chosen = false);
   selectedBid.chosen = true;
   selectedBid.status = "Selected";
-  job.status = (isServiceVerticalJob(job) || isManufacturingJob(job)) ? "Provider selected" : "In Progress";
+  job.status = "Provider Selected";
+  job.marketplaceStatus = "Provider Selected";
   if (job.manufacturingRfqId) {
     const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === job.manufacturingRfqId);
     if (rfq) rfq.status = "Manufacturing selected";
@@ -15914,6 +16019,56 @@ function chooseBidForJob(jobId, bidIndex) {
   saveState();
   showToast(`Bid chosen. Job moved to ${job.status}.`);
   navigate("confirm");
+}
+
+function reviseBid(bidId) {
+  const bid = state.bids.find((item) => item.id === bidId);
+  const job = bid ? state.jobs.find((item) => item.id === bid.jobId) : null;
+  if (!bid || !job) return;
+  state.activeJobId = job.id;
+  navigate("bid");
+  setTimeout(() => {
+    setFieldValue("#bidJobSelect", job.title);
+    setFieldValue("#bidWorkerName", bid.worker);
+    setFieldValue("#bidAmount", bid.amount);
+    setFieldValue("#bidTimeline", bid.timeline);
+    setFieldValue("#bidEarliestAvailability", bid.earliestAvailability);
+    setFieldValue("#bidDuration", bid.estimatedDuration);
+    setFieldValue("#bidStartDate", bid.estimatedStartDate);
+    setFieldValue("#bidCompletionDate", bid.estimatedCompletionDate);
+    setFieldValue("#bidCrewCount", bid.crewMembers);
+    setFieldValue("#bidLaborLineItems", bid.laborLineItems);
+    setFieldValue("#bidMaterialLineItems", bid.materialLineItems);
+    setFieldValue("#bidExclusions", bid.exclusions);
+    setFieldValue("#bidPaymentMilestones", bid.paymentMilestones);
+    setFieldValue("#bidValidUntil", bid.validUntil);
+    setFieldValue("#bidQuoteVersion", `revision of ${bid.quoteVersion || "v1"}`);
+    setFieldValue("#bidMessage", bid.message);
+    showToast("Quote loaded for revision. Submit to save a new version.");
+  }, 50);
+}
+
+function withdrawBid(bidId) {
+  const bid = state.bids.find((item) => item.id === bidId);
+  if (!bid) return;
+  bid.status = "Withdrawn";
+  bid.chosen = false;
+  const job = state.jobs.find((item) => item.id === bid.jobId);
+  addActivity(`Quote withdrawn: ${bid.worker}${job ? ` for ${job.title}` : ""}.`);
+  saveState();
+  render();
+  showToast("Quote withdrawn.");
+}
+
+function setJobLifecycleStatus(jobId, status, message) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  job.status = status;
+  job.marketplaceStatus = status;
+  addActivity(`${job.title} moved to ${status}.`);
+  saveState();
+  render();
+  showToast(message || `Job moved to ${status}.`);
 }
 
 document.addEventListener("change", (event) => {
@@ -16956,7 +17111,15 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     timeline: document.querySelector("#bidTimeline").value.trim(),
     earliestAvailability: fieldValue("#bidEarliestAvailability"),
     estimatedDuration: fieldValue("#bidDuration"),
+    estimatedStartDate: fieldValue("#bidStartDate"),
+    estimatedCompletionDate: fieldValue("#bidCompletionDate"),
     crewMembers: fieldValue("#bidCrewCount"),
+    laborLineItems: fieldValue("#bidLaborLineItems"),
+    materialLineItems: fieldValue("#bidMaterialLineItems"),
+    exclusions: fieldValue("#bidExclusions"),
+    paymentMilestones: fieldValue("#bidPaymentMilestones"),
+    validUntil: fieldValue("#bidValidUntil"),
+    quoteVersion: fieldValue("#bidQuoteVersion") || "v1",
     materialsIncluded: fieldValue("#bidMaterialsIncluded"),
     suppliesIncluded: fieldValue("#bidSuppliesIncluded"),
     equipmentIncluded: fieldValue("#bidEquipmentIncluded"),
@@ -16973,7 +17136,7 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     manufacturingTestingCost: fieldValue("#bidManufacturingTestingCost"),
     manufacturingLeadTime: fieldValue("#bidManufacturingLeadTime"),
     manufacturingProductionTimeline: fieldValue("#bidManufacturingProductionTimeline"),
-    manufacturingPaymentTerms: fieldValue("#bidManufacturingPaymentTerms"),
+    manufacturingPaymentTerms: fieldValue("#bidManufacturingPaymentTerms") || fieldValue("#bidManufacturingTerms"),
     manufacturingCertifications: fieldValue("#bidManufacturingCertifications"),
     manufacturingTestingIncluded: fieldValue("#bidManufacturingTestingIncluded"),
     manufacturingFormulationIncluded: fieldValue("#bidManufacturingFormulationIncluded"),
@@ -16989,9 +17152,9 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     chosen: false
   };
   state.bids.unshift(bid);
-  selectedJob.bids += 1;
-  if ((isServiceVerticalJob(selectedJob) || isManufacturingJob(selectedJob)) && ["Open for bids", "New"].includes(selectedJob.status)) selectedJob.status = "Bid submitted";
-  else if (selectedJob.status === "New") selectedJob.status = "Matching";
+  selectedJob.bids = Number(selectedJob.bids || 0) + 1;
+  if (["Open for bids", "New", "Published"].includes(selectedJob.status)) selectedJob.status = "Receiving Quotes";
+  selectedJob.marketplaceStatus = "Receiving Quotes";
   if (selectedJob.manufacturingRfqId) {
     const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === selectedJob.manufacturingRfqId);
     if (rfq && ["Request received", "Sourcing manufacturers"].includes(rfq.status)) rfq.status = "Awaiting bids";
@@ -19367,6 +19530,117 @@ function saveProvider(email) {
   addActivity(`Provider saved: ${worker.businessName || worker.name}.`);
   saveState();
   showToast("Provider saved to local MVP state.");
+}
+
+function submitLocalAccountSignup(event) {
+  event.preventDefault();
+  const roleConfig = accountRoleConfig(fieldValue("#accountRole"));
+  if (!fieldChecked("#accountCredentialPlan")) {
+    showToast("Please acknowledge production auth setup is required.");
+    return;
+  }
+  if (!fieldChecked("#accountTerms")) {
+    showToast("Please accept the Early Access Terms & Privacy.");
+    return;
+  }
+  const account = {
+    id: `acct-${Date.now()}`,
+    role: roleConfig.id,
+    roleLabel: roleConfig.label,
+    sessionRole: roleConfig.sessionRole,
+    name: fieldValue("#accountName"),
+    email: fieldValue("#accountEmail"),
+    phone: fieldValue("#accountPhone"),
+    status: roleConfig.id === "admin-request" ? "Admin invite request pending" : "Email verification pending",
+    emailVerification: "Prototype only",
+    credentialPolicy: "Production auth required; no password collected or stored in MVP",
+    termsAccepted: true,
+    created: "Today"
+  };
+  state.accounts = state.accounts || [];
+  const existing = state.accounts.findIndex((item) => normalizeLookup(item.email) === normalizeLookup(account.email));
+  if (existing >= 0) state.accounts[existing] = { ...state.accounts[existing], ...account };
+  else state.accounts.unshift(account);
+  if (roleConfig.id === "customer") {
+    state.customerProfile = {
+      ...(state.customerProfile || {}),
+      name: account.name,
+      email: account.email,
+      phone: account.phone,
+      preferredContact: state.customerProfile?.preferredContact || "Phone"
+    };
+  }
+  if (roleConfig.id !== "admin-request") {
+    state.session = {
+      role: roleConfig.sessionRole,
+      name: account.name,
+      label: roleConfig.label
+    };
+  }
+  addActivity(`Local account shell saved: ${account.name} (${account.roleLabel}).`);
+  saveState();
+  sendLead("account", account);
+  event.target.reset();
+  showToast(roleConfig.id === "admin-request" ? "Admin invite request saved for review." : "Local account created.");
+  navigate(roleConfig.screen);
+}
+
+function submitCustomerProfile(event) {
+  event.preventDefault();
+  const profile = {
+    name: fieldValue("#customerProfileName"),
+    email: fieldValue("#customerProfileEmail"),
+    phone: fieldValue("#customerProfilePhone"),
+    address: fieldValue("#customerProfileAddress"),
+    preferredContact: fieldValue("#customerProfileContact"),
+    locations: fieldValue("#customerProfileLocations"),
+    profileImageSummary: selectedFileSummary("#customerProfileImage", "profile image"),
+    updated: "Today"
+  };
+  state.customerProfile = profile;
+  state.accounts = state.accounts || [];
+  const existing = state.accounts.findIndex((account) => normalizeLookup(account.email) === normalizeLookup(profile.email));
+  const account = {
+    id: existing >= 0 ? state.accounts[existing].id : `acct-${Date.now()}`,
+    role: "customer",
+    roleLabel: "Customer",
+    sessionRole: "customer",
+    name: profile.name,
+    email: profile.email,
+    phone: profile.phone,
+    status: existing >= 0 ? state.accounts[existing].status : "Profile saved",
+    termsAccepted: existing >= 0 ? state.accounts[existing].termsAccepted : false,
+    created: existing >= 0 ? state.accounts[existing].created : "Today"
+  };
+  if (existing >= 0) state.accounts[existing] = { ...state.accounts[existing], ...account };
+  else state.accounts.unshift(account);
+  addActivity(`Customer profile saved: ${profile.name}.`);
+  saveState();
+  sendLead("customer-profile", profile);
+  showToast("Customer profile saved.");
+  render();
+}
+
+function copyAuthPrototype() {
+  const lines = [
+    "Forge auth/account prototype",
+    "",
+    "Current state: browser-only local account shell for demo onboarding.",
+    "Credential handling: production password setup, password reset, email verification, and secure sessions are required later; no password is collected or stored in the MVP.",
+    "Roles: Customer, Individual Provider, Company Provider, and Admin Invite Request.",
+    "Admin access: invite requests are saved; operator access is not automatically granted from signup.",
+    "Production requirements: real auth provider, email verification, password reset, server sessions, RBAC, audit logs, RLS, and backend persistence."
+  ];
+  copyText(lines.join("\n"), "Auth prototype notes copied.");
+}
+
+function startCompanyProfile() {
+  navigate("signup");
+  setTimeout(() => {
+    setFieldValue("#workerProfileType", "Company / Crew");
+    setFieldValue("#workerBusinessSize", "Small Local Business");
+    focusAutoPanel("#workerSignupForm", "#workerCompanyName");
+  }, 50);
 }
 
 function submitAdmitlyStudentInterest(event) {

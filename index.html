@@ -102,11 +102,12 @@
             <p>Forge routes Medford jobs, workers, business growth, suppliers, and vehicle requests into one clean local workflow.</p>
             <p class="hero-trust-line">Post the job. Get matched. Stay reviewed. · Admin-reviewed leads · No payments collected in MVP · Built for Medford first</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-nav="post">I Need Help</button>
-              <button class="btn blue" type="button" data-nav="signup">I Need Work</button>
-              <button class="btn ghost" type="button" data-nav="northstar">I Own a Business</button>
-              <button class="btn ghost" type="button" data-nav="manufacturing">I Need Suppliers</button>
-              <button class="btn ghost" type="button" data-nav="auto">I Need a Vehicle</button>
+              <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+              <button class="btn blue" type="button" data-nav="jobs">Find a Provider</button>
+              <button class="btn ghost" type="button" data-nav="signup">Create Provider Profile</button>
+              <button class="btn ghost" type="button" data-action="start-company-profile">Create Company Profile</button>
+              <button class="btn ghost" type="button" data-nav="login">Sign In</button>
+              <button class="btn ghost" type="button" data-nav="login">Sign Up</button>
             </div>
           </div>
           <figure class="hero-photo">
@@ -663,6 +664,35 @@
             <span class="split-label">Demo accounts</span>
             <h1>Choose who you are testing as.</h1>
             <p class="muted">Forge now opens the right tools for each person: workers see jobs and bids, customers see job status, and admins see the operator dashboard.</p>
+            <section class="account-auth-panel" aria-label="Forge account prototype">
+              <span class="split-label">Local account prototype</span>
+              <h2>Create a role-based account shell.</h2>
+              <p>Use this to test customer, provider, and company onboarding. Passwords are validated for length but not stored in this browser-only MVP.</p>
+              <form id="accountSignupForm" class="account-auth-form">
+                <div class="field-row">
+                  <label>Role
+                    <select id="accountRole" required>
+                      <option value="customer">Customer</option>
+                      <option value="individual-provider">Individual Provider</option>
+                      <option value="company-provider">Company Provider</option>
+                      <option value="admin-request">Forge Admin Invite Request</option>
+                    </select>
+                  </label>
+                  <label>Full name<input id="accountName" required autocomplete="name" placeholder="Jane Smith" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Email<input id="accountEmail" required type="email" autocomplete="email" placeholder="jane@example.com" /></label>
+                  <label>Phone<input id="accountPhone" autocomplete="tel" placeholder="(541) 555-0000" /></label>
+                </div>
+                <label class="check-row"><input id="accountCredentialPlan" required type="checkbox" /> I understand real password setup, reset, and email verification require production authentication and are not collected in this MVP.</label>
+                <label class="check-row"><input id="accountTerms" required type="checkbox" /> I agree to Forge's Early Access Terms & Privacy.</label>
+                <div class="hero-actions">
+                  <button class="btn orange" type="submit">Create Local Account</button>
+                  <button class="btn ghost" type="button" data-action="copy-auth-prototype">Copy Auth Notes</button>
+                </div>
+              </form>
+              <div class="account-auth-status" id="accountPrototypePanel"></div>
+            </section>
             <section class="profile-login-prompt" aria-label="Profile status login note">
               <span class="split-label">Profile Status</span>
               <h2>Pick the person whose view you want to show.</h2>
@@ -1277,7 +1307,21 @@
               <h2>My Requests</h2>
               <div class="marketplace-request-list" id="customerDashboardJobs"></div>
             </div>
-            <aside id="customerDashboardNextAction"></aside>
+            <aside>
+              <section id="customerDashboardNextAction"></section>
+              <form class="customer-profile-form" id="customerProfileForm">
+                <span class="split-label">Customer Profile</span>
+                <h2>Contact and project locations.</h2>
+                <label>Full name<input id="customerProfileName" required autocomplete="name" /></label>
+                <label>Email<input id="customerProfileEmail" required type="email" autocomplete="email" /></label>
+                <label>Phone<input id="customerProfilePhone" required autocomplete="tel" /></label>
+                <label>Primary address<input id="customerProfileAddress" placeholder="Medford, OR" /></label>
+                <label>Preferred contact<select id="customerProfileContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
+                <label>Saved project locations<textarea id="customerProfileLocations" placeholder="Home, rental property, shop, project address..."></textarea></label>
+                <label>Profile image placeholder<input id="customerProfileImage" type="file" accept="image/*" /></label>
+                <button class="btn blue full" type="submit">Save Customer Profile</button>
+              </form>
+            </aside>
           </section>
         </section>
       </section>
@@ -3647,7 +3691,19 @@
               <label>Earliest available date/time<input id="bidEarliestAvailability" placeholder="Tomorrow 9 AM" /></label>
               <label>Estimated job duration<input id="bidDuration" placeholder="3 hours, 1 day, 2 visits" /></label>
             </div>
+            <div class="field-row">
+              <label>Estimated start date<input id="bidStartDate" type="date" /></label>
+              <label>Estimated completion date<input id="bidCompletionDate" type="date" /></label>
+            </div>
             <label>Number of workers / cleaners / crew members<input id="bidCrewCount" placeholder="2 cleaners, 3-person crew" /></label>
+            <label>Labor line items<textarea id="bidLaborLineItems" rows="2" placeholder="Labor, hours, crew size, rate, site visit, cleanup..."></textarea></label>
+            <label>Materials line items<textarea id="bidMaterialLineItems" rows="2" placeholder="Materials, supplies, equipment rental, disposal, delivery..."></textarea></label>
+            <label>Exclusions<textarea id="bidExclusions" rows="2" placeholder="Permits, hidden damage, customer-provided materials, extra trips..."></textarea></label>
+            <label>Payment milestones<textarea id="bidPaymentMilestones" rows="2" placeholder="Deposit, material payment, progress payment, final approval..."></textarea></label>
+            <div class="field-row">
+              <label>Quote valid until<input id="bidValidUntil" type="date" /></label>
+              <label>Quote version<input id="bidQuoteVersion" value="v1" /></label>
+            </div>
             <div class="field-row">
               <label>Materials included<select id="bidMaterialsIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
               <label>Supplies included<select id="bidSuppliesIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
