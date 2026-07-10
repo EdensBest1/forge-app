@@ -10162,19 +10162,22 @@ textarea:focus {
 
 .delivery-drill-grid,
 .backend-grid,
-.auth-grid {
+.auth-grid,
+.auth-drill-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
-.delivery-drill-grid {
+.delivery-drill-grid,
+.auth-drill-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .delivery-drill-grid article,
 .backend-grid article,
-.auth-grid article {
+.auth-grid article,
+.auth-drill-grid article {
   display: grid;
   gap: 8px;
   align-content: start;
@@ -10191,6 +10194,16 @@ textarea:focus {
   background: #fffaf4;
 }
 
+.auth-drill-grid article {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.auth-drill-grid article.ready {
+  border-left-color: var(--blue);
+  background: #f8fbff;
+}
+
 .auth-handoff {
   border-color: #bfd0e7;
 }
@@ -10202,7 +10215,8 @@ textarea:focus {
 
 .delivery-drill-grid span,
 .backend-grid span,
-.auth-grid span {
+.auth-grid span,
+.auth-drill-grid span {
   width: fit-content;
   padding: 5px 8px;
   border-radius: 999px;
@@ -10214,27 +10228,31 @@ textarea:focus {
 }
 
 .delivery-drill-grid article.attention span,
-.auth-grid span {
+.auth-grid span,
+.auth-drill-grid span {
   background: #fff0df;
   color: var(--orange);
 }
 
 .delivery-drill-grid strong,
 .backend-grid strong,
-.auth-grid strong {
+.auth-grid strong,
+.auth-drill-grid strong {
   color: var(--ink);
 }
 
 .delivery-drill-grid p,
 .backend-grid p,
-.auth-grid p {
+.auth-grid p,
+.auth-drill-grid p {
   margin: 0;
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.35;
 }
 
-.delivery-drill-grid .btn {
+.delivery-drill-grid .btn,
+.auth-drill-grid .btn {
   width: 100%;
   min-width: 0;
   margin-top: auto;
@@ -12926,6 +12944,7 @@ td {
   .soft-launch-grid,
   .backend-grid,
   .auth-grid,
+  .auth-drill-grid,
   .first-user-closeout-grid,
   .safety-grid,
   .launch-decision-card,

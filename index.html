@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=125" />
+    <link rel="stylesheet" href="./styles.css?v=126" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -4139,6 +4139,17 @@
               </div>
               <div class="auth-grid" id="authHandoff"></div>
             </section>
+            <section class="settings-card auth-drill">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Admin auth drill</span>
+                  <h2>Prove operator tools are locked before public launch.</h2>
+                  <p class="muted">Use this to test admin, capture, reports, exports, imports, backup, and webhook setup before the public link spreads.</p>
+                </div>
+                <button class="btn blue small" type="button" data-action="copy-admin-auth-drill">Copy Auth Drill</button>
+              </div>
+              <div class="auth-drill-grid" id="adminAuthDrill"></div>
+            </section>
             <section class="settings-card first-user-closeout">
               <div class="admin-heading compact">
                 <div>
@@ -4853,6 +4864,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=125"></script>
+    <script src="./app.js?v=126"></script>
   </body>
 </html>

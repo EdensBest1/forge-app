@@ -17,6 +17,7 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for Public View safety: private operator/admin data surfaces redact unless Forge Admin is in Operator View.
 - Implemented / Live in UI for public-share safety: Launch Status now includes a Public Share Safety Sweep with controlled-demo, Public View, backend, admin auth, backup, legal, and security gates.
 - Implemented / Live in UI for backend readiness: Admin now includes a Lead Delivery Drill to test webhook/backend delivery, verify destination receipt, and preserve local backup before broad sharing.
+- Implemented / Live in UI for admin-auth readiness: Admin now includes an Admin Auth Drill to verify production auth, protected operator routes, stranger access, recovery, audit, export, backup, and webhook safeguards.
 - Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes

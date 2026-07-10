@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "125";
+const PUBLIC_LINK_VERSION = "126";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4947,6 +4947,7 @@ function render() {
   renderFollowUpAudit();
   renderBackendHandoff();
   renderAuthHandoff();
+  renderAdminAuthDrill();
   renderFirstUserCloseout();
   renderLaunchGoals();
   renderFounding200();
@@ -5006,6 +5007,7 @@ function redactPrivateOperatorSurfaces() {
     "#launchCommandCenter",
     "#deliveryStatus",
     "#leadDeliveryDrill",
+    "#adminAuthDrill",
     "#autoRevenueSummary",
     "#vehicleListingReview",
     "#forgePlatinumDealDesk",
@@ -13290,6 +13292,19 @@ function renderAuthHandoff() {
   `).join("");
 }
 
+function renderAdminAuthDrill() {
+  const target = document.querySelector("#adminAuthDrill");
+  if (!target) return;
+  target.innerHTML = adminAuthDrillRows().map((item, index) => `
+    <article class="${item.ok ? "ready" : "hold"}">
+      <span>${index + 1}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(item.body)}</p>
+      <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
 function authHandoffRows() {
   return [
     {
@@ -13306,6 +13321,43 @@ function authHandoffRows() {
       label: "Minimum test",
       title: "Direct admin URLs must require auth",
       body: "Verify #admin, #capture, and #reports cannot show operator data unless the operator has authenticated through the intended protected path."
+    }
+  ];
+}
+
+function adminAuthDrillRows() {
+  return [
+    {
+      title: "Pick the production gate",
+      body: "Choose Cloudflare Access, Netlify protection, Vercel middleware, Supabase Auth, or another server-enforced admin gate before broad traffic.",
+      ok: false,
+      primary: true,
+      actionLabel: "Auth Handoff",
+      action: { type: "action", name: "copy-auth-handoff" }
+    },
+    {
+      title: "Protect every operator route",
+      body: "Admin, capture, reports, export, import, backup, webhook setup, project queues, and follow-up queues must require the production gate.",
+      ok: false,
+      primary: false,
+      actionLabel: "Copy Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
+    },
+    {
+      title: "Test as a stranger",
+      body: "In a fresh private browser, direct admin/capture/reports URLs must fail closed before any private operator data loads.",
+      ok: false,
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    },
+    {
+      title: "Record recovery and audit",
+      body: "Define the first admin accounts, password reset/recovery, audit log expectations, and who can export or change webhook settings.",
+      ok: false,
+      primary: false,
+      actionLabel: "Copy Gate",
+      action: { type: "action", name: "copy-final-gate" }
     }
   ];
 }
@@ -13529,8 +13581,8 @@ function launchSecuritySweepRows() {
       body: "Demo guards exist, but broad public traffic requires real admin authentication for admin, capture, reports, exports, imports, backup, and webhook setup.",
       status: "hold",
       primary: false,
-      actionLabel: "Auth Handoff",
-      action: { type: "action", name: "copy-auth-handoff" }
+      actionLabel: "Auth Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
     },
     {
       label: "Backup",
@@ -16518,6 +16570,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-lead-delivery-drill") copyLeadDeliveryDrill();
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
+  if (action?.dataset.action === "copy-admin-auth-drill") copyAdminAuthDrill();
   if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
   if (action?.dataset.action === "copy-profile-status-receipt") copyProfileStatusReceipt();
   if (action?.dataset.action === "copy-profile-perspective") copyProfilePerspective();
@@ -21435,6 +21488,21 @@ function copyAuthHandoff() {
     "Public beta requirement: admin, capture, reports, exports, imports, backups, and webhook setup must be behind production-grade authentication before broad public traffic."
   ];
   copyText(lines.join("\n"), "Auth handoff copied.");
+}
+
+function copyAdminAuthDrill() {
+  const rows = adminAuthDrillRows();
+  const lines = [
+    "Forge admin auth drill",
+    "",
+    "Goal: prove operator tools are locked before public launch.",
+    "",
+    ...rows.map((row, index) => `${index + 1}. ${row.ok ? "[Ready]" : "[Hold]"} ${row.title}. ${row.body}`),
+    "",
+    "Pass rule: a stranger cannot open admin, capture, reports, exports, imports, backup, webhook setup, project queues, or follow-up queues without the production admin gate.",
+    "Stop rule: if any private operator data loads before production auth, keep Forge in controlled demo mode only."
+  ];
+  copyText(lines.join("\n"), "Admin auth drill copied.");
 }
 
 function copyProfileCommand() {

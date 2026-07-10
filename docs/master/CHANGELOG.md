@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Admin auth drill
+
+- Added an Admin Auth Drill so Andrew can verify the production admin gate, sensitive operator routes, stranger/private-browser access, and recovery/audit expectations before broad public launch.
+- Connected the Launch Status Public Share Safety Sweep admin-auth gate to the copyable admin auth drill.
+- Bumped the local static asset/cache release references to v126.
+
 ## 2026-07-10 - Lead delivery drill
 
 - Added an Admin Lead Delivery Drill so Andrew can prove one public lead leaves the browser, confirm the external destination, and preserve a local backup before broad sharing.
