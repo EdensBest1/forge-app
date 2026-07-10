@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Demo close loop
+
+- Added a reusable Demo Close Loop on Customer Status, Job Detail, and Messages so the live demo can move through status, bid detail, message handoff, and profile proof without extra explanation.
+- Added a copyable Forge demo close loop receipt and smoke-test coverage for the new UI, JS, and CSS hooks.
+- Bumped the local static asset/cache release references to v120.
+
 ## 2026-07-10 - Launch blocker receipt
 
 - Added a Launch Status Public Launch Blocker Receipt that keeps controlled first-user demos separate from broad public launch readiness.

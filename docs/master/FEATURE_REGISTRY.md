@@ -11,6 +11,7 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for a first marketplace slice: homepage marketplace paths, `/marketplace` provider/job discovery, `/customer-dashboard` local customer request view, richer job intake fields, provider/company profile fields, provider quote/invite/save actions, worker marketplace readiness, and admin marketplace command center.
 - Implemented / Live in UI as local MVP account and quote lifecycle prototype: role-based account shells, customer profile save flow, quote line items/exclusions/milestones/versioning, quote revise/withdraw actions, and job statuses for Awaiting Approval, Completed, and Disputed.
 - Implemented / Live in UI for launch safety: Launch Status now includes a Public Launch Blocker Receipt with copyable gates for backend lead delivery, admin auth, backup, legal review, and final security review.
+- Implemented / Live in UI for demo closeout: Customer Status, Job Detail, and Messages now include a Demo Close Loop that keeps status, bid detail, message handoff, and profile proof visible and copyable.
 - Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes

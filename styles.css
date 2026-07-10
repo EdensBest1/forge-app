@@ -3698,6 +3698,110 @@ body:not(.role-admin) [data-admin-control] {
   padding-left: 8px;
 }
 
+.demo-close-loop {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.demo-close-loop-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.demo-close-loop-heading h2 {
+  margin: 3px 0 4px;
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.28;
+}
+
+.demo-close-loop-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.42;
+}
+
+.demo-close-loop-heading .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.demo-close-loop-grid,
+.demo-close-loop-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.demo-close-loop-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 128px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.demo-close-loop-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.demo-close-loop-grid article.waiting {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.demo-close-loop-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.demo-close-loop-grid article.attention span,
+.demo-close-loop-grid article.waiting span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.demo-close-loop-grid strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.demo-close-loop-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.demo-close-loop-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
 .message-next {
   display: grid;
   gap: 3px;
@@ -12359,6 +12463,9 @@ td {
   .message-bridge-actions,
   .message-reply-grid,
   .message-reply-actions,
+  .demo-close-loop-heading,
+  .demo-close-loop-grid,
+  .demo-close-loop-actions,
   .demo-handoff-actions,
   .demo-route-actions,
   .demo-proof-actions,

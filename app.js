@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "119";
+const PUBLIC_LINK_VERSION = "120";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -9405,6 +9405,7 @@ function renderDetail() {
     ${jobProofTicketPanel(job, bids, chosenBid)}
     ${jobDetailHandoffPanel(job, bids, chosenBid)}
     ${jobCloseoutPanel(job, bids, chosenBid)}
+    ${demoCloseLoop(job, bids, "detail")}
     <div class="hero-actions">
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
@@ -9600,6 +9601,108 @@ function jobHandoffRailRows(job, bids, chosenBid) {
       attrs: `data-action="copy-job-handoff-rail" data-job-id="${escapeHtml(job.id)}"`
     }
   ];
+}
+
+function demoCloseLoop(job, bids = [], context = "detail") {
+  if (!job) return "";
+  const rows = demoCloseLoopRows(job, bids);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const headline = context === "messages"
+    ? "Use this loop to get back from the thread to the full proof path."
+    : context === "status"
+      ? "Use this loop when the customer asks what happens next."
+      : "Use this loop to finish the job, bid, message, and profile story.";
+  return `
+    <section class="demo-close-loop" aria-label="Demo close loop">
+      <div class="demo-close-loop-heading">
+        <div>
+          <span class="split-label">Demo close loop</span>
+          <h2>${escapeHtml(headline)}</h2>
+          <p>${escapeHtml(demoCloseLoopSummary(job, bids))}</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-demo-close-loop" data-job-id="${escapeHtml(job.id)}">Copy Loop</button>
+      </div>
+      <div class="demo-close-loop-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="demo-close-loop-actions">
+        <button class="btn ghost small" type="button" ${customerLoginAttrs(job, "status")}>Status</button>
+        <button class="btn ${bids.length ? "blue" : "ghost"} small" type="button" ${customerLoginAttrs(job, "detail")}>Detail</button>
+        <button class="btn ${chosen ? "blue" : "ghost"} small" type="button" ${customerLoginAttrs(job, "messages", { threadId: `job-${job.id}` })}>Messages</button>
+        <button class="btn ${bestBid ? "orange" : "ghost"} small" type="button" ${demoCloseLoopProfileAttrs(job, bestBid)}>Profile</button>
+      </div>
+    </section>
+  `;
+}
+
+function demoCloseLoopRows(job, bids = []) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  return [
+    {
+      label: "1. Status",
+      title: `${job.customer || "Customer"} sees progress`,
+      body: `${job.title} is visible with ${bids.length} bid${bids.length === 1 ? "" : "s"} and the current next step.`,
+      status: "ready"
+    },
+    {
+      label: "2. Detail",
+      title: chosen ? `${chosen.worker} selected` : bestBid ? "Bids ready to compare" : "Waiting for bids",
+      body: chosen
+        ? `${chosen.amount} at ${chosen.timeline} is the active handoff.`
+        : bestBid
+          ? `${bestBid.worker} can be reviewed first from Job Detail.`
+          : "Invite or submit one worker bid before closing the proof path.",
+      status: chosen ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "3. Messages",
+      title: hasMessage ? "Thread visible" : chosen ? "Open thread next" : "Pending selection",
+      body: hasMessage
+        ? "Schedule, access notes, and follow-up can stay in one conversation."
+        : chosen
+          ? "Open Messages and save the next schedule note."
+          : "Choose a bid so Messages can carry the handoff.",
+      status: hasMessage ? "ready" : chosen ? "attention" : "waiting"
+    },
+    {
+      label: "4. Profile",
+      title: bestBid ? `${bestBid.worker} proof` : "Provider proof pending",
+      body: bestBid
+        ? "Show the provider profile/readiness view so the customer understands who is behind the bid."
+        : "Worker profile proof appears after at least one bid exists.",
+      status: bestBid ? "ready" : "waiting"
+    }
+  ];
+}
+
+function demoCloseLoopSummary(job, bids = []) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  if (chosen && hasMessage) return `${job.customer || "The customer"} can see status, selected bid, message handoff, and provider proof in one loop.`;
+  if (chosen) return "The bid is selected; finish by opening Messages and saving the schedule note.";
+  if (bids.length) return "The customer can compare bids now; choose one to make the message handoff real.";
+  return "The job is posted; get one worker bid before showing the full handoff loop.";
+}
+
+function demoCloseLoopProfileAttrs(job, bid) {
+  if (bid?.worker) {
+    return [
+      `data-login-role="worker"`,
+      `data-login-name="${escapeHtml(bid.worker)}"`,
+      `data-login-screen="profile"`,
+      `data-login-job="${escapeHtml(job.id)}"`
+    ].join(" ");
+  }
+  return customerLoginAttrs(job, "profile");
 }
 
 function jobFlowSteps(job, bids, chosenBid) {
@@ -9944,6 +10047,7 @@ function renderStatusResults() {
         </div>
         ${customerStatusDemoStrip(job, bids)}
         ${customerStatusHandoffPanel(job, bids)}
+        ${demoCloseLoop(job, bids, "status")}
       </article>
     `;
   }).join("") || statusEmptyState();
@@ -10341,6 +10445,7 @@ function messageHandoffPanel(thread) {
       ${messageProofBridge(thread, related)}
       ${messageProofReceipt(thread, related)}
       ${messageReplyKit(thread, related)}
+      ${messageDemoCloseLoop(related)}
       <div class="message-handoff-actions">
         ${related.jobId ? `<button class="btn blue small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Detail</button>` : ""}
         ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Open Status</button>` : ""}
@@ -10348,6 +10453,13 @@ function messageHandoffPanel(thread) {
       </div>
     </section>
   `;
+}
+
+function messageDemoCloseLoop(related) {
+  if (!related.jobId) return "";
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  return demoCloseLoop(job, bids, "messages");
 }
 
 function messageProofBridge(thread, related) {
@@ -15976,6 +16088,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-job-proof-ticket") copyJobProofTicket(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
+  if (action?.dataset.action === "copy-demo-close-loop") copyDemoCloseLoop(action.dataset.jobId || state.activeJobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-message-bridge") copyStatusMessageBridge(action.dataset.jobId);
@@ -19342,6 +19455,42 @@ function copyJobCloseout(jobId) {
     `Open messages: ${roleDemoLink("customer", "messages")}`
   ];
   copyText(lines.join("\n"), "Job closeout copied.");
+}
+
+function copyDemoCloseLoop(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const rows = demoCloseLoopRows(job, bids);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const lines = [
+    "Forge demo close loop",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected bid: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Suggested bid: ${bestBid.worker} at ${bestBid.amount}` : "Suggested bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    demoCloseLoopSummary(job, bids),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Live demo order:",
+    "1. Open Status so the customer sees the job and progress.",
+    "2. Open Detail to compare bids and choose the handoff.",
+    "3. Open Messages to confirm schedule, access notes, and follow-up.",
+    "4. Open Profile so the customer sees who is behind the bid.",
+    "5. End with one next ask and keep broad public sharing behind the launch blockers.",
+    "",
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`,
+    `Open profile: ${roleDemoLink(bestBid ? "worker" : "customer", "profile")}`
+  ];
+  copyText(lines.join("\n"), "Demo close loop copied.");
 }
 
 function copyBidHandoff(jobId) {
