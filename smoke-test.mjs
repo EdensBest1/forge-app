@@ -39,6 +39,8 @@ const requiredHtml = [
   "Soft launch readiness",
   "Forge is ready for controlled first-user demos, not broad public traffic yet.",
   "Soft launch decision",
+  "Public launch blocker receipt",
+  "publicLaunchBlockers",
   "Recommended soft-launch path",
   "Can I show someone now?",
   "No live payments",
@@ -343,8 +345,8 @@ const requiredHtml = [
   "Payment milestones",
   "Quote valid until",
   "admitlyPresentationBody",
-  "styles.css?v=118",
-  "app.js?v=118"
+  "styles.css?v=119",
+  "app.js?v=119"
 ];
 
 const requiredJs = [
@@ -810,6 +812,12 @@ const requiredJs = [
   "launchDecisionRows",
   "copyLaunchDecision",
   "Forge soft launch decision",
+  "renderPublicLaunchBlockers",
+  "publicLaunchBlockerRows",
+  "publicLaunchBlockerRow",
+  "copyPublicLaunchBlockers",
+  "Forge public launch blocker receipt",
+  "Copy Blockers",
   "renderLaunchShowPlan",
   "launchShowPlanRows",
   "copyLaunchShowPlan",
@@ -1132,6 +1140,7 @@ const missingCss = [
   ["customer status demo strip", css.includes(".status-demo-strip") && css.includes(".status-demo-actions")],
   ["demo route primary actions", css.includes(".demo-route-actions") && js.includes("index === 0 ? \"blue\" : \"ghost\"")],
   ["launch receipt panel", html.includes("launchReceiptGrid") && css.includes(".launch-receipt-grid") && js.includes("renderLaunchReceipt") && js.includes("copyLaunchReceipt")],
+  ["public launch blocker receipt", html.includes("publicLaunchBlockers") && css.includes(".public-launch-blockers") && css.includes(".public-launch-blocker-grid") && js.includes("renderPublicLaunchBlockers") && js.includes("copyPublicLaunchBlockers")],
   ["first user count breakdown", html.includes("firstUserCountBreakdown") && css.includes(".first-user-breakdown-grid") && js.includes("renderFirstUserCountBreakdown") && js.includes("copyFirstUserCountBreakdown")],
   ["first 200 launch queue", html.includes("first200QueueGrid") && css.includes(".first-200-queue-grid") && js.includes("renderFirst200LaunchQueue") && js.includes("copyFirst200LaunchQueue")],
   ["mobile demo shortcuts", html.includes('aria-label="Forge demo shortcuts"') && html.includes('aria-label="Open customer status">Status</button>') && html.includes('aria-label="Open messages">Msgs</button>') && html.includes('aria-label="Open profile status">Profile</button>') && css.includes(".mobile-tabbar-secondary") && css.includes("flex: 1 1 0")],
@@ -1173,7 +1182,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v118")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v119")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -1187,7 +1196,7 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v118\"") && releaseManifest.includes("/request-help?v=118") && releaseManifest.includes("/post-job?v=118") && releaseManifest.includes("/worker-signup?v=118") && releaseManifest.includes("/business?v=118") && releaseManifest.includes("/photography?v=118") && releaseManifest.includes("/photography/request?v=118") && releaseManifest.includes("/photography/apply?v=118") && releaseManifest.includes("/photography-videography?v=118") && releaseManifest.includes("/northstar-creative?v=118") && releaseManifest.includes("/forge/capital?v=118") && releaseManifest.includes("/forge/flex?v=118") && releaseManifest.includes("/partners/flex?v=118") && releaseManifest.includes("/personal-driver?v=118") && releaseManifest.includes("/forge-payments?v=118") && releaseManifest.includes("/local-products?v=118") && releaseManifest.includes("/building?v=118") && releaseManifest.includes("/admin/building-leads?v=118") && releaseManifest.includes("/forge-academy?v=118") && releaseManifest.includes("/trade-pathways?v=118") && releaseManifest.includes("/admin/forge-academy?v=118")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v119\"") && releaseManifest.includes("/request-help?v=119") && releaseManifest.includes("/post-job?v=119") && releaseManifest.includes("/worker-signup?v=119") && releaseManifest.includes("/business?v=119") && releaseManifest.includes("/photography?v=119") && releaseManifest.includes("/photography/request?v=119") && releaseManifest.includes("/photography/apply?v=119") && releaseManifest.includes("/photography-videography?v=119") && releaseManifest.includes("/northstar-creative?v=119") && releaseManifest.includes("/forge/capital?v=119") && releaseManifest.includes("/forge/flex?v=119") && releaseManifest.includes("/partners/flex?v=119") && releaseManifest.includes("/personal-driver?v=119") && releaseManifest.includes("/forge-payments?v=119") && releaseManifest.includes("/local-products?v=119") && releaseManifest.includes("/building?v=119") && releaseManifest.includes("/admin/building-leads?v=119") && releaseManifest.includes("/forge-academy?v=119") && releaseManifest.includes("/trade-pathways?v=119") && releaseManifest.includes("/admin/forge-academy?v=119")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],

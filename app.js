@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "118";
+const PUBLIC_LINK_VERSION = "119";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4938,6 +4938,7 @@ function render() {
   renderLaunchShowPlan();
   renderLaunchDemoPack();
   renderLaunchDecision();
+  renderPublicLaunchBlockers();
   renderLaunchFinalChecklist();
   renderLaunchSendBoard();
   renderLaunchHandoffReceipt();
@@ -12741,6 +12742,111 @@ function publicReadinessBlockers() {
   return blockers;
 }
 
+function renderPublicLaunchBlockers() {
+  const target = document.querySelector("#publicLaunchBlockers");
+  if (!target) return;
+  const summary = publicReadinessSummary();
+  const rows = publicLaunchBlockerRows();
+  target.innerHTML = `
+    <div class="public-launch-heading">
+      <div>
+        <span class="split-label">Public launch blocker receipt</span>
+        <h2>Controlled demos can continue. Broad sharing waits on these gates.</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-public-launch-blockers">Copy Blockers</button>
+    </div>
+    <div class="public-launch-score">
+      <strong>${summary.score}%</strong>
+      <span>Demo readiness</span>
+      <p>${escapeHtml(summary.blockers.length ? `${summary.blockers.length} public-launch gates remain.` : "All public launch gates appear clear; still complete the final human review.")}</p>
+    </div>
+    <div class="public-launch-blocker-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function publicLaunchBlockerRows() {
+  const rows = [
+    {
+      label: "Allowed now",
+      title: "Controlled first-user demos",
+      body: "Use Forge with people Andrew can personally follow up with. Keep payments, deposits, sensitive documents, and final contracts outside the MVP.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    }
+  ];
+  publicReadinessBlockers().forEach((blocker) => rows.push(publicLaunchBlockerRow(blocker)));
+  return rows;
+}
+
+function publicLaunchBlockerRow(blocker) {
+  const text = String(blocker || "");
+  if (/zapier|backend|leads leave/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Lead delivery",
+      body: text,
+      status: "hold",
+      primary: false,
+      actionLabel: "Backend Handoff",
+      action: { type: "action", name: "copy-backend-handoff" }
+    };
+  }
+  if (/auth|authentication|admin/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Admin protection",
+      body: text,
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Handoff",
+      action: { type: "action", name: "copy-auth-handoff" }
+    };
+  }
+  if (/backup/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Backup current",
+      body: text,
+      status: "attention",
+      primary: false,
+      actionLabel: "Export Backup",
+      action: { type: "action", name: "export-backup" }
+    };
+  }
+  if (/legal|privacy|terms/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Legal review",
+      body: text,
+      status: "attention",
+      primary: false,
+      actionLabel: "Terms",
+      action: { type: "nav", screen: "legal" }
+    };
+  }
+  return {
+    label: "Required",
+    title: "Security review",
+    body: text,
+    status: "hold",
+    primary: false,
+    actionLabel: "Copy Check",
+    action: { type: "action", name: "copy-security-command" }
+  };
+}
+
 function finalSecurityGateRows() {
   const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
   const backupCurrent = state.settings.lastBackupAt && Number(state.settings.lastBackupLeadCount || 0) >= totalLeadCount();
@@ -15715,6 +15821,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
   if (action?.dataset.action === "copy-launch-show-plan") copyLaunchShowPlan();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
+  if (action?.dataset.action === "copy-public-launch-blockers") copyPublicLaunchBlockers();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
   if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
@@ -21098,6 +21205,28 @@ function copyFinalSecurityGate() {
     "Verification command: npm run check"
   ];
   copyText(lines.join("\n"), "Final gate copied.");
+}
+
+function copyPublicLaunchBlockers() {
+  const summary = publicReadinessSummary();
+  const rows = publicLaunchBlockerRows();
+  const lines = [
+    "Forge public launch blocker receipt",
+    "",
+    `Demo readiness score: ${summary.score}%`,
+    "Decision: continue controlled first-user demos only. Hold broad public sharing until every required gate is closed.",
+    "",
+    ...rows.map((row) => `${row.status === "ready" ? "[Allowed]" : "[Required]"} ${row.title}: ${row.body}`),
+    "",
+    "Next operator move:",
+    "1. Use Perspective Demo for the person in front of you.",
+    "2. Capture one consented next action.",
+    "3. Export Backup JSON after the outreach block.",
+    "4. Do not collect payments, deposits, bank/card data, sensitive identity documents, title paperwork, or final contracts in the MVP.",
+    "",
+    "Verification command before public launch: npm run check"
+  ];
+  copyText(lines.join("\n"), "Public launch blocker receipt copied.");
 }
 
 function copySecurityReviewPack() {

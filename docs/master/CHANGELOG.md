@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Launch blocker receipt
+
+- Added a Launch Status Public Launch Blocker Receipt that keeps controlled first-user demos separate from broad public launch readiness.
+- The receipt shows demo-readiness score, remaining gates for backend lead delivery, admin authentication, backup, legal review, and security review, plus a copyable operator script.
+- Bumped the local static asset/cache release references to v119.
+
 ## 2026-07-09 - Eden's Best marketplace checkpoint
 
 - Added a first Forge marketplace slice: `/marketplace`, `/customer-dashboard`, richer customer job request fields, customer dashboard, provider/company profile fields, provider discovery actions, worker marketplace readiness, and a protected admin marketplace command center.
