@@ -14624,3 +14624,234 @@ th {
     padding: 28px 18px;
   }
 }
+
+.marketplace-entry-panel,
+.marketplace-discovery-panel,
+.worker-marketplace-readiness,
+.marketplace-command,
+.admitly-panel {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 16px 42px rgba(15, 23, 42, 0.06);
+}
+
+.marketplace-entry-panel {
+  margin: 24px auto;
+  max-width: 1180px;
+  padding: 22px;
+}
+
+.marketplace-entry-grid,
+.marketplace-command-grid,
+.marketplace-discovery-summary,
+.admitly-grid,
+.admitly-dashboard-demo,
+.admitly-form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.marketplace-entry-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.marketplace-entry-grid article,
+.marketplace-command-grid article,
+.marketplace-discovery-summary article,
+.admitly-grid article,
+.admitly-dashboard-demo article,
+.marketplace-request-card {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+}
+
+.marketplace-entry-grid h3,
+.marketplace-request-card h3,
+.admitly-grid h3,
+.admitly-task-list h3 {
+  margin: 8px 0;
+}
+
+.marketplace-entry-grid p,
+.marketplace-request-card p,
+.admitly-grid p,
+.admitly-dashboard-demo p {
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.marketplace-discovery-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  align-items: center;
+  gap: 18px;
+  margin: 18px 0;
+  padding: 18px;
+}
+
+.marketplace-discovery-summary,
+.marketplace-command-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.marketplace-discovery-summary article strong,
+.marketplace-command-grid article strong,
+.admitly-dashboard-demo article strong {
+  display: block;
+  color: #0f172a;
+  font-size: 1.8rem;
+}
+
+.customer-dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.marketplace-request-list {
+  display: grid;
+  gap: 12px;
+}
+
+.marketplace-request-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.provider-marketplace-meta {
+  margin: 8px 0;
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+.worker-marketplace-readiness {
+  margin: 18px 0;
+  padding: 18px;
+}
+
+.marketplace-command {
+  margin: 18px 0;
+  padding: 18px;
+}
+
+.marketplace-command .table-card {
+  margin-top: 16px;
+}
+
+.admitly-presentation-screen {
+  background: #061021;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.admitly-bar .bar-icons button {
+  color: #123a8f;
+  border: 1px solid rgba(18, 58, 143, 0.22);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.admitly-presentation-hero {
+  padding: 80px min(6vw, 72px) 42px;
+  background:
+    linear-gradient(135deg, rgba(56, 82, 255, 0.22), rgba(6, 16, 33, 0.92)),
+    #061021;
+}
+
+.admitly-presentation-hero h1 {
+  max-width: 760px;
+  font-size: clamp(2.1rem, 5vw, 4.4rem);
+  line-height: 1;
+}
+
+.admitly-presentation-hero p {
+  max-width: 680px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.05rem;
+}
+
+.admitly-presentation-body {
+  display: grid;
+  gap: 18px;
+  padding: 0 min(6vw, 72px) 72px;
+}
+
+.admitly-panel {
+  color: #0f172a;
+  padding: 20px;
+}
+
+.admitly-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.admitly-dashboard-demo {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admitly-task-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admitly-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 1000px) {
+  .marketplace-entry-grid,
+  .marketplace-discovery-summary,
+  .marketplace-command-grid,
+  .admitly-grid,
+  .admitly-dashboard-demo,
+  .admitly-task-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .marketplace-discovery-panel,
+  .customer-dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .marketplace-entry-panel,
+  .marketplace-discovery-panel,
+  .worker-marketplace-readiness,
+  .marketplace-command,
+  .admitly-panel {
+    padding: 16px;
+  }
+
+  .marketplace-entry-grid,
+  .marketplace-discovery-summary,
+  .marketplace-command-grid,
+  .admitly-grid,
+  .admitly-dashboard-demo,
+  .admitly-task-list,
+  .admitly-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-request-card {
+    display: grid;
+  }
+
+  .admitly-presentation-hero {
+    padding: 56px 20px 30px;
+  }
+
+  .admitly-presentation-body {
+    padding: 0 20px 44px;
+  }
+}

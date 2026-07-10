@@ -120,6 +120,18 @@
           <article><span class="icon">S</span><strong>Safety First</strong><small>Admin-reviewed leads</small></article>
         </section>
 
+        <section class="marketplace-entry-panel" aria-label="Forge marketplace paths">
+          <div class="section-title compact">
+            <div>
+              <span class="split-label">Forge Marketplace MVP</span>
+              <h2>Customers, providers, companies, and admin review now share one marketplace workflow.</h2>
+              <p class="muted">Local-state demo only: no payments, passwords, production dispatch, or backend claims are active yet.</p>
+            </div>
+            <button class="btn blue small" type="button" data-nav="customer-dashboard">Customer Dashboard</button>
+          </div>
+          <div class="marketplace-entry-grid" id="marketplaceCtaGrid"></div>
+        </section>
+
         <section class="impact-trust-strip" aria-label="House of Heaven impact tracker">
           <div>
             <span class="split-label">Built to serve</span>
@@ -1211,9 +1223,17 @@
             <fieldset class="step-panel" data-step="2">
               <h1>Where is the job?</h1>
               <label>Location<input id="jobLocation" required value="Medford, OR" /></label>
+              <label>Project address or service area<input id="customerAddress" placeholder="Exact address can stay private until admin review" /></label>
+              <label>Job Type<select id="jobType"><option>One-time Job</option><option>Recurring Service</option><option>Emergency Request</option><option>Bid Walk Needed</option><option>Quote Only</option><option>Maintenance Plan</option></select></label>
               <label>When do you need this done?<select id="jobUrgency"><option>ASAP</option><option>This week</option><option>Flexible</option></select></label>
+              <div class="field-row">
+                <label>Preferred Date<input id="jobPreferredDate" type="date" /></label>
+                <label>Preferred Time<input id="jobPreferredTime" placeholder="Morning, afternoon, after 5..." /></label>
+              </div>
               <label>Budget Range<select id="jobBudget"><option>$150 - $250</option><option>$250 - $500</option><option>$500 - $1,000</option><option>$1,000+</option></select></label>
+              <label>Visibility<select id="jobVisibility"><option>Public Marketplace</option><option>Admin Review Only</option><option>Invite Only</option></select></label>
               <label>Upload photos (optional)<input id="jobPhotos" type="file" multiple /></label>
+              <label>Reference docs or notes<textarea id="jobReferenceFiles" placeholder="Permits, measurements, preferred materials, links, or file names to collect later"></textarea></label>
             </fieldset>
 
             <fieldset class="step-panel" data-step="3">
@@ -1221,6 +1241,8 @@
               <label>Full Name<input id="customerName" required value="John Smith" /></label>
               <label>Phone Number<input id="customerPhone" required value="(541) 555-1234" /></label>
               <label>Email Address<input id="customerEmail" required type="email" value="john.smith@email.com" /></label>
+              <label>Preferred Contact<select id="customerPreferredContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
+              <label>Providers to invite first<textarea id="jobInviteProviders" placeholder="Optional: names, trades, or emails of providers to invite first"></textarea></label>
               <p class="trust-note"><strong>Early access note:</strong> Forge will use this contact info to follow up about this job by text, phone, or email. No payment is collected in this MVP.</p>
               <label class="check-row"><input id="terms" required type="checkbox" /> I agree to Forge's early access terms and privacy policy.</label>
               <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
@@ -1235,6 +1257,31 @@
         </section>
       </section>
 
+      <section class="screen" id="customer-dashboard-screen" data-screen="customer-dashboard">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="post">Post</button><button type="button" data-nav="jobs">Market</button></div>
+        </header>
+        <section class="content-wrap">
+          <div class="section-title compact">
+            <div>
+              <span class="split-label">Customer Dashboard</span>
+              <h1>Review requests, quotes, providers, and next steps.</h1>
+              <p class="muted">This dashboard is MVP/local-state only and shows what a customer account will become once auth and backend storage are connected.</p>
+            </div>
+            <button class="btn orange small" type="button" data-nav="post">Post Another Job</button>
+          </div>
+          <div class="stat-row" id="customerDashboardSummary"></div>
+          <section class="customer-dashboard-layout">
+            <div>
+              <h2>My Requests</h2>
+              <div class="marketplace-request-list" id="customerDashboardJobs"></div>
+            </div>
+            <aside id="customerDashboardNextAction"></aside>
+          </section>
+        </section>
+      </section>
+
       <section class="screen" id="jobs-screen" data-screen="jobs">
         <header class="blue-bar">
           <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
@@ -1243,6 +1290,14 @@
         <section class="content-wrap">
           <h1>Available Jobs</h1>
           <p class="muted">Find work and get paid.</p>
+          <section class="marketplace-discovery-panel">
+            <div>
+              <span class="split-label">Marketplace discovery</span>
+              <h2>Search jobs and provider profiles from one public-safe surface.</h2>
+              <p class="muted">Provider identity, business profile, verification state, quote request, invite, and save actions are visible here for demo review.</p>
+            </div>
+            <div class="marketplace-discovery-summary" id="marketplaceDiscoverySummary"></div>
+          </section>
           <div class="filter-row">
             <select id="listingCategory"></select>
             <select id="listingBudget"><option>All Budgets</option><option>$100 - $250</option><option>$250 - $500</option><option>$500+</option></select>
@@ -2845,6 +2900,25 @@
         </section>
       </section>
 
+      <section class="screen admitly-presentation-screen" id="admitly-screen" data-screen="admitly">
+        <header class="admitly-bar">
+          <a class="admitly-brand" href="#admitly" data-nav="admitly">ADMITLY</a>
+          <div class="bar-icons">
+            <button type="button" data-nav="admitly-demo">Demo</button>
+            <button type="button" data-nav="admitly-stanford">Stanford</button>
+            <button type="button" data-nav="home">Forge</button>
+          </div>
+        </header>
+        <section class="admitly-presentation-hero">
+          <div>
+            <span class="split-label" id="admitlyPresentationMode">Admitly Landing</span>
+            <h1>Admitly admissions planning, presentation-ready inside Forge.</h1>
+            <p>Separate product, separate brand, and safe discussion copy for students, parents, educators, and a possible Stanford conversation.</p>
+          </div>
+        </section>
+        <section class="admitly-presentation-body" id="admitlyPresentationBody"></section>
+      </section>
+
       <section class="screen trade-pathways-screen" id="trade-pathways-screen" data-screen="trade-pathways">
         <header class="admitly-bar">
           <a class="admitly-brand" href="#trade-pathways" data-nav="trade-pathways">ADMITLY</a>
@@ -3744,6 +3818,13 @@
             <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
             <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
             <label>Service vertical<select id="workerServiceVertical"></select></label>
+            <label>Profile Type<select id="workerProfileType"><option>Individual Worker</option><option>Company / Crew</option><option>Licensed Trade Business</option><option>Supplier / Partner</option></select></label>
+            <div class="field-row">
+              <label>Company / Public Profile Name<input id="workerCompanyName" placeholder="Optional business or crew name" /></label>
+              <label>Profile Slug<input id="workerProfileSlug" placeholder="rogue-valley-electric" /></label>
+            </div>
+            <label>Logo or profile image<input id="workerLogo" type="file" accept="image/*" /></label>
+            <label>Cover image or portfolio photos<input id="workerCover" type="file" accept="image/*" multiple /></label>
             <label>Trade categories<select id="workerTradeCategories" multiple size="6"></select></label>
             <label>Business size classification<select id="workerBusinessSize" required></select></label>
             <section class="provider-growth-tools northstar-provider-question">
@@ -3763,6 +3844,21 @@
               <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
               <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
             </div>
+            <div class="field-row">
+              <label>Pricing Type<select id="workerPricingType"><option>Estimate After Review</option><option>Hourly</option><option>Fixed Bid</option><option>Starting At</option><option>Emergency Rate</option><option>Recurring Plan</option></select></label>
+              <label>Minimum Job Size<input id="workerMinimumJobSize" placeholder="$250 minimum, bid walk required..." /></label>
+            </div>
+            <div class="field-row">
+              <label>Operating Hours<input id="workerOperatingHours" placeholder="Mon-Fri, Saturdays by request" /></label>
+              <label>Emergency Availability<select id="workerEmergencyAvailability"><option>No</option><option>Yes</option><option>By request</option></select></label>
+            </div>
+            <label>Certifications / licenses to review<textarea id="workerCertifications" placeholder="License number, certifications, trade cards, proof to review later"></textarea></label>
+            <label>Insurance notes<textarea id="workerInsuranceNotes" placeholder="General liability, bond, auto/commercial, or needs review"></textarea></label>
+            <label>Portfolio / work proof summary<textarea id="workerPortfolioSummary" placeholder="Past jobs, links, before/after examples, references to collect"></textarea></label>
+            <label>Team members / crew notes<textarea id="workerTeamMembers" placeholder="Crew size, lead contact, subcontractor boundaries"></textarea></label>
+            <label>Equipment / tools<textarea id="workerEquipment" placeholder="Truck, trailer, tools, specialty equipment"></textarea></label>
+            <label>Warranty or workmanship policy<textarea id="workerWarranty" placeholder="Optional warranty/redo policy or review needed"></textarea></label>
+            <label>Accepted payment methods<textarea id="workerPaymentMethods" placeholder="Cash, check, invoice, card later, payment terms to review"></textarea></label>
             <div class="dynamic-service-fields hidden" id="providerProfileFields"></div>
             <section class="provider-growth-tools">
               <span class="split-label">Business Growth Tools</span>
@@ -3818,6 +3914,16 @@
               </div>
             </section>
             <section class="worker-opportunity-bridge" id="workerOpportunityBridge" aria-label="Worker opportunity bridge"></section>
+            <section class="worker-marketplace-readiness" aria-label="Provider marketplace readiness">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Provider marketplace readiness</span>
+                  <h2>Profile, verification, pricing, and availability.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-nav="profile">Profile Status</button>
+              </div>
+              <div class="marketplace-command-grid" id="workerMarketplaceReadiness"></div>
+            </section>
             <div class="stat-row" id="workerStats"></div>
             <section class="provider-northstar-panel" id="providerNorthstarPanel"></section>
             <h2>Recent Jobs</h2>
@@ -3872,6 +3978,7 @@
               </article>
             </section>
             <div class="stat-row" id="adminStats"></div>
+            <section class="settings-card marketplace-command" id="adminMarketplaceControl"></section>
             <section class="settings-card">
               <div class="admin-heading compact">
                 <div>

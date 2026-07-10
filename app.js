@@ -26,6 +26,12 @@ const workerTrustTiers = [
   { tier: "Gold", meaning: "expert/crew lead/business track", steps: ["Crew Lead 1", "Crew Lead 2", "Expert Operator", "Business Ready", "Master Lead"] }
 ];
 const dispatchDecisionLabels = ["Ready to Invite", "Crew-Lead Ready", "Mentor-Only", "Supervised Helper", "Admin Review"];
+const forgeMarketplaceJobStatuses = ["Draft", "Published", "Receiving Quotes", "Provider Selected", "Scheduled", "In Progress", "Completed", "Needs Admin Review"];
+const forgeMarketplaceVerificationStates = ["Identity Pending", "Business Verification Pending", "License Review Pending", "Insurance Review Pending", "Admin Reviewed", "Approved for Controlled Beta"];
+const forgePricingTypes = ["Hourly", "Fixed Bid", "Starting At", "Estimate After Review", "Emergency Rate", "Recurring Plan"];
+const forgeJobTypes = ["One-time Job", "Recurring Service", "Emergency Request", "Bid Walk Needed", "Quote Only", "Maintenance Plan"];
+const forgeJobVisibilityOptions = ["Public Marketplace", "Admin Review Only", "Invite Only"];
+const forgePreferredContactMethods = ["Phone", "Text", "Email", "Forge Message"];
 const yesNoOptions = ["No", "Yes"];
 const serviceJobStatusLabels = ["Open for bids", "Bid submitted", "Provider selected", "Scheduled", "In progress", "Completed", "Cancelled"];
 const serviceVerticals = [
@@ -1987,7 +1993,12 @@ const academyTradeOptions = ["Electrical", "Welding", "HVAC", "Plumbing", "Roofi
 const fundingNeedOptions = ["Not sure", "Needs scholarships/grants", "Needs financial aid", "Can self-pay", "Employer sponsored", "Low-cost options only"];
 const routeByScreen = {
   post: "/request-help",
+  jobs: "/marketplace",
+  "customer-dashboard": "/customer-dashboard",
   signup: "/worker-signup",
+  admitly: "/admitly",
+  "admitly-demo": "/admitly/demo",
+  "admitly-stanford": "/admitly/stanford",
   northstar: "/business",
   autos: "/auto",
   "forge-academy": "/forge-academy",
@@ -2014,8 +2025,18 @@ const screenByPath = {
   "/request-help/": "post",
   "/post-job": "post",
   "/post-job/": "post",
+  "/marketplace": "jobs",
+  "/marketplace/": "jobs",
+  "/customer-dashboard": "customer-dashboard",
+  "/customer-dashboard/": "customer-dashboard",
   "/worker-signup": "signup",
   "/worker-signup/": "signup",
+  "/admitly": "admitly",
+  "/admitly/": "admitly",
+  "/admitly/demo": "admitly-demo",
+  "/admitly/demo/": "admitly-demo",
+  "/admitly/stanford": "admitly-stanford",
+  "/admitly/stanford/": "admitly-stanford",
   "/business": "northstar",
   "/business/": "northstar",
   "/privacy": "legal",
@@ -4734,7 +4755,12 @@ function normalizeScreen(screen) {
   if (["local-products", "makers", "local-makers", "products", LOCAL_PRODUCTS_CATEGORY_VALUE].includes(screen)) return "local-products";
   if (["launch", "launch-status", "soft-launch", "readiness", "public-readiness"].includes(screen)) return "launch-status";
   if (["academy", "forge-academy", "forge/academy", "dashboard/career", "career-plus", "forge-career-plus"].includes(screen)) return "forge-academy";
-  if (["admitly", "trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
+  if (["customer", "customer-dashboard", "dashboard/customer", "my-jobs"].includes(screen)) return "customer-dashboard";
+  if (["marketplace", "provider-marketplace", "find-providers"].includes(screen)) return "jobs";
+  if (["admitly", "admitly-home", "admitly/"].includes(screen)) return "admitly";
+  if (["admitly/demo", "admitly-demo", "admitly-dashboard-demo", "admitly-app-demo"].includes(screen)) return "admitly-demo";
+  if (["admitly/stanford", "admitly-stanford", "stanford-admitly", "admitly-educator-discussion"].includes(screen)) return "admitly-stanford";
+  if (["trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
   if (["building", "forge-building", "buildings"].includes(screen)) return "building";
   if (["admin/building-leads", "building-leads", "admin-building"].includes(screen)) return "admin-building-leads";
   if (screen === "admin/projects") return "admin-projects";
@@ -4742,7 +4768,9 @@ function normalizeScreen(screen) {
 }
 
 function visibleScreenFor(screen) {
-  return ["creative-request", "creative-apply"].includes(screen) ? "creative" : screen;
+  if (["creative-request", "creative-apply"].includes(screen)) return "creative";
+  if (["admitly-demo", "admitly-stanford"].includes(screen)) return "admitly";
+  return screen;
 }
 
 function screenExists(screen) {
@@ -4818,7 +4846,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/request-help", "/request-help/", "/post-job", "/post-job/", "/worker-signup", "/worker-signup/", "/business", "/business/", "/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/request-help", "/request-help/", "/post-job", "/post-job/", "/marketplace", "/marketplace/", "/customer-dashboard", "/customer-dashboard/", "/worker-signup", "/worker-signup/", "/admitly", "/admitly/", "/admitly/demo", "/admitly/demo/", "/admitly/stanford", "/admitly/stanford/", "/business", "/business/", "/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -4859,6 +4887,8 @@ function render() {
   renderLocalProductsPage();
   renderForgeAcademy();
   renderAdmitlyTradePathways();
+  renderAdmitlyPresentation();
+  renderMarketplaceCommandCenter();
   renderProviderGrowthTools();
   renderRequiredTradeCategories();
   renderServiceVerticals();
@@ -7506,6 +7536,255 @@ function serviceFieldMarkup(field, idPrefix, dataAttr) {
   return `<label>${escapeHtml(field.label)}<input id="${escapeHtml(id)}" ${common} type="${escapeHtml(field.type || "text")}" placeholder="${escapeHtml(field.placeholder || "")}" /></label>`;
 }
 
+function marketplaceStatus(job = {}) {
+  return job.marketplaceStatus || job.status || "Needs Admin Review";
+}
+
+function providerVerificationState(worker = {}) {
+  return worker.verificationState || worker.licenseStatus || worker.insuranceStatus || worker.status || "Business Verification Pending";
+}
+
+function renderMarketplaceCommandCenter() {
+  const jobs = state.jobs || [];
+  const workers = state.workers || [];
+  const bids = state.bids || [];
+  const publishedJobs = jobs.filter((job) => ["Published", "Receiving Quotes", "Open for bids", "New", "Pending"].includes(marketplaceStatus(job)));
+  const companies = workers.filter((worker) => ["Company / Crew", "Business", "Electrical Contractor / Company", "Diesel Repair Company", "Multi-Trade Crew"].some((label) => normalizeLookup(worker.profileType || worker.providerType || "").includes(normalizeLookup(label))));
+  const pendingProviders = workers.filter((worker) => normalizeLookup(providerVerificationState(worker)).includes("pending") || normalizeLookup(worker.status).includes("new"));
+
+  const ctaGrid = document.querySelector("#marketplaceCtaGrid");
+  if (ctaGrid) {
+    ctaGrid.innerHTML = [
+      ["Post a Job", "Create a customer request with location, timeline, budget, photos, visibility, and contact preference.", "post", "orange"],
+      ["Find a Provider", "Browse provider profiles by service type, area, verification state, availability, tags, and proof signals.", "jobs", "blue"],
+      ["Customer Dashboard", "Review saved requests, bids, next steps, and message handoff from one place.", "customer-dashboard", "ghost"],
+      ["Create Provider Profile", "Join as an individual worker, crew, or company and save readiness details for admin review.", "signup", "ghost"]
+    ].map(([title, body, screen, tone]) => `
+      <article>
+        <span class="split-label">Forge marketplace</span>
+        <h3>${escapeHtml(title)}</h3>
+        <p>${escapeHtml(body)}</p>
+        <button class="btn ${tone} small" type="button" data-nav="${escapeHtml(screen)}">${escapeHtml(title)}</button>
+      </article>
+    `).join("");
+  }
+
+  const discoverySummary = document.querySelector("#marketplaceDiscoverySummary");
+  if (discoverySummary) {
+    discoverySummary.innerHTML = [
+      ["Open jobs", publishedJobs.length],
+      ["Provider profiles", workers.length],
+      ["Company profiles", companies.length],
+      ["Bids saved", bids.length]
+    ].map(([label, value]) => `<article><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></article>`).join("");
+  }
+
+  const customerSummary = document.querySelector("#customerDashboardSummary");
+  if (customerSummary) {
+    const customerName = state.session.role === "customer" ? state.session.name : "";
+    const customerJobs = customerName ? jobs.filter((job) => normalizeLookup(job.customer) === normalizeLookup(customerName)) : jobs.slice(0, 4);
+    customerSummary.innerHTML = statCards([
+      ["Saved requests", customerJobs.length || jobs.length],
+      ["Receiving quotes", jobs.filter((job) => ["Receiving Quotes", "Open for bids"].includes(marketplaceStatus(job))).length],
+      ["Provider profiles", workers.length],
+      ["Admin review items", jobs.filter((job) => marketplaceStatus(job).includes("Review")).length + pendingProviders.length]
+    ]);
+  }
+
+  const customerJobs = document.querySelector("#customerDashboardJobs");
+  if (customerJobs) {
+    const sessionName = state.session.role === "customer" ? state.session.name : "";
+    const rows = (sessionName ? jobs.filter((job) => normalizeLookup(job.customer) === normalizeLookup(sessionName)) : jobs).slice(0, 6);
+    customerJobs.innerHTML = rows.map((job) => `
+      <article class="marketplace-request-card">
+        <div>
+          <span class="split-label">${escapeHtml(marketplaceStatus(job))}</span>
+          <h3>${escapeHtml(job.title)}</h3>
+          <p>${escapeHtml(job.categoryLabel || job.category)} · ${escapeHtml(job.location)} · ${escapeHtml(job.budget)}</p>
+          <p>${escapeHtml(job.jobType || "One-time Job")} · ${escapeHtml(job.visibility || "Public Marketplace")} · ${escapeHtml(job.preferredContact || "Contact preference pending")}</p>
+        </div>
+        <div class="lead-actions">
+          <button class="btn blue small" type="button" data-job="${escapeHtml(job.id)}">View Detail</button>
+          <button class="btn ghost small" type="button" data-action="copy-marketplace-job" data-job-id="${escapeHtml(job.id)}">Copy Status</button>
+        </div>
+      </article>
+    `).join("") || `<article class="marketplace-request-card"><h3>No customer requests yet.</h3><p>Post a job to populate this dashboard.</p></article>`;
+  }
+
+  const nextAction = document.querySelector("#customerDashboardNextAction");
+  if (nextAction) {
+    const newest = jobs[0];
+    nextAction.innerHTML = `
+      <article>
+        <span class="split-label">Next action</span>
+        <h3>${escapeHtml(newest ? `Review ${newest.title}` : "Post the first customer job")}</h3>
+        <p>${escapeHtml(newest ? "Check quotes, provider fit, schedule readiness, and message handoff before any real dispatch." : "Create a scoped job request so the marketplace has a real customer workflow to review.")}</p>
+        <div class="hero-actions">
+          <button class="btn orange small" type="button" data-nav="${newest ? "jobs" : "post"}">${escapeHtml(newest ? "Open Marketplace" : "Post Job")}</button>
+          <button class="btn ghost small" type="button" data-nav="messages">Messages</button>
+        </div>
+      </article>
+    `;
+  }
+
+  const workerReadiness = document.querySelector("#workerMarketplaceReadiness");
+  if (workerReadiness) {
+    const worker = state.worker || {};
+    const readiness = [
+      ["Profile type", worker.profileType || worker.providerType || "Individual Worker"],
+      ["Verification", providerVerificationState(worker)],
+      ["Pricing", worker.pricingType || "Estimate After Review"],
+      ["Availability", worker.availability || "Availability pending"],
+      ["Minimum job", worker.minimumJobSize || "Not set"]
+    ];
+    workerReadiness.innerHTML = readiness.map(([label, value]) => `<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join("");
+  }
+
+  const adminControl = document.querySelector("#adminMarketplaceControl");
+  if (adminControl) {
+    const statusCounts = forgeMarketplaceJobStatuses.map((status) => [status, jobs.filter((job) => marketplaceStatus(job) === status).length]).filter(([, count]) => count);
+    adminControl.innerHTML = `
+      <div class="admin-heading compact">
+        <div>
+          <span class="split-label">Protected marketplace admin</span>
+          <h2>Forge Marketplace Command Center</h2>
+          <p class="muted">Local MVP control plane for customers, jobs, providers, company profiles, bids, verification, and manual dispatch review.</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-marketplace-command">Copy Command</button>
+      </div>
+      <div class="marketplace-command-grid">
+        <article><strong>${jobs.length}</strong><span>Total customer requests</span></article>
+        <article><strong>${workers.length}</strong><span>Total provider profiles</span></article>
+        <article><strong>${companies.length}</strong><span>Company profiles</span></article>
+        <article><strong>${pendingProviders.length}</strong><span>Verification queue</span></article>
+      </div>
+      <div class="status-chip-row">${statusCounts.map(([status, count]) => `<span>${escapeHtml(status)}: ${escapeHtml(count)}</span>`).join("") || "<span>No production statuses yet</span>"}</div>
+      <div class="table-card compact">
+        <table>
+          <thead><tr><th>Provider</th><th>Type</th><th>Verification</th><th>Pricing</th><th>Area</th></tr></thead>
+          <tbody>
+            ${workers.slice(0, 8).map((worker) => `
+              <tr>
+                <td>${escapeHtml(worker.businessName || worker.name)}</td>
+                <td>${escapeHtml(worker.profileType || worker.providerType || worker.trade)}</td>
+                <td>${escapeHtml(providerVerificationState(worker))}</td>
+                <td>${escapeHtml(worker.pricingType || worker.profileDetails?.minimumPrice || "Review")}</td>
+                <td>${escapeHtml(worker.area || worker.serviceArea || "Pending")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+}
+
+function renderAdmitlyPresentation() {
+  const mode = document.querySelector("#admitlyPresentationMode");
+  const body = document.querySelector("#admitlyPresentationBody");
+  if (!mode || !body) return;
+  const view = location.pathname.includes("/stanford") || location.hash.includes("admitly-stanford")
+    ? "stanford"
+    : location.pathname.includes("/demo") || location.hash.includes("admitly-demo")
+      ? "demo"
+      : "home";
+  mode.textContent = view === "stanford" ? "Admitly Stanford Discussion" : view === "demo" ? "Admitly Demo Dashboard" : "Admitly Landing";
+  const sharedActions = `
+    <div class="hero-actions">
+      <button class="btn orange small" type="button" data-nav="admitly">Landing</button>
+      <button class="btn blue small" type="button" data-nav="admitly-demo">Demo</button>
+      <button class="btn ghost small" type="button" data-nav="admitly-stanford">Stanford Discussion</button>
+    </div>
+  `;
+  if (view === "stanford") {
+    body.innerHTML = `
+      ${sharedActions}
+      <section class="admitly-panel">
+        <span class="split-label">Presentation-safe page</span>
+        <h2>Admitly for Educator Discussion</h2>
+        <p>Prepared for discussion with educators and researchers. No Stanford endorsement, sponsorship, approval, or partnership is claimed.</p>
+        <div class="admitly-grid">
+          ${[
+            ["Why it matters", "Students need a clearer, calmer operating system for essays, deadlines, college lists, documents, and next steps."],
+            ["What it does", "Admitly organizes applications, tasks, school targets, profile context, academic inputs, and guidance into one student dashboard."],
+            ["AI boundary", "AI suggestions are framed as planning support, not admissions guarantees, counseling replacement, or institution-backed advice."],
+            ["Demo flow", "Onboarding, profile setup, target schools, academics, dashboard, and tasks mirror the approved wireframe flow."],
+            ["Data posture", "The Forge-hosted demo stores no private production student data and remains separate from Forge marketplace accounts."],
+            ["Educator ask", "Review clarity, student usefulness, risk boundaries, and what a responsible pilot would require."]
+          ].map(([title, text]) => `<article><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("")}
+        </div>
+      </section>
+      <section class="admitly-panel">
+        <h2>Discussion Checklist</h2>
+        <div class="status-chip-row">
+          ${["No Stanford logo", "No endorsement claim", "No admissions guarantee", "No student PII in demo", "Separate Admitly brand", "Human review before launch"].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+        </div>
+      </section>
+    `;
+    return;
+  }
+  if (view === "demo") {
+    body.innerHTML = `
+      ${sharedActions}
+      <section class="admitly-panel">
+        <span class="split-label">Wireframe-aligned flow</span>
+        <h2>Demo Dashboard</h2>
+        <div class="admitly-dashboard-demo">
+          <article><strong>78%</strong><span>Overall Progress</span><p>Profile, goals, academics, and tasks are organized for review.</p></article>
+          <article><strong>4</strong><span>My Colleges</span><p>Target schools stay tracked by planning stage and application state.</p></article>
+          <article><strong>6</strong><span>Open Tasks</span><p>Personal info, short answers, transcripts, activities, FAFSA, and parent info.</p></article>
+          <article><strong>3</strong><span>Guidance Prompts</span><p>AI planning suggestions stay clearly labeled as support, not outcome promises.</p></article>
+        </div>
+      </section>
+      <section class="admitly-panel admitly-task-list">
+        ${["Common App - Personal Info", "Stanford - Short Answer", "Request Transcript", "Add Activities", "FAFSA - Parent Info"].map((task, index) => `
+          <article>
+            <span class="split-label">${index < 2 ? "To Do" : "In Progress"}</span>
+            <h3>${escapeHtml(task)}</h3>
+            <p>${escapeHtml(index < 2 ? "Due soon" : "Needs documents or review")}</p>
+          </article>
+        `).join("")}
+      </section>
+    `;
+    return;
+  }
+  body.innerHTML = `
+    ${sharedActions}
+    <section class="admitly-panel">
+      <span class="split-label">Separate product inside Forge demo</span>
+      <h2>Admitly: Your Future. Admitted.</h2>
+      <p>Admitly is the college admissions planning product in the Eden's Best ecosystem. It stays visually and legally separate from Forge while being presentation-ready through these routes.</p>
+      <div class="admitly-grid">
+        ${[
+          ["Discover & Plan", "Build a school list and understand the work ahead."],
+          ["Build Profile", "Capture student context, academics, activities, and goals."],
+          ["Organize", "Track tasks, deadlines, documents, and application materials."],
+          ["Apply", "Move applications forward with clear next steps."],
+          ["Track & Achieve", "Measure progress without promising admissions outcomes."]
+        ].map(([title, text]) => `<article><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("")}
+      </div>
+    </section>
+    <section class="admitly-form-grid">
+      <form id="admitlyStudentInterestForm" class="admitly-panel">
+        <h2>Student Waitlist</h2>
+        <label>Name<input id="admitlyStudentName" required placeholder="Student name" /></label>
+        <label>Email<input id="admitlyStudentEmail" required type="email" placeholder="student@example.com" /></label>
+        <label>Graduation Year<input id="admitlyStudentGradYear" placeholder="2027" /></label>
+        <label>Target Schools<textarea id="admitlyStudentSchools" placeholder="Stanford, University of Michigan, UCLA..."></textarea></label>
+        <button class="btn orange" type="submit">Join Waitlist</button>
+      </form>
+      <form id="admitlyEducatorInterestForm" class="admitly-panel">
+        <h2>Educator / Counselor Interest</h2>
+        <label>Name<input id="admitlyEducatorName" required placeholder="Educator name" /></label>
+        <label>School / Organization<input id="admitlyEducatorOrg" placeholder="School or organization" /></label>
+        <label>Email<input id="admitlyEducatorEmail" required type="email" placeholder="educator@example.com" /></label>
+        <label>Feedback Focus<textarea id="admitlyEducatorNotes" placeholder="Pilot design, student workflow, privacy, counseling use case..."></textarea></label>
+        <button class="btn blue" type="submit">Save Educator Interest</button>
+      </form>
+    </section>
+  `;
+}
+
 function renderProviderDirectory() {
   const directory = document.querySelector("#providerDirectory");
   const filterOptions = document.querySelector("#providerFilterOptions");
@@ -7540,12 +7819,14 @@ function renderProviderDirectory() {
     const details = worker.profileDetails || {};
     const tradeList = (worker.tradeCategories || worker.providerCategories || [worker.trade]).filter(Boolean).slice(0, 5);
     const trust = workerTrustProfile(worker);
+    const verification = providerVerificationState(worker);
     return `
       <article class="provider-directory-card">
         <div>
           <span class="split-label">${escapeHtml(vertical?.title || worker.trade || "Forge worker")}</span>
           <h3>${escapeHtml(worker.businessName || worker.name)}</h3>
           <p>${escapeHtml(worker.providerType || worker.trade)} · ${escapeHtml(worker.area || worker.serviceArea || "Service area pending")}</p>
+          <p class="provider-marketplace-meta">${escapeHtml(worker.profileType || "Provider profile")} · ${escapeHtml(verification)} · ${escapeHtml(worker.pricingType || details.minimumPrice || "Estimate after review")}</p>
           ${workerTrustLedgerHtml(worker, trust)}
           <div class="service-category-mini">
             ${tradeList.map((category) => `<span>${escapeHtml(category)}</span>`).join("")}
@@ -7557,6 +7838,9 @@ function renderProviderDirectory() {
         </div>
         <div class="lead-actions">
           ${contactLinks(worker.phone, worker.email, workerTemplate(worker))}
+          <button class="btn blue small" type="button" data-action="request-provider-quote" data-worker-email="${escapeHtml(worker.email)}">Request Quote</button>
+          <button class="btn ghost small" type="button" data-action="invite-provider-to-job" data-worker-email="${escapeHtml(worker.email)}">Invite</button>
+          <button class="btn ghost small" type="button" data-action="save-provider" data-worker-email="${escapeHtml(worker.email)}">Save</button>
           <button class="btn ghost small" type="button" data-action="copy-worker-direct" data-worker-email="${escapeHtml(worker.email)}">Copy</button>
         </div>
       </article>
@@ -14055,15 +14339,24 @@ function postJobFromForm() {
     serviceDetails,
     servicePhotoSummary: photoSummary,
     location: document.querySelector("#jobLocation").value.trim(),
+    customerAddress: fieldValue("#customerAddress"),
+    jobType: fieldValue("#jobType") || "One-time Job",
     urgency: document.querySelector("#jobUrgency").value,
+    preferredDate: fieldValue("#jobPreferredDate"),
+    preferredTime: fieldValue("#jobPreferredTime"),
     budget: document.querySelector("#jobBudget").value,
+    visibility: fieldValue("#jobVisibility") || "Public Marketplace",
+    invitedProviders: fieldValue("#jobInviteProviders"),
+    referenceFileSummary: fieldValue("#jobReferenceFiles"),
     bids: 0,
     status: vertical ? "Open for bids" : "New",
+    marketplaceStatus: "Published",
     posted: "Today",
     description: document.querySelector("#jobDescription").value.trim() || "New Forge job lead ready for bids.",
     customer: document.querySelector("#customerName").value.trim(),
     phone: document.querySelector("#customerPhone").value.trim(),
     email: document.querySelector("#customerEmail").value.trim(),
+    preferredContact: fieldValue("#customerPreferredContact") || "Phone",
     notes: vertical ? `New ${vertical.title} lead from Forge MVP.` : "New lead from Forge MVP."
   };
   state.jobs.unshift(job);
@@ -14077,6 +14370,8 @@ function postJobFromForm() {
       `${job.title} in ${job.location}`,
       `${job.budget} budget range`,
       `${job.urgency} timeline`,
+      `${job.jobType} · ${job.visibility}`,
+      `${job.preferredContact} preferred contact`,
       vertical ? `${vertical.title} · ${photoSummary}` : photoSummary
     ],
     nextSteps: [
@@ -15485,6 +15780,11 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-worker-opportunity-bridge") copyWorkerOpportunityBridge(action.dataset.workerName);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
+  if (action?.dataset.action === "copy-marketplace-job") copyMarketplaceJob(action.dataset.jobId);
+  if (action?.dataset.action === "copy-marketplace-command") copyMarketplaceCommand();
+  if (action?.dataset.action === "request-provider-quote") requestProviderQuote(action.dataset.workerEmail);
+  if (action?.dataset.action === "invite-provider-to-job") inviteProviderToJob(action.dataset.workerEmail);
+  if (action?.dataset.action === "save-provider") saveProvider(action.dataset.workerEmail);
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
   if (action?.dataset.action === "copy-homebuilding-lead") copyHomebuildingLead(action.dataset.homebuildingId);
   if (action?.dataset.action === "send-homebuilding-seneca") sendHomebuildingToSeneca(action.dataset.homebuildingId);
@@ -15530,6 +15830,11 @@ document.addEventListener("click", (event) => {
   if (chooseBid) {
     chooseBidForJob(state.activeJobId, Number(chooseBid.dataset.chooseBid));
   }
+});
+
+document.addEventListener("submit", (event) => {
+  if (event.target.matches("#admitlyStudentInterestForm")) submitAdmitlyStudentInterest(event);
+  if (event.target.matches("#admitlyEducatorInterestForm")) submitAdmitlyEducatorInterest(event);
 });
 
 function suggestedBidIndex(bids) {
@@ -16531,6 +16836,11 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     selectedVertical?.categories?.[0],
     categoryLabel(fieldValue("#workerTrade"))
   ].filter((category) => forgeTradeCategorySchema.acceptsCategory(category)));
+  const profileType = fieldValue("#workerProfileType") || "Individual Worker";
+  const companyName = fieldValue("#workerCompanyName") || profileDetails.businessName || "";
+  const logoSummary = selectedFileSummary("#workerLogo", "image");
+  const coverSummary = selectedFileSummary("#workerCover", "portfolio image");
+  const verificationState = profileType === "Individual Worker" ? "Identity Pending" : "Business Verification Pending";
   const providerValidation = forgeTradeCategorySchema.validateProvider({
     name: document.querySelector("#workerName").value.trim(),
     phone: document.querySelector("#workerPhone").value.trim(),
@@ -16551,19 +16861,36 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     experience: document.querySelector("#workerExperience").value,
     area: profileDetails.serviceArea || document.querySelector("#workerArea").value,
     serviceArea: profileDetails.serviceArea || document.querySelector("#workerArea").value,
-    businessName: profileDetails.businessName || "",
+    profileType,
+    businessName: companyName,
+    profileSlug: fieldValue("#workerProfileSlug"),
+    logoSummary,
+    coverSummary,
     ownerName: profileDetails.ownerName || document.querySelector("#workerName").value.trim(),
     contactMethod: profileDetails.contactMethod || "",
-    availability: profileDetails.availability || "",
+    availability: profileDetails.availability || fieldValue("#workerOperatingHours"),
+    operatingHours: fieldValue("#workerOperatingHours"),
+    emergencyAvailability: fieldValue("#workerEmergencyAvailability"),
     licenseStatus: profileDetails.licenseStatus || "",
     insuranceStatus: profileDetails.insuranceStatus || "",
+    licenseNotes: fieldValue("#workerCertifications"),
+    insuranceNotes: fieldValue("#workerInsuranceNotes"),
+    certifications: fieldValue("#workerCertifications"),
+    minimumJobSize: fieldValue("#workerMinimumJobSize"),
+    pricingType: fieldValue("#workerPricingType") || "Estimate After Review",
+    portfolioSummary: fieldValue("#workerPortfolioSummary"),
+    teamMembers: fieldValue("#workerTeamMembers"),
+    equipment: fieldValue("#workerEquipment"),
+    warrantyPolicy: fieldValue("#workerWarranty"),
+    paymentMethods: fieldValue("#workerPaymentMethods"),
+    verificationState,
     serviceVertical: selectedVertical?.id || "",
     serviceVerticalTitle: selectedVertical?.title || "",
     providerCategory: selectedVertical?.id || selectedTradeCategories[0] || "",
     category: selectedTradeCategories[0] || selectedVertical?.categories?.[0] || "",
     tradeCategories: selectedTradeCategories,
     providerCategories: selectedTradeCategories,
-    providerType: fieldValue("#workerProviderType") || selectedVertical?.providerTypes?.[0] || "",
+    providerType: fieldValue("#workerProviderType") || profileType || selectedVertical?.providerTypes?.[0] || "",
     profileDetails,
     tags: providerTags,
     businessSize,
@@ -16590,8 +16917,10 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     body: "Forge saved this worker lead so the team can follow up when jobs start moving.",
     details: [
       `${state.worker.name} · ${state.worker.trade}`,
+      `${state.worker.profileType} · ${state.worker.businessName || "personal profile"}`,
       `${state.worker.area} service area`,
       `${state.worker.experience} experience`,
+      `${state.worker.verificationState} · ${state.worker.pricingType}`,
       selectedVertical ? `${selectedVertical.title} · ${state.worker.providerType || "Provider"}` : "General Forge worker",
       `${businessSize} · ${northStarMarketingNeed}`,
       state.worker.followUpConsent ? "Follow-up consent captured" : "Follow-up consent missing",
@@ -18954,6 +19283,134 @@ function copyWorkerDirect(email) {
   const worker = state.workers.find((item) => item.email === email);
   if (!worker) return;
   copyText(workerTemplate(worker), "Worker follow-up copied.");
+}
+
+function marketplaceJobLines(job) {
+  return [
+    `Forge marketplace job: ${job.title}`,
+    `Customer: ${job.customer || "Pending"}`,
+    `Category: ${job.categoryLabel || job.category || "Pending"}`,
+    `Location: ${job.location || "Pending"}`,
+    `Type: ${job.jobType || "One-time Job"}`,
+    `Status: ${marketplaceStatus(job)}`,
+    `Visibility: ${job.visibility || "Public Marketplace"}`,
+    `Budget: ${job.budget || "Pending"}`,
+    `Timeline: ${job.urgency || "Pending"} ${job.preferredDate ? `- ${job.preferredDate}` : ""}`.trim(),
+    `Preferred contact: ${job.preferredContact || "Pending"}`,
+    `Invited providers: ${job.invitedProviders || "None yet"}`,
+    `Reference notes: ${job.referenceFileSummary || "None yet"}`,
+    "",
+    "MVP boundary: no payment, production dispatch, credentialed login, or verified contractor match is active yet."
+  ];
+}
+
+function copyMarketplaceJob(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  copyText(marketplaceJobLines(job).join("\n"), "Marketplace job status copied.");
+}
+
+function copyMarketplaceCommand() {
+  const lines = [
+    "Forge Marketplace Command Center",
+    "",
+    `Customer requests: ${(state.jobs || []).length}`,
+    `Provider profiles: ${(state.workers || []).length}`,
+    `Bids saved: ${(state.bids || []).length}`,
+    `Verification queue: ${(state.workers || []).filter((worker) => normalizeLookup(providerVerificationState(worker)).includes("pending") || normalizeLookup(worker.status).includes("new")).length}`,
+    "",
+    "Next operator tasks:",
+    "1. Review new customer requests for scope, privacy, and contact consent.",
+    "2. Review provider/company profiles for identity, license, insurance, proof, pricing, and availability.",
+    "3. Invite providers only after manual fit review.",
+    "4. Keep payments and dispatch blocked until backend, auth, Stripe, contracts, and support workflows are live."
+  ];
+  copyText(lines.join("\n"), "Marketplace command copied.");
+}
+
+function providerByEmail(email) {
+  return (state.workers || []).find((worker) => worker.email === email);
+}
+
+function requestProviderQuote(email) {
+  const worker = providerByEmail(email);
+  if (!worker) return;
+  const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+  addActivity(`Quote request staged for ${worker.businessName || worker.name}${job ? ` on ${job.title}` : ""}.`);
+  saveState();
+  copyText([
+    `Quote request for ${worker.businessName || worker.name}`,
+    `Provider type: ${worker.profileType || worker.providerType || worker.trade}`,
+    `Verification: ${providerVerificationState(worker)}`,
+    job ? `Job: ${job.title} (${job.location}, ${job.budget})` : "Job: Select a customer request first",
+    "",
+    "MVP note: this is a staged request only. Confirm scope, licensing, insurance, price, and schedule before dispatch."
+  ].join("\n"), "Quote request copied.");
+}
+
+function inviteProviderToJob(email) {
+  const worker = providerByEmail(email);
+  const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+  if (!worker || !job) return;
+  job.invitedProviders = uniqueValues([job.invitedProviders, worker.email].filter(Boolean).flatMap((value) => String(value).split(/,\s*/))).join(", ");
+  job.marketplaceStatus = job.marketplaceStatus || "Receiving Quotes";
+  addActivity(`Provider invite staged: ${worker.businessName || worker.name} -> ${job.title}.`);
+  saveState();
+  render();
+  showToast("Provider invite staged for admin review.");
+}
+
+function saveProvider(email) {
+  const worker = providerByEmail(email);
+  if (!worker) return;
+  state.savedProviders = uniqueValues([...(state.savedProviders || []), email]);
+  addActivity(`Provider saved: ${worker.businessName || worker.name}.`);
+  saveState();
+  showToast("Provider saved to local MVP state.");
+}
+
+function submitAdmitlyStudentInterest(event) {
+  event.preventDefault();
+  const lead = {
+    id: `admitly-student-${Date.now()}`,
+    fullName: fieldValue("#admitlyStudentName"),
+    email: fieldValue("#admitlyStudentEmail"),
+    graduationYear: fieldValue("#admitlyStudentGradYear"),
+    targetSchools: fieldValue("#admitlyStudentSchools"),
+    pathway: "College admissions planning",
+    status: "Student Waitlist",
+    priority: "Warm",
+    notes: "Saved from Admitly presentation route inside Forge.",
+    created: "Today"
+  };
+  state.tradePathwayLeads.unshift(lead);
+  addActivity(`Admitly student interest saved: ${lead.fullName}.`);
+  saveState();
+  sendLead("admitly-student-interest", lead);
+  event.target.reset();
+  showToast("Admitly student interest saved.");
+}
+
+function submitAdmitlyEducatorInterest(event) {
+  event.preventDefault();
+  const lead = {
+    id: `admitly-educator-${Date.now()}`,
+    fullName: fieldValue("#admitlyEducatorName"),
+    organization: fieldValue("#admitlyEducatorOrg"),
+    email: fieldValue("#admitlyEducatorEmail"),
+    feedbackFocus: fieldValue("#admitlyEducatorNotes"),
+    pathway: "Educator / counselor review",
+    status: "Educator Interest",
+    priority: "Warm",
+    notes: "No Stanford endorsement, sponsorship, approval, or partnership is claimed.",
+    created: "Today"
+  };
+  state.tradePathwayLeads.unshift(lead);
+  addActivity(`Admitly educator interest saved: ${lead.fullName}.`);
+  saveState();
+  sendLead("admitly-educator-interest", lead);
+  event.target.reset();
+  showToast("Admitly educator interest saved.");
 }
 
 function copyReferralDirect(id) {

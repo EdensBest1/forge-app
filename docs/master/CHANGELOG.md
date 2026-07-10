@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-09 - Eden's Best marketplace checkpoint
+
+- Added a first Forge marketplace slice: `/marketplace`, `/customer-dashboard`, richer customer job request fields, customer dashboard, provider/company profile fields, provider discovery actions, worker marketplace readiness, and a protected admin marketplace command center.
+- Added Admitly presentation routes inside Forge at `/admitly`, `/admitly/demo`, and `/admitly/stanford` while keeping Admitly brand and claims separate from Forge. Stanford discussion copy explicitly avoids any endorsement, sponsorship, approval, or partnership claim.
+- Added route-loader shells and smoke-test markers for the new marketplace and Admitly presentation surfaces.
+- Scope remains local/static MVP only: no production auth, payments, dispatch, backend storage, or verified-provider claims were activated.
+
 ## 2026-06-26 - Launch reconciliation checkpoint
 
 - Added Forge-to-North Star Creative Co. client acquisition system: expanded `/northstar-creative` page, provider signup growth question and business-size classification, richer North Star marketing intake, automatic classifications, Forge Marketing Score, four service package cards, roofing-company marketing subsection, admin lead table fields, webhook/schema/migration/validation updates, and docs clarifying North Star leads stay separate from normal Forge job requests.
