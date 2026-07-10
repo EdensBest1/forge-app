@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Profile status receipt
+
+- Added a role-aware Profile Status Receipt above the profile panels so John, Mike, and Admin views immediately explain what is visible, ready, pending, and safe to do next; public visitors still route to the locked login/profile prompt.
+- Added a copyable Forge profile status receipt and smoke-test coverage for the new HTML, JS, and CSS hooks.
+- Bumped the local static asset/cache release references to v121.
+
 ## 2026-07-10 - Demo close loop
 
 - Added a reusable Demo Close Loop on Customer Status, Job Detail, and Messages so the live demo can move through status, bid detail, message handoff, and profile proof without extra explanation.

@@ -12,6 +12,7 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI as local MVP account and quote lifecycle prototype: role-based account shells, customer profile save flow, quote line items/exclusions/milestones/versioning, quote revise/withdraw actions, and job statuses for Awaiting Approval, Completed, and Disputed.
 - Implemented / Live in UI for launch safety: Launch Status now includes a Public Launch Blocker Receipt with copyable gates for backend lead delivery, admin auth, backup, legal review, and final security review.
 - Implemented / Live in UI for demo closeout: Customer Status, Job Detail, and Messages now include a Demo Close Loop that keeps status, bid detail, message handoff, and profile proof visible and copyable.
+- Implemented / Live in UI for profile clarity: Profile Status now includes a role-aware Profile Status Receipt for customer, worker, and admin views, while public visitors remain routed to the locked login/profile prompt.
 - Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes

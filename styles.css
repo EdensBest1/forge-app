@@ -3978,6 +3978,107 @@ body:not(.role-admin) [data-admin-control] {
   line-height: 1.45;
 }
 
+.profile-status-receipt {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #bfd0e7;
+  border-left: 5px solid var(--orange);
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.profile-status-receipt-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile-status-receipt-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--blue);
+  font-size: 1.04rem;
+  line-height: 1.28;
+}
+
+.profile-status-receipt-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.profile-status-receipt-grid,
+.profile-status-receipt-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profile-status-receipt-grid article {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 128px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: white;
+}
+
+.profile-status-receipt-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fff7ef;
+}
+
+.profile-status-receipt-grid article.guarded {
+  border-left-color: #a33b00;
+  background: #fff3e8;
+}
+
+.profile-status-receipt-grid span {
+  width: fit-content;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.profile-status-receipt-grid article.attention span,
+.profile-status-receipt-grid article.guarded span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.profile-status-receipt-grid strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.profile-status-receipt-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.profile-status-receipt .btn {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.profile-status-receipt-actions .btn {
+  width: 100%;
+}
+
 .profile-perspective-switch {
   display: grid;
   gap: 12px;
@@ -12480,6 +12581,9 @@ td {
   .status-handoff-grid,
   .status-handoff-actions,
   .message-proof-actions,
+  .profile-status-receipt-heading,
+  .profile-status-receipt-grid,
+  .profile-status-receipt-actions,
   .profile-perspective-heading,
   .profile-perspective-grid,
   .profile-perspective-actions,
