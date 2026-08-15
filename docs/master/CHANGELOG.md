@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10 - Public launch go/no-go receipt
+
+- Added a Launch Status Public Launch Go / No-Go Receipt that clearly separates controlled first-user demos from broad public launch.
+- The receipt summarizes lead delivery proof, production admin auth, backup/Public View status, and legal/security review, with a copyable operator decision script.
+- Bumped the local static asset/cache release references to v127.
+
 ## 2026-07-10 - Admin auth drill
 
 - Added an Admin Auth Drill so Andrew can verify the production admin gate, sensitive operator routes, stranger/private-browser access, and recovery/audit expectations before broad public launch.

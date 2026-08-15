@@ -11514,6 +11514,122 @@ textarea:focus {
   margin-top: auto;
 }
 
+.public-launch-go-no-go {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #bfd0e7;
+  border-left: 6px solid var(--orange);
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.public-launch-go-no-go-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.public-launch-go-no-go-heading h2,
+.public-launch-go-no-go-heading p {
+  margin: 0;
+}
+
+.public-launch-go-no-go-heading h2 {
+  margin-bottom: 5px;
+  color: var(--blue);
+}
+
+.public-launch-go-no-go-meter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.public-launch-go-no-go-meter article {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.public-launch-go-no-go-meter article.hold {
+  background: #fff7ef;
+}
+
+.public-launch-go-no-go-meter span,
+.public-launch-go-no-go-grid span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.public-launch-go-no-go-meter article.hold span,
+.public-launch-go-no-go-grid article.attention span,
+.public-launch-go-no-go-grid article.hold span {
+  background: #fff0df;
+  color: var(--orange);
+}
+
+.public-launch-go-no-go-meter strong,
+.public-launch-go-no-go-grid strong {
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.public-launch-go-no-go-meter p,
+.public-launch-go-no-go-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.36;
+}
+
+.public-launch-go-no-go-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.public-launch-go-no-go-grid article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 188px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.public-launch-go-no-go-grid article.attention {
+  border-left-color: var(--orange);
+  background: #fffaf4;
+}
+
+.public-launch-go-no-go-grid article.hold {
+  border-left-color: #a33b00;
+  background: #fff7ef;
+}
+
+.public-launch-go-no-go-grid .btn,
+.public-launch-go-no-go-heading .btn {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
 .launch-final-checklist {
   display: grid;
   gap: 14px;
@@ -12937,6 +13053,9 @@ td {
   .public-launch-blocker-grid,
   .launch-security-heading,
   .launch-security-grid,
+  .public-launch-go-no-go-heading,
+  .public-launch-go-no-go-meter,
+  .public-launch-go-no-go-grid,
   .final-gate,
   .deploy-grid,
   .delivery-grid,
@@ -13307,6 +13426,7 @@ td {
   .first-200-queue,
   .launch-next-10-sprint,
   .launch-security-sweep,
+  .public-launch-go-no-go,
   .follow-up-audit,
   .public-launch-blockers {
     padding: 16px;

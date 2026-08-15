@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v126`.
+Forge is at `v127`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=126#home`
-- Best demo start: `http://127.0.0.1:4174/?v=126#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=126&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=126&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=126#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=126`
-- Admin demo: `http://127.0.0.1:4174/?v=126&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=127#home`
+- Best demo start: `http://127.0.0.1:4174/?v=127#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=127&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=127&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=127#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=127`
+- Admin demo: `http://127.0.0.1:4174/?v=127&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v126`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v127`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v126:
+These passed after v127:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v126 also covers:
+Automated verification after v127 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -168,6 +168,7 @@ Automated verification after v126 also covers:
 - v124 adds a Launch Status Public Share Safety Sweep with controlled-demo, Public View, backend, admin auth, backup, legal, and security gates plus a copyable operator script.
 - v125 adds an Admin Lead Delivery Drill for proving one public lead leaves the browser, confirming the external destination, preserving local backup, and keeping broad sharing blocked until the drill passes.
 - v126 adds an Admin Auth Drill for production admin gate selection, protected operator routes, stranger/private-browser testing, recovery, audit, export, backup, and webhook safeguards.
+- v127 adds a Launch Status Public Launch Go / No-Go Receipt that keeps controlled demos moving while broad public launch remains blocked until delivery, auth, backup/Public View, and legal/security proof gates pass.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -231,4 +232,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v126 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v127 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

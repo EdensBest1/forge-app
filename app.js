@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "126";
+const PUBLIC_LINK_VERSION = "127";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
@@ -4938,6 +4938,7 @@ function render() {
   renderLaunchDecision();
   renderPublicLaunchBlockers();
   renderLaunchSecuritySweep();
+  renderPublicLaunchGoNoGo();
   renderLaunchFinalChecklist();
   renderLaunchSendBoard();
   renderLaunchHandoffReceipt();
@@ -13607,6 +13608,140 @@ function launchSecuritySweepRows() {
   ];
 }
 
+function renderPublicLaunchGoNoGo() {
+  const target = document.querySelector("#publicLaunchGoNoGo");
+  if (!target) return;
+  const rows = publicLaunchGoNoGoRows();
+  const summary = publicLaunchGoNoGoSummary(rows);
+  target.innerHTML = `
+    <div class="public-launch-go-no-go-heading">
+      <div>
+        <span class="split-label">Public launch go / no-go receipt</span>
+        <h2>${escapeHtml(summary.title)}</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-public-launch-go-no-go">Copy Receipt</button>
+    </div>
+    <div class="public-launch-go-no-go-meter">
+      <article class="go">
+        <span>GO</span>
+        <strong>${escapeHtml(summary.goTitle)}</strong>
+        <p>${escapeHtml(summary.goBody)}</p>
+      </article>
+      <article class="hold">
+        <span>HOLD</span>
+        <strong>${escapeHtml(summary.holdTitle)}</strong>
+        <p>${escapeHtml(summary.holdBody)}</p>
+      </article>
+    </div>
+    <div class="public-launch-go-no-go-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function publicLaunchGoNoGoSummary(rows = publicLaunchGoNoGoRows()) {
+  const blockers = publicReadinessBlockers();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  return {
+    title: blockers.length ? "Controlled demos are GO. Broad public launch is HOLD." : "Controlled demos are ready. Public launch still needs human sign-off.",
+    body: `${readyCount}/${rows.length} launch proof gates read ready in the local MVP. Use this as an operator receipt, not legal or security approval.`,
+    goTitle: "Known first users",
+    goBody: "Show Forge to people Andrew can personally follow up with, capture one consented next action, keep payments off, and export backup after the outreach block.",
+    holdTitle: blockers.length ? `${blockers.length} public gates remain` : "Human review still required",
+    holdBody: blockers.length ? blockers[0] : "Run the final security and legal review before broad marketing, paid traffic, or stranger signups."
+  };
+}
+
+function publicLaunchGoNoGoRows() {
+  const leadCount = totalLeadCount();
+  const blockers = publicReadinessBlockers();
+  const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
+  const deliveryStatus = state.settings.webhookLastStatus || "";
+  const deliveryPassed = webhookReady && deliveryStatus === "Sent";
+  const deliveryAttempted = webhookReady && ["Sent", "Attempted"].includes(deliveryStatus);
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      label: "GO today",
+      title: "Controlled first-user demos",
+      body: `Use with known people and personal follow-up only. Current first-user list: ${leadCount}/200.`,
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      label: blockers.length ? "HOLD" : "Review",
+      title: "Broad public sharing",
+      body: blockers.length
+        ? `Do not share broadly yet. ${blockers.length} gate${blockers.length === 1 ? "" : "s"} remain; first blocker: ${blockers[0]}`
+        : "Local checks appear clear, but public marketing still waits on final human security and legal sign-off.",
+      status: blockers.length ? "hold" : "attention",
+      primary: false,
+      actionLabel: blockers.length ? "Copy Blockers" : "Security Pack",
+      action: blockers.length ? { type: "action", name: "copy-public-launch-blockers" } : { type: "action", name: "copy-security-review" }
+    },
+    {
+      label: "Proof",
+      title: deliveryPassed ? "Lead delivery sent" : deliveryAttempted ? "Lead delivery attempted" : webhookReady ? "Send delivery test" : "Backend delivery missing",
+      body: deliveryPassed
+        ? `${state.settings.webhookLastType || "Lead"} was sent at ${state.settings.webhookLastAt}. Confirm it exists in the destination before public traffic.`
+        : deliveryAttempted
+          ? `${deliveryStatus} at ${state.settings.webhookLastAt || "unknown time"}. Confirm the outside destination before broad sharing.`
+          : webhookReady
+            ? "Webhook is configured; run one test lead and verify it outside the browser."
+            : "Connect Zapier, Supabase, or another backend so public leads do not live only in local storage.",
+      status: deliveryPassed ? "ready" : deliveryAttempted ? "attention" : "hold",
+      primary: !deliveryAttempted,
+      actionLabel: "Delivery Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
+    },
+    {
+      label: "Proof",
+      title: "Production admin auth",
+      body: "Admin, capture, reports, exports, imports, backup, and webhook setup need a real host/backend auth gate before broad traffic.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
+    },
+    {
+      label: "Handoff",
+      title: backupCurrent && publicMode ? "Backup and Public View ready" : "Backup or Public View needs check",
+      body: backupCurrent && publicMode
+        ? `Backup covers ${backupCount} leads and Public View is on for handoff demos.`
+        : `${backupCurrent ? `Backup covers ${backupCount} leads.` : `Export backup for ${leadCount} saved leads.`} ${publicMode ? "Public View is on." : "Turn Public View on before handing the device over."}`,
+      status: backupCurrent && publicMode ? "ready" : "attention",
+      primary: !backupCurrent || !publicMode,
+      actionLabel: !backupCurrent ? "Export Backup" : publicMode ? "Copy Closeout" : "Public View",
+      action: !backupCurrent
+        ? { type: "action", name: "export-backup" }
+        : publicMode
+          ? { type: "action", name: "copy-first-user-closeout" }
+          : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Review",
+      title: "Legal and security review",
+      body: "Keep payments, deposits, title paperwork, bank/card data, sensitive documents, verified-provider claims, and final contracts outside Forge until review passes.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    }
+  ];
+}
+
 function finalSecurityGateRows() {
   const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
   const backupCurrent = state.settings.lastBackupAt && Number(state.settings.lastBackupLeadCount || 0) >= totalLeadCount();
@@ -16586,6 +16721,7 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
   if (action?.dataset.action === "copy-public-launch-blockers") copyPublicLaunchBlockers();
   if (action?.dataset.action === "copy-launch-security-sweep") copyLaunchSecuritySweep();
+  if (action?.dataset.action === "copy-public-launch-go-no-go") copyPublicLaunchGoNoGo();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
   if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
@@ -22135,6 +22271,28 @@ function copyLaunchSecuritySweep() {
     "Verification command before public launch: npm run check"
   ];
   copyText(lines.join("\n"), "Public share safety sweep copied.");
+}
+
+function copyPublicLaunchGoNoGo() {
+  const rows = publicLaunchGoNoGoRows();
+  const summary = publicLaunchGoNoGoSummary(rows);
+  const lines = [
+    "Forge public launch go / no-go receipt",
+    "",
+    summary.title,
+    summary.body,
+    "",
+    `GO: ${summary.goTitle}. ${summary.goBody}`,
+    `HOLD: ${summary.holdTitle}. ${summary.holdBody}`,
+    "",
+    "Gate receipt:",
+    ...rows.map((row) => `${row.status === "ready" ? "[Ready]" : row.status === "attention" ? "[Check]" : "[Hold]"} ${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Decision today: controlled demos and first-user signups can continue with known people Andrew can personally follow up with.",
+    "No-go today: broad public sharing, paid marketing, payments, sensitive documents, final contracts, title paperwork, bank/card data, and stranger traffic wait until all proof gates pass.",
+    `Open launch status: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Go / no-go receipt copied.");
 }
 
 function copySecurityReviewPack() {
