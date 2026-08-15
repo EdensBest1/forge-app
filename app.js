@@ -22653,7 +22653,8 @@ function completeOutreachSprint() {
 function exportBackup() {
   state.settings.lastBackupAt = new Date().toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   state.settings.lastBackupLeadCount = totalLeadCount();
-  exportJson("forge-mvp-backup.json", state);
+  const envelope = ForgeBackupRecovery.createEnvelope(state, { appVersion: PUBLIC_LINK_VERSION });
+  exportJson(`forge-mvp-backup-v${PUBLIC_LINK_VERSION}.json`, envelope);
   addActivity("Full backup JSON exported.");
   saveState();
   renderSafetyCenter();
@@ -22680,14 +22681,28 @@ async function importBackup(event) {
   if (!file) return;
   try {
     const text = await file.text();
-    state = normalizeState(JSON.parse(text));
-    addActivity("Backup JSON imported.");
+    const recovered = ForgeBackupRecovery.parse(text);
+    const currentCounts = ForgeBackupRecovery.summarize(state);
+    const sourceLabel = recovered.legacy ? "legacy backup" : `v${recovered.appVersion || "unknown"} backup from ${recovered.exportedAt}`;
+    const approved = confirm(
+      `Replace this device's Forge data with the ${sourceLabel}?\n\n`
+      + `Backup: ${recovered.counts.jobs} jobs, ${recovered.counts.workers} workers, ${recovered.counts.bids} bids, ${recovered.counts.messages} messages.\n`
+      + `Current device: ${currentCounts.jobs} jobs, ${currentCounts.workers} workers, ${currentCounts.bids} bids, ${currentCounts.messages} messages.\n\n`
+      + "This changes only this browser. Export the current data first if it must be preserved."
+    );
+    if (!approved) {
+      showToast("Backup import canceled. Current device data was not changed.");
+      return;
+    }
+    state = normalizeState(recovered.state);
+    addActivity(`Verified ${recovered.legacy ? "legacy " : ""}backup JSON imported from local file.`);
     saveState();
     render();
     navigate("admin");
-    showToast("Backup imported.");
-  } catch {
-    showToast("Could not import that backup.");
+    showToast("Verified backup imported on this device.");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown backup error.";
+    showToast(`Backup not imported: ${message}`);
   } finally {
     event.target.value = "";
   }

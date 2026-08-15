@@ -39,6 +39,7 @@ const CORE_ASSETS = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./backup-recovery.js",
   "./route-loader.js",
   "./homebuilding/index.html",
   "./homebuilding/tracker/index.html",

@@ -16,6 +16,7 @@ const resolvedChecks = await Promise.all(checks.map(async ([label, promise]) => 
 const staticChecks = [
   ["manifest version", manifest.version === "v128"],
   ["html asset version", html.includes("styles.css?v=128") && html.includes("app.js?v=128")],
+  ["backup recovery runtime", html.includes("backup-recovery.js?v=128") && serviceWorker.includes("./backup-recovery.js")],
   ["service worker version", serviceWorker.includes("forge-mvp-v128")],
   ["admin entrypoint is localhost-only", manifest.entrypoints.admin === "http://127.0.0.1:4174/?v=128&demo=admin#admin"],
   ["request help alias", manifest.entrypoints.requestHelp === "/request-help?v=128"],

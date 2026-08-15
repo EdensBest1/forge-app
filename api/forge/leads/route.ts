@@ -1,6 +1,4 @@
-declare const process: {
-  env: Record<string, string | undefined>;
-};
+import { createConfiguredLeadStore, type LeadStore } from "./storage.ts";
 
 type LeadKind = "job" | "worker";
 type LeadEnvelope = {
@@ -18,6 +16,7 @@ const MAX_BODY_BYTES = 32 * 1024;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 10;
 const requestWindows = new Map<string, number[]>();
+const completedRequests = new Map<string, { receivedAt: string; storedIn: string[] }>();
 const forbiddenFieldPattern = /(ssn|social.security|bank|routing|account.number|credit.card|card.number|cvv|password|identity.document|passport|driver.?license|tax.id)/i;
 
 function json(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
@@ -37,15 +36,25 @@ function clientKey(request: Request) {
     || "unknown";
 }
 
-function rateLimit(request: Request) {
+export function createMemoryRateLimiter(options: { limit?: number; windowMs?: number; now?: () => number } = {}) {
+  const windows = options.limit === undefined && options.windowMs === undefined && options.now === undefined
+    ? requestWindows
+    : new Map<string, number[]>();
+  const limit = options.limit || RATE_LIMIT;
+  const windowMs = options.windowMs || RATE_WINDOW_MS;
+  const now = options.now || Date.now;
+  return (request: Request) => {
   const key = clientKey(request);
-  const now = Date.now();
-  const recent = (requestWindows.get(key) || []).filter((timestamp) => now - timestamp < RATE_WINDOW_MS);
-  if (recent.length >= RATE_LIMIT) return false;
-  recent.push(now);
-  requestWindows.set(key, recent);
-  return true;
+    const current = now();
+    const recent = (windows.get(key) || []).filter((timestamp) => current - timestamp < windowMs);
+    if (recent.length >= limit) return false;
+    recent.push(current);
+    windows.set(key, recent);
+    return true;
+  };
 }
+
+const rateLimit = createMemoryRateLimiter();
 
 function text(value: unknown, max = 500) {
   return String(value || "").trim().slice(0, max);
@@ -148,55 +157,43 @@ function databaseRecord(input: Required<Pick<LeadEnvelope, "type" | "payload" | 
   };
 }
 
-async function writeSupabase(record: ReturnType<typeof databaseRecord>) {
-  const baseUrl = process.env.FORGE_SUPABASE_URL;
-  const serviceKey = process.env.FORGE_SUPABASE_SERVICE_ROLE_KEY;
-  if (!baseUrl || !serviceKey) return null;
-  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/rest/v1/${record.table}`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal,resolution=ignore-duplicates"
-    },
-    body: JSON.stringify(record.value)
-  });
-  if (!response.ok) throw new Error(`Supabase durable write failed (${response.status}).`);
-  return "supabase";
-}
+type HandlerOptions = {
+  store?: LeadStore | null;
+  resolveStore?: () => LeadStore | null;
+  rateLimiter?: (request: Request) => boolean;
+  now?: () => Date;
+  receipts?: Map<string, { receivedAt: string; storedIn: string[] }>;
+};
 
-async function writeWebhook(payload: Record<string, unknown>) {
-  const urls = [process.env.FORGE_LEAD_WEBHOOK_URL, process.env.FORGE_ZAPIER_WEBHOOK_URL]
-    .filter(Boolean) as string[];
-  if (!urls.length) return null;
-  const responses = await Promise.all(urls.map((url) => fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })));
-  const failed = responses.find((response) => !response.ok);
-  if (failed) throw new Error(`Configured durable webhook failed (${failed.status}).`);
-  return "webhook";
-}
+export function createLeadHandler(options: HandlerOptions = {}) {
+  const limiter = options.rateLimiter || rateLimit;
+  const now = options.now || (() => new Date());
+  const receipts = options.receipts || completedRequests;
+  const resolveStore = options.resolveStore || (() => options.store === undefined ? createConfiguredLeadStore() : options.store);
 
-export async function POST(request: Request) {
+  return async function handleLead(request: Request) {
   if (!validateRequestOrigin(request)) return json({ error: "INVALID_REQUEST_ORIGIN" }, 403);
   if (request.headers.get("content-type")?.split(";")[0] !== "application/json") return json({ error: "JSON_REQUIRED" }, 415);
   if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES) return json({ error: "PAYLOAD_TOO_LARGE" }, 413);
-  if (!rateLimit(request)) return json({ error: "RATE_LIMITED" }, 429, { "Retry-After": "900" });
+  if (!limiter(request)) return json({ error: "RATE_LIMITED" }, 429, { "Retry-After": String(Math.ceil(RATE_WINDOW_MS / 1000)) });
 
   let input: LeadEnvelope;
   try {
-    input = await request.json() as LeadEnvelope;
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) return json({ error: "PAYLOAD_TOO_LARGE" }, 413);
+    input = JSON.parse(rawBody) as LeadEnvelope;
   } catch {
     return json({ error: "INVALID_JSON" }, 400);
   }
   const validationError = validateEnvelope(input);
   if (validationError) return json({ error: "INVALID_LEAD", message: validationError }, 400);
 
-  const receivedAt = new Date().toISOString();
+  const receivedAt = now().toISOString();
   const requestId = text(input.requestId, 160) || crypto.randomUUID();
+  const previous = receipts.get(requestId);
+  if (previous) {
+    return json({ ok: true, duplicate: true, requestId, receivedAt: previous.receivedAt, storedIn: previous.storedIn }, 200);
+  }
   const normalized = { ...input, type: input.type as LeadKind, payload: input.payload as Record<string, unknown>, requestId };
   const record = databaseRecord(normalized, receivedAt);
   const durablePayload = {
@@ -208,12 +205,8 @@ export async function POST(request: Request) {
     lead: record.value
   };
 
-  const configured = Boolean(
-    (process.env.FORGE_SUPABASE_URL && process.env.FORGE_SUPABASE_SERVICE_ROLE_KEY)
-    || process.env.FORGE_LEAD_WEBHOOK_URL
-    || process.env.FORGE_ZAPIER_WEBHOOK_URL
-  );
-  if (!configured) {
+  const store = resolveStore();
+  if (!store) {
     return json({
       error: "DURABLE_LEAD_STORE_NOT_CONFIGURED",
       message: "The local browser copy was preserved, but Forge has no approved durable lead destination."
@@ -221,10 +214,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const stores = (await Promise.all([writeSupabase(record), writeWebhook(durablePayload)])).filter(Boolean);
+    const stores = await store.save({ requestId, record, webhookPayload: durablePayload });
+    receipts.set(requestId, { receivedAt, storedIn: stores });
+    if (receipts.size > 1000) receipts.delete(receipts.keys().next().value as string);
     return json({ ok: true, requestId, receivedAt, storedIn: stores }, 201);
   } catch (error) {
     console.error("Forge durable lead write failed", { requestId, type: normalized.type, error: error instanceof Error ? error.message : "unknown" });
     return json({ error: "DURABLE_LEAD_WRITE_FAILED", requestId }, 502);
   }
+  };
 }
+
+export const POST = createLeadHandler();
