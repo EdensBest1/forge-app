@@ -1,4 +1,12 @@
-import { createConfiguredLeadStore, type LeadStore } from "./storage.ts";
+import { createConfiguredLeadStore } from "./storage.mjs";
+
+type LeadStore = {
+  save(write: {
+    requestId: string;
+    record: { table: string; value: Record<string, unknown> };
+    webhookPayload: Record<string, unknown>;
+  }): Promise<string[]>;
+};
 
 type LeadKind = "job" | "worker";
 type LeadEnvelope = {
