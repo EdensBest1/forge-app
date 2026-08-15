@@ -394,6 +394,11 @@ body:not(.role-admin) [data-admin-control] {
   display: none !important;
 }
 
+.operator-demo-locked [data-login-role="admin"],
+.operator-demo-locked [data-admin-control] {
+  display: none !important;
+}
+
 .user-banner {
   position: sticky;
   top: 0;

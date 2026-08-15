@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=127" />
+    <link rel="stylesheet" href="./styles.css?v=128" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -1278,6 +1278,7 @@
               <label>Preferred Contact<select id="customerPreferredContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
               <label>Providers to invite first<textarea id="jobInviteProviders" placeholder="Optional: names, trades, or emails of providers to invite first"></textarea></label>
               <p class="trust-note"><strong>Early access note:</strong> Forge will use this contact info to follow up about this job by text, phone, or email. No payment is collected in this MVP.</p>
+              <label class="check-row"><input id="jobFollowUpConsent" required type="checkbox" /> I agree Forge may contact me by text, phone, or email about this job.</label>
               <label class="check-row"><input id="terms" required type="checkbox" /> I agree to Forge's early access terms and privacy policy.</label>
               <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
             </fieldset>
@@ -4865,6 +4866,6 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=127"></script>
+    <script src="./app.js?v=128"></script>
   </body>
 </html>

@@ -1,6 +1,11 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "127";
+const PUBLIC_LINK_VERSION = "128";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
+const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+
+function operatorDemoAllowed() {
+  return location.protocol === "file:" || LOCAL_OPERATOR_HOSTS.has(location.hostname);
+}
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
 const CREATIVE_CATEGORY_LABEL = "Photography & Videography";
@@ -4805,7 +4810,12 @@ function navigate(screen, options = {}) {
     showToast("Log in to open Forge Messages.");
     screen = "login";
   }
-  if (operatorScreens.includes(screen) && state.session.role !== "admin") {
+  if (operatorScreens.includes(screen) && !operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    recordGuardedRoute(requestedScreen);
+    showToast("Operator tools are unavailable on this public host.");
+    screen = "home";
+  } else if (operatorScreens.includes(screen) && state.session.role !== "admin") {
     recordGuardedRoute(requestedScreen);
     showToast("Log in as Forge Admin to open operator tools.");
     screen = "login";
@@ -4958,7 +4968,7 @@ function render() {
 }
 
 function canRenderPrivateOperatorData() {
-  return state.session.role === "admin" && !state.settings.publicMode;
+  return operatorDemoAllowed() && state.session.role === "admin" && !state.settings.publicMode;
 }
 
 function renderPrivateOperatorSurfaces() {
@@ -5107,6 +5117,7 @@ function renderSession() {
   document.body.classList.remove("role-guest", "role-worker", "role-customer", "role-admin");
   document.body.classList.add(`role-${role}`);
   document.body.classList.toggle("is-authenticated", role !== "guest");
+  document.body.classList.toggle("operator-demo-locked", !operatorDemoAllowed());
 
   const loginButton = document.querySelector("#loginButton");
   if (loginButton) loginButton.textContent = role === "guest" ? "Log In" : "Switch User";
@@ -15425,6 +15436,7 @@ function postJobFromForm() {
   }
   const serviceDetails = vertical ? collectServiceDetails("data-service-job-field") : {};
   const photoSummary = selectedFileSummary("#jobPhotos", "photo");
+  const createdAt = new Date().toISOString();
   const job = {
     id: `${Date.now()}`,
     title,
@@ -15453,6 +15465,10 @@ function postJobFromForm() {
     phone: document.querySelector("#customerPhone").value.trim(),
     email: document.querySelector("#customerEmail").value.trim(),
     preferredContact: fieldValue("#customerPreferredContact") || "Phone",
+    followUpConsent: fieldChecked("#jobFollowUpConsent"),
+    termsAccepted: fieldChecked("#terms"),
+    consentCapturedAt: createdAt,
+    createdAt,
     notes: vertical ? `New ${vertical.title} lead from Forge MVP.` : "New lead from Forge MVP."
   };
   state.jobs.unshift(job);
@@ -16436,6 +16452,13 @@ function currentStepValid() {
 }
 
 function loginAs(role, name, screen) {
+  if (role === "admin" && !operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    recordGuardedRoute(screen || "admin");
+    navigate("home");
+    showToast("Forge Admin is disabled on public deployments until server authentication is configured.");
+    return false;
+  }
   const account = demoAccounts.find((item) => item.role === role) || demoAccounts[0];
   state.session = {
     role: account.role,
@@ -16449,6 +16472,7 @@ function loginAs(role, name, screen) {
   saveState();
   navigate(screen || account.screen);
   showToast(`Logged in as ${state.session.name}.`);
+  return true;
 }
 
 function logout() {
@@ -18064,6 +18088,8 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     termsAccepted: fieldChecked("#workerTerms"),
     privacyAcknowledged: fieldChecked("#workerTerms"),
     earlyAccessAcknowledged: fieldChecked("#workerTerms"),
+    consentCapturedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     status: "New"
   };
   const existingWorker = state.workers.findIndex((worker) => worker.email.toLowerCase() === state.worker.email.toLowerCase());
@@ -18269,7 +18295,10 @@ document.querySelector("#quickLeadForm").addEventListener("submit", (event) => {
 
 const initial = initialScreen();
 const demoRole = new URLSearchParams(location.search).get("demo");
-const demoAccount = demoAccounts.find((account) => account.role === demoRole);
+stripPublicAdminShortcut();
+const requestedDemoAccount = demoAccounts.find((account) => account.role === demoRole);
+const demoAccount = requestedDemoAccount?.role === "admin" && !operatorDemoAllowed() ? null : requestedDemoAccount;
+enforcePublicOperatorBoundary();
 expireAdminSession(demoAccount);
 render();
 if (demoAccount) {
@@ -18290,11 +18319,31 @@ function initialScreen() {
 }
 
 function expireAdminSession(demoAccount) {
+  if (!operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    return;
+  }
   if (demoAccount?.role === "admin" || state.session.role !== "admin") return;
   state.session = structuredClone(seedState.session);
   state.settings.publicMode = true;
   addActivity("Admin session expired on fresh public load.");
   saveState();
+}
+
+function enforcePublicOperatorBoundary() {
+  if (operatorDemoAllowed()) return;
+  const unsafeSession = state.session?.role === "admin";
+  const unsafeView = state.settings?.publicMode !== true;
+  if (unsafeSession) state.session = structuredClone(seedState.session);
+  state.settings.publicMode = true;
+  if (unsafeSession || unsafeView) saveState();
+}
+
+function stripPublicAdminShortcut() {
+  if (operatorDemoAllowed() || demoRole !== "admin") return;
+  const url = new URL(location.href);
+  url.searchParams.delete("demo");
+  history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
 function exportCsv(filename, rows) {
@@ -18467,6 +18516,10 @@ function sendTestWebhook() {
 }
 
 async function sendLead(type, payload) {
+  if (["job", "worker"].includes(type)) {
+    await sendDurableLead(type, payload);
+    return;
+  }
   if (!state.settings.webhookEnabled || !state.settings.webhookUrl) {
     updateWebhookDelivery("Local only", type);
     return;
@@ -18495,6 +18548,43 @@ async function sendLead(type, payload) {
       saveState();
       showToast("Lead saved locally. Webhook did not respond.");
     }
+  }
+}
+
+async function sendDurableLead(type, payload) {
+  const requestId = `${type}-${payload.id || payload.email || Date.now()}-${crypto.randomUUID?.() || Date.now()}`;
+  try {
+    const response = await fetch("/api/forge/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Forge-Intent": "lead-capture-v1"
+      },
+      body: JSON.stringify({
+        type,
+        payload,
+        requestId,
+        consent: {
+          followUp: payload.followUpConsent === true,
+          terms: payload.termsAccepted === true,
+          capturedAt: payload.consentCapturedAt || payload.createdAt
+        }
+      })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || `HTTP_${response.status}`);
+    payload.serverReceiptId = result.requestId;
+    payload.serverReceivedAt = result.receivedAt;
+    updateWebhookDelivery("Durable", type);
+    addActivity(`${humanize(type)} lead saved to the approved server destination.`);
+    saveState();
+    showToast("Lead saved locally and to the server destination.");
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "DURABLE_LEAD_WRITE_FAILED";
+    updateWebhookDelivery("Local only", type);
+    addActivity(`${humanize(type)} lead kept locally; server delivery unavailable (${reason}).`);
+    saveState();
+    showToast("Lead saved in this browser. Server delivery is not configured yet.");
   }
 }
 
@@ -18626,7 +18716,7 @@ async function copySignupChecklist() {
     `Local Products / Makers: ${base}/local-products${versionQuery()}`,
     `Training & Careers: ${base}${versionQuery()}#opportunities`,
     `Check status: ${base}${versionQuery()}#status`,
-    `Open admin: ${base}${versionQuery("demo=admin")}#admin`
+    `Open admin locally: http://127.0.0.1:4174/${versionQuery("demo=admin")}#admin`
   ].join("\n");
   await copyText(checklist, "Signup checklist copied.");
 }
@@ -18898,6 +18988,7 @@ function perspectiveLink(role) {
 
 function roleDemoLink(role, screen) {
   const normalizedScreen = normalizeScreen(screen);
+  if (role === "admin") return `http://127.0.0.1:4174/${versionQuery("demo=admin")}#${normalizedScreen}`;
   const base = appBaseUrl();
   const demoQuery = versionQuery(`demo=${encodeURIComponent(role)}`);
   if (routeByScreen[normalizedScreen] && location.protocol !== "file:") {
@@ -22620,6 +22711,13 @@ function resetDemoData() {
 }
 
 function togglePublicMode() {
+  if (!operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    render();
+    navigate("home");
+    showToast("Operator View is disabled on public deployments until server authentication is configured.");
+    return;
+  }
   state.settings.publicMode = !state.settings.publicMode;
   addActivity(state.settings.publicMode ? "Public View enabled." : "Operator View enabled.");
   saveState();

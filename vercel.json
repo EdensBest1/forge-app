@@ -54,6 +54,22 @@
   ],
   "rewrites": [
     {
+      "source": "/admin",
+      "destination": "/api/forge/operator-locked"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/api/forge/operator-locked"
+    },
+    {
+      "source": "/capture",
+      "destination": "/api/forge/operator-locked"
+    },
+    {
+      "source": "/reports",
+      "destination": "/api/forge/operator-locked"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
