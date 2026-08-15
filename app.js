@@ -16480,6 +16480,7 @@ function logout() {
   state.settings.publicMode = true;
   addActivity("Demo user logged out to Public View.");
   saveState();
+  clearDemoShortcut();
   navigate("home");
   showToast("Logged out. Public View is on.");
 }
@@ -18341,6 +18342,10 @@ function enforcePublicOperatorBoundary() {
 
 function stripPublicAdminShortcut() {
   if (operatorDemoAllowed() || demoRole !== "admin") return;
+  clearDemoShortcut();
+}
+
+function clearDemoShortcut() {
   const url = new URL(location.href);
   url.searchParams.delete("demo");
   history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);

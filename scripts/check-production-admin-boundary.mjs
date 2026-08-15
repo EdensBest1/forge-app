@@ -15,7 +15,7 @@ const checks = [
   ["browser-stored admin sessions are discarded", app.includes('const unsafeSession = state.session?.role === "admin"') && app.includes("state.session = structuredClone(seedState.session)")],
   ["public admin login is denied", app.includes('role === "admin" && !operatorDemoAllowed()')],
   ["public Operator View toggle is denied", app.includes('function togglePublicMode() {\n  if (!operatorDemoAllowed())')],
-  ["logout returns to guest Public View", app.includes('function logout()') && app.includes('showToast("Logged out. Public View is on.")')],
+  ["logout returns to guest Public View and clears demo shortcuts", app.includes('function logout()') && app.includes('clearDemoShortcut();') && app.includes('showToast("Logged out. Public View is on.")')],
   ["admin controls are hidden on public hosts", styles.includes('.operator-demo-locked [data-login-role="admin"]')],
   ["server middleware returns a closed 404", middleware.includes("status: 404") && middleware.includes("OPERATOR_AUTH_NOT_CONFIGURED")],
   ["direct /admin is intercepted before static files", middleware.includes('"/admin"')],
