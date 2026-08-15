@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createLeadHandler, createMemoryRateLimiter } from "../api/forge/leads/route.ts";
-import { createConfiguredLeadStore } from "../api/forge/leads/storage.mjs";
+import { createConfiguredLeadStore } from "../lib/forge-lead-storage.mjs";
 import { FilesystemLeadStore } from "./support/filesystem-lead-store.mjs";
 
 await import("../backup-recovery.js");

@@ -1,4 +1,4 @@
-import { createConfiguredLeadStore } from "./storage.mjs";
+import { createConfiguredLeadStore } from "../../../lib/forge-lead-storage.mjs";
 
 type LeadStore = {
   save(write: {
