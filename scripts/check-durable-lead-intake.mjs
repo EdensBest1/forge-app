@@ -80,7 +80,9 @@ try {
 }
 
 const migration = await readFile("migrations/20260815_durable_lead_capture.sql", "utf8");
+const vercelAdapter = await readFile("api/forge/leads.ts", "utf8");
 assert.match(migration, /unique index if not exists forge_job_leads_request_id_unique/i);
 assert.match(migration, /follow_up_consent boolean not null default false/i);
+assert.match(vercelAdapter, /postLead\(new Request/);
 
 console.log("Forge durable lead intake check passed (origin, validation, consent, sensitive fields, configuration, receipt, and idempotency schema)." );
