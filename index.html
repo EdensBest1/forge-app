@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=128" />
+    <link rel="stylesheet" href="./styles.css?v=129" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -4179,6 +4179,30 @@
                 <button class="btn ghost" type="button" data-action="copy-daily-brief">Copy Daily Brief</button>
                 <button class="btn ghost" type="button" data-action="reset-demo">Reset Demo Data</button>
               </div>
+              <dialog class="backup-review-dialog" id="backupReviewDialog" aria-labelledby="backupReviewTitle" aria-describedby="backupReviewWarning">
+                <div class="backup-review-heading">
+                  <span class="split-label">Local recovery dry run</span>
+                  <h2 id="backupReviewTitle" tabindex="-1">Review this backup before replacing device data</h2>
+                  <p class="muted" id="backupReviewWarning">Nothing has changed yet. Verify the source and record changes below.</p>
+                </div>
+                <dl class="backup-review-facts">
+                  <div><dt>Schema</dt><dd id="backupReviewSchema">—</dd></div>
+                  <div><dt>App version</dt><dd id="backupReviewVersion">—</dd></div>
+                  <div><dt>Created</dt><dd id="backupReviewCreated">—</dd></div>
+                  <div><dt>Checksum</dt><dd id="backupReviewChecksum">—</dd></div>
+                  <div><dt>Current records</dt><dd id="backupReviewCurrentTotal">—</dd></div>
+                  <div><dt>Replacement records</dt><dd id="backupReviewReplacementTotal">—</dd></div>
+                </dl>
+                <div>
+                  <h3>Collection replacement preview</h3>
+                  <ul class="backup-review-changes" id="backupReviewChanges"></ul>
+                </div>
+                <p class="trust-note">Replacing affects only this browser. Export the current device data first if it must be preserved.</p>
+                <div class="share-actions backup-review-actions">
+                  <button class="btn ghost" type="button" data-action="cancel-backup-import">Cancel — keep current data</button>
+                  <button class="btn orange" type="button" data-action="confirm-backup-import">Replace local device data</button>
+                </div>
+              </dialog>
             </section>
             <section class="settings-card safety-center">
               <div class="admin-heading compact">
@@ -4866,7 +4890,7 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./backup-recovery.js?v=128"></script>
-    <script src="./app.js?v=128"></script>
+    <script src="./backup-recovery.js?v=129"></script>
+    <script src="./app.js?v=129"></script>
   </body>
 </html>

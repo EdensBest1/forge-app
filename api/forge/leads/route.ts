@@ -25,7 +25,7 @@ const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 10;
 const requestWindows = new Map<string, number[]>();
 const completedRequests = new Map<string, { receivedAt: string; storedIn: string[] }>();
-const forbiddenFieldPattern = /(ssn|social.security|bank|routing|account.number|credit.card|card.number|cvv|password|identity.document|passport|driver.?license|tax.id)/i;
+const forbiddenFieldPattern = /(ssn|social.security|bank|routing|account.number|credit.card|card.number|cvv|password|secret|access.?token|api.?key|authorization|identity.document|passport|driver.?license|tax.id)/i;
 
 function json(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -73,6 +73,14 @@ function validEmail(value: unknown) {
   return !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function validIsoTimestamp(value: unknown) {
+  const timestamp = text(value, 64);
+  const date = new Date(timestamp);
+  return /^\d{4}-\d{2}-\d{2}T.*Z$/.test(timestamp)
+    && Number.isFinite(date.getTime())
+    && date.toISOString() === timestamp;
+}
+
 function containsForbiddenField(value: unknown, path = ""): string | null {
   if (!value || typeof value !== "object") return null;
   for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
@@ -96,7 +104,8 @@ function validateEnvelope(input: LeadEnvelope) {
   if (text(input.payload.companyWebsite)) return "Submission blocked.";
   if (containsForbiddenField(input.payload)) return "Sensitive financial, identity, or secret fields are not accepted.";
   if (input.consent?.followUp !== true || input.consent?.terms !== true) return "Follow-up consent and Early Access Terms acceptance are required.";
-  if (!/^\d{4}-\d{2}-\d{2}T/.test(text(input.consent.capturedAt, 64))) return "A consent timestamp is required.";
+  if (!validIsoTimestamp(input.consent.capturedAt)) return "A valid consent timestamp is required.";
+  if (input.requestId !== undefined && !/^[A-Za-z0-9._:-]{1,160}$/.test(String(input.requestId))) return "Request ID format is invalid.";
   if (!validEmail(input.payload.email)) return "A valid email is required when email is provided.";
 
   if (input.type === "job") {
@@ -171,12 +180,14 @@ type HandlerOptions = {
   rateLimiter?: (request: Request) => boolean;
   now?: () => Date;
   receipts?: Map<string, { receivedAt: string; storedIn: string[] }>;
+  inFlight?: Map<string, Promise<{ receivedAt: string; storedIn: string[] }>>;
 };
 
 export function createLeadHandler(options: HandlerOptions = {}) {
   const limiter = options.rateLimiter || rateLimit;
   const now = options.now || (() => new Date());
   const receipts = options.receipts || completedRequests;
+  const inFlight = options.inFlight || new Map<string, Promise<{ receivedAt: string; storedIn: string[] }>>();
   const resolveStore = options.resolveStore || (() => options.store === undefined ? createConfiguredLeadStore() : options.store);
 
   return async function handleLead(request: Request) {
@@ -221,14 +232,31 @@ export function createLeadHandler(options: HandlerOptions = {}) {
     }, 503);
   }
 
-  try {
-    const stores = await store.save({ requestId, record, webhookPayload: durablePayload });
-    receipts.set(requestId, { receivedAt, storedIn: stores });
+  const existingWrite = inFlight.get(requestId);
+  const write = existingWrite || Promise.resolve().then(() => store.save({ requestId, record, webhookPayload: durablePayload })).then((stores) => {
+    const receipt = { receivedAt, storedIn: stores };
+    receipts.set(requestId, receipt);
     if (receipts.size > 1000) receipts.delete(receipts.keys().next().value as string);
-    return json({ ok: true, requestId, receivedAt, storedIn: stores }, 201);
+    return receipt;
+  });
+  if (!existingWrite) inFlight.set(requestId, write);
+
+  try {
+    const receipt = await write;
+    return json({
+      ok: true,
+      ...(existingWrite ? { duplicate: true } : {}),
+      requestId,
+      receivedAt: receipt.receivedAt,
+      storedIn: receipt.storedIn
+    }, existingWrite ? 200 : 201);
   } catch (error) {
-    console.error("Forge durable lead write failed", { requestId, type: normalized.type, error: error instanceof Error ? error.message : "unknown" });
+    if (!existingWrite) {
+      console.error("Forge durable lead write failed", { requestId, type: normalized.type, error: error instanceof Error ? error.message : "unknown" });
+    }
     return json({ error: "DURABLE_LEAD_WRITE_FAILED", requestId }, 502);
+  } finally {
+    if (!existingWrite && inFlight.get(requestId) === write) inFlight.delete(requestId);
   }
   };
 }

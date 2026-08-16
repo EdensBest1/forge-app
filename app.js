@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "128";
+const PUBLIC_LINK_VERSION = "129";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -3584,6 +3584,7 @@ const startPaths = [
 ];
 
 let state = loadState();
+let pendingBackupReview = null;
 let postStep = 1;
 let statusMatches = [];
 
@@ -16724,6 +16725,8 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-projects") exportCsv("forge-project-leads.csv", state.projectLeads || []);
   if (action?.dataset.action === "export-bids") exportCsv("forge-bids.csv", state.bids);
   if (action?.dataset.action === "export-backup") exportBackup();
+  if (action?.dataset.action === "cancel-backup-import") cancelBackupImport();
+  if (action?.dataset.action === "confirm-backup-import") confirmBackupImport();
   if (action?.dataset.action === "toggle-public-mode") togglePublicMode();
   if (action?.dataset.action === "copy-daily-brief") copyDailyBrief();
   if (action?.dataset.action === "copy-delivery-status") copyDeliveryStatus();
@@ -17309,6 +17312,15 @@ document.addEventListener("change", (event) => {
 });
 
 document.querySelector("#backupImport").addEventListener("change", importBackup);
+document.querySelector("#backupReviewDialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  cancelBackupImport();
+});
+document.querySelector("#backupReviewDialog").addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  event.preventDefault();
+  cancelBackupImport();
+});
 document.querySelector("#manufacturingSupplierCsvInput").addEventListener("change", importManufacturingSupplierCsv);
 
 document.addEventListener("input", (event) => {
@@ -22681,31 +22693,65 @@ async function importBackup(event) {
   if (!file) return;
   try {
     const text = await file.text();
-    const recovered = ForgeBackupRecovery.parse(text);
-    const currentCounts = ForgeBackupRecovery.summarize(state);
-    const sourceLabel = recovered.legacy ? "legacy backup" : `v${recovered.appVersion || "unknown"} backup from ${recovered.exportedAt}`;
-    const approved = confirm(
-      `Replace this device's Forge data with the ${sourceLabel}?\n\n`
-      + `Backup: ${recovered.counts.jobs} jobs, ${recovered.counts.workers} workers, ${recovered.counts.bids} bids, ${recovered.counts.messages} messages.\n`
-      + `Current device: ${currentCounts.jobs} jobs, ${currentCounts.workers} workers, ${currentCounts.bids} bids, ${currentCounts.messages} messages.\n\n`
-      + "This changes only this browser. Export the current data first if it must be preserved."
-    );
-    if (!approved) {
-      showToast("Backup import canceled. Current device data was not changed.");
-      return;
-    }
-    state = normalizeState(recovered.state);
-    addActivity(`Verified ${recovered.legacy ? "legacy " : ""}backup JSON imported from local file.`);
-    saveState();
-    render();
-    navigate("admin");
-    showToast("Verified backup imported on this device.");
+    showBackupRecoveryPreview(ForgeBackupRecovery.preview(text, state));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown backup error.";
     showToast(`Backup not imported: ${message}`);
   } finally {
     event.target.value = "";
   }
+}
+
+function showBackupRecoveryPreview(review) {
+  pendingBackupReview = review;
+  document.querySelector("#backupReviewSchema").textContent = review.schema;
+  document.querySelector("#backupReviewVersion").textContent = review.appVersion;
+  document.querySelector("#backupReviewCreated").textContent = review.exportedAt;
+  document.querySelector("#backupReviewChecksum").textContent = review.checksumStatus;
+  document.querySelector("#backupReviewCurrentTotal").textContent = String(review.currentCounts.allRecords);
+  document.querySelector("#backupReviewReplacementTotal").textContent = String(review.counts.allRecords);
+  document.querySelector("#backupReviewWarning").textContent = review.legacy
+    ? "Legacy backup: no checksum was available. Nothing has changed yet; review every count carefully."
+    : "Checksum and record counts verified. Nothing has changed yet; review the replacement below.";
+  const changes = document.querySelector("#backupReviewChanges");
+  changes.replaceChildren(...review.changes.map((change) => {
+    const item = document.createElement("li");
+    const delta = change.delta === 0 ? "no count change" : `${change.delta > 0 ? "+" : ""}${change.delta}`;
+    item.textContent = `${change.collection}: ${change.current} → ${change.replacement} (${delta})`;
+    return item;
+  }));
+  const dialog = document.querySelector("#backupReviewDialog");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+  document.querySelector("#backupReviewTitle").focus();
+  showToast("Backup verified. Review the dry run before replacing data.");
+}
+
+function cancelBackupImport() {
+  const dialog = document.querySelector("#backupReviewDialog");
+  pendingBackupReview = null;
+  if (dialog.open && typeof dialog.close === "function") dialog.close();
+  else dialog.removeAttribute("open");
+  document.querySelector("#backupImport").focus();
+  showToast("Backup import canceled. Current device data was not changed.");
+}
+
+function confirmBackupImport() {
+  if (!pendingBackupReview) {
+    showToast("Choose and verify a backup file first.");
+    return;
+  }
+  const recovered = pendingBackupReview;
+  pendingBackupReview = null;
+  const dialog = document.querySelector("#backupReviewDialog");
+  if (dialog.open && typeof dialog.close === "function") dialog.close();
+  else dialog.removeAttribute("open");
+  state = normalizeState(recovered.state);
+  addActivity(`Verified ${recovered.legacy ? "legacy " : ""}backup JSON imported from local file.`);
+  saveState();
+  render();
+  navigate("admin");
+  showToast("Verified backup imported on this device.");
 }
 
 function clearActivity() {

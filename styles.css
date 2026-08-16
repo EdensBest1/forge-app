@@ -374,6 +374,65 @@ figure {
   cursor: pointer;
 }
 
+.backup-review-dialog {
+  width: min(760px, calc(100vw - 2rem));
+  max-height: min(780px, calc(100vh - 2rem));
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #c8d4e6;
+  border-radius: 1rem;
+  color: var(--ink);
+  overflow: auto;
+}
+
+.backup-review-dialog::backdrop {
+  background: rgba(16, 28, 48, 0.72);
+}
+
+.backup-review-heading h2,
+.backup-review-changes {
+  margin-top: 0.5rem;
+}
+
+.backup-review-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.backup-review-facts div,
+.backup-review-changes li {
+  padding: 0.75rem;
+  border: 1px solid #d9e2ef;
+  border-radius: 0.75rem;
+  background: #f7f9fc;
+}
+
+.backup-review-facts dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.backup-review-facts dd {
+  margin: 0.25rem 0 0;
+  font-weight: 700;
+}
+
+.backup-review-changes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.backup-review-actions {
+  margin-top: 1rem;
+}
+
 .hidden {
   display: none !important;
 }

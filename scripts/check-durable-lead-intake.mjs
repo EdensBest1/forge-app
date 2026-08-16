@@ -94,17 +94,42 @@ try {
   assert.equal((await duplicate.json()).duplicate, true);
   assert.equal((await fileStore.records()).length, 2, "idempotent retry must not append another record");
 
+  let concurrentWrites = 0;
+  const concurrentHandler = createLeadHandler({
+    store: {
+      async save() {
+        concurrentWrites += 1;
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        return ["concurrency-test"];
+      }
+    },
+    rateLimiter: () => true,
+    receipts: new Map(),
+    inFlight: new Map(),
+    now: () => fixedDate
+  });
+  const concurrentResults = await Promise.all([
+    concurrentHandler(request({ ...baseJob, requestId: "concurrent-idempotency" })),
+    concurrentHandler(request({ ...baseJob, requestId: "concurrent-idempotency" }))
+  ]);
+  assert.deepEqual(concurrentResults.map((response) => response.status).sort(), [200, 201]);
+  assert.equal(concurrentWrites, 1, "concurrent idempotent requests must share one provider write");
+
   assert.equal((await fileHandler(request(baseJob, { Origin: "https://attacker.example" }))).status, 403);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "missing-consent", consent: { ...syntheticConsent, followUp: false } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "bad-timestamp", consent: { ...syntheticConsent, capturedAt: "today" } }))).status, 400);
+  assert.equal((await fileHandler(request({ ...baseJob, requestId: "impossible-timestamp", consent: { ...syntheticConsent, capturedAt: "2026-99-99T20:00:00.000Z" } }))).status, 400);
+  assert.equal((await fileHandler(request({ ...baseJob, requestId: "impossible-calendar-date", consent: { ...syntheticConsent, capturedAt: "2026-02-31T20:00:00.000Z" } }))).status, 400);
+  assert.equal((await fileHandler(request({ ...baseJob, requestId: "invalid request id" }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "forbidden", payload: { ...baseJob.payload, bankAccount: "never-accept" } }))).status, 400);
+  assert.equal((await fileHandler(request({ ...baseJob, requestId: "forbidden-secret", payload: { ...baseJob.payload, accessToken: "never-accept" } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "oversized", payload: { ...baseJob.payload, description: "x".repeat(40 * 1024) } }))).status, 413);
 
   const unconfiguredHandler = createLeadHandler({ store: null, rateLimiter: () => true, receipts: new Map() });
   assert.equal((await unconfiguredHandler(request({ ...baseJob, requestId: "unconfigured" }))).status, 503);
 
   const failingHandler = createLeadHandler({
-    store: { async save() { throw new Error("synthetic provider outage"); } },
+    store: { save() { throw new Error("synthetic provider outage"); } },
     rateLimiter: () => true,
     receipts: new Map()
   });
@@ -115,6 +140,53 @@ try {
   } finally {
     console.error = originalError;
   }
+
+  const partialStore = createConfiguredLeadStore({ env: { FORGE_SUPABASE_URL: "https://synthetic.invalid" } });
+  await assert.rejects(
+    partialStore.save({ requestId: "partial", record: { table: "forge_job_leads", value: {} }, webhookPayload: {} }),
+    /partially configured/i
+  );
+
+  const supabaseCalls = [];
+  const supabaseStore = createConfiguredLeadStore({
+    env: {
+      FORGE_SUPABASE_URL: "https://synthetic.invalid/",
+      FORGE_SUPABASE_SERVICE_ROLE_KEY: "synthetic-test-key"
+    },
+    fetchImpl: async (url, init) => {
+      supabaseCalls.push({ url, init });
+      return new Response(null, { status: 204 });
+    }
+  });
+  await supabaseStore.save({
+    requestId: "supabase-idempotency",
+    record: { table: "forge_job_leads", value: { request_id: "supabase-idempotency" } },
+    webhookPayload: {}
+  });
+  assert.equal(supabaseCalls.length, 1);
+  assert.equal(supabaseCalls[0].init.headers["Idempotency-Key"], "supabase-idempotency");
+  assert.ok(supabaseCalls[0].init.signal instanceof AbortSignal);
+
+  const malformedStore = createConfiguredLeadStore({
+    env: { FORGE_LEAD_WEBHOOK_URL: "https://synthetic.invalid/lead" },
+    fetchImpl: async () => ({ malformed: true })
+  });
+  await assert.rejects(
+    malformedStore.save({ requestId: "malformed-response", record: { table: "forge_job_leads", value: {} }, webhookPayload: {} }),
+    /invalid response/i
+  );
+
+  const timeoutStore = createConfiguredLeadStore({
+    env: { FORGE_LEAD_WEBHOOK_URL: "https://synthetic.invalid/lead" },
+    timeoutMs: 10,
+    fetchImpl: async (_url, init) => new Promise((_resolve, reject) => {
+      init.signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+    })
+  });
+  await assert.rejects(
+    timeoutStore.save({ requestId: "provider-timeout", record: { table: "forge_job_leads", value: {} }, webhookPayload: {} }),
+    /timed out/i
+  );
 
   const limitedHandler = createLeadHandler({
     store: fileStore,
@@ -161,7 +233,7 @@ try {
     referrals: [],
     activity: []
   };
-  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "128" });
+  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "129" });
   const backupPath = join(workDir, "forge-backup.json");
   await writeFile(backupPath, JSON.stringify(backupEnvelope, null, 2), { mode: 0o600 });
   const recovered = BackupRecovery.parse(await readFile(backupPath, "utf8"));
@@ -169,9 +241,47 @@ try {
   assert.deepEqual(recovered.state.workers, syntheticBrowserState.workers);
   assert.deepEqual(recovered.state.bids, syntheticBrowserState.bids);
   assert.deepEqual(recovered.state.messages, syntheticBrowserState.messages);
+  assert.equal(recovered.schema, "forge.local-backup.v1");
+  assert.equal(recovered.checksumStatus, "verified");
+  const preview = BackupRecovery.preview(JSON.stringify(backupEnvelope), {
+    ...syntheticBrowserState,
+    jobs: [],
+    workers: []
+  });
+  assert.equal(preview.currentCounts.jobs, 0);
+  assert.equal(preview.counts.jobs, 1);
+  assert.equal(preview.changes.find((change) => change.collection === "jobs").delta, 1);
+  assert.deepEqual(preview.state, syntheticBrowserState, "dry run must not mutate the current or replacement state");
+
+  const legacy = BackupRecovery.preview(JSON.stringify(syntheticBrowserState), syntheticBrowserState);
+  assert.equal(legacy.legacy, true);
+  assert.equal(legacy.checksumStatus, "not available");
+
   const tampered = structuredClone(backupEnvelope);
   tampered.state.messages[0].body = "Tampered";
   assert.throws(() => BackupRecovery.recover(tampered), /integrity/i);
+  assert.throws(() => BackupRecovery.parse("{not json"), /not valid JSON/i);
+  assert.throws(() => BackupRecovery.parse("x".repeat(BackupRecovery.MAX_BYTES + 1)), /larger than 5 MB/i);
+  assert.throws(() => BackupRecovery.recover({ ...backupEnvelope, schema: "forge.local-backup.v999" }), /schema is not supported/i);
+  assert.throws(() => BackupRecovery.recover({ ...backupEnvelope, exportedAt: "2026-99-99T00:00:00.000Z" }), /timestamp is invalid/i);
+  assert.throws(() => BackupRecovery.recover({ ...backupEnvelope, exportedAt: "2026-02-31T00:00:00.000Z" }), /timestamp is invalid/i);
+  assert.throws(() => BackupRecovery.recover({ ...backupEnvelope, checksum: "sha256:not-supported" }), /checksum format/i);
+  assert.throws(() => BackupRecovery.recover({ ...backupEnvelope, appVersion: "" }), /app version/i);
+
+  const badCounts = structuredClone(backupEnvelope);
+  badCounts.counts.jobs += 1;
+  assert.throws(() => BackupRecovery.recover(badCounts), /counts do not match/i);
+
+  const unsafe = structuredClone(backupEnvelope);
+  unsafe.state.jobs = [JSON.parse('{"__proto__":{"polluted":true}}')];
+  unsafe.checksum = BackupRecovery.checksum(JSON.stringify(unsafe.state));
+  unsafe.counts = BackupRecovery.summarize(unsafe.state);
+  assert.throws(() => BackupRecovery.recover(unsafe), /unsafe object key/i);
+
+  const excessive = structuredClone(syntheticBrowserState);
+  excessive.jobs = Array(50_000).fill(null);
+  excessive.workers = Array(50_001).fill(null);
+  assert.throws(() => BackupRecovery.recover(excessive), /100,000 total records/i);
 
   const migration = await readFile("migrations/20260815_durable_lead_capture.sql", "utf8");
   const vercelAdapter = await readFile("api/forge/leads.ts", "utf8");
@@ -181,10 +291,17 @@ try {
   assert.match(migration, /follow_up_consent boolean not null default false/i);
   assert.match(vercelAdapter, /postLead\(new Request/);
   assert.match(app, /Lead saved in this browser\. Server delivery is not configured yet\./);
-  assert.match(app, /Replace this device's Forge data/);
-  assert.match(html, /backup-recovery\.js\?v=128/);
+  assert.match(app, /confirmBackupImport/);
+  assert.match(app, /event\.key !== "Escape"/);
+  assert.match(app, /showBackupRecoveryPreview/);
+  assert.match(app, /concurrent idempotent requests must share one provider write|pendingBackupReview/);
+  assert.match(html, /backup-recovery\.js\?v=129/);
+  assert.match(html, /Local recovery dry run/);
+  assert.match(html, /id="backupReviewTitle" tabindex="-1"/);
+  assert.match(html, /Replace local device data/);
+  assert.match(html, /data-action="confirm-backup-import"/);
 } finally {
   await rm(workDir, { recursive: true, force: true });
 }
 
-console.log("Forge durable intake + recovery check passed: post-job, worker signup, bids, messages, consent, timestamps, idempotency, rate limiting, sensitive-field rejection, export, backup, recovery, mocked webhook, and provider failure.");
+console.log("Forge durable intake + recovery check passed: post-job, worker signup, consent, strict timestamps, concurrent idempotency, rate limiting, secret-field rejection, provider timeout/malformed response, and staged backup dry-run/recovery boundaries.");
