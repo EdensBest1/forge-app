@@ -1,0 +1,60 @@
+name: Nexus Security Watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  security-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Nexus workforce and isolation
+        run: npm run nexus:test
+
+      - name: Security configuration health
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_STATE_STORE_URL: ${{ secrets.NEXUS_STATE_STORE_URL }}
+          NEXUS_STATE_STORE_TOKEN: ${{ secrets.NEXUS_STATE_STORE_TOKEN }}
+          NEXUS_DATA_ENCRYPTION_KEY: ${{ secrets.NEXUS_DATA_ENCRYPTION_KEY }}
+        run: npm run nexus:security > .nexus-security-health.json
+
+      - name: Security agent tick
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_STATE_STORE_URL: ${{ secrets.NEXUS_STATE_STORE_URL }}
+          NEXUS_STATE_STORE_TOKEN: ${{ secrets.NEXUS_STATE_STORE_TOKEN }}
+          NEXUS_DATA_ENCRYPTION_KEY: ${{ secrets.NEXUS_DATA_ENCRYPTION_KEY }}
+          NEXUS_TASK_TIMEOUT_MS: '120000'
+        run: node nexus/orchestrator.mjs --task='{"preferred_agent_id":"NX-053","business":"nexus","department":"security","tenant_id":"edens-best-internal","workspace_id":"nexus-security","workspace_type":"internal-business","objective":"Run the hourly security watch: verify agent behavior, tenant isolation, audit health, integration health, policy drift, and unresolved incidents. Escalate critical findings. Do not disable safeguards.","action":"security_watch","external_side_effect":false,"requested_by":"github-actions-security-watch"}' > .nexus-security-tick.json
+
+      - name: Verify security agent executed
+        run: |
+          node -e "const x=require('./.nexus-security-tick.json'); if(x.result?.status!=='executed') throw new Error('Security watch did not execute'); if(x.security?.allowed!==true) throw new Error('Security preflight blocked watch unexpectedly'); console.log('Nexus Security Watchtower executed successfully');"
+
+      - name: Retain security evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-security-${{ github.run_id }}
+          path: |
+            .nexus-runtime/audit.ndjson
+            .nexus-security-health.json
+            .nexus-security-tick.json
+          if-no-files-found: warn
+          retention-days: 30

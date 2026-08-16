@@ -1,6 +1,6 @@
 {
   "name": "forge-mvp",
-  "version": "0.71.0",
+  "version": "0.73.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,15 +8,28 @@
     "check:syntax": "node --check app.js",
     "check:smoke": "node smoke-test.mjs",
     "check:security": "node security-check.mjs",
+    "check:admin-boundary": "node scripts/check-production-admin-boundary.mjs",
+    "check:lead-outbox": "node scripts/check-lead-outbox.mjs",
+    "check:durable-leads": "node --experimental-strip-types scripts/check-durable-lead-intake.mjs",
+    "check:capital-desk": "node --experimental-strip-types scripts/check-flex-capital-desk.mjs",
     "check:release": "node release-check.mjs",
     "check:monetization": "node scripts/check-monetization-engine.mjs",
     "check:product-paths": "node scripts/check-product-paths-regression.mjs",
     "check:fencing": "node scripts/check-fencing-iron-gates-coverage.mjs",
+    "check:routes": "node scripts/check-route-matrix.mjs",
+    "check:cache": "node scripts/check-cache-release-integrity.mjs",
+    "check:public-quality": "node scripts/check-public-quality.mjs",
+    "check:exports": "node scripts/check-export-safety.mjs",
+    "check:copy-truth": "node scripts/check-copy-truth.mjs",
+    "check:release-fences": "node scripts/check-release-fences.mjs",
+    "check:accessibility": "node scripts/check-accessibility-contract.mjs",
     "check:nexus": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs",
     "nexus:status": "node nexus/orchestrator.mjs",
+    "nexus:registry": "node nexus/orchestrator.mjs --registry",
     "nexus:tick": "node nexus/orchestrator.mjs --tick",
+    "nexus:security": "node nexus/security-watch.mjs",
     "nexus:test": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs",
     "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
-    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing && npm run check:nexus"
+    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:admin-boundary && npm run check:lead-outbox && npm run check:durable-leads && npm run check:capital-desk && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing && npm run check:routes && npm run check:cache && npm run check:public-quality && npm run check:exports && npm run check:copy-truth && npm run check:release-fences && npm run check:accessibility && npm run check:nexus"
   }
 }

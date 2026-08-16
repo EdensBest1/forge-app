@@ -1,8 +1,20 @@
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
+import { appendAudit, storageStatus } from './state-store.mjs';
+import { securityPreflight } from './security-watch.mjs';
+import { runEmbedded } from './embedded-runner.mjs';
 
 const ROOT = new URL('./', import.meta.url);
-const manifest = JSON.parse(await fs.readFile(new URL('agents.json', ROOT), 'utf8'));
+const coreManifest = JSON.parse(await fs.readFile(new URL('agents.json', ROOT), 'utf8'));
+let extension = { agents: [] };
+try {
+  extension = JSON.parse(await fs.readFile(new URL('agents-extension.json', ROOT), 'utf8'));
+} catch {}
+const manifest = {
+  ...coreManifest,
+  agent_count: coreManifest.agents.length + extension.agents.length,
+  agents: [...coreManifest.agents, ...extension.agents],
+};
 const policy = JSON.parse(await fs.readFile(new URL('approval-policy.json', ROOT), 'utf8'));
 
 const byId = new Map(manifest.agents.map((a) => [a.id, a]));
@@ -17,10 +29,17 @@ function taskId() {
 }
 
 function normalizeTask(input = {}) {
+  const business = input.business || 'shared';
+  const workspaceType = input.workspace_type || 'internal-business';
   return {
     task_id: input.task_id || taskId(),
     created_at: input.created_at || nowIso(),
-    business: input.business || 'shared',
+    tenant_id: input.tenant_id || (workspaceType === 'northstar-client' ? '' : 'edens-best-internal'),
+    workspace_id: input.workspace_id || (workspaceType === 'northstar-client' ? '' : `${business}-default`),
+    workspace_type: workspaceType,
+    source_tenant_id: input.source_tenant_id || null,
+    target_tenant_id: input.target_tenant_id || null,
+    business,
     department: input.department || null,
     capability: input.capability || null,
     objective: input.objective || 'scheduled operating check',
@@ -31,6 +50,7 @@ function normalizeTask(input = {}) {
     preferred_agent_id: input.preferred_agent_id || null,
     approved: Boolean(input.approved),
     requested_by: input.requested_by || 'nexus',
+    allow_secret_reference_fields: Boolean(input.allow_secret_reference_fields),
   };
 }
 
@@ -40,6 +60,7 @@ function scoreAgent(agent, task) {
   if (agent.business === task.business) score += 100;
   if (agent.business === 'shared') score += 30;
   if (task.department && agent.department === task.department) score += 60;
+  if (task.workspace_type === 'northstar-client' && agent.id.startsWith('NS-')) score += 80;
   const haystack = `${agent.name} ${agent.mission} ${agent.department}`.toLowerCase();
   for (const token of `${task.capability || ''} ${task.objective}`.toLowerCase().split(/\W+/).filter(Boolean)) {
     if (haystack.includes(token)) score += 2;
@@ -82,10 +103,12 @@ export function authorize(agent, task) {
 async function callRunner(agent, task) {
   const url = process.env.NEXUS_AGENT_RUNNER_URL;
   if (!url) {
+    const body = await runEmbedded({ system: manifest.system, agent, task, policy });
     return {
-      mode: 'dry_run',
-      status: 'ready_not_executed',
-      message: 'Set NEXUS_AGENT_RUNNER_URL to a model/tool runner endpoint to execute agent reasoning and tool calls.',
+      mode: 'embedded_zero_cost',
+      status: 'executed',
+      body,
+      message: 'Executed with the built-in deterministic Nexus runner. Connect a model/tool runner later for richer reasoning and third-party tool use.',
     };
   }
 
@@ -119,33 +142,75 @@ async function callRunner(agent, task) {
   }
 }
 
-function auditRecord(agent, task, auth, result) {
+function auditRecord(agent, task, auth, result, security = null) {
   return {
     task_id: task.task_id,
     agent_id: agent.id,
     timestamp: nowIso(),
+    tenant_id: task.tenant_id,
+    workspace_id: task.workspace_id,
+    workspace_type: task.workspace_type,
     business: task.business,
     action: task.action,
     risk_tags: task.risk_tags,
     decision: auth.decision,
     reason: auth.reason,
+    security_findings: security?.issues || [],
     result_ref: result?.status || null,
   };
 }
 
+async function appendLocalAudit(audit) {
+  const dir = new URL('../.nexus-runtime/', ROOT);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.appendFile(new URL('audit.ndjson', dir), `${JSON.stringify(audit)}\n`, { encoding: 'utf8', mode: 0o600 });
+}
+
+async function persistAudit(task, audit) {
+  if (!storageStatus().configured || !task.tenant_id || !task.workspace_id) {
+    try {
+      await appendLocalAudit(audit);
+      return { persisted: true, mode: 'local_redacted_audit', durable: false };
+    } catch (error) {
+      return { persisted: false, reason: String(error?.message || error) };
+    }
+  }
+  try {
+    await appendAudit(task, audit);
+    return { persisted: true, mode: 'durable_state_store', durable: true };
+  } catch (error) {
+    return { persisted: false, reason: String(error?.message || error) };
+  }
+}
+
 export async function execute(rawTask) {
   const { task, agent } = routeTask(rawTask);
+  const security = securityPreflight(task);
+  if (!security.allowed) {
+    const auth = { decision: 'security_blocked', reason: security.issues.map((i) => i.code).join(', ') };
+    const result = { status: 'blocked_by_security_preflight' };
+    const audit = auditRecord(agent, task, auth, result, security);
+    const audit_persistence = await persistAudit(task, audit);
+    return { task, agent, security, authorization: auth, result, audit, audit_persistence };
+  }
+
   const auth = authorize(agent, task);
   if (auth.decision !== 'allowed') {
     const result = { status: 'blocked_pending_approval' };
-    return { task, agent, authorization: auth, result, audit: auditRecord(agent, task, auth, result) };
+    const audit = auditRecord(agent, task, auth, result, security);
+    const audit_persistence = await persistAudit(task, audit);
+    return { task, agent, security, authorization: auth, result, audit, audit_persistence };
   }
   try {
     const result = await callRunner(agent, task);
-    return { task, agent, authorization: auth, result, audit: auditRecord(agent, task, auth, result) };
+    const audit = auditRecord(agent, task, auth, result, security);
+    const audit_persistence = await persistAudit(task, audit);
+    return { task, agent, security, authorization: auth, result, audit, audit_persistence };
   } catch (error) {
     const result = { status: 'failed', error: String(error?.message || error) };
-    return { task, agent, authorization: auth, result, audit: auditRecord(agent, task, auth, result) };
+    const audit = auditRecord(agent, task, auth, result, security);
+    const audit_persistence = await persistAudit(task, audit);
+    return { task, agent, security, authorization: auth, result, audit, audit_persistence };
   }
 }
 
@@ -169,6 +234,9 @@ export async function tick() {
       preferred_agent_id: agent.id,
       business: agent.business,
       department: agent.department,
+      tenant_id: 'edens-best-internal',
+      workspace_id: agent.business === 'northstar' ? 'northstar-internal' : `${agent.business}-default`,
+      workspace_type: 'internal-business',
       objective: `Run scheduled ${agent.cadence} operating check for ${agent.name}. Review assigned KPIs, open work, stale items, risks, and next actions. Do not perform gated actions without approval.`,
       action: 'scheduled_check',
       external_side_effect: false,
@@ -176,13 +244,21 @@ export async function tick() {
     })));
     results.push(...batchResults);
   }
-  return { timestamp: nowIso(), due_agents: due.length, results };
+  return { timestamp: nowIso(), due_agents: due.length, total_agents: manifest.agents.length, results };
+}
+
+export function agentRegistry() {
+  return manifest.agents.map((a) => ({ id: a.id, name: a.name, business: a.business, department: a.department, autonomy: a.autonomy, status: a.status }));
 }
 
 async function main() {
   const args = process.argv.slice(2);
   if (args.includes('--tick')) {
     console.log(JSON.stringify(await tick(), null, 2));
+    return;
+  }
+  if (args.includes('--registry')) {
+    console.log(JSON.stringify(agentRegistry(), null, 2));
     return;
   }
   const taskArg = args.find((a) => a.startsWith('--task='));
@@ -195,8 +271,11 @@ async function main() {
     system: manifest.system,
     agent_count: manifest.agents.length,
     enabled: manifest.agents.filter((a) => a.status === 'enabled').length,
+    storage: storageStatus(),
+    zero_cost_runner: !process.env.NEXUS_AGENT_RUNNER_URL,
     usage: [
       'node nexus/orchestrator.mjs --tick',
+      'node nexus/orchestrator.mjs --registry',
       `node nexus/orchestrator.mjs --task='{"business":"forge","objective":"review stale roofing leads"}'`,
     ],
   }, null, 2));
