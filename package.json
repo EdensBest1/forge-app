@@ -14,7 +14,9 @@
     "check:fencing": "node scripts/check-fencing-iron-gates-coverage.mjs",
     "check:nexus": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs",
     "nexus:status": "node nexus/orchestrator.mjs",
+    "nexus:registry": "node nexus/orchestrator.mjs --registry",
     "nexus:tick": "node nexus/orchestrator.mjs --tick",
+    "nexus:security": "node nexus/security-watch.mjs",
     "nexus:test": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs",
     "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
     "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing && npm run check:nexus"
