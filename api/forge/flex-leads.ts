@@ -1,4 +1,4 @@
-import { POST as postFlexLead } from "./flex-leads/route.ts";
+import { POST as postFlexLead } from "./flex-leads/route.js";
 
 type VercelRequest = {
   method?: string;

@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 
-const [packageJson, packageLock, html, app, middleware, vercel, capitalDocs] = await Promise.all([
+const [packageJson, packageLock, html, app, middleware, vercel, capitalDocs, capitalEntrypoint] = await Promise.all([
   readFile("package.json", "utf8").then(JSON.parse),
   readFile("package-lock.json", "utf8").then(JSON.parse),
   readFile("index.html", "utf8"),
   readFile("app.js", "utf8"),
   readFile("middleware.ts", "utf8"),
   readFile("vercel.json", "utf8"),
-  readFile("docs/forge-capital-desk-readme.md", "utf8")
+  readFile("docs/forge-capital-desk-readme.md", "utf8"),
+  readFile("api/forge/flex-leads.ts", "utf8")
 ]);
 
 assert.equal(Object.keys(packageJson.dependencies || {}).length, 0, "v133 must not add runtime dependencies");
@@ -21,6 +22,7 @@ assert.doesNotMatch(html + app, /supabase(?:Url|Key)|createClient\s*\(/i, "the p
 assert.match(capitalDocs, /inactive/i, "Capital Desk documentation must keep Flex inactive");
 assert.match(app, /Reset blocked\. Export Backup JSON for all \$\{leadCount\} saved leads first\./, "lead reset must fail closed without a current backup");
 assert.match(app, /DELETE \$\{leadCount\} LEADS/, "lead reset must require an exact typed destructive confirmation");
+assert.match(capitalEntrypoint, /from\s+["']\.\/flex-leads\/route\.js["']/, "the Vercel function must import the emitted JavaScript route module");
 
 for (const route of ["/admin", "/capture", "/reports", "/monetization-admin"]) {
   assert.ok(middleware.includes(`"${route}"`), `${route} must be locked by middleware`);

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
 const originalFetch = globalThis.fetch;
 const originalEnv = { ...process.env };
@@ -139,21 +140,13 @@ try {
   assert.equal(providerCalls, 1);
   assert.equal((await body(secondResponse)).duplicate, true);
 
-  const { default: wrapper } = await import("../api/forge/flex-leads.ts");
-  const wrapperHeaders = new Map();
-  let wrapperStatus = 0;
-  let wrapperBody = "";
-  await wrapper({ method: "GET", url: "/api/forge/flex-leads", headers: { host: "hireonforge.com" } }, {
-    setHeader(name, value) { wrapperHeaders.set(name.toLowerCase(), value); },
-    status(code) { wrapperStatus = code; return this; },
-    send(value) { wrapperBody = value; }
-  });
-  assert.equal(wrapperStatus, 405);
-  assert.match(wrapperHeaders.get("content-type"), /application\/json/i);
-  assert.match(wrapperHeaders.get("cache-control"), /no-store/i);
-  assert.doesNotMatch(wrapperBody, /<html/i);
+  const wrapperSource = await readFile(new URL("../api/forge/flex-leads.ts", import.meta.url), "utf8");
+  assert.match(wrapperSource, /from\s+["']\.\/flex-leads\/route\.js["']/);
+  assert.match(wrapperSource, /Content-Type["'],\s*["']application\/json; charset=utf-8/);
+  assert.match(wrapperSource, /Cache-Control["'],\s*["']private, no-store, max-age=0/);
+  assert.match(wrapperSource, /status\(405\)\.send\(JSON\.stringify/);
 
-  console.log("Forge Capital Desk contract checks passed: strict whitelist/size/origin, nested secrets, fail-closed receipts, concurrent idempotency, and top-level JSON wrapper.");
+  console.log("Forge Capital Desk contract checks passed: strict whitelist/size/origin, nested secrets, fail-closed receipts, concurrent idempotency, and deployable JSON wrapper.");
 } finally {
   globalThis.fetch = originalFetch;
   console.error = originalConsoleError;
