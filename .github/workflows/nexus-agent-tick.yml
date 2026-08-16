@@ -1,0 +1,33 @@
+name: Nexus Agent Tick
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  nexus-tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Nexus workforce
+        run: node nexus/smoke-test.mjs
+
+      - name: Run scheduler tick
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_DAILY_UTC_HOUR: '13'
+          NEXUS_TASK_TIMEOUT_MS: '120000'
+        run: node nexus/orchestrator.mjs --tick
