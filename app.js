@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "132";
+const PUBLIC_LINK_VERSION = "133";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -693,12 +693,12 @@ const FORGE_ENV = typeof window !== "undefined" ? window.FORGE_ENV || {} : {};
 const FLEX_REFERRAL_URL_PLACEHOLDER = "https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK";
 const FLEX_APP_URL = FORGE_ENV.FLEX_APP_URL || "";
 const NEXT_PUBLIC_FLEX_REFERRAL_URL = FORGE_ENV.NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
-const FLEX_PARTNER_MODE = "referral";
+const FLEX_PARTNER_MODE = "draft";
 const FORGE_CAPITAL_DESK_ENABLED = true;
+const FLEX_PARTNER_ROUTING_ENABLED = false;
+const SENECA_PARTNER_ROUTING_ENABLED = false;
 const FORGE_LEAD_NOTIFY_EMAIL = "admin@forge.local";
-const FORGE_GHL_WEBHOOK_URL = FORGE_ENV.FORGE_GHL_WEBHOOK_URL || "";
-const FORGE_ZAPIER_WEBHOOK_URL = FORGE_ENV.FORGE_ZAPIER_WEBHOOK_URL || "";
-const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, financial adviser, credit provider, or credit decision maker. Forge may refer eligible business owners to Flex only after a written partner relationship, customer consent, data-sharing approval, public-language approval, and an official referral link are active. Products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, card data, government IDs, authorization credentials, or sensitive financial documents through Forge.";
+const FLEX_COMPLIANCE_COPY = "Flex is a draft future-partner concept; no referral relationship or public referral path is active. Forge is not a bank, lender, broker, broker-dealer, underwriter, financial adviser, credit provider, payment processor, ISO, escrow service, Flex employee, or credit decision maker. A future referral could appear only after written partner and legal approval, a signed agreement, approved data-sharing scope and public language, explicit user consent, operator approval, an official HTTPS destination, and a valid server receipt. Do not submit bank credentials, passwords, API keys, SSNs, full bank or card numbers, routing numbers, government IDs, credit reports, financial statements, or sensitive uploads through Forge.";
 const FLEX_RECEIPT_CONTRACT = "forge.flex-receipt.v1";
 const FLEX_DELIVERY_TIMEOUT_MS = 10_000;
 const flexDeliveryInFlight = new Map();
@@ -1203,7 +1203,7 @@ const buildingHelpItems = [
 const buildingPublicCards = [
   {
     title: "Home Projects",
-    body: "For homeowners and property owners who need trusted help with repairs, upgrades, remodels, fencing, gates, decks, concrete, landscaping, painting, roofing, garages, shops, ADUs, and tenant improvements.",
+    body: "For homeowners and property owners who need local-provider review for repairs, upgrades, remodels, fencing, gates, decks, concrete, landscaping, painting, roofing, garages, shops, ADUs, and tenant improvements.",
     bestFor: ["Home repairs", "Remodels", "Fencing and gates", "Concrete and exterior work", "Landscaping", "Garages, shops, and ADUs", "Small business improvements"],
     button: "Start a Home Project",
     action: "focus-building-home"
@@ -1217,9 +1217,9 @@ const buildingPublicCards = [
   },
   {
     title: "Contractor Finance & Business Tools",
-    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can collect a basic request and refer qualified business owners through the Flex referral channel when appropriate.",
+    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can save a basic readiness request; Flex remains a draft future-partner concept and no referral is active.",
     bestFor: ["Contractors", "Builders", "Service businesses", "Blue-collar companies", "Project operators", "Businesses with payroll, invoices, vendors, or material costs"],
-    button: "Check Flex Options",
+    button: "Review Finance Readiness",
     action: "open-building-finance-review"
   },
   {
@@ -1230,7 +1230,7 @@ const buildingPublicCards = [
     action: "focus-building-home"
   }
 ];
-const buildingInternalSalesCopy = "Forge is building a blue-collar project engine for Oregon and Washington. It is not just a place to find a handyman. Small jobs go to verified local pros. Bigger projects go through a higher-level review so they can be routed to serious development, construction, finance, and operating partners when there is a fit. Because of Andrew's relationships, Forge is being built around real operators who understand construction, development, business finance, and execution. The goal is to help property owners get projects done, help contractors get more work, and help serious partners find qualified opportunities without wasting time.";
+const buildingInternalSalesCopy = "Forge is building a blue-collar project engine for Oregon and Washington. It is not just a place to find a handyman. Smaller work goes through local-provider review. Bigger projects go through a higher-level review before any approved development, construction, finance, or operating path can be considered. The goal is to help property owners organize projects, help contractors find opportunities, and help future approved partners review qualified opportunities without overstating current relationships.";
 const buildingNorthStarConnectionCopy = "North Star Creative Co. can support Forge Building by generating leads, landing pages, local ads, social content, outreach campaigns, contractor signups, project-owner campaigns, and partner introductions.";
 const autoServiceGroups = [
   {
@@ -1478,7 +1478,7 @@ const operationsVaultDocuments = [
     reviewed: "2026-06-26",
     tags: ["follow-up"],
     checklist: ["Respond quickly", "Restate request", "Confirm next step", "Set follow-up date", "Log outcome"],
-    body: "Follow up with a simple message that restates the request, confirms Forge received it, explains that partner fit must be reviewed, and sets the next follow-up action."
+    body: "Follow up with a simple message that restates the locally saved request, explains that delivery and partner fit must be verified, and sets the next follow-up action."
   },
   {
     id: "quote-request-sop",
@@ -3100,6 +3100,8 @@ const seedState = {
       referralAgreementSigned: false,
       dataSharingApproved: false,
       officialPartnerLanguageApproved: false,
+      operatorApproved: false,
+      legalApproved: false,
       featureFlag: "senecaPartnerApproved",
       status: "Draft partner record",
       publicDisplayRule: "Do not show Seneca publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -3121,6 +3123,8 @@ const seedState = {
       referralAgreementSigned: false,
       dataSharingApproved: false,
       officialPartnerLanguageApproved: false,
+      operatorApproved: false,
+      legalApproved: false,
       featureFlag: "flexPartnerApproved",
       status: "Draft partner record",
       publicDisplayRule: "Do not show Flex publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -3490,7 +3494,7 @@ const startPaths = [
     label: "I am building or improving a home",
     title: "Forge Homebuilding & Development.",
     body: "Start a home build, ADU, remodel, investor project, or contractor partnership request.",
-    next: "Forge saves project context and helps route next steps through trusted builders, trades, and support partners.",
+    next: "Forge saves project context and organizes next steps for builder, trade, and support-provider review.",
     screen: "homebuilding",
     action: "Homebuilding",
     tone: "ghost"
@@ -3508,7 +3512,7 @@ const startPaths = [
     label: "I need a photographer or videographer",
     title: "Book a local creative.",
     body: "Request coverage for weddings, events, business content, real estate, social media, family photos, or community work.",
-    next: "Forge saves the creative brief and routes it to approved local photographers and videographers.",
+    next: "Forge saves the creative brief for manual review by local photographer and videographer candidates.",
     screen: "creative",
     action: "Hire a Photographer",
     tone: "orange"
@@ -3525,10 +3529,10 @@ const startPaths = [
   {
     label: "My business needs breathing room",
     title: "Forge Capital Desk.",
-    body: "Tell Forge what your business needs and check whether Flex options may be a fit.",
-    next: "Forge collects basic contact info and consent, then Flex handles applications, approval, onboarding, activation, and support.",
+    body: "Tell Forge what your business needs and save a finance-readiness note. Flex remains an inactive future-partner concept.",
+    next: "Forge keeps the note in Capital Desk review. It is not a financing application and is not sent to Flex.",
     screen: "capital",
-    action: "Check Flex Options",
+    action: "Save Finance Interest",
     tone: "orange"
   },
   {
@@ -3943,6 +3947,8 @@ function normalizePartner(partner) {
     referralAgreementSigned: false,
     dataSharingApproved: false,
     officialPartnerLanguageApproved: false,
+    operatorApproved: false,
+    legalApproved: false,
     featureFlag: "",
     status: "Draft partner record",
     publicDisplayRule: "Do not show publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -4216,27 +4222,6 @@ function flexStatusLabel(status) {
   return humanize(String(status || "new").replaceAll("_", " "));
 }
 
-function flexLeadWebhookPayload(lead) {
-  return {
-    source: "forge_capital_desk",
-    partner: "flex",
-    owner_name: lead.owner_name,
-    business_name: lead.business_name,
-    email: lead.email,
-    phone: lead.phone,
-    industry: lead.industry,
-    city: lead.city,
-    state: lead.state,
-    lead_score: lead.lead_score,
-    primary_need: lead.primary_need,
-    interested_in_forge_job_leads: lead.interested_in_forge_job_leads,
-    interested_in_north_star_marketing: lead.interested_in_north_star_marketing,
-    interested_in_payment_processing: lead.interested_in_payment_processing,
-    interested_in_website_crm_automation: lead.interested_in_website_crm_automation,
-    status: lead.status
-  };
-}
-
 function normalizeProjectLead(lead) {
   const route = projectLeadRouting(lead);
   const existingStatus = projectStatuses.includes(lead.status) ? lead.status : "NEW";
@@ -4391,7 +4376,15 @@ function flexPartner() {
 
 function isSenecaPartnerApproved() {
   const partner = senecaPartner();
-  return Boolean(state.settings.senecaPartnerApproved && partner?.approved && partner?.dataSharingApproved);
+  return Boolean(
+    SENECA_PARTNER_ROUTING_ENABLED
+    && state.settings.senecaPartnerApproved
+    && partner?.approved
+    && partner?.referralAgreementSigned
+    && partner?.dataSharingApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function isFlexPartnerApproved() {
@@ -4404,16 +4397,31 @@ function isFlexPartnerApproved() {
     && partner?.referralAgreementSigned
     && partner?.dataSharingApproved
     && partner?.officialPartnerLanguageApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
     && configuredFlexReferralUrl()
   );
 }
 
 function canPubliclyDisplayPartner(partner) {
-  return Boolean(partner?.approved && partner?.publicDisplayEnabled);
+  return Boolean(
+    partner?.approved
+    && partner?.publicDisplayEnabled
+    && partner?.logoUseApproved
+    && partner?.officialPartnerLanguageApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function partnerCommissionAllowed(partner) {
-  return Boolean(partner?.referralAgreementSigned);
+  if (partner?.id === "flex") return isFlexPartnerApproved();
+  return Boolean(
+    partner?.approved
+    && partner?.referralAgreementSigned
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function normalizeHomebuildingLead(lead) {
@@ -4906,12 +4914,17 @@ function versionQuery(extra = "") {
   return `?v=${PUBLIC_LINK_VERSION}${extra ? `&${extra}` : ""}`;
 }
 
+let staticControlsHydrated = false;
+
 function render() {
   renderSession();
   renderAccountPrototype();
   renderCustomerProfileForm();
   renderOperatorGuard();
-  renderSelects();
+  if (!staticControlsHydrated) {
+    renderSelects();
+    staticControlsHydrated = true;
+  }
   renderTimeline();
   renderPremiumMarketplace();
   renderDemoSteps();
@@ -4943,7 +4956,6 @@ function render() {
   renderAdmitlyTradePathways();
   renderAdmitlyPresentation();
   renderMarketplaceCommandCenter();
-  renderAccountPrototype();
   renderProviderGrowthTools();
   renderRequiredTradeCategories();
   renderServiceVerticals();
@@ -8263,44 +8275,22 @@ function renderProviderDirectory() {
 }
 
 function workerTrustProfile(worker = {}) {
-  const text = normalizeLookup([
-    worker.status,
-    worker.experience,
-    worker.licenseStatus,
-    worker.insuranceStatus,
-    worker.driverLicenseStatus,
-    worker.insurance,
-    worker.backgroundCheck,
-    worker.referenceStatus,
-    worker.toolsReady,
-    worker.safetyPpeReady,
-    worker.workProofLink,
-    worker.portfolioLink,
-    worker.bio
-  ].join(" "));
-  if (worker.trustTier && worker.trustRank && worker.dispatchDecision) {
+  if (worker.trustReviewStatus === "reviewed" && worker.trustTier && worker.trustRank && worker.dispatchDecision) {
     return { tier: worker.trustTier, rank: worker.trustRank, decision: worker.dispatchDecision };
   }
-  if (text.includes("licensed") || text.includes("insured") || text.includes("5+ years") || text.includes("approved") || text.includes("portfolio")) {
-    return { tier: "Gold", rank: "Crew Lead 1", decision: "Crew-Lead Ready" };
-  }
-  if (text.includes("ready") || text.includes("2-4 years") || text.includes("current") || text.includes("provided")) {
-    return { tier: "Silver", rank: "Reliable Pro", decision: "Ready to Invite" };
-  }
-  if (text.includes("willing") || text.includes("needs review") || text.includes("pending")) {
-    return { tier: "Green", rank: "Tool-Ready Helper", decision: "Supervised Helper" };
-  }
-  return { tier: "Green", rank: "Helper 1", decision: "Admin Review" };
+  const suppliedSignals = [worker.referenceStatus, worker.workProofLink, worker.portfolioLink, worker.toolsReady, worker.vehicleType].filter(Boolean).length;
+  return { tier: "Green", rank: suppliedSignals >= 2 ? "Profile Supplied" : "Profile Started", decision: "Admin Review" };
 }
 
 function workerProofSignals(worker = {}) {
+  const supplied = (value, fallback = "Needed") => value ? `Provider supplied: ${value} — not verified` : fallback;
   const signals = [
-    ["Reference", worker.referenceStatus || worker.reviews ? "Present" : "Needed"],
-    ["Work Proof", worker.workProofLink || worker.portfolioLink || worker.sampleGalleryLinks ? "Present" : "Needed"],
-    ["Tools / Vehicle", worker.toolsReady || worker.vehicleType || worker.equipmentNotes ? "Present" : "Review"],
-    ["Safety / PPE", worker.safetyPpeReady || worker.insuranceStatus || worker.insurance ? "Review" : "Needed"],
-    ["License / Insurance", worker.licenseStatus || worker.driverLicenseStatus || worker.insuranceStatus || worker.insurance || "Review"],
-    ["Paid Trial", worker.paidTrialReadiness || "Optional"]
+    ["Reference", supplied(worker.referenceStatus || worker.reviews)],
+    ["Work Proof", supplied(worker.workProofLink || worker.portfolioLink || worker.sampleGalleryLinks)],
+    ["Tools / Vehicle", supplied(worker.toolsReady || worker.vehicleType || worker.equipmentNotes, "Review needed")],
+    ["Safety / PPE", supplied(worker.safetyPpeReady, "Review needed")],
+    ["License / Insurance", supplied(worker.licenseStatus || worker.driverLicenseStatus || worker.insuranceStatus || worker.insurance, "Review needed")],
+    ["Paid Trial", supplied(worker.paidTrialReadiness, "Optional; not completed in this MVP")]
   ];
   return signals;
 }
@@ -8314,6 +8304,7 @@ function workerTrustLedgerHtml(worker, trust = workerTrustProfile(worker)) {
         <span>${escapeHtml(trust.rank)}</span>
         <span>${escapeHtml(trust.decision)}</span>
       </div>
+      <p class="muted">Triage signal only. Provider-supplied information is not a verified license, insurance policy, background check, safety guarantee, quality guarantee, or outcome guarantee.</p>
       <div class="bid-detail-meta">
         ${workerProofSignals(worker).map(([label, value]) => `<span><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`).join("")}
       </div>
@@ -8825,7 +8816,7 @@ function renderBuildingPage() {
 function buildingStatusTimelineBody(status) {
   const rows = {
     NEW_BUILDING_LEAD: "Forge saves the request and checks whether it belongs in home project, major project, or finance review.",
-    HOME_PROJECT_REVIEW: "Smaller jobs route toward verified local pros before any larger partner review.",
+    HOME_PROJECT_REVIEW: "Smaller jobs route toward local-provider review before any larger partner review.",
     MAJOR_PROJECT_REVIEW: "Large budgets, commercial work, land, multifamily, mixed-use, or investment builds receive higher-level review.",
     FORGE_QUALIFIED: "Forge has enough context to consider next steps, partner fit, licensing, insurance, and consent.",
     CUSTOMER_CONSENT_APPROVED: "Customer consent is recorded before any third-party partner sharing.",
@@ -9215,10 +9206,8 @@ function projectLeadCards(leads) {
 }
 
 function canSendProjectToSeneca(lead) {
-  const partner = senecaPartner();
   return projectLeadRouting(lead).senecaReviewAllowed(lead.status)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function projectPartnerReadinessText(lead) {
@@ -12072,10 +12061,10 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "opportunity") return ["Forge saves this career interest", "The operator can copy an application plan and follow up", "Official applications happen through the school, union, employer, or program"];
   if (confirmation.type === "project") return ["Forge saves and routes this project opportunity", "Smaller home projects route to normal Forge Pros while major projects move to Major Projects Review", "Third-party partner sharing requires consent, Forge approval, and written partner agreement"];
   if (confirmation.type === "homebuilding") return ["Forge saves and pre-screens this project lead", "Accepted major leads stay inside Forge until consent and approved-partner gates pass", "All contracts remain between the client and the approved partner or licensed contractor"];
-  if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can match it with approved local creatives", "Customer contact info stays for booking and provider matching"];
+  if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can review possible local creative providers", "Customer contact info stays private during review"];
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
   if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
-  if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Forge reviews whether the business looks like a fit", "Flex handles eligibility, approval, onboarding, activation, and product support"];
+  if (confirmation.type === "flex") return ["Forge saves this as a Capital Desk interest note", "Check the receipt to see whether Forge delivery was verified", "Flex remains inactive and this is not a financing application"];
   if (confirmation.type === "manufacturing-rfq") return ["Forge saves this manufacturing RFQ", "Admin reviews product, formula, dosage, MOQ, packaging, certification, testing, and compliance flags", "Supplier matching uses original Forge profiles and company-created supplier profiles only"];
   if (confirmation.type === "manufacturing-supplier") return ["Forge saves this supplier profile", "Admin reviews capability, MOQ, dosage forms, certifications, support areas, and contact details", "Verified-by-Forge remains a placeholder until manual review and approval"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
@@ -12095,7 +12084,7 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "creative") return "Tell the customer how Forge creative matching works.";
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
   if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
-  if (confirmation.type === "flex") return "Tell the business owner how the Flex referral channel works.";
+  if (confirmation.type === "flex") return "Tell the business owner what was saved and which future-partner gates remain closed.";
   if (confirmation.type === "manufacturing-rfq") return "Tell the buyer how manufacturing supplier matching works.";
   if (confirmation.type === "manufacturing-supplier") return "Tell the supplier how onboarding review works.";
   return "Use this as the next message.";
@@ -12117,7 +12106,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this bid${detail}. The job poster can compare it on the job detail screen, and Messages keep the next schedule handoff visible.`;
   }
   if (confirmation.type === "auto-service") {
-    return `Forge saved this auto service request${detail}. The operator can route it to a trusted auto partner, mechanic, transport provider, or dealership partner. Regulated work must be handled by properly licensed or qualified partners where required.`;
+    return `Forge saved this auto service request${detail}. The operator can review possible mechanics, transport providers, or dealer candidates. Forge has not verified a provider through this MVP; regulated work must be handled by properly licensed or qualified providers where required.`;
   }
   if (confirmation.type === "vehicle") {
     return `Forge saved this vehicle listing${detail}. Buyers can copy the seller contact info, but title, inspection, financing, and payment stay outside Forge in this MVP.`;
@@ -12135,7 +12124,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this homebuilding request${detail}. Forge pre-screens qualified project leads and keeps accepted major leads inside Forge until customer consent, partner approval, and data-sharing gates pass. Any approved partner may accept or decline review. Any referral or success fee must be governed by a separate written agreement. All construction and development contracts remain between the client and the approved partner or licensed contractor. Forge is not the contractor of record. Sensitive documents and payment details stay outside Forge in this MVP.`;
   }
   if (confirmation.type === "creative") {
-    return `Forge saved this photography and videography request${detail}. The operator can match it with approved local creative providers without publishing private contact information.`;
+    return `Forge saved this photography and videography request${detail}. The operator can review possible local creative providers without publishing private contact information. Provider approval is not implied.`;
   }
   if (confirmation.type === "creative-provider") {
     return `Forge saved this creative provider application${detail}. The operator can review portfolio, availability, insurance or licensing notes, and provider terms before matching the provider with customers.`;
@@ -12144,7 +12133,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this NorthStar Creative Co. request${detail}. Admin can review the business, services needed, budget, biggest problem, and 30-90 day goal, then NorthStar can scope the right marketing and operations support.`;
   }
   if (confirmation.type === "flex") {
-    return `Forge saved this Capital Desk lead${detail}. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex handles eligibility, approval, onboarding, activation, and product support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
+    return `Forge saved this Capital Desk interest note${detail}. Check the delivery receipt before expecting Forge follow-up. It was not sent to Flex, Flex remains an inactive future-partner concept, and this is not a financing application. Forge is not a bank, lender, broker, broker-dealer, underwriter, payment processor, ISO, escrow service, or credit decision maker.`;
   }
   if (confirmation.type === "manufacturing-rfq") {
     return `Forge saved this manufacturing RFQ${detail}. The operator can review formula status, dosage form, MOQ, packaging, testing, certifications, CBD/hemp flags, and supplier fit before any quote request. Compliance, legal, label, claims, testing, and insurance review remain the user's responsibility.`;
@@ -14325,7 +14314,7 @@ function launchCommandRows() {
       needTouch: (state.flexLeads || []).filter((lead) => ["new", "qualified"].includes(lead.status)).length,
       contacted: (state.flexLeads || []).filter((lead) => ["contacted", "flex_link_sent"].includes(lead.status)).length,
       moving: (state.flexLeads || []).filter((lead) => ["application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"].includes(lead.status)).length,
-      next: "Confirm consent, review fit, and look for Forge or NorthStar upsell opportunities before any official Flex referral handoff.",
+      next: "Confirm consent, review the need inside Forge, and keep every future-partner gate closed while Flex remains inactive.",
       screen: "capital",
       action: "Capital Desk"
     },
@@ -15775,7 +15764,7 @@ function submitBuildingLead() {
       lead.consentToShareWithApprovedPartners ? "Approved-partner sharing consent captured" : "No third-party sharing consent yet"
     ],
     nextSteps: [
-      lead.status === "HOME_PROJECT_REVIEW" ? "Review as a smaller home project and route to verified local pros when appropriate" : lead.status === "FLEX_REVIEW_ELIGIBLE" ? "Review as a contractor finance request inside Forge before any finance partner routing" : "Review as a Major Projects Review candidate",
+      lead.status === "HOME_PROJECT_REVIEW" ? "Review as a smaller home project and evaluate local provider candidates" : lead.status === "FLEX_REVIEW_ELIGIBLE" ? "Review as a contractor finance request inside Forge before any future finance-partner routing" : "Review as a Major Projects Review candidate",
       "Do not share customer data with Seneca, Flex, or any partner unless consent and approval flags are true",
       "Use Building Leads admin to qualify, request consent, or mark partner-review eligibility"
     ],
@@ -15795,11 +15784,9 @@ function canMarkBuildingSenecaEligible(lead) {
 }
 
 function canSendBuildingToSeneca(lead) {
-  const partner = senecaPartner();
   return canMarkBuildingSenecaEligible(lead)
     && Boolean(lead.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function canMarkBuildingFlexEligible(lead) {
@@ -15807,11 +15794,10 @@ function canMarkBuildingFlexEligible(lead) {
 }
 
 function canSendBuildingToFlex(lead) {
-  const partner = flexPartner();
   return canMarkBuildingFlexEligible(lead)
     && Boolean(lead.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && FLEX_PARTNER_ROUTING_ENABLED
+    && isFlexPartnerApproved();
 }
 
 function buildingPartnerReadinessText(lead) {
@@ -15914,7 +15900,7 @@ function submitCreativeLead() {
     ],
     nextSteps: [
       "Forge saves this as a photography_videography job lead",
-      "The operator can match the request with approved local creatives",
+      "The operator can review possible local creative providers",
       "Customer contact info is used only for booking and provider matching"
     ],
     primary: { label: "View Job Detail", jobId: lead.id },
@@ -16934,7 +16920,7 @@ function focusBuildingForm(leadType, projectType) {
 
 function configuredFlexAppUrl() {
   const url = String(FLEX_APP_URL || "").trim();
-  return /^https?:\/\//i.test(url) ? url : "";
+  return /^https:\/\//i.test(url) ? url : "";
 }
 
 function createPendingBuildingFinanceLead() {
@@ -16975,7 +16961,7 @@ function openBuildingFinanceReview() {
     }
     return;
   }
-  const url = configuredFlexAppUrl();
+  const url = isFlexPartnerApproved() ? configuredFlexAppUrl() : "";
   if (url) {
     window.open(url, "_blank", "noopener,noreferrer");
     showToast("Configured Flex app link opened.");
@@ -18047,7 +18033,7 @@ document.querySelector("#autoServiceForm").addEventListener("submit", (event) =>
     title: request.service === "Find Me a Vehicle" ? "Vehicle buyer request saved." : "Auto service request saved.",
     body: request.service === "Find Me a Vehicle"
       ? "Forge saved this buyer-concierge request for S&A Auto or an approved seller-of-record path to review."
-      : "Forge saved this vehicle request so the operator can route it to the right trusted auto partner.",
+      : "Forge saved this vehicle request so the operator can review possible local auto providers.",
     details: [
       `${request.name} · ${request.service}`,
       `${request.vehicle} · ${request.mileage}`,
@@ -18055,7 +18041,7 @@ document.querySelector("#autoServiceForm").addEventListener("submit", (event) =>
     ],
     nextSteps: [
       request.service === "Find Me a Vehicle" ? "Forge saves the request in the S&A Auto buyer pipeline" : "Forge saves the request in the Auto service queue",
-      "The operator routes it to a trusted mechanic, auto partner, transport provider, or dealer partner",
+      "The operator reviews possible mechanics, transport providers, or dealer candidates",
       "Licensed or qualified partners perform regulated sales, financing, repair, towing, transport, and insurance-related work where required"
     ],
     primary: { label: "Open Forge Auto", screen: "auto" },
@@ -18130,8 +18116,8 @@ document.querySelector("#roadRescueForm").addEventListener("submit", (event) => 
   addActivity(`Road Rescue request saved: ${request.name} needs ${roadRescueIssueSummary(request)} near ${request.location}.`);
   state.lastConfirmation = {
     type: "road-rescue",
-    title: "Forge Road Rescue received your request.",
-    body: "Forge Road Rescue received your request. If this is an emergency or anyone is hurt, call 911 now. We are checking for available local providers who can help with your roadside, tire, tow, wheel, or mechanic issue. Please stay in a safe location and upload photos if you can.",
+    title: "Forge Road Rescue saved your request on this device.",
+    body: "Forge Road Rescue saved your request in this browser. Delivery is not confirmed. If this is an emergency or anyone is hurt, call 911 now. Please stay in a safe location while you review the delivery status.",
     details: [
       `${request.name} · ${roadRescueIssueSummary(request)}`,
       `${request.location} · ${request.serviceRequested}`,
@@ -18712,7 +18698,6 @@ const requestedDemoAccount = demoAccounts.find((account) => account.role === dem
 const demoAccount = requestedDemoAccount?.role === "admin" && !operatorDemoAllowed() ? null : requestedDemoAccount;
 enforcePublicOperatorBoundary();
 expireAdminSession(demoAccount);
-render();
 if (demoAccount) {
   const landing = screenExists(initial) ? initial : demoAccount.screen;
   loginAs(demoAccount.role, demoAccount.name, landing);
@@ -18782,7 +18767,7 @@ function exportCsv(filename, rows) {
 }
 
 function csvCell(value) {
-  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+  return ForgeCsv.cell(value);
 }
 
 async function importManufacturingSupplierCsv(event) {
@@ -18922,7 +18907,7 @@ function saveWebhookSettings() {
 
 function sendTestWebhook() {
   saveWebhookSettings();
-  addActivity("Webhook test lead sent from Admin.");
+  addActivity("Synthetic webhook connectivity test started from local Admin.");
   saveState();
   sendLead("test", {
     source: "Forge MVP",
@@ -18936,34 +18921,38 @@ async function sendLead(type, payload) {
     await sendDurableLead(type, payload);
     return;
   }
-  if (!state.settings.webhookEnabled || !state.settings.webhookUrl) {
+  if (type !== "test" || !operatorDemoAllowed() || !state.settings.webhookEnabled || !state.settings.webhookUrl) {
     updateWebhookDelivery("Local only", type);
     return;
   }
+  const endpoint = String(state.settings.webhookUrl || "").trim();
+  if (!/^https:\/\//i.test(endpoint) && !/^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?\//i.test(endpoint)) {
+    updateWebhookDelivery("Rejected", type);
+    showToast("Synthetic test endpoint must use HTTPS or local development.");
+    return;
+  }
   const body = JSON.stringify({ type, payload, app: "Forge MVP", createdAt: new Date().toISOString() });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8_000);
   try {
-    await fetch(state.settings.webhookUrl, {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body
+      body,
+      signal: controller.signal
     });
-    updateWebhookDelivery("Sent", type);
-    addActivity(`${type} lead sent to webhook.`);
+    if (!response.ok) throw new Error("Synthetic endpoint test failed");
+    updateWebhookDelivery("Synthetic test reached endpoint", type);
+    addActivity("Synthetic webhook connectivity test reached the configured operator endpoint.");
     saveState();
-    showToast("Lead sent to webhook.");
+    showToast("Synthetic connectivity test completed.");
   } catch {
-    try {
-      await fetch(state.settings.webhookUrl, { method: "POST", mode: "no-cors", body });
-      updateWebhookDelivery("Attempted", type);
-      addActivity(`${type} lead attempted via webhook.`);
-      saveState();
-      showToast("Lead sent to webhook.");
-    } catch {
-      updateWebhookDelivery("Failed", type);
-      addActivity(`${type} lead saved locally; webhook failed.`);
-      saveState();
-      showToast("Lead saved locally. Webhook did not respond.");
-    }
+    updateWebhookDelivery("Failed", type);
+    addActivity("Synthetic webhook connectivity test failed without sending user lead data.");
+    saveState();
+    showToast("Synthetic connectivity test failed.");
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -19093,41 +19082,6 @@ async function deliverOutboxRecord(requestId) {
 
 function sendDurableLead(type, payload) {
   return queueDurableLead(type, payload);
-}
-
-function sendConfiguredFlexWebhooks(lead) {
-  const payload = flexLeadWebhookPayload(lead);
-  [
-    ["FORGE_GHL_WEBHOOK_URL", FORGE_GHL_WEBHOOK_URL],
-    ["FORGE_ZAPIER_WEBHOOK_URL", FORGE_ZAPIER_WEBHOOK_URL]
-  ].forEach(([label, url]) => {
-    if (!url) return;
-    postConfiguredLeadWebhook(label, url, payload);
-  });
-}
-
-async function postConfiguredLeadWebhook(label, url, payload) {
-  try {
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    addActivity(`Capital Desk lead sent to ${label}.`);
-    updateWebhookDelivery("Sent", label);
-    saveState();
-  } catch {
-    try {
-      await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-      addActivity(`Capital Desk lead attempted via ${label}.`);
-      updateWebhookDelivery("Attempted", label);
-      saveState();
-    } catch {
-      addActivity(`Capital Desk lead saved locally; ${label} failed.`);
-      updateWebhookDelivery("Failed", label);
-      saveState();
-    }
-  }
 }
 
 function updateWebhookDelivery(status, type) {
@@ -19697,8 +19651,8 @@ function copyCreativeBrief() {
   const lines = [
     "Forge Photography & Videography brief",
     "Headline: Photography & Videography",
-    "Positioning: Forge helps customers in Medford and surrounding areas book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
-    "Provider note: Forge helps customers connect with approved local creative providers after portfolio, availability, terms, and safety review.",
+    "Positioning: Forge helps customers in Medford and surrounding areas request local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
+    "Provider note: Forge can review local creative-provider candidates after portfolio, availability, terms, and safety review; the MVP does not imply verification or approval.",
     `Customer category value: ${CREATIVE_CATEGORY_VALUE}`,
     `Creative requests: ${state.jobs.filter(isCreativeJob).length}`,
     `Creative providers: ${state.workers.filter(isCreativeProvider).length}`,
@@ -19817,12 +19771,12 @@ function copyNorthStarBrief() {
 }
 
 function flexOutreachText(lead) {
-  if (!lead) return "No Flex leads yet.";
+  if (!lead) return "No Capital Desk interest notes yet.";
   return [
     `Hi ${lead.owner_name || "there"}, this is Forge Capital Desk.`,
     `I saved your request for ${lead.business_name || "your business"} around ${lead.city || "your area"}.`,
     `You mentioned ${lead.primary_need || "business finance tools"} and a monthly spend range of ${lead.monthly_spend_range || "not provided"}.`,
-    "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Flex handles eligibility, approval, onboarding, activation, and product support.",
+    "This note is for Forge review only. Flex remains an inactive future-partner concept, and this is not a financing application or promise of referral, approval, terms, or funding.",
     "Can you confirm the best time to talk?"
   ].join(" ");
 }
@@ -19830,7 +19784,7 @@ function flexOutreachText(lead) {
 function flexLeadLines(lead) {
   if (!lead) return ["No Flex lead selected."];
   return [
-    "Forge Capital Desk Flex lead",
+    "Forge Capital Desk interest note",
     `${lead.business_name} - ${lead.owner_name}`,
     `Source: forge_capital_desk`,
     `Partner: flex`,
@@ -19865,9 +19819,9 @@ function copyFlexOutreach(id) {
     copyText([
       "Forge Capital Desk",
       "",
-      "Business owners need breathing room. If your business is juggling cash flow, bill pay, vendor payments, employee cards, materials, equipment, payroll timing, or working capital, Forge can collect the request and help determine whether a Flex referral is a fit.",
+      "Business owners need breathing room. If a business is juggling cash flow, bill pay, vendor payments, controlled-spend cards, materials, equipment, payroll timing, inventory, or working capital, Forge can save a basic finance-readiness interest note for internal review.",
       "",
-      "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions."
+      "Flex remains a draft future-partner concept. No referral relationship or referral link is active. Forge is not a bank, lender, broker, broker-dealer, underwriter, payment processor, ISO, escrow service, or credit decision maker."
     ].join("\n"), "Capital Desk message copied.");
     return;
   }
@@ -19891,15 +19845,15 @@ function copyFlexBrief() {
     "Forge Capital Desk brief",
     "",
     "Title: Business owners need breathing room.",
-    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.",
+    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators organize business-finance needs for Forge review.",
     "",
     "How it works:",
     "1. Tell Forge what your business needs.",
-    "2. Forge checks whether you look like a fit.",
-    "3. Forge sends you the official Flex referral link if appropriate.",
-    "4. You apply directly with Flex.",
-    "5. Flex handles approval, onboarding, activation, and product support.",
-    "6. Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations.",
+    "2. Forge preserves the note locally before checking its own delivery.",
+    "3. The receipt distinguishes a local save from verified Forge delivery.",
+    "4. No request is sent to Flex and no financing application is created.",
+    "5. A future referral stays hidden unless every written approval, consent, legal, operator, data-sharing, and official-link gate passes.",
+    "6. Forge can separately record interest in job leads, marketing, websites, CRM, hiring, payments operations, and business systems without cross-sharing consent.",
     "",
     FLEX_COMPLIANCE_COPY,
     "",
@@ -20410,7 +20364,7 @@ function roadRescueProviderNotification(request) {
 
 function roadRescueCustomerText(request) {
   if (!request) return "No Road Rescue requests yet.";
-  return `Hi ${request.name}, this is Forge Road Rescue. We received your ${roadRescueIssueSummary(request)} request near ${request.location}. If this is an emergency or anyone is hurt, call 911 now. Please stay somewhere safe while Forge checks for available local providers for ${request.serviceRequested || "roadside help"}.`;
+  return `Hi ${request.name}, this is Forge Road Rescue. We have your ${roadRescueIssueSummary(request)} request near ${request.location} in the local Forge review queue. If this is an emergency or anyone is hurt, call 911 now. Please stay somewhere safe while delivery and provider availability are checked for ${request.serviceRequested || "roadside help"}.`;
 }
 
 function roadRescueRequestLines(request) {
@@ -20492,7 +20446,7 @@ function copyAutoMarketBrief() {
   const lines = [
     "Forge Auto Services brief",
     "",
-    "Positioning: Forge Auto helps customers buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles through trusted auto partners, mechanics, transport providers, and dealership partners.",
+    "Positioning: Forge Auto organizes requests to buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles for manual review by possible mechanics, transport providers, and dealer candidates.",
     `Auto service requests: ${(state.autoRequests || []).length}`,
     `Vehicle listings: ${(state.vehicles || []).length}`,
     `Dealer partners: ${autoDealers.map((dealer) => dealer.name).join(", ")}`,
@@ -21686,7 +21640,7 @@ function copyManufacturingBrief() {
   const lines = [
     "Forge Manufacturing + Nutraceuticals brief",
     "",
-    "Forge Manufacturing + Nutraceuticals helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs find trusted partners to manufacture vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other compliant health products.",
+    "Forge Manufacturing + Nutraceuticals helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs request review by potential manufacturers for vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other regulated product categories.",
     "",
     "Core paths:",
     "1. Find a Manufacturer",
@@ -21759,11 +21713,9 @@ function markHomebuildingContacted(id) {
 }
 
 function canSendHomebuildingToSeneca(lead) {
-  const partner = senecaPartner();
   return Boolean(lead?.senecaEligible)
     && Boolean(lead?.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function sendHomebuildingToSeneca(id) {
@@ -22040,9 +21992,16 @@ function markFlexContacted(id) {
 function markFlexStatus(id, status) {
   const lead = (state.flexLeads || []).find((item) => item.id === id);
   if (!lead || !flexLeadStatuses.includes(status)) return;
+  const referralStatuses = new Set(["flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid"]);
+  if (referralStatuses.has(status) && (!lead.consent_to_receive_flex_referral || !isFlexPartnerApproved())) {
+    addActivity("Blocked inactive Flex status change for " + lead.business_name + ": complete referral approval is missing.");
+    saveState();
+    showToast("Flex remains inactive; referral and downstream statuses are locked.");
+    return;
+  }
   lead.status = status;
   lead.updated_at = "Today";
-  if (status === "flex_link_sent" && !lead.flex_referral_url_sent) lead.flex_referral_url_sent = flexReferralUrl();
+  if (status === "flex_link_sent" && !lead.flex_referral_url_sent) lead.flex_referral_url_sent = configuredFlexReferralUrl();
   addActivity(`Flex lead status changed: ${lead.business_name} -> ${flexStatusLabel(status)}.`);
   saveState();
   render();
@@ -22054,7 +22013,15 @@ function moveFlexForward(id) {
   if (!lead) return;
   const order = ["new", "contacted", "qualified", "flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"];
   const index = order.indexOf(lead.status);
-  lead.status = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "qualified";
+  const nextStatus = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "qualified";
+  if (["flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid"].includes(nextStatus)
+    && (!lead.consent_to_receive_flex_referral || !isFlexPartnerApproved())) {
+    addActivity("Blocked inactive Flex progression for " + lead.business_name + ": complete referral approval is missing.");
+    saveState();
+    showToast("Flex remains inactive; the next referral status is locked.");
+    return;
+  }
+  lead.status = nextStatus;
   lead.updated_at = "Today";
   addActivity(`Flex lead moved forward: ${lead.business_name} is ${flexStatusLabel(lead.status)}.`);
   saveState();
@@ -22087,40 +22054,32 @@ function moveManufacturingForward(id) {
 
 function openFlexReferral(leadId) {
   const lead = (state.flexLeads || []).find((item) => item.id === leadId);
-  const url = flexReferralUrl();
-  if (lead) {
-    if (!lead.consent_to_receive_flex_referral) {
-      showToast("Collect Flex referral consent before opening the link.");
-      return;
-    }
-    const partner = flexPartner();
-    if (!partner?.approved || !partner?.dataSharingApproved) {
-      lead.notes = [lead.notes, "Flex referral link blocked: partner approval and data-sharing approval are not recorded."].filter(Boolean).join("\n");
-      lead.updated_at = "Today";
-      addActivity(`Blocked Flex referral link for ${lead.business_name}: partner approval or data-sharing approval is missing.`);
-      saveState();
-      render();
-      showToast("Flex referral blocked until partner approval and data-sharing approval are true.");
-      return;
-    }
-    if (!url || url === FLEX_REFERRAL_URL_PLACEHOLDER) {
-      lead.notes = [lead.notes, "Finance partner link blocked: no configured referral URL is present."].filter(Boolean).join("\n");
-      lead.updated_at = "Today";
-      addActivity(`Blocked finance partner link for ${lead.business_name}: no configured referral URL is present.`);
-      saveState();
-      render();
-      showToast("Finance partner link is not configured.");
-      return;
-    }
-    lead.status = "flex_link_sent";
-    lead.flex_referral_url_sent = url;
+  if (!lead) {
+    showToast("Capital Desk interest note unavailable.");
+    return;
+  }
+  if (!lead.consent_to_receive_flex_referral) {
+    showToast("Explicit future-referral consent is required.");
+    return;
+  }
+  const url = configuredFlexReferralUrl();
+  if (!isFlexPartnerApproved() || !/^https:\/\//i.test(url)) {
+    lead.notes = [lead.notes, "Future referral blocked: every written partner, agreement, public-language, consent, legal, operator, data-sharing, brand-use, and official-HTTPS-link gate is not verified."].filter(Boolean).join("\n");
     lead.updated_at = "Today";
-    addActivity(`Configured Flex referral link opened for ${lead.business_name}.`);
+    addActivity(`Blocked inactive future referral for ${lead.business_name}: the complete approval policy did not pass.`);
     saveState();
     render();
+    showToast("Flex remains inactive; the full referral gate is closed.");
+    return;
   }
+  lead.status = "flex_link_sent";
+  lead.flex_referral_url_sent = url;
+  lead.updated_at = "Today";
+  addActivity(`Approved referral destination opened for ${lead.business_name}.`);
+  saveState();
+  render();
   window.open(url, "_blank", "noopener,noreferrer");
-  showToast("Configured Flex referral link opened.");
+  showToast("Approved referral destination opened.");
 }
 
 function createFlexUpsellTask(id) {
@@ -23255,10 +23214,19 @@ function clearActivity() {
 function resetDemoData() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
-  const warning = leadCount > backupCount
-    ? `Reset local Forge demo data? This clears ${leadCount} leads saved in this browser. Export Backup JSON first if you need to keep them.`
-    : "Reset local Forge demo data? This clears leads saved in this browser.";
-  if (!confirm(warning)) return;
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  if (!backupCurrent) {
+    showToast(`Reset blocked. Export Backup JSON for all ${leadCount} saved leads first.`);
+    return;
+  }
+  const confirmationPhrase = `DELETE ${leadCount} LEADS`;
+  const confirmation = prompt(
+    `This permanently replaces the ${leadCount} leads saved in this browser with synthetic demo data. The current backup covers ${backupCount} leads. Type ${confirmationPhrase} to continue.`
+  );
+  if (confirmation !== confirmationPhrase) {
+    showToast("Reset cancelled. Every saved lead remains in this browser.");
+    return;
+  }
   state = normalizeState(structuredClone(seedState));
   saveState();
   render();
@@ -23388,7 +23356,47 @@ function normalizeLookup(value) {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
-  navigator.serviceWorker.register("./service-worker.js").catch(() => {
-    // The MVP should keep working even if install/offline support is unavailable.
+  let activationRequested = false;
+
+  const offerReleaseUpdate = (worker) => {
+    if (!worker || document.querySelector("#forgeReleaseUpdate")) return;
+    const notice = document.createElement("section");
+    notice.id = "forgeReleaseUpdate";
+    notice.className = "release-update";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+
+    const title = document.createElement("strong");
+    title.textContent = "A fresh Forge update is ready.";
+    const copy = document.createElement("p");
+    copy.textContent = "Refresh once to use the current release. Information already saved in this browser will remain here.";
+    const action = document.createElement("button");
+    action.type = "button";
+    action.textContent = "Refresh Forge";
+    action.addEventListener("click", () => {
+      activationRequested = true;
+      action.disabled = true;
+      action.textContent = "Refreshing…";
+      worker.postMessage({ type: "FORGE_ACTIVATE_RELEASE", release: PUBLIC_LINK_VERSION });
+    });
+    notice.append(title, copy, action);
+    document.body.appendChild(notice);
+  };
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (activationRequested) window.location.reload();
+  });
+
+  navigator.serviceWorker.register(`./service-worker.js?v=${PUBLIC_LINK_VERSION}`).then((registration) => {
+    if (registration.waiting && navigator.serviceWorker.controller) offerReleaseUpdate(registration.waiting);
+    registration.addEventListener("updatefound", () => {
+      const installing = registration.installing;
+      if (!installing) return;
+      installing.addEventListener("statechange", () => {
+        if (installing.state === "installed" && navigator.serviceWorker.controller) offerReleaseUpdate(installing);
+      });
+    });
+  }).catch(() => {
+    // The public experience remains usable when install or offline support is unavailable.
   });
 }

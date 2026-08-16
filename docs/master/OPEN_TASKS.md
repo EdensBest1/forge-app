@@ -5,9 +5,11 @@ Track pending build, documentation, legal, operations, deployment, and business 
 ## Pending
 
 - Public job/worker delivery remains fail-closed until an approved durable endpoint exists and a synthetic preview receipt is verified end to end.
-- Capital Desk delivery remains fail-closed until all written Flex relationship, referral-agreement, data-sharing, official-language, consent, and official-link gates pass and an approved server-owned destination returns the required receipt.
-- Keep `/admin`, `/capture`, and `/reports` unavailable in production until production-grade operator authentication, audit, and recovery are approved.
+- Capital Desk delivery remains fail-closed until written Flex relationship, public-display, logo-use, referral-agreement, data-sharing, official-language, operator, legal, consent, official-link, server-destination, and receipt gates all pass.
+- Keep /admin, /capture, /reports, /monetization-admin, and every nested path unavailable in production until production-grade operator authentication, authorization, audit, and recovery are approved.
 - Complete final legal/privacy, security, monitoring/retention, incident-response, and operational-ownership review before broad public launch.
+- Approve any impact allocation and auditable fund-flow process before claiming a donation, distribution, beneficiary result, or tax outcome.
+- Plan the future lane-based JavaScript/CSS split without changing local storage keys, route behavior, or receipt contracts.
 
 - Photography & Videography is live in the UI; hardening remains before broad launch:
   - Dedicated admin creative filter/lane polish.
@@ -36,3 +38,4 @@ Track pending build, documentation, legal, operations, deployment, and business 
 ## Completed
 
 - Created the initial permanent project knowledge system.
+- v133: classified every route, hardened cache/update/offline behavior, added release validation and AVIF media, eliminated opaque lead delivery, secured exports, tightened Capital and Trust Ledger semantics, expanded protected-route coverage, and added executable release fences.

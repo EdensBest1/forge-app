@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-15 - v133 deep product, route, cache, privacy, and release hardening
+
+- Added one machine-readable registry for every public route, alias, lane, audience, primary action, canonical destination, and release status, plus exhaustive filesystem coverage.
+- Rebuilt the service-worker contract around network-first navigation, same-origin current-version assets, private/API/error bypass, scoped cache cleanup, an offline shell, and explicit user-controlled activation.
+- Added release-marker validation and accessible retry behavior to the route loader.
+- Added AVIF sources for the three largest public hero images, intrinsic dimensions, reduced-motion coverage, consolidated design tokens, and a white/spacious public-quality contract.
+- Removed stale opaque webhook delivery, added shared CSV formula-injection protection, strengthened Capital Desk allowlists/byte limits/concurrency/receipt tests, and gated every Flex link behind the complete inactive approval policy.
+- Changed Worker Trust / Proof Ledger so provider-entered wording cannot create reviewed tiers or dispatch claims.
+- Archived the stale v114 duplicate shell outside public HTML routes and documented rollback, testing, route ownership, security/privacy, design/accessibility, cache/performance, and issue disposition.
+- Added release-fence automation proving no dependencies, third-party scripts, public storage activation, opaque delivery, or public operator routes were introduced.
+- Kept Flex inactive, the PR draft/unmerged, all broad-launch gates intact, and Stitch outside the change scope.
+
 ## 2026-08-15 - Welcoming public system and Capital Desk delivery truth
 
 - Rebuilt the public orientation layer around a white, welcoming, spacious visual system with two primary actions, three role paths, a focused business-support row, a simple three-step explanation, and progressive disclosure for the broader Forge network.

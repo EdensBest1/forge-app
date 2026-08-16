@@ -1,3 +1,6 @@
+Legacy v114 HTML snapshot retained as non-routable text for rollback archaeology only.
+It is not current product truth and must never be deployed as a public page.
+
 <!doctype html>
 <html lang="en">
   <head>

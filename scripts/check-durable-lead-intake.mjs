@@ -260,7 +260,7 @@ try {
     activity: []
   };
   syntheticBrowserState.leadOutbox = [];
-  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "132" });
+  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "133" });
   const backupPath = join(workDir, "forge-backup.json");
   await writeFile(backupPath, JSON.stringify(backupEnvelope, null, 2), { mode: 0o600 });
   const recovered = BackupRecovery.parse(await readFile(backupPath, "utf8"));
@@ -322,8 +322,8 @@ try {
   assert.match(app, /event\.key !== "Escape"/);
   assert.match(app, /showBackupRecoveryPreview/);
   assert.match(app, /concurrent idempotent requests must share one provider write|pendingBackupReview/);
-  assert.match(html, /lead-outbox\.js\?v=132/);
-  assert.match(html, /backup-recovery\.js\?v=132/);
+  assert.match(html, /lead-outbox\.js\?v=133/);
+  assert.match(html, /backup-recovery\.js\?v=133/);
   assert.match(html, /Local recovery dry run/);
   assert.match(html, /id="backupReviewTitle" tabindex="-1"/);
   assert.match(html, /Replace local device data/);

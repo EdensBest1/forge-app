@@ -120,7 +120,7 @@ const requiredHtml = [
   "creativeProviderEditingSoftware",
   "Photography & Videography Booking Notes",
   "Built for trust and quality.",
-  "Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.",
+  "Forge helps customers request local creatives, including photographers and videographers. Provider claims remain pending until reviewed.",
   "NorthStar Creative Co.",
   "Grow Your Business with North Star Creative Co.",
   "Forge helps you find work. North Star Creative Co. helps your business win more of it.",
@@ -164,7 +164,7 @@ const requiredHtml = [
   "startPathGrid",
   "Copy First User Links",
   "Forge Building",
-  "Build smarter. Fund smarter. Finish with trusted operators.",
+  "Build smarter. Fund smarter. Find the right next step.",
   "Request Contractor Finance Review",
   "buildingLeadForm",
   "adminBuildingFullTable",
@@ -346,8 +346,8 @@ const requiredHtml = [
   "Payment milestones",
   "Quote valid until",
   "admitlyPresentationBody",
-  "styles.css?v=132",
-  "app.js?v=132"
+  "styles.css?v=133",
+  "app.js?v=133"
 ];
 
 const requiredJs = [
@@ -518,7 +518,7 @@ const requiredJs = [
   "renderRoadRescue",
   "copyRoadRescueQueue",
   "roadRescueProviderNotification",
-  "Forge Road Rescue received your request.",
+  "Forge Road Rescue saved your request on this device.",
   "CREATIVE_CATEGORY_VALUE",
   "CREATIVE_CATEGORY_SLUG",
   "photography_videography",
@@ -612,6 +612,8 @@ const requiredJs = [
   "submitBuildingLead",
   "canSendBuildingToSeneca",
   "canSendBuildingToFlex",
+  "FLEX_PARTNER_ROUTING_ENABLED = false",
+  "SENECA_PARTNER_ROUTING_ENABLED = false",
   "copyBuildingQueue",
   "FLEX_APP_URL",
   "BUILDING_COMPLIANCE_COPY",
@@ -1232,7 +1234,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v132")]
+  ["fresh service worker cache", serviceWorker.includes('FORGE_RELEASE = "133"')]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -1246,12 +1248,10 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v132\"") && releaseManifest.includes("/request-help?v=132") && releaseManifest.includes("/post-job?v=132") && releaseManifest.includes("/worker-signup?v=132") && releaseManifest.includes("/business?v=132") && releaseManifest.includes("/photography?v=132") && releaseManifest.includes("/photography/request?v=132") && releaseManifest.includes("/photography/apply?v=132") && releaseManifest.includes("/photography-videography?v=132") && releaseManifest.includes("/northstar-creative?v=132") && releaseManifest.includes("/forge/capital?v=132") && releaseManifest.includes("/forge/flex?v=132") && releaseManifest.includes("/partners/flex?v=132") && releaseManifest.includes("/personal-driver?v=132") && releaseManifest.includes("/forge-payments?v=132") && releaseManifest.includes("/local-products?v=132") && releaseManifest.includes("/building?v=132") && releaseManifest.includes("/admin/building-leads?v=132") && releaseManifest.includes("/forge-academy?v=132") && releaseManifest.includes("/trade-pathways?v=132") && releaseManifest.includes("/admin/forge-academy?v=132")],
-  ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
-  ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
-  ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],
-  ["building cached routes", serviceWorker.includes("./building/") && serviceWorker.includes("./admin/building-leads/")],
-  ["academy cached routes", serviceWorker.includes("./forge-academy/") && serviceWorker.includes("./trade-pathways/") && serviceWorker.includes("./admin/forge-academy/")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v133\"") && releaseManifest.includes("/request-help?v=133") && releaseManifest.includes("/post-job?v=133") && releaseManifest.includes("/worker-signup?v=133") && releaseManifest.includes("/business?v=133") && releaseManifest.includes("/photography?v=133") && releaseManifest.includes("/photography/request?v=133") && releaseManifest.includes("/photography/apply?v=133") && releaseManifest.includes("/photography-videography?v=133") && releaseManifest.includes("/northstar-creative?v=133") && releaseManifest.includes("/forge/capital?v=133") && releaseManifest.includes("/forge/flex?v=133") && releaseManifest.includes("/partners/flex?v=133") && releaseManifest.includes("/personal-driver?v=133") && releaseManifest.includes("/forge-payments?v=133") && releaseManifest.includes("/local-products?v=133") && releaseManifest.includes("/building?v=133") && releaseManifest.includes("/admin/building-leads?v=133") && releaseManifest.includes("/forge-academy?v=133") && releaseManifest.includes("/trade-pathways?v=133") && releaseManifest.includes("/admin/forge-academy?v=133")],
+  ["service worker public navigation strategy", serviceWorker.includes('request.mode === "navigate"') && serviceWorker.includes("networkFirstNavigation") && serviceWorker.includes("OFFLINE_URL")],
+  ["service worker excludes private routes", serviceWorker.includes("PRIVATE_ROUTE_PATTERN") && serviceWorker.includes("isPrivateRoute(url)") && serviceWorker.includes("api|admin|capture|reports|monetization-admin")],
+  ["service worker versioned static assets", serviceWorker.includes("isCurrentStaticAsset") && serviceWorker.includes("styles.css") && serviceWorker.includes("app.js")],
   ["academy route aliases", forgeAcademyRoute.includes("route-loader.js") && forgeAcademyApplyRoute.includes("route-loader.js") && forgeAcademyEmployersRoute.includes("route-loader.js") && forgeAcademySchoolsRoute.includes("route-loader.js") && forgeCareerDashboardRoute.includes("route-loader.js")],
   ["admitly route aliases", admitlyTradePathwaysRoute.includes("route-loader.js") && admitlyTradePathwaysApplyRoute.includes("route-loader.js") && admitlyTradePathwaysDashboardRoute.includes("route-loader.js") && adminForgeAcademyRoute.includes("route-loader.js") && adminTradePathwaysRoute.includes("route-loader.js")],
   ["academy docs", admitlyTradePathwaysDoc.includes("Admitly Trade Pathways") && forgeAcademyDoc.includes("Forge Academy") && admitlyForgeBridgeDoc.includes("Brand Separation") && forgeCareerPlusDoc.includes("Forge Career+")],
@@ -1271,8 +1271,8 @@ const missingDeploy = [
   ["photography videography alias route", creativeRoute.includes("Forge Photography & Videography") && creativeRoute.includes("/route-loader.js")],
   ["northstar creative route", northstarRoute.includes("Forge NorthStar Creative Co.") && northstarRoute.includes("/route-loader.js")],
   ["forge capital route", forgeCapitalRoute.includes("Forge Capital Desk") && forgeCapitalRoute.includes("/route-loader.js")],
-  ["forge flex route", forgeFlexRoute.includes("Forge Flex Referral") && forgeFlexRoute.includes("/route-loader.js")],
-  ["partners flex route", partnersFlexRoute.includes("Forge Partner: Flex") && partnersFlexRoute.includes("/route-loader.js")],
+  ["forge flex route", forgeFlexRoute.includes("Flex Concept Inactive") && forgeFlexRoute.includes("/route-loader.js")],
+  ["partners flex route", partnersFlexRoute.includes("Flex Concept Inactive") && partnersFlexRoute.includes("/route-loader.js")],
   ["personal driver route", personalDriverRoute.includes("Forge Personal Driver") && personalDriverRoute.includes("/route-loader.js")],
   ["private driver route", privateDriverRoute.includes("Forge Private Driver") && privateDriverRoute.includes("/route-loader.js")],
   ["forge payments route", forgePaymentsRoute.includes("Forge Payments") && forgePaymentsRoute.includes("/route-loader.js")],
@@ -1282,9 +1282,9 @@ const missingDeploy = [
   ["building route", buildingRoute.includes("Forge Building") && buildingRoute.includes("/route-loader.js")],
   ["admin building route", adminBuildingRoute.includes("Forge Building Leads Admin") && adminBuildingRoute.includes("/route-loader.js")],
   ["flex lead migration", flexMigration.includes("public.forge_flex_leads") && flexMigration.includes("interested_in_forge_job_leads") && flexMigration.includes("interested_in_website_crm_automation") && flexMigration.includes("consent_to_receive_flex_referral") && flexMigration.includes("status in")],
-  ["flex docs", flexReadme.includes("Forge Capital Desk") && flexReadme.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && flexOutreach.includes("Forge Capital Desk") && flexOutreach.includes("Compliance")],
-  ["flex api route", flexApiRoute.includes("FORGE_GHL_WEBHOOK_URL") && flexApiRoute.includes("FORGE_ZAPIER_WEBHOOK_URL") && flexApiRoute.includes("forbiddenFieldPattern") && flexApiRoute.includes("FLEX_REFERRAL_AGREEMENT_SIGNED") && flexApiEntrypoint.includes('from "./flex-leads/route.js"') && flexApiEntrypoint.includes("export default async function handler")],
-  ["flex env example", envExample.includes('NEXT_PUBLIC_FLEX_REFERRAL_URL=""') && envExample.includes("FLEX_APP_URL") && envExample.includes('FLEX_PARTNER_MODE="draft"') && envExample.includes('FLEX_PARTNER_APPROVED="false"') && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
+  ["flex docs", flexReadme.includes("Forge Capital Desk") && flexReadme.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && flexOutreach.includes("Capital Desk Follow-Up Reference") && flexOutreach.includes("Future-only gate")],
+  ["flex api route", flexApiRoute.includes("FORGE_GHL_WEBHOOK_URL") && flexApiRoute.includes("FORGE_ZAPIER_WEBHOOK_URL") && flexApiRoute.includes("forbiddenFieldPattern") && flexApiRoute.includes("FLEX_REFERRAL_AGREEMENT_SIGNED") && flexApiRoute.includes("FLEX_OPERATOR_APPROVED") && flexApiRoute.includes("FLEX_LEGAL_APPROVED") && flexApiEntrypoint.includes('from "./flex-leads/route.ts"') && flexApiEntrypoint.includes("export default async function handler")],
+  ["flex env example", envExample.includes('NEXT_PUBLIC_FLEX_REFERRAL_URL=""') && envExample.includes("FLEX_APP_URL") && envExample.includes('FLEX_PARTNER_MODE="draft"') && envExample.includes('FLEX_PARTNER_APPROVED="false"') && envExample.includes('FLEX_OPERATOR_APPROVED="false"') && envExample.includes('FLEX_LEGAL_APPROVED="false"') && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 

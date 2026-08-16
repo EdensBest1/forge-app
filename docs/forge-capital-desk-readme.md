@@ -1,19 +1,40 @@
-# Forge Capital Desk README
+# Forge Capital Desk — v133 Operating Boundary
 
-## Purpose
+## Current truth
 
-Forge Capital Desk lets a business owner save a basic finance-interest note on their device. It may deliver that note to an approved server-owned destination only when all partnership, consent, data-sharing, public-language, and destination gates are explicitly configured. A Flex referral remains inactive. Forge must not present itself as a bank, lender, broker, underwriter, credit decision maker, Flex employee, or official Flex partner.
+Forge Capital Desk lets a business owner save a basic finance-readiness interest note in the browser. The note may be delivered only to a Forge-controlled server destination that returns the exact verified receipt contract. Flex is a draft future-partner concept. Forge has no active public Flex referral path, does not send current Capital Desk submissions to Flex, and does not expose a referral link.
 
-## Setup
+Forge is not a bank, lender, broker, broker-dealer, underwriter, financial adviser, credit provider, credit decision maker, payment processor, ISO, escrow service, or Flex employee. A Capital Desk note is not an application, approval, offer, quote, or promise of funding.
 
-1. Keep every approval flag false until the corresponding written approval exists.
-2. Configure an HTTPS server-owned delivery destination only after the referral agreement, data-sharing scope, and public language are approved.
-3. Add `NEXT_PUBLIC_FLEX_REFERRAL_URL` only when Flex provides an official referral URL and approves its public use.
-4. Add `FLEX_APP_URL` only when there is an approved intake flow that Building finance requests may open directly.
-5. Until those gates pass, the public form saves locally and reports delivery as unavailable; it never labels a local save as delivered.
-5. Use `/forge/capital`, `/forge/flex`, or `/partners/flex` for the public page aliases.
+## Needs covered without collecting sensitive data
 
-## Environment Variables
+- Business banking and business-credit readiness.
+- Expense management and employee or controlled-spend cards.
+- Vendor bills, accounts payable, accounts receivable, and global-payment operations.
+- Cash-flow timing and working capital.
+- Project financing and contractor or builder finance needs.
+- Fuel, materials, equipment, inventory, labor, and payroll timing.
+- Growth-capital and general finance-readiness support.
+
+Never collect bank credentials, passwords, API keys, Social Security numbers, full bank or card numbers, routing numbers, government identity documents, credit reports, financial statements, or other sensitive uploads.
+
+## Public behavior
+
+1. The browser creates a stable request ID and saves the note locally before delivery begins.
+2. The interface shows exactly one state: saved locally, checking Forge delivery, delivery unavailable, retryable failure, correction required, or verified delivered to Forge.
+3. A retry preserves the same request ID across attempts and reloads.
+4. Only the server's JSON receipt contract can mark the note delivered.
+5. HTML, malformed JSON, a mismatched request ID, an impossible timestamp, an empty destination list, or a provider error fails closed.
+6. Provider error bodies are not forwarded to the browser, and logs contain correlation metadata rather than lead fields.
+7. No client-side webhook delivery exists.
+
+## Accepted fields
+
+The endpoint rejects fields outside its explicit allowlist. Accepted fields are the request and consent timestamps; owner, business, email, optional phone and location; industry, website, business-age/revenue/spend/employee ranges; primary need; separate Forge, NorthStar, payments, and automation interest flags; consent flags; referral source; and plain notes. Nested forbidden-field names are rejected before allowlist evaluation.
+
+## Server gates
+
+All of these values default to false or empty. Do not change one based on an assumption or verbal conversation.
 
 ```env
 NEXT_PUBLIC_FLEX_REFERRAL_URL=""
@@ -23,26 +44,20 @@ FLEX_PARTNER_APPROVED="false"
 FLEX_DATA_SHARING_APPROVED="false"
 FLEX_OFFICIAL_LANGUAGE_APPROVED="false"
 FLEX_REFERRAL_AGREEMENT_SIGNED="false"
-FORGE_CAPITAL_DESK_ENABLED="true"
-FORGE_LEAD_NOTIFY_EMAIL="admin@forge.local"
+FLEX_OPERATOR_APPROVED="false"
+FLEX_LEGAL_APPROVED="false"
 FORGE_GHL_WEBHOOK_URL=""
 FORGE_ZAPIER_WEBHOOK_URL=""
 ```
 
-## Compliance Language
+Even Forge-server delivery is unavailable unless the required written partner, agreement, data-sharing, public-language, operator, and legal flags are all true and an HTTPS Forge-controlled destination is configured. The public referral button has additional client-side gates, including an official non-placeholder HTTPS destination, and remains hidden by default.
 
-Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.
+## Future referral gate
 
-## Lead Statuses
+A future Flex referral could become visible only after written partner approval, a signed referral agreement, an approved data-sharing scope, explicit user consent, approved public language, approved logo/brand use when relevant, an official HTTPS referral destination, a server-owned delivery path, a valid provider receipt, and operator and legal approval. Passing a technical flag is not a substitute for the underlying written evidence.
 
-`new`, `contacted`, `qualified`, `not_qualified`, `flex_link_sent`, `application_started`, `activated`, `commission_expected`, `commission_paid`, `forge_upsell_offered`, `forge_client_won`, `closed_lost`.
+## Status vocabulary
 
-## CRM / Webhook Behavior
+The public delivery states above are authoritative. Older CRM labels such as `qualified`, `flex_link_sent`, `application_started`, `activated`, or commission states are retained only for storage compatibility and future planning. They do not prove a current referral, application, activation, partner relationship, or payment.
 
-The future `/api/forge/flex-leads` route posts to `FORGE_GHL_WEBHOOK_URL` and/or `FORGE_ZAPIER_WEBHOOK_URL` when either env var exists. The payload includes `source`, `partner`, owner/business/contact fields, lead score, primary need, upsell interest flags, and status.
-
-The current static MVP stores leads in localStorage first and can also use the existing Admin webhook setting for browser-side demo delivery.
-
-## Replacing The Placeholder Flex Link
-
-Replace `https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK` in `.env.example` and the deployed environment with the approved Flex referral URL. Do not publish broad outreach until the URL is approved and tested.
+Routes `/forge/capital`, `/forge/flex`, and `/partners/flex` open the same guarded Capital Desk experience. The two Flex-named paths are inactive aliases, not evidence of a partnership.

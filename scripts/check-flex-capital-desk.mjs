@@ -45,6 +45,8 @@ function configureApprovedDestination() {
   process.env.FLEX_DATA_SHARING_APPROVED = "true";
   process.env.FLEX_OFFICIAL_LANGUAGE_APPROVED = "true";
   process.env.FLEX_REFERRAL_AGREEMENT_SIGNED = "true";
+  process.env.FLEX_OPERATOR_APPROVED = "true";
+  process.env.FLEX_LEGAL_APPROVED = "true";
   process.env.FORGE_GHL_WEBHOOK_URL = "https://approved.example.test/forge";
   delete process.env.FORGE_ZAPIER_WEBHOOK_URL;
 }
@@ -76,6 +78,13 @@ try {
   assert.equal(response.status, 400);
   assert.match((await body(response)).message, /Sensitive financial/i);
 
+  response = await POST(request({ harmless_extra_field: "still not accepted" }));
+  assert.equal(response.status, 400);
+  assert.match((await body(response)).message, /unexpected Capital Desk field/i);
+
+  response = await POST(request({ notes: "🧱".repeat(20 * 1024) }));
+  assert.equal(response.status, 413);
+
   response = await POST(request({ created_at: "2099-99-99T99:99:99.000Z" }));
   assert.equal(response.status, 400);
 
@@ -104,7 +113,7 @@ try {
   assert.equal(providerCalls, 1);
 
   const malformedId = `flex-test-${crypto.randomUUID()}`;
-  globalThis.fetch = async () => Response.json({ ok: true, requestId: "wrong", receivedAt: new Date().toISOString() });
+  globalThis.fetch = async () => new Response("<html>not a receipt</html>", { status: 200, headers: { "Content-Type": "text/html" } });
   response = await POST(request({ request_id: malformedId }));
   assert.equal(response.status, 502);
   const failed = await body(response);
@@ -112,7 +121,39 @@ try {
   assert.equal(JSON.stringify(failed).includes("Synthetic Owner"), false);
   assert.equal(JSON.stringify(deliveryLogs).includes("Synthetic Owner"), false);
 
-  console.log("Forge Capital Desk contract checks passed (8 assertions groups).");
+  const concurrentId = `flex-test-${crypto.randomUUID()}`;
+  let releaseProvider;
+  const providerGate = new Promise((resolve) => { releaseProvider = resolve; });
+  providerCalls = 0;
+  globalThis.fetch = async () => {
+    providerCalls += 1;
+    await providerGate;
+    return Response.json({ ok: true, requestId: concurrentId, receivedAt: new Date().toISOString() });
+  };
+  const first = POST(request({ request_id: concurrentId }));
+  const second = POST(request({ request_id: concurrentId }));
+  releaseProvider();
+  const [firstResponse, secondResponse] = await Promise.all([first, second]);
+  assert.equal(firstResponse.status, 201);
+  assert.equal(secondResponse.status, 200);
+  assert.equal(providerCalls, 1);
+  assert.equal((await body(secondResponse)).duplicate, true);
+
+  const { default: wrapper } = await import("../api/forge/flex-leads.ts");
+  const wrapperHeaders = new Map();
+  let wrapperStatus = 0;
+  let wrapperBody = "";
+  await wrapper({ method: "GET", url: "/api/forge/flex-leads", headers: { host: "hireonforge.com" } }, {
+    setHeader(name, value) { wrapperHeaders.set(name.toLowerCase(), value); },
+    status(code) { wrapperStatus = code; return this; },
+    send(value) { wrapperBody = value; }
+  });
+  assert.equal(wrapperStatus, 405);
+  assert.match(wrapperHeaders.get("content-type"), /application\/json/i);
+  assert.match(wrapperHeaders.get("cache-control"), /no-store/i);
+  assert.doesNotMatch(wrapperBody, /<html/i);
+
+  console.log("Forge Capital Desk contract checks passed: strict whitelist/size/origin, nested secrets, fail-closed receipts, concurrent idempotency, and top-level JSON wrapper.");
 } finally {
   globalThis.fetch = originalFetch;
   console.error = originalConsoleError;

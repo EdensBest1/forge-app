@@ -1,4 +1,4 @@
-import { POST as postFlexLead } from "./flex-leads/route.js";
+import { POST as postFlexLead } from "./flex-leads/route.ts";
 
 type VercelRequest = {
   method?: string;
@@ -14,6 +14,8 @@ type VercelResponse = {
 };
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  response.setHeader("Content-Type", "application/json; charset=utf-8");
+  response.setHeader("Cache-Control", "private, no-store, max-age=0");
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     response.status(405).send(JSON.stringify({ error: "METHOD_NOT_ALLOWED" }));

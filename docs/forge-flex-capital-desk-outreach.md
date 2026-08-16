@@ -1,75 +1,20 @@
-# Forge Flex Capital Desk Outreach
+# Capital Desk Follow-Up Reference — Inactive
 
-## SMS Script
+Do not use this document for outbound contact. Flex remains a draft future-partner concept and no referral destination is active.
 
-Hi {{owner_name}}, this is Forge Capital Desk. I saved your note about {{primary_need}} for {{business_name}}. Forge is not a lender or credit decision maker, but we may refer eligible business owners to Flex through an approved referral link after consent and approval gates are in place. Want me to send the Flex review link if eligible?
+## Consent-safe Forge follow-up draft
 
-## Instagram DM Script
+> Hi {{owner_name}}, Forge Capital Desk saved your interest note for {{business_name}} about {{primary_need}}. This is not a financing application, it was not sent to Flex, and it does not mean delivery to Forge was verified. Please check the receipt in the browser. If you separately asked Forge to contact you, a Forge operator may review the note. Do not send sensitive financial or identity information.
 
-Hey {{owner_name}}, saw {{business_name}} may need more breathing room around spend, vendor bills, payroll timing, materials, fuel, cards, or growth. Forge Capital Desk can collect basic contact info and send an approved Flex referral link if you consent and approval gates are in place. Flex handles the application and approval process directly.
+## Review checklist
 
-## Email Script
+1. Confirm the person explicitly consented to Forge contact.
+2. Confirm the receipt says verified delivered before expecting an operator handoff; otherwise preserve or export the local copy.
+3. Keep Capital Desk consent separate from Forge leads, NorthStar, payments-interest, website, CRM, automation, and hiring consent.
+4. Discuss only the business need: banking readiness, credit readiness, expense controls, cards, vendor bills, AP/AR, global-payment operations, cash-flow timing, working capital, project financing, fuel, materials, equipment, inventory, labor, payroll timing, contractor/builder finance, or growth-capital readiness.
+5. State that Flex is inactive and Forge is not a bank, lender, broker, broker-dealer, underwriter, financial adviser, credit provider, payment processor, ISO, escrow service, or credit decision maker.
+6. Never request bank credentials, passwords, API keys, SSNs, full bank/card numbers, routing numbers, government IDs, credit reports, financial statements, or sensitive uploads.
 
-Subject: Forge Capital Desk / Flex referral option
+## Future-only gate
 
-Hi {{owner_name}},
-
-Forge Capital Desk saved your request for {{business_name}}. Based on what you shared, you may want to review modern business finance tools through our Flex referral channel.
-
-Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Flex products are subject to eligibility, approval, fees, terms, and conditions. If you want to continue and the approval gates are in place, use the approved Flex referral link and apply directly with Flex.
-
-Best,
-Forge Capital Desk
-
-## Call Script
-
-1. Confirm the owner, business name, industry, city/state, and best contact info.
-2. Ask what problem is creating pressure: vendor bills, AP, payroll timing, fuel, materials, equipment, employee cards, or growth capital.
-3. Confirm consent to contact and consent to receive an approved Flex referral link.
-4. Say: Forge may refer eligible business owners to Flex; Flex handles application, onboarding, activation, and product support.
-5. Do not quote rates, limits, approvals, payout timing, or product terms unless Flex has approved that language.
-
-## Follow-Up Script
-
-Hi {{owner_name}}, checking back on the Flex referral link for {{business_name}}. If you still want to review options, use the official link I sent and apply directly with Flex. Forge can also help with customer leads, NorthStar marketing, websites, CRM, automation, payment processing, hiring, and operations if that would help.
-
-## Compliance Do / Don't List
-
-DO:
-- Say Forge may refer business owners to Flex.
-- Say Flex handles application, onboarding, activation, and product support.
-- Say products are subject to eligibility, approval, fees, terms, and conditions.
-- Use the approved Flex referral link only after consent and approval gates pass.
-- Track consent.
-
-DON'T:
-- Don't say Forge is Flex.
-- Don't say Forge works for Flex unless there is a signed agreement allowing that language.
-- Don't guarantee approval.
-- Don't quote rates, limits, or payout terms unless approved by Flex.
-- Don't collect SSNs, bank logins, full account numbers, or sensitive documents.
-- Don't market to restricted/prohibited industries unless Flex approves in writing.
-
-## Daily Sales Checklist
-
-- Review new `forge_flex_leads`.
-- Confirm consent before sending any Flex referral link.
-- Prioritize leads with score 40+.
-- Copy outreach message and log notes.
-- Open the approved Flex referral link only after consent and approval gates pass.
-- Move statuses daily: `new`, `contacted`, `qualified`, `flex_link_sent`, `application_started`, `activated`, `closed_lost`.
-- Flag Forge/NorthStar/payment-processing upsell opportunities.
-- Export CSV before end-of-day backup.
-
-## Weekly KPI Tracker
-
-| KPI | Target | Actual |
-| --- | ---: | ---: |
-| New Flex leads | 25 |  |
-| Contacted leads | 20 |  |
-| Qualified leads | 10 |  |
-| Flex links sent with consent | 8 |  |
-| Applications started | 4 |  |
-| Activations | 1 |  |
-| Forge upsell offers | 8 |  |
-| Forge/NorthStar clients won | 1 |  |
+Do not add a link or change this into a referral script until every written partner, agreement, data-sharing, consent, public-language, brand-use, official-HTTPS-destination, server-receipt, operator, and legal gate is real and verified.

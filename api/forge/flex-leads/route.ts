@@ -42,7 +42,33 @@ const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX = 10;
 const requestIdPattern = /^[A-Za-z0-9._:-]{1,160}$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const forbiddenFieldPattern = /\b(ssn|social security|bank login|bank password|account number|routing number|credit score|financial document|authorization|access token|api key|password|secret|government id|card number|upload)\b/i;
+const allowedFields = new Set<keyof FlexLeadInput>([
+  "request_id",
+  "created_at",
+  "consent_captured_at",
+  "owner_name",
+  "business_name",
+  "email",
+  "phone",
+  "city",
+  "state",
+  "industry",
+  "website",
+  "years_in_business",
+  "monthly_revenue_range",
+  "monthly_spend_range",
+  "employee_count",
+  "primary_need",
+  "interested_in_forge_job_leads",
+  "interested_in_north_star_marketing",
+  "interested_in_payment_processing",
+  "interested_in_website_crm_automation",
+  "consent_to_contact",
+  "consent_to_receive_flex_referral",
+  "referral_source",
+  "notes"
+]);
+const forbiddenFieldPattern = /\b(ssn|social security|bank login|bank password|bank credential|bank username|bank account|account number|routing number|iban|swift|credit score|credit report|financial statement|financial document|tax id|authorization|access token|api key|password|secret|government id|identity document|card number|upload)\b/i;
 const primaryNeedKeywords = ["credit", "cash-flow", "cash flow", "vendor payments", "ap", "payroll timing", "employee cards", "fuel", "equipment", "materials", "growth capital"];
 const receipts = new Map<string, { receivedAt: string; storedIn: string[] }>();
 const inFlight = new Map<string, Promise<{ receivedAt: string; storedIn: string[] }>>();
@@ -110,6 +136,8 @@ function validateLead(input: FlexLeadInput) {
   if (!emailPattern.test(text(input.email, 320))) return "A valid email is required.";
   if (input.consent_to_contact !== true || input.consent_to_receive_flex_referral !== true) return "Contact and future-referral consent are required.";
   if (containsForbiddenField(input)) return "Sensitive financial, identity, payment, or secret fields are not accepted.";
+  const unexpected = Object.keys(input).find((key) => !allowedFields.has(key as keyof FlexLeadInput));
+  if (unexpected) return "An unexpected Capital Desk field was rejected.";
   return "";
 }
 
@@ -135,7 +163,9 @@ function approvedDestinations() {
     process.env.FLEX_PARTNER_APPROVED,
     process.env.FLEX_DATA_SHARING_APPROVED,
     process.env.FLEX_OFFICIAL_LANGUAGE_APPROVED,
-    process.env.FLEX_REFERRAL_AGREEMENT_SIGNED
+    process.env.FLEX_REFERRAL_AGREEMENT_SIGNED,
+    process.env.FLEX_OPERATOR_APPROVED,
+    process.env.FLEX_LEGAL_APPROVED
   ].every((value) => value === "true");
   if (!approvalReady) return [];
   return [process.env.FORGE_GHL_WEBHOOK_URL, process.env.FORGE_ZAPIER_WEBHOOK_URL]
@@ -234,7 +264,7 @@ export async function POST(request: Request) {
   } catch {
     return contractError("INVALID_JSON", 400, "rejected-requires-correction", { correlationId });
   }
-  if (JSON.stringify(input).length > MAX_BODY_BYTES) {
+  if (new TextEncoder().encode(JSON.stringify(input)).byteLength > MAX_BODY_BYTES) {
     return contractError("PAYLOAD_TOO_LARGE", 413, "rejected-requires-correction", { correlationId });
   }
 
@@ -285,7 +315,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Forge Capital Desk delivery failed", {
       correlationId,
-      requestId,
       category: error instanceof Error ? error.name : "unknown"
     });
     return contractError("CAPITAL_DESK_DELIVERY_FAILED", 502, "retryable-failure", { correlationId, requestId });

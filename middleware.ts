@@ -13,6 +13,6 @@ export default function lockPublicOperatorRoutes() {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/capture", "/reports"],
+  matcher: ["/admin", "/admin/:path*", "/capture", "/capture/:path*", "/reports", "/reports/:path*", "/monetization-admin", "/monetization-admin/:path*"],
   runtime: "edge"
 };

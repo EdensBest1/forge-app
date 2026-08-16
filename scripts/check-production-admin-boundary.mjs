@@ -21,7 +21,9 @@ const checks = [
   ["direct /admin is intercepted before static files", middleware.includes('"/admin"')],
   ["nested /admin routes are intercepted before static files", middleware.includes('"/admin/:path*"')],
   ["direct /capture is intercepted before static files", middleware.includes('"/capture"')],
-  ["direct /reports is intercepted before static files", middleware.includes('"/reports"')]
+  ["direct /reports is intercepted before static files", middleware.includes('"/reports"')],
+  ["nested /capture and /reports routes are intercepted", middleware.includes('"/capture/:path*"') && middleware.includes('"/reports/:path*"')],
+  ["monetization admin routes are intercepted before static files", middleware.includes('"/monetization-admin"') && middleware.includes('"/monetization-admin/:path*"')]
 ];
 
 const failed = checks.filter(([, ok]) => !ok);

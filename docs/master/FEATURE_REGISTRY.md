@@ -7,7 +7,7 @@ The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-
 ## Forge Blue-Collar Marketplace
 
 - Planned/active direction: local services marketplace starting in Medford/Southern Oregon.
-- Customers should be able to hire trusted local providers.
+- Customers should be able to discover and request local providers. Provider-entered information is not verified until a documented human review is complete.
 - Providers should be able to apply to offer services.
 - Future work should reuse existing Forge components, routes, tables, and business logic.
 - Implemented / Live in UI for a first marketplace slice: homepage marketplace paths, `/marketplace` provider/job discovery, `/customer-dashboard` local customer request view, richer job intake fields, provider/company profile fields, provider quote/invite/save actions, worker marketplace readiness, and admin marketplace command center.
@@ -45,7 +45,7 @@ The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-
 - Dedicated route/page exists through `/photography`, `/photography/request`, `/photography/apply`, and the `/photography-videography` alias.
 - Customer creative request form exists and saves customer leads with category value `photography_videography`.
 - Creative provider application form exists and saves provider leads with provider/category metadata value `photography_videography`.
-- Dennis may be referenced only as an example trusted local creative, not as the only provider.
+- Dennis may be referenced only as an example local creative, not as the only provider; no verification or endorsement is implied.
 - Do not include private contact information.
 
 ## S&A Auto
@@ -110,8 +110,17 @@ The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-
 ## Worker Trust / Proof Ledger
 
 - Implemented / Live in UI on provider directory cards and admin worker rows.
-- Uses Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decision labels: Ready to Invite, Crew-Lead Ready, Mentor-Only, Supervised Helper, and Admin Review.
+- Provider-entered information defaults to Green / Profile Supplied or Started / Admin Review and is explicitly labeled unverified.
+- Silver, Gold, Ready to Invite, Crew-Lead Ready, Mentor-Only, and Supervised Helper require an explicit documented human-reviewed state; they are never inferred from provider-entered words.
 - This is a lightweight launch triage system, not a guarantee of safety, licensing, insurance, quality, or job outcome.
+
+## v133 platform contracts
+
+- Route ownership: config/forge-route-registry.mjs classifies every public route and protected-route convention.
+- Cache ownership: the worker caches only current same-origin release assets and the offline shell; private, API, cross-origin, no-store, and error responses bypass cache.
+- Export ownership: csv-utils.js neutralizes spreadsheet-formula prefixes and escapes all CSV values.
+- Public design: white, welcoming, spacious, two primary hero actions, progressive disclosure, 44 px touch target, visible focus, reduced motion, and dimensioned responsive media.
+- Release fences: dependency-free, no opaque browser delivery, no public storage activation, draft PR unmerged, and Stitch protected.
 
 ## Stitch
 
