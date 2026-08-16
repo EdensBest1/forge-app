@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-15 - Welcoming public system and Capital Desk delivery truth
+
+- Rebuilt the public orientation layer around a white, welcoming, spacious visual system with two primary actions, three role paths, a focused business-support row, a simple three-step explanation, and progressive disclosure for the broader Forge network.
+- Preserved the complete Forge route and product ecosystem while removing duplicate and operationally dense sections from the default homepage reading path.
+- Reframed Capital Desk as local business-finance interest capture and retained the full Flex-related financing needs without presenting an active relationship, referral, application, approval, rate, or funding promise.
+- Added a strict versioned Capital Desk delivery contract with origin/intent, size, timestamp, consent, sensitive-field, approval, HTTPS destination, timeout, idempotency, rate-limit, provider-receipt, and payload-free logging gates.
+- Added focused Capital Desk regression coverage and a canonical product-truth map reconciling all retained product lanes and superseded guidance.
+- Bumped public assets, cache, and release references to v132. No partner, storage vendor, paid service, real data, payment flow, merge, or Stitch promotion was activated.
+
 ## 2026-08-15 - Public lead outbox and verified delivery receipts
 
 - Added one shared browser outbox for public job and worker submissions with stable retry IDs, consent evidence, bounded attempts/backoff, reload persistence, safe migration/isolation, storage caps, receipt retention, and backup compatibility.

@@ -5,6 +5,7 @@ Track pending build, documentation, legal, operations, deployment, and business 
 ## Pending
 
 - Public job/worker delivery remains fail-closed until an approved durable endpoint exists and a synthetic preview receipt is verified end to end.
+- Capital Desk delivery remains fail-closed until all written Flex relationship, referral-agreement, data-sharing, official-language, consent, and official-link gates pass and an approved server-owned destination returns the required receipt.
 - Keep `/admin`, `/capture`, and `/reports` unavailable in production until production-grade operator authentication, audit, and recovery are approved.
 - Complete final legal/privacy, security, monitoring/retention, incident-response, and operational-ownership review before broad public launch.
 
@@ -29,7 +30,7 @@ Track pending build, documentation, legal, operations, deployment, and business 
 - Add business plans as they are approved.
 - Add legal/IP documents, SOPs, contracts, and transaction templates as they are drafted or provided.
 - Connect cloud storage only after the provider, credentials, and upload paths are approved.
-- Prepare `.env.example` files only when implementation work needs documented environment variables.
+- Keep documented partner approval flags false until the corresponding written approvals exist.
 - Update this file after each future Codex task.
 
 ## Completed

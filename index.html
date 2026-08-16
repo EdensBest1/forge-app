@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0648b7" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta
       name="description"
@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=131" />
+    <link rel="stylesheet" href="./styles.css?v=132" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -36,14 +36,14 @@
             <span>FORGE</span>
           </a>
           <nav class="public-nav" aria-label="Forge public navigation">
-            <a class="nav-link" href="/request-help/">Request Help</a>
+            <a class="nav-link" href="/request-help/">Find Help</a>
             <button class="nav-link" type="button" data-nav="services">Services</button>
             <button class="nav-link" type="button" data-nav="signup">For Workers</button>
             <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
-            <a class="nav-link" href="/post-job/">Post a Job</a>
-            <a class="nav-link" href="/pricing/">Pricing</a>
-            <a class="nav-link" href="/impact/">Impact</a>
-            <button class="nav-link" type="button" data-nav="launch-status">Launch Status</button>
+            <a class="nav-link home-nav-optional" href="/post-job/">Post a Job</a>
+            <a class="nav-link home-nav-optional" href="/pricing/">Pricing</a>
+            <a class="nav-link home-nav-optional" href="/impact/">Impact</a>
+            <button class="nav-link home-nav-optional" type="button" data-nav="launch-status">Launch Status</button>
             <button class="nav-link" type="button" data-nav="legal">Safety</button>
           </nav>
           <div class="header-actions">
@@ -98,12 +98,13 @@
 
         <section class="home-hero">
           <div class="hero-copy">
-            <h1>Medford's Marketplace for Work, Workers, and Local Services.</h1>
-            <p>Forge routes Medford jobs, workers, business growth, suppliers, and vehicle requests into one clean local workflow.</p>
-            <p class="hero-trust-line">Post the job. Get matched. Stay reviewed. · Admin-reviewed leads · No payments collected in MVP · Built for Medford first</p>
+            <span class="hero-eyebrow">Built for Medford and Southern Oregon</span>
+            <h1>Post the job.<br />Get the crew.</h1>
+            <p>Forge gives homeowners, local workers, and growing businesses one clear place to start—without making you sort through every service at once.</p>
+            <p class="hero-trust-line">Local-first · Carefully reviewed · No payments collected in this early-access release</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-nav="post">Post a Job</button>
-              <button class="btn blue" type="button" data-nav="jobs">Find a Provider</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
               <button class="btn ghost" type="button" data-nav="signup">Create Provider Profile</button>
               <button class="btn ghost" type="button" data-action="start-company-profile">Create Company Profile</button>
               <button class="btn ghost" type="button" data-nav="login">Sign In</button>
@@ -162,9 +163,9 @@
 
         <section class="role-gateway-panel" aria-label="Primary Forge paths">
           <article>
-            <span class="split-label">I need workers</span>
-            <h2>Post the scope and get reviewed follow-up.</h2>
-            <p>Share the job, location, timeline, and contact consent. Forge keeps the lead in admin review while bids and follow-up are coordinated.</p>
+              <span class="split-label">I need something done</span>
+              <h2>Tell us about the job.</h2>
+              <p>Share the scope, location, and timing. Your request is saved before Forge attempts delivery, and you always see what happened next.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-nav="post">Post Job</button>
               <a class="btn ghost" href="/pricing/">Featured Job Options</a>
@@ -172,9 +173,9 @@
             </div>
           </article>
           <article>
-            <span class="split-label">I need work</span>
-            <h2>Create a provider profile.</h2>
-            <p>List your service area, experience, availability, categories, and proof signals so Forge can route matching local jobs.</p>
+              <span class="split-label">I provide services</span>
+              <h2>Build a clear worker profile.</h2>
+              <p>List your service area, experience, availability, and proof signals so Forge can prepare relevant local opportunities for review.</p>
             <div class="hero-actions">
               <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
               <a class="btn ghost" href="/pricing/">Compare Profile Upgrades</a>
@@ -182,9 +183,9 @@
             </div>
           </article>
           <article>
-            <span class="split-label">I run a business</span>
-            <h2>Get leads and tighten operations.</h2>
-            <p>Request help with local leads, websites, Google Business, ads, CRM, payments, manufacturing, or growth follow-up.</p>
+              <span class="split-label">I run a business</span>
+              <h2>Find the right growth lane.</h2>
+              <p>Explore customer leads, NorthStar marketing, project support, manufacturing, payment operations, or finance readiness from one calm starting point.</p>
             <div class="hero-actions">
               <button class="btn blue" type="button" data-nav="northstar">Grow My Business</button>
               <button class="btn ghost" type="button" data-nav="manufacturing">Manufacturing Help</button>
@@ -223,6 +224,64 @@
             </div>
           </article>
         </section>
+
+        <section class="home-business-support" aria-labelledby="businessSupportTitle">
+          <div class="home-section-heading">
+            <span class="split-label">For local business owners</span>
+            <h2 id="businessSupportTitle">Support the work behind the work.</h2>
+            <p>Choose one focused path now. The rest of the Forge network stays available when you need it.</p>
+          </div>
+          <div class="home-business-grid">
+            <article>
+              <span class="home-card-icon" aria-hidden="true">N</span>
+              <h3>Win more local work</h3>
+              <p>NorthStar helps with websites, Google Business, reviews, content, ads, CRM, and lead follow-up.</p>
+              <button class="home-text-link" type="button" data-nav="northstar">Explore NorthStar <span aria-hidden="true">→</span></button>
+            </article>
+            <article>
+              <span class="home-card-icon" aria-hidden="true">B</span>
+              <h3>Plan a serious project</h3>
+              <p>Route home projects, commercial work, development opportunities, and contractor needs into the right review lane.</p>
+              <button class="home-text-link" type="button" data-nav="building">Explore Building <span aria-hidden="true">→</span></button>
+            </article>
+            <article>
+              <span class="home-card-icon" aria-hidden="true">C</span>
+              <h3>Prepare for business-finance options</h3>
+              <p>Save a Capital Desk interest note for business credit, expense tools, vendor payments, working capital, or future approved Flex review.</p>
+              <p class="home-readiness-note">Flex referral is not active until written partner, consent, data-sharing, and official-link gates pass.</p>
+              <button class="home-text-link" type="button" data-nav="capital">Explore Capital Desk <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-how-it-works" aria-labelledby="howForgeWorksTitle">
+          <div class="home-section-heading">
+            <span class="split-label">A clear next step</span>
+            <h2 id="howForgeWorksTitle">How Forge works today.</h2>
+          </div>
+          <ol class="home-step-list">
+            <li><span>1</span><div><strong>Choose one path</strong><p>Post a job, join as a worker, or open the business support that fits.</p></div></li>
+            <li><span>2</span><div><strong>Save the right details</strong><p>Forge keeps public intake focused and refuses passwords, banking details, government IDs, and secret information.</p></div></li>
+            <li><span>3</span><div><strong>See an honest receipt</strong><p>You can tell whether a submission is only on this device or was verified as delivered to Forge.</p></div></li>
+          </ol>
+        </section>
+
+        <details class="home-network-details">
+          <summary>
+            <span><strong>Explore the complete Forge network</strong><small>Auto, creative, manufacturing, careers, payments, makers, rides, and more</small></span>
+            <span aria-hidden="true">+</span>
+          </summary>
+          <div class="home-network-grid">
+            <button type="button" data-nav="auto"><strong>Auto &amp; Transport</strong><span>Buy, sell, source, repair, or move a vehicle.</span></button>
+            <button type="button" data-nav="creative"><strong>Photography &amp; Video</strong><span>Creative work for people, events, property, and business.</span></button>
+            <button type="button" data-nav="manufacturing"><strong>Manufacturing</strong><span>Products, packaging, labs, compliance, and sourcing.</span></button>
+            <button type="button" data-nav="forge-academy"><strong>Careers &amp; Forge Academy</strong><span>Trade, school, apprenticeship, and career planning.</span></button>
+            <button type="button" data-nav="personal-driver"><strong>Personal Driver</strong><span>Scheduled rides with manual safety review.</span></button>
+            <button type="button" data-nav="payments"><strong>Payment Operations</strong><span>Merchant-service interest only; no processing in Forge.</span></button>
+            <button type="button" data-nav="local-products"><strong>Local Products &amp; Makers</strong><span>Custom products and local brand interest.</span></button>
+            <a href="/impact/"><strong>Community Impact</strong><span>See the current verified-impact boundary.</span></a>
+          </div>
+        </details>
 
         <section class="vertical-showroom-panel" aria-label="Forge specialty verticals">
           <article>
@@ -1758,11 +1817,11 @@
         <section class="capital-hero">
           <div class="capital-hero-copy">
             <span class="split-label">Forge Capital Desk</span>
-            <h1>Business owners need breathing room.</h1>
-            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.</p>
+            <h1>Explore business-finance readiness without pressure.</h1>
+            <p>Save a private, local interest note for business credit, expense management, vendor payments, working capital, or project-finance support. A Flex referral is not active unless every written approval and official-link gate is complete.</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-action="focus-flex-form">Check Flex Options</button>
-              <button class="btn ghost light" type="button" data-action="copy-flex-outreach">Talk to Forge Capital Desk</button>
+              <button class="btn orange" type="button" data-action="focus-flex-form">Save Finance Interest</button>
+              <button class="btn ghost light" type="button" data-action="focus-flex-readiness">How readiness works</button>
             </div>
           </div>
           <figure class="capital-hero-photo">
@@ -1782,13 +1841,13 @@
               <ul id="flexProblemsList"></ul>
             </section>
             <section class="capital-section capital-flex-help">
-              <span class="split-label">What Flex may help with</span>
-              <h2>Modern business finance tools through Flex.</h2>
+              <span class="split-label">Finance needs to review</span>
+              <h2>Business tools an approved finance path may support.</h2>
               <ul id="flexMayHelpList"></ul>
             </section>
-            <section class="capital-section">
-              <span class="split-label">How Flex referral works</span>
-              <h2>Forge collects consent. Flex handles the product path.</h2>
+            <section class="capital-section" id="flexReadinessSection">
+              <span class="split-label">Future referral readiness</span>
+              <h2>Forge saves your interest. No referral is active until every gate passes.</h2>
               <div class="capital-steps" id="flexHowItWorks"></div>
             </section>
             <section class="capital-section compliance">
@@ -1806,7 +1865,8 @@
               </div>
             </section>
             <section class="capital-section recent">
-              <span class="split-label">Recent Capital Desk leads</span>
+              <span class="split-label">Saved on this device</span>
+              <h2>Your Capital Desk requests</h2>
               <div class="capital-recent-grid" id="flexRecentLeads"></div>
             </section>
           </div>
@@ -1814,7 +1874,7 @@
             <form class="capital-form" id="flexLeadForm">
               <span class="split-label">Lead form</span>
               <h2>Forge Capital Desk Lead Form</h2>
-              <p class="muted">Forge only collects basic lead and consent details before sending business owners to the official Flex referral URL.</p>
+              <p class="muted">Forge stores this basic business-interest note on this device first. It is not sent to Flex, and Forge will not show an external referral link, unless every approval gate is active.</p>
               <label>Owner name<input id="flexOwnerName" required autocomplete="name" placeholder="Full name" /></label>
               <label>Business name<input id="flexCompanyName" required placeholder="Business name" /></label>
               <label>Email<input id="flexEmail" required type="email" autocomplete="email" placeholder="owner@example.com" /></label>
@@ -1843,16 +1903,18 @@
               </div>
               <p class="trust-note" data-flex-compliance></p>
               <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
-              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive the official Flex referral link.</label>
-              <button class="btn orange full" type="submit">Check Flex Options</button>
+              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> If an approved referral becomes available, I consent to receive the official link after Forge review.</label>
+              <button class="btn orange full" type="submit">Save Finance Interest</button>
             </form>
             <div class="capital-success hidden" id="flexLeadSuccess" aria-live="polite">
-              <span class="split-label">Capital Desk request received</span>
-              <h2>Thank you.</h2>
-              <p>Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.</p>
+              <span class="split-label">Capital Desk local receipt</span>
+              <h2>Saved on this device.</h2>
+              <p id="flexLeadSuccessMessage">This request is preserved in this browser. It has not been sent to Flex and is not a financing application.</p>
+              <dl class="delivery-receipt-facts" id="flexDeliveryReceipt"></dl>
               <p class="trust-note" data-flex-compliance></p>
               <div class="hero-actions">
-                <a class="btn orange" id="flexContinueButton" href="https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK" target="_blank" rel="noopener noreferrer">Continue to Flex</a>
+                <a class="btn orange hidden" id="flexContinueButton" href="#" target="_blank" rel="noopener noreferrer">Continue to approved referral</a>
+                <button class="btn blue small hidden" id="flexRetryDeliveryButton" type="button" data-action="retry-flex-delivery">Retry Forge delivery</button>
                 <button class="btn ghost small" type="button" data-action="reset-flex-form">Submit Another</button>
               </div>
             </div>
@@ -4931,8 +4993,8 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./lead-outbox.js?v=131"></script>
-    <script src="./backup-recovery.js?v=131"></script>
-    <script src="./app.js?v=131"></script>
+    <script src="./lead-outbox.js?v=132"></script>
+    <script src="./backup-recovery.js?v=132"></script>
+    <script src="./app.js?v=132"></script>
   </body>
 </html>

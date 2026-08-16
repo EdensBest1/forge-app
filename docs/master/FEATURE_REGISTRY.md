@@ -2,6 +2,8 @@
 
 This registry lists existing and planned features, business sections, and operational areas. Update it whenever a feature or major business section is added.
 
+The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-15.md`.
+
 ## Forge Blue-Collar Marketplace
 
 - Planned/active direction: local services marketplace starting in Medford/Southern Oregon.
@@ -22,6 +24,14 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for honest public lead recovery: job and worker submissions enter a shared local outbox before delivery, keep stable request IDs across bounded manual retries, and show a verified server receipt only after the versioned receipt contract passes validation. Delivery Status supports export and explicit-confirmation removal while preserving the original local lead.
 - Still local/static MVP only: production auth, approved durable persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
+## Forge Capital Desk / future Flex referral
+
+- Implemented as a local-first business-finance interest lane at `/forge/capital`, `/forge/flex`, and `/partners/flex`.
+- Preserves the full set of business needs: banking, credit, expenses, cards, vendor bills, AP/AR, global payments, working capital, project finance, fuel, materials, equipment, inventory, labor, payroll timing, and growth capital.
+- The browser saves first and shows a precise delivery state. Delivery is shown only after a valid `forge.flex-receipt.v1` receipt.
+- Flex remains a draft future partner concept. Partner, referral-agreement, data-sharing, official-language, consent, and official-link gates are all required before any referral is activated.
+- No credentials, SSNs, bank/card/account details, credit reports, financial documents, eligibility promises, rates, or approval claims are allowed.
+
 ## Admitly Presentation Routes
 
 - Implemented / Live in UI inside Forge for presentation only at `/admitly`, `/admitly/demo`, and `/admitly/stanford`.
@@ -40,7 +50,7 @@ This registry lists existing and planned features, business sections, and operat
 
 ## S&A Auto
 
-- Planned section for auto sales, transport, trailers, diesel trucks, vehicle sourcing, dealer-license workflow through approved existing dealership relationships, and transaction documents.
+- Implemented prototype routes for auto sales, transport, road rescue, trailers, diesel trucks, vehicle sourcing, dealer workflows, and concierge intake; regulated and fulfillment operations remain gated.
 
 ## Seneca Dev Co.
 

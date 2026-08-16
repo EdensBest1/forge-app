@@ -197,7 +197,7 @@ const backupState = {
   settings: {}, session: {}, accounts: [], jobs: [job()], workers: [worker()], bids: [], messages: [], referrals: [], activity: [],
   leadOutbox: [unavailable]
 };
-const envelope = Backup.createEnvelope(backupState, { exportedAt: attemptAt, appVersion: "131" });
+const envelope = Backup.createEnvelope(backupState, { exportedAt: attemptAt, appVersion: "132" });
 const recovered = Backup.recover(envelope);
 assert.equal(recovered.state.leadOutbox[0].requestId, requestId);
 assert.equal(recovered.counts.leadOutbox, 1);
@@ -232,7 +232,7 @@ assert.match(app, /confirmRemoveOutboxRecord/);
 assert.match(app, /outboxRemovalReturnFocus/);
 assert.match(app, /event\.key !== "Escape"/);
 assert.match(app, /Export undelivered|exportUndeliveredOutbox/);
-assert.match(html, /lead-outbox\.js\?v=131/);
+assert.match(html, /lead-outbox\.js\?v=132/);
 assert.match(html, /id="outboxTitle" tabindex="-1"/);
 assert.match(html, /id="outboxRemoveTitle" tabindex="-1"/);
 assert.match(html, /data-action="confirm-remove-outbox"/);

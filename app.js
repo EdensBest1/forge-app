@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "131";
+const PUBLIC_LINK_VERSION = "132";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -698,7 +698,10 @@ const FORGE_CAPITAL_DESK_ENABLED = true;
 const FORGE_LEAD_NOTIFY_EMAIL = "admin@forge.local";
 const FORGE_GHL_WEBHOOK_URL = FORGE_ENV.FORGE_GHL_WEBHOOK_URL || "";
 const FORGE_ZAPIER_WEBHOOK_URL = FORGE_ENV.FORGE_ZAPIER_WEBHOOK_URL || "";
-const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.";
+const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, financial adviser, credit provider, or credit decision maker. Forge may refer eligible business owners to Flex only after a written partner relationship, customer consent, data-sharing approval, public-language approval, and an official referral link are active. Products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, card data, government IDs, authorization credentials, or sensitive financial documents through Forge.";
+const FLEX_RECEIPT_CONTRACT = "forge.flex-receipt.v1";
+const FLEX_DELIVERY_TIMEOUT_MS = 10_000;
+const flexDeliveryInFlight = new Map();
 const BUILDING_COMPLIANCE_COPY = "Forge is a marketplace and project coordination platform. Forge is not the contractor of record, lender, bank, broker-dealer, financial advisor, or credit provider. Partner routing is subject to project fit, customer consent, licensing, insurance, eligibility, written partner approval, and separate agreements between the customer and the applicable partner. Forge does not publicly claim official partnerships, use partner logos, or share customer information with third-party partners unless the required approvals and consent are in place.";
 const MANUFACTURING_COMPLIANCE_COPY = "Forge does not provide legal, medical, FDA, FTC, tax, or compliance advice. Supplement, nutraceutical, CBD/hemp, food, beverage, cosmetic, and pet wellness products may require specialized legal review, testing, labeling, claims review, insurance, and regulatory compliance before sale. Users are responsible for confirming all applicable federal, state, and local requirements.";
 const MANUFACTURING_DIRECTORY_BOUNDARY_COPY = "Thomasnet-style supplier-discovery workflows may be used only as a benchmark for how buyers search, filter, and request quotes. Forge uses original marketplace structure, user-submitted profiles, demo placeholders, and consent-based relationships. Do not scrape, copy, import, or reproduce proprietary supplier listings, descriptions, profiles, categories, images, or data.";
@@ -4204,6 +4207,11 @@ function flexReferralUrl() {
   return NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
 }
 
+function configuredFlexReferralUrl() {
+  const url = String(flexReferralUrl() || "").trim();
+  return url && url !== FLEX_REFERRAL_URL_PLACEHOLDER ? url : "";
+}
+
 function flexStatusLabel(status) {
   return humanize(String(status || "new").replaceAll("_", " "));
 }
@@ -4388,7 +4396,16 @@ function isSenecaPartnerApproved() {
 
 function isFlexPartnerApproved() {
   const partner = flexPartner();
-  return Boolean(state.settings.flexPartnerApproved && partner?.approved && partner?.dataSharingApproved);
+  return Boolean(
+    state.settings.flexPartnerApproved
+    && partner?.approved
+    && partner?.publicDisplayEnabled
+    && partner?.logoUseApproved
+    && partner?.referralAgreementSigned
+    && partner?.dataSharingApproved
+    && partner?.officialPartnerLanguageApproved
+    && configuredFlexReferralUrl()
+  );
 }
 
 function canPubliclyDisplayPartner(partner) {
@@ -7241,8 +7258,9 @@ function renderCapitalPage() {
   const compliance = document.querySelectorAll("[data-flex-compliance]");
   if (!helps || !problems || !mayHelp || !steps || !recent) return;
 
+  const referralReady = isFlexPartnerApproved();
   compliance.forEach((node) => {
-    node.textContent = FLEX_COMPLIANCE_COPY;
+    node.textContent = `${FLEX_COMPLIANCE_COPY}${referralReady ? "" : " No Flex referral is active in this environment."}`;
   });
 
   helps.innerHTML = [
@@ -7260,20 +7278,23 @@ function renderCapitalPage() {
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   mayHelp.innerHTML = [
-    "Business credit and cash-flow timing",
-    "Vendor payments and business banking tools",
-    "Employee cards and controlled expense management",
-    "Growth capital review",
-    "Fuel/material/equipment spending and payroll timing"
+    "Business banking and business credit readiness",
+    "Expense management and controlled employee cards",
+    "Vendor payments, bill pay, and cash-flow timing",
+    "Working capital and project-financing review",
+    "AP automation, AR automation, and global payments",
+    "Fuel, materials, equipment, inventory, labor, payroll timing, and growth expenses"
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   steps.innerHTML = [
-    "Tell Forge what your business needs.",
-    "Forge reviews whether your business looks like a fit.",
-    "Forge sends you the official Flex referral link if appropriate.",
-    "You apply directly with Flex.",
-    "Flex handles approval, onboarding, activation, and product support.",
-    "Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations."
+    "Save a basic business-interest note and consent on this device.",
+    "Check the receipt to see whether Forge delivery was verified or remains local.",
+    "Forge reviews the request without collecting banking credentials or sensitive financial documents.",
+    referralReady
+      ? "If the approved Flex path fits, Forge may provide the official referral link after review."
+      : "Flex referral remains unavailable until every written approval, data-sharing, and official-link gate passes.",
+    "Any future provider handles its own eligibility, approval, onboarding, activation, fees, terms, and product support.",
+    "Forge and NorthStar can separately help with customer leads, marketing, websites, CRM, hiring, payment operations, and business systems."
   ].map((item, index) => `
     <article>
       <strong>${index + 1}</strong>
@@ -7281,16 +7302,23 @@ function renderCapitalPage() {
     </article>
   `).join("");
 
-  recent.innerHTML = (state.flexLeads || []).slice(0, 3).map((lead) => `
+  recent.innerHTML = (state.flexLeads || []).filter((lead) => lead.request_id).slice(0, 3).map((lead) => `
     <article>
-      <span class="flex-status ${escapeHtml(lead.status)}">${escapeHtml(flexStatusLabel(lead.status))}</span>
+      <span class="flex-status ${escapeHtml(lead.delivery_state || "locally_preserved")}">${escapeHtml(flexDeliveryLabel(lead.delivery_state))}</span>
       <strong>${escapeHtml(lead.business_name)}</strong>
-      <p>${escapeHtml(lead.industry)} · ${escapeHtml(lead.city || "City pending")} · score ${lead.lead_score}</p>
+      <p>${escapeHtml(lead.industry)} · ${escapeHtml(lead.primary_need || "Need pending")}</p>
+      <small>Request ${escapeHtml(lead.request_id)} · attempt ${escapeHtml(String(lead.attempt_count || 0))}/5</small>
+      ${!["delivered", "rejected-requires-correction"].includes(lead.delivery_state) && Number(lead.attempt_count || 0) < 5
+        ? `<button class="btn ghost small" type="button" data-action="retry-flex-delivery" data-flex-id="${escapeHtml(lead.id)}">Retry Forge delivery</button>`
+        : ""}
     </article>
-  `).join("") || `<article><p class="muted">No Capital Desk leads yet.</p></article>`;
+  `).join("") || `<article><p class="muted">No Capital Desk request has been saved on this device.</p></article>`;
 
   const continueButton = document.querySelector("#flexContinueButton");
-  if (continueButton) continueButton.href = flexReferralUrl();
+  if (continueButton) {
+    continueButton.href = referralReady ? configuredFlexReferralUrl() : "#";
+    continueButton.classList.add("hidden");
+  }
 }
 
 function renderManufacturingPage() {
@@ -16056,11 +16084,162 @@ function submitNorthStarLead() {
   navigate("confirm");
 }
 
+function createFlexRequestId() {
+  if (globalThis.crypto?.randomUUID) return `capital-${globalThis.crypto.randomUUID()}`;
+  return `capital-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+}
+
+function flexDeliveryLabel(stateValue) {
+  return ({
+    locally_preserved: "Saved on this device",
+    sending: "Checking Forge delivery",
+    delivered: "Delivered to Forge",
+    delivery_unavailable: "Forge delivery unavailable",
+    retryable_failure: "Delivery needs retry",
+    "rejected-requires-correction": "Correction required"
+  })[stateValue] || "Saved on this device";
+}
+
+function flexApiPayload(lead) {
+  return {
+    request_id: lead.request_id,
+    created_at: lead.created_at,
+    consent_captured_at: lead.consent_captured_at,
+    owner_name: lead.owner_name,
+    business_name: lead.business_name,
+    email: lead.email,
+    phone: lead.phone,
+    city: lead.city,
+    state: lead.state,
+    industry: lead.industry,
+    website: lead.website,
+    years_in_business: lead.years_in_business,
+    monthly_revenue_range: lead.monthly_revenue_range,
+    monthly_spend_range: lead.monthly_spend_range,
+    employee_count: lead.employee_count,
+    primary_need: lead.primary_need,
+    interested_in_forge_job_leads: lead.interested_in_forge_job_leads,
+    interested_in_north_star_marketing: lead.interested_in_north_star_marketing,
+    interested_in_payment_processing: lead.interested_in_payment_processing,
+    interested_in_website_crm_automation: lead.interested_in_website_crm_automation,
+    consent_to_contact: lead.consent_to_contact,
+    consent_to_receive_flex_referral: lead.consent_to_receive_flex_referral,
+    referral_source: "forge_capital_desk",
+    notes: lead.notes
+  };
+}
+
+function validFlexReceipt(body, lead) {
+  if (!body || body.contractVersion !== FLEX_RECEIPT_CONTRACT || body.ok !== true || body.status !== "delivered") return false;
+  if (body.requestId !== lead.request_id || !Array.isArray(body.storedIn) || body.storedIn.length < 1) return false;
+  const receivedAt = new Date(body.receivedAt);
+  return Number.isFinite(receivedAt.getTime()) && receivedAt.toISOString() === body.receivedAt;
+}
+
+function renderFlexDeliveryReceipt(lead) {
+  const facts = document.querySelector("#flexDeliveryReceipt");
+  const message = document.querySelector("#flexLeadSuccessMessage");
+  const retry = document.querySelector("#flexRetryDeliveryButton");
+  if (!facts || !message || !lead) return;
+  facts.innerHTML = `
+    <div><dt>Status</dt><dd>${escapeHtml(flexDeliveryLabel(lead.delivery_state))}</dd></div>
+    <div><dt>Request ID</dt><dd><code>${escapeHtml(lead.request_id)}</code></dd></div>
+    <div><dt>Attempts</dt><dd>${escapeHtml(String(lead.attempt_count || 0))} of 5</dd></div>
+    <div><dt>Referral</dt><dd>${isFlexPartnerApproved() ? "Eligible for operator review" : "Not active"}</dd></div>
+  `;
+  message.textContent = lead.delivery_state === "delivered"
+    ? "Forge verified delivery of this Capital Desk interest note. This is not a financing application and it was not sent to Flex."
+    : lead.delivery_state === "rejected-requires-correction"
+      ? "This request remains on this device, but it needs correction before Forge can accept delivery. It was not sent to Flex."
+      : "This request is preserved in this browser. Forge delivery is not verified, it has not been sent to Flex, and it is not a financing application.";
+  if (retry) {
+    retry.dataset.flexId = lead.id;
+    retry.classList.toggle("hidden", ["delivered", "rejected-requires-correction"].includes(lead.delivery_state) || Number(lead.attempt_count || 0) >= 5);
+  }
+}
+
+async function deliverFlexLead(id) {
+  if (flexDeliveryInFlight.has(id)) return flexDeliveryInFlight.get(id);
+  const lead = (state.flexLeads || []).find((item) => item.id === id);
+  if (!lead || Number(lead.attempt_count || 0) >= 5 || ["delivered", "rejected-requires-correction"].includes(lead.delivery_state)) return lead;
+  lead.delivery_state = "sending";
+  lead.attempt_count = Number(lead.attempt_count || 0) + 1;
+  lead.last_attempt_at = new Date().toISOString();
+  saveState();
+  renderCapitalPage();
+  renderFlexDeliveryReceipt(lead);
+
+  const delivery = (async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FLEX_DELIVERY_TIMEOUT_MS);
+    try {
+      const response = await fetch("/api/forge/flex-leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forge-Intent": "capital-desk-v1",
+          "X-Forge-Request-Id": lead.request_id
+        },
+        body: JSON.stringify(flexApiPayload(lead)),
+        signal: controller.signal
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.ok && validFlexReceipt(result, lead)) {
+        lead.delivery_state = "delivered";
+        lead.server_receipt = {
+          requestId: result.requestId,
+          receivedAt: result.receivedAt,
+          storedIn: result.storedIn
+        };
+      } else if ([400, 403, 413].includes(response.status)) {
+        lead.delivery_state = "rejected-requires-correction";
+        lead.failure_category = String(result.error || "INVALID_CAPITAL_DESK_REQUEST").slice(0, 80);
+      } else if (response.status === 503) {
+        lead.delivery_state = "delivery_unavailable";
+        lead.failure_category = "DURABLE_CAPITAL_DESK_DESTINATION_NOT_CONFIGURED";
+      } else {
+        lead.delivery_state = "retryable_failure";
+        lead.failure_category = "CAPITAL_DESK_DELIVERY_FAILED";
+      }
+    } catch {
+      lead.delivery_state = "retryable_failure";
+      lead.failure_category = "CAPITAL_DESK_NETWORK_FAILURE";
+    } finally {
+      clearTimeout(timer);
+    }
+    lead.updated_at = new Date().toISOString();
+    saveState();
+    renderCapitalPage();
+    const success = document.querySelector("#flexLeadSuccess");
+    if (success?.dataset.flexId === lead.id) renderFlexDeliveryReceipt(lead);
+    showToast(lead.delivery_state === "delivered"
+      ? "Delivered to Forge. This was not sent to Flex."
+      : lead.delivery_state === "rejected-requires-correction"
+        ? "Saved on this device. Delivery needs a correction."
+        : "Saved on this device. Forge delivery is not available yet.");
+    return lead;
+  })().finally(() => flexDeliveryInFlight.delete(id));
+  flexDeliveryInFlight.set(id, delivery);
+  return delivery;
+}
+
+function retryFlexDelivery(id) {
+  return deliverFlexLead(id);
+}
+
 function submitFlexLead() {
+  const capturedAt = new Date().toISOString();
   const lead = normalizeFlexLead({
     id: `flex-${Date.now()}`,
-    created_at: "Today",
-    updated_at: "Today",
+    request_id: createFlexRequestId(),
+    created_at: capturedAt,
+    updated_at: capturedAt,
+    consent_captured_at: capturedAt,
+    delivery_state: "locally_preserved",
+    attempt_count: 0,
+    last_attempt_at: "",
+    failure_category: "",
+    server_receipt: null,
     owner_name: fieldValue("#flexOwnerName"),
     business_name: fieldValue("#flexCompanyName"),
     email: fieldValue("#flexEmail"),
@@ -16089,28 +16268,27 @@ function submitFlexLead() {
   addActivity(`Flex Capital Desk lead saved: ${lead.business_name} (${lead.industry}) score ${lead.lead_score}.`);
   state.lastConfirmation = {
     type: "flex",
-    title: "Thank you.",
-    body: "Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.",
+    title: "Saved on this device.",
+    body: "Forge preserved this Capital Desk interest note in this browser before checking delivery. It has not been sent to Flex and is not a financing application.",
     details: [
       `${lead.business_name} · ${lead.industry}`,
-      `${lead.primary_need || "Need pending"} · score ${lead.lead_score}`,
-      lead.consent_to_receive_flex_referral ? "Flex referral consent captured" : "Flex referral consent not captured"
+      `${lead.primary_need || "Need pending"} · request ${lead.request_id}`,
+      "Future referral consent captured; Flex referral is not active"
     ],
     nextSteps: [
-      "Forge stores the basic lead and consent details",
-      "Use admin review before any official Flex referral link is opened",
-      "Flex handles eligibility, approval, onboarding, activation, and product support"
+      "Keep this browser copy until Forge delivery is verified",
+      "Use Capital Desk status to retry the same request ID safely",
+      "No Flex link or data sharing is allowed until every partner approval gate passes"
     ],
     primary: { label: "Open Capital Desk", screen: "capital" },
     secondary: { label: "Talk to Forge Capital Desk", screen: "capital" }
   };
   saveState();
-  sendLead("forge-flex", flexLeadWebhookPayload(lead));
-  sendConfiguredFlexWebhooks(lead);
   showFlexLeadSuccess(lead);
-  showToast("Capital Desk request received.");
+  showToast("Saved on this device. Checking Forge delivery now.");
   document.querySelector("#flexLeadForm").reset();
   renderCapitalPage();
+  deliverFlexLead(lead.id);
 }
 
 function showFlexLeadSuccess(lead) {
@@ -16120,7 +16298,12 @@ function showFlexLeadSuccess(lead) {
   if (!form || !success) return;
   form.classList.add("hidden");
   success.classList.remove("hidden");
-  if (continueButton) continueButton.href = flexReferralUrl();
+  success.dataset.flexId = lead.id;
+  if (continueButton) {
+    continueButton.href = isFlexPartnerApproved() ? configuredFlexReferralUrl() : "#";
+    continueButton.classList.add("hidden");
+  }
+  renderFlexDeliveryReceipt(lead);
   success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -16129,6 +16312,7 @@ function resetFlexForm() {
   const success = document.querySelector("#flexLeadSuccess");
   if (!form || !success) return;
   success.classList.add("hidden");
+  delete success.dataset.flexId;
   form.classList.remove("hidden");
   focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
 }
@@ -17020,12 +17204,14 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-northstar-queue") copyNorthStarQueue();
   if (action?.dataset.action === "copy-northstar-lead") copyNorthStarLead(action.dataset.northstarId);
   if (action?.dataset.action === "focus-flex-form") focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
+  if (action?.dataset.action === "focus-flex-readiness") focusAutoPanel("#flexReadinessSection", null);
   if (action?.dataset.action === "copy-flex-brief") copyFlexBrief();
   if (action?.dataset.action === "copy-flex-queue") copyFlexQueue();
   if (action?.dataset.action === "copy-flex-outreach") copyFlexOutreach(action.dataset.flexId);
   if (action?.dataset.action === "open-flex-referral") openFlexReferral(action.dataset.flexLeadId);
   if (action?.dataset.action === "create-flex-upsell-task") createFlexUpsellTask(action.dataset.flexId);
   if (action?.dataset.action === "reset-flex-form") resetFlexForm();
+  if (action?.dataset.action === "retry-flex-delivery") retryFlexDelivery(action.dataset.flexId);
   if (action?.dataset.action === "mark-flex-status") markFlexStatus(action.dataset.flexId, action.dataset.flexStatusValue);
   if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
   if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");

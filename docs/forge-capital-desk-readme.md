@@ -2,22 +2,27 @@
 
 ## Purpose
 
-Forge Capital Desk collects basic business-owner lead/contact information and consent, then sends eligible owners to Flex through an approved referral URL only after the approval gates are in place. Forge must not present itself as a bank, lender, broker, underwriter, credit decision maker, Flex employee, or official Flex partner.
+Forge Capital Desk lets a business owner save a basic finance-interest note on their device. It may deliver that note to an approved server-owned destination only when all partnership, consent, data-sharing, public-language, and destination gates are explicitly configured. A Flex referral remains inactive. Forge must not present itself as a bank, lender, broker, underwriter, credit decision maker, Flex employee, or official Flex partner.
 
 ## Setup
 
-1. Add the approved Flex referral URL to `NEXT_PUBLIC_FLEX_REFERRAL_URL`.
-2. Add `FLEX_APP_URL` only when there is an approved Flex app or intake flow that Building finance requests may open directly.
-3. Run `migrations/20260626_forge_flex_leads.sql` in Supabase when backend storage is ready.
-4. Keep public static intake local-only until a server-owned API route, Zapier action, or Supabase Edge Function can validate and write leads.
+1. Keep every approval flag false until the corresponding written approval exists.
+2. Configure an HTTPS server-owned delivery destination only after the referral agreement, data-sharing scope, and public language are approved.
+3. Add `NEXT_PUBLIC_FLEX_REFERRAL_URL` only when Flex provides an official referral URL and approves its public use.
+4. Add `FLEX_APP_URL` only when there is an approved intake flow that Building finance requests may open directly.
+5. Until those gates pass, the public form saves locally and reports delivery as unavailable; it never labels a local save as delivered.
 5. Use `/forge/capital`, `/forge/flex`, or `/partners/flex` for the public page aliases.
 
 ## Environment Variables
 
 ```env
-NEXT_PUBLIC_FLEX_REFERRAL_URL="https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK"
+NEXT_PUBLIC_FLEX_REFERRAL_URL=""
 FLEX_APP_URL=""
-FLEX_PARTNER_MODE="referral"
+FLEX_PARTNER_MODE="draft"
+FLEX_PARTNER_APPROVED="false"
+FLEX_DATA_SHARING_APPROVED="false"
+FLEX_OFFICIAL_LANGUAGE_APPROVED="false"
+FLEX_REFERRAL_AGREEMENT_SIGNED="false"
 FORGE_CAPITAL_DESK_ENABLED="true"
 FORGE_LEAD_NOTIFY_EMAIL="admin@forge.local"
 FORGE_GHL_WEBHOOK_URL=""

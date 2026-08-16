@@ -132,10 +132,10 @@ const requiredHtml = [
   "adminNorthstarTable",
   "adminNorthstarPipeline",
   "Forge Capital Desk",
-  "Business owners need breathing room.",
-  "discover modern business finance tools through our Flex referral channel.",
+  "Explore business-finance readiness without pressure.",
+  "A Flex referral is not active unless every written approval and official-link gate is complete.",
   "Forge Capital Desk Lead Form",
-  "Continue to Flex",
+  "Continue to approved referral",
   "flexLeadForm",
   "flexConsentToContact",
   "flexConsentReferral",
@@ -158,7 +158,7 @@ const requiredHtml = [
   "adminFlexLeadsTable",
   "flex_link_sent",
   "Copy Queue",
-  "Talk to Forge Capital Desk",
+  "Save Finance Interest",
   "Start here",
   "Choose the path that matches why you came to Forge.",
   "startPathGrid",
@@ -346,8 +346,8 @@ const requiredHtml = [
   "Payment milestones",
   "Quote valid until",
   "admitlyPresentationBody",
-  "styles.css?v=131",
-  "app.js?v=131"
+  "styles.css?v=132",
+  "app.js?v=132"
 ];
 
 const requiredJs = [
@@ -1067,6 +1067,7 @@ const forgeAcademyDoc = await readFile("docs/forge-academy.md", "utf8");
 const admitlyForgeBridgeDoc = await readFile("docs/admitly-forge-career-bridge.md", "utf8");
 const forgeCareerPlusDoc = await readFile("docs/forge-career-plus.md", "utf8");
 const flexApiRoute = await readFile("api/forge/flex-leads/route.ts", "utf8");
+const flexApiEntrypoint = await readFile("api/forge/flex-leads.ts", "utf8");
 const envExample = await readFile(".env.example", "utf8");
 const requiredTradeLabels = [
   "Electrician",
@@ -1231,7 +1232,7 @@ const missingPwa = [
   ["service worker registration", js.includes("registerServiceWorker")],
   ["manifest name", manifest.includes("Forge MVP")],
   ["service worker cache", serviceWorker.includes("CACHE_NAME")],
-  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v131")]
+  ["fresh service worker cache", serviceWorker.includes("forge-mvp-v132")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const missingDeploy = [
   ["netlify security headers", netlify.includes("Content-Security-Policy") && netlify.includes("X-Frame-Options")],
@@ -1245,7 +1246,7 @@ const missingDeploy = [
   ["admin auth plan", adminAuthPlan.includes("Forge Admin Auth Plan") && adminAuthPlan.includes("Minimum Public Beta Rule")],
   ["security check script", securityCheck.includes("Forge security check passed.") && securityCheck.includes("fresh cache version")],
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
-  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v131\"") && releaseManifest.includes("/request-help?v=131") && releaseManifest.includes("/post-job?v=131") && releaseManifest.includes("/worker-signup?v=131") && releaseManifest.includes("/business?v=131") && releaseManifest.includes("/photography?v=131") && releaseManifest.includes("/photography/request?v=131") && releaseManifest.includes("/photography/apply?v=131") && releaseManifest.includes("/photography-videography?v=131") && releaseManifest.includes("/northstar-creative?v=131") && releaseManifest.includes("/forge/capital?v=131") && releaseManifest.includes("/forge/flex?v=131") && releaseManifest.includes("/partners/flex?v=131") && releaseManifest.includes("/personal-driver?v=131") && releaseManifest.includes("/forge-payments?v=131") && releaseManifest.includes("/local-products?v=131") && releaseManifest.includes("/building?v=131") && releaseManifest.includes("/admin/building-leads?v=131") && releaseManifest.includes("/forge-academy?v=131") && releaseManifest.includes("/trade-pathways?v=131") && releaseManifest.includes("/admin/forge-academy?v=131")],
+  ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v132\"") && releaseManifest.includes("/request-help?v=132") && releaseManifest.includes("/post-job?v=132") && releaseManifest.includes("/worker-signup?v=132") && releaseManifest.includes("/business?v=132") && releaseManifest.includes("/photography?v=132") && releaseManifest.includes("/photography/request?v=132") && releaseManifest.includes("/photography/apply?v=132") && releaseManifest.includes("/photography-videography?v=132") && releaseManifest.includes("/northstar-creative?v=132") && releaseManifest.includes("/forge/capital?v=132") && releaseManifest.includes("/forge/flex?v=132") && releaseManifest.includes("/partners/flex?v=132") && releaseManifest.includes("/personal-driver?v=132") && releaseManifest.includes("/forge-payments?v=132") && releaseManifest.includes("/local-products?v=132") && releaseManifest.includes("/building?v=132") && releaseManifest.includes("/admin/building-leads?v=132") && releaseManifest.includes("/forge-academy?v=132") && releaseManifest.includes("/trade-pathways?v=132") && releaseManifest.includes("/admin/forge-academy?v=132")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],
@@ -1282,8 +1283,8 @@ const missingDeploy = [
   ["admin building route", adminBuildingRoute.includes("Forge Building Leads Admin") && adminBuildingRoute.includes("/route-loader.js")],
   ["flex lead migration", flexMigration.includes("public.forge_flex_leads") && flexMigration.includes("interested_in_forge_job_leads") && flexMigration.includes("interested_in_website_crm_automation") && flexMigration.includes("consent_to_receive_flex_referral") && flexMigration.includes("status in")],
   ["flex docs", flexReadme.includes("Forge Capital Desk") && flexReadme.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && flexOutreach.includes("Forge Capital Desk") && flexOutreach.includes("Compliance")],
-  ["flex api route", flexApiRoute.includes("FORGE_GHL_WEBHOOK_URL") && flexApiRoute.includes("FORGE_ZAPIER_WEBHOOK_URL") && flexApiRoute.includes("forbiddenFieldPattern")],
-  ["flex env example", envExample.includes("NEXT_PUBLIC_FLEX_REFERRAL_URL") && envExample.includes("https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK") && envExample.includes("FLEX_APP_URL") && envExample.includes("FLEX_PARTNER_MODE") && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
+  ["flex api route", flexApiRoute.includes("FORGE_GHL_WEBHOOK_URL") && flexApiRoute.includes("FORGE_ZAPIER_WEBHOOK_URL") && flexApiRoute.includes("forbiddenFieldPattern") && flexApiRoute.includes("FLEX_REFERRAL_AGREEMENT_SIGNED") && flexApiEntrypoint.includes('from "./flex-leads/route.ts"')],
+  ["flex env example", envExample.includes('NEXT_PUBLIC_FLEX_REFERRAL_URL=""') && envExample.includes("FLEX_APP_URL") && envExample.includes('FLEX_PARTNER_MODE="draft"') && envExample.includes('FLEX_PARTNER_APPROVED="false"') && envExample.includes("FORGE_CAPITAL_DESK_ENABLED")]
 ].filter(([, ok]) => !ok).map(([label]) => label);
 const darkThemeLeak = /#09090b|color-scheme:\s*dark|industrial/i.test(css);
 
