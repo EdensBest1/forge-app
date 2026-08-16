@@ -7,7 +7,7 @@ Date: 2026-08-15
 | Asset | v133 bytes | Policy |
 | --- | ---: | --- |
 | index.html | 338,946 | Large legacy single-shell architecture; no unbounded growth |
-| styles.css | 302,670 | One consolidated token layer; avoid duplicate override systems |
+| styles.css | 303,355 | One consolidated token layer; avoid duplicate override systems |
 | app.js | 1,127,780 | Dependency-free legacy shell; new work should be route-aware or extracted |
 | service-worker.js | 4,204 | Small, auditable cache policy |
 | route-loader.js | 4,120 | Small release-validating loader |

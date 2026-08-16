@@ -20,6 +20,9 @@ assert.match(styles, /body,[\s\S]*?\.screen,[\s\S]*?background:\s*#fff/i);
 assert.match(styles, /--touch-target:\s*44px/i);
 assert.match(styles, /prefers-reduced-motion:\s*reduce/i);
 assert.match(styles, /\.home-hero\s+\.hero-actions\s+\.btn\.ghost\s*{\s*display:\s*none/i);
+assert.match(styles, /\.manufacturing-hero\s*>\s*\*\s*{\s*min-width:\s*0/i);
+assert.match(styles, /\.manufacturing-bar\s+\.bar-icons\s*{[\s\S]{0,180}grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/i);
+assert.match(styles, /\.manufacturing-screen\s+\.section-title\s*{[\s\S]{0,120}flex-direction:\s*column/i);
 
 const hero = html.match(/<section class="home-hero">([\s\S]*?)<\/section>/)?.[1] || "";
 const visibleHeroActions = [...hero.matchAll(/<button class="btn (?!ghost)([^"]*)"[^>]*>([^<]+)<\/button>/g)];
