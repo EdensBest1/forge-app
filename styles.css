@@ -1479,6 +1479,11 @@ body:not(.role-admin) [data-admin-control] {
   font-weight: 850;
 }
 
+.back-link {
+  min-height: 44px;
+  padding: 0 8px;
+}
+
 [data-nav].active:not(.brand):not(.back-link) {
   outline: 2px solid rgba(6, 72, 183, 0.22);
   outline-offset: 2px;
@@ -15791,5 +15796,233 @@ th {
 
   .admitly-presentation-body {
     padding: 0 20px 44px;
+  }
+}
+
+.confirm-delivery-status,
+.outbox-hero,
+.outbox-safety-note,
+.outbox-card,
+.outbox-empty,
+.outbox-summary article,
+.outbox-remove-dialog {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.confirm-delivery-status {
+  margin-top: 20px;
+  padding: 22px;
+  text-align: left;
+}
+
+.confirm-delivery-status.delivered,
+.outbox-card.delivered {
+  border-color: #9ac8a5;
+  background: #f3fbf5;
+}
+
+.confirm-delivery-status.unavailable,
+.confirm-delivery-status.retryable,
+.outbox-card.unavailable,
+.outbox-card.retryable {
+  border-color: #e8ba63;
+  background: #fff9ec;
+}
+
+.confirm-delivery-status.rejected,
+.outbox-card.rejected {
+  border-color: #e5a3a3;
+  background: #fff5f5;
+}
+
+.confirm-delivery-status.sending,
+.outbox-card.sending {
+  border-color: #92afe7;
+  background: #f3f7ff;
+}
+
+.confirm-delivery-status h2,
+.outbox-card h2,
+.outbox-hero h1 {
+  margin: 6px 0 10px;
+}
+
+.delivery-receipt-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.delivery-receipt-facts div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(24, 64, 145, 0.06);
+}
+
+.delivery-receipt-facts dt {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.delivery-receipt-facts dd {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  font-weight: 750;
+}
+
+.delivery-receipt-facts code {
+  font-size: 0.78rem;
+  white-space: normal;
+}
+
+.delivery-local-warning,
+.outbox-safety-note {
+  color: #684708;
+}
+
+.outbox-layout {
+  width: min(1120px, calc(100% - 32px));
+  margin: 28px auto 80px;
+}
+
+.outbox-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+  gap: 26px;
+  align-items: end;
+  padding: 28px;
+}
+
+.outbox-safety-note {
+  margin-top: 16px;
+  padding: 18px 22px;
+  border-color: #e8ba63;
+  background: #fff9ec;
+}
+
+.outbox-safety-note p {
+  margin-bottom: 0;
+}
+
+.outbox-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.outbox-summary article {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+}
+
+.outbox-summary strong {
+  color: var(--blue);
+  font-size: 1.75rem;
+}
+
+.outbox-list {
+  display: grid;
+  gap: 16px;
+}
+
+.outbox-card,
+.outbox-empty {
+  padding: 22px;
+}
+
+.outbox-card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.outbox-state,
+.outbox-type {
+  color: var(--blue);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.outbox-type {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(24, 64, 145, 0.08);
+}
+
+.outbox-remove-dialog {
+  width: min(620px, calc(100% - 32px));
+  max-height: min(760px, calc(100vh - 32px));
+  padding: 26px;
+  color: var(--ink);
+}
+
+.outbox-remove-dialog::backdrop {
+  background: rgba(12, 26, 55, 0.68);
+}
+
+@media (max-width: 700px) {
+  .outbox-hero,
+  .outbox-summary,
+  .delivery-receipt-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .outbox-layout {
+    width: min(100% - 20px, 1120px);
+    margin-top: 14px;
+  }
+
+  .outbox-hero,
+  .outbox-card,
+  .outbox-empty,
+  .confirm-delivery-status,
+  .outbox-remove-dialog {
+    padding: 18px;
+  }
+
+  .outbox-card-heading {
+    display: grid;
+    gap: 10px;
+  }
+
+  .outbox-card .hero-actions,
+  .outbox-remove-dialog .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .outbox-card .btn,
+  .outbox-remove-dialog .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -77,8 +77,12 @@ try {
   const storedJob = await fileHandler(request(baseJob));
   assert.equal(storedJob.status, 201, "post-job must save through the local filesystem adapter");
   const jobReceipt = await storedJob.json();
+  assert.equal(jobReceipt.contractVersion, "forge.lead-receipt.v1");
+  assert.equal(jobReceipt.status, "delivered");
+  assert.equal(jobReceipt.requestId, baseJob.requestId);
   assert.equal(jobReceipt.receivedAt, fixedDate.toISOString());
   assert.deepEqual(jobReceipt.storedIn, ["filesystem-test"]);
+  assert.equal(storedJob.headers.get("X-Forge-Request-Id"), baseJob.requestId);
 
   const storedWorker = await fileHandler(request(baseWorker));
   assert.equal(storedWorker.status, 201, "worker signup must save through the local filesystem adapter");
@@ -115,18 +119,40 @@ try {
   assert.deepEqual(concurrentResults.map((response) => response.status).sort(), [200, 201]);
   assert.equal(concurrentWrites, 1, "concurrent idempotent requests must share one provider write");
 
-  assert.equal((await fileHandler(request(baseJob, { Origin: "https://attacker.example" }))).status, 403);
-  assert.equal((await fileHandler(request({ ...baseJob, requestId: "missing-consent", consent: { ...syntheticConsent, followUp: false } }))).status, 400);
+  const crossOrigin = await fileHandler(request(baseJob, { Origin: "https://attacker.example" }));
+  assert.equal(crossOrigin.status, 403);
+  assert.deepEqual(await crossOrigin.json(), {
+    contractVersion: "forge.lead-receipt.v1",
+    ok: false,
+    status: "rejected-requires-correction",
+    error: "INVALID_REQUEST_ORIGIN"
+  });
+  const missingConsent = await fileHandler(request({ ...baseJob, requestId: "missing-consent", consent: { ...syntheticConsent, followUp: false } }));
+  assert.equal(missingConsent.status, 400);
+  assert.equal(missingConsent.headers.get("X-Forge-Request-Id"), "missing-consent");
+  assert.equal((await missingConsent.json()).status, "rejected-requires-correction");
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "bad-timestamp", consent: { ...syntheticConsent, capturedAt: "today" } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "impossible-timestamp", consent: { ...syntheticConsent, capturedAt: "2026-99-99T20:00:00.000Z" } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "impossible-calendar-date", consent: { ...syntheticConsent, capturedAt: "2026-02-31T20:00:00.000Z" } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "invalid request id" }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "forbidden", payload: { ...baseJob.payload, bankAccount: "never-accept" } }))).status, 400);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "forbidden-secret", payload: { ...baseJob.payload, accessToken: "never-accept" } }))).status, 400);
+  assert.equal((await fileHandler(request({ ...baseJob, requestId: "safe-access-notes", payload: { ...baseJob.payload, serviceDetails: { accessNotes: "Synthetic gate access notes." } } }))).status, 201);
   assert.equal((await fileHandler(request({ ...baseJob, requestId: "oversized", payload: { ...baseJob.payload, description: "x".repeat(40 * 1024) } }))).status, 413);
 
   const unconfiguredHandler = createLeadHandler({ store: null, rateLimiter: () => true, receipts: new Map() });
-  assert.equal((await unconfiguredHandler(request({ ...baseJob, requestId: "unconfigured" }))).status, 503);
+  const unconfigured = await unconfiguredHandler(request({ ...baseJob, requestId: "unconfigured" }));
+  assert.equal(unconfigured.status, 503);
+  assert.equal(unconfigured.headers.get("X-Forge-Request-Id"), "unconfigured");
+  assert.match(unconfigured.headers.get("X-Forge-Correlation-Id"), /^[0-9a-f-]{36}$/i);
+  assert.deepEqual(await unconfigured.json(), {
+    contractVersion: "forge.lead-receipt.v1",
+    ok: false,
+    error: "DURABLE_LEAD_STORE_NOT_CONFIGURED",
+    status: "delivery-unavailable",
+    requestId: "unconfigured",
+    message: "The local browser copy was preserved, but Forge has no approved durable lead destination."
+  });
 
   const failingHandler = createLeadHandler({
     store: { save() { throw new Error("synthetic provider outage"); } },
@@ -233,7 +259,8 @@ try {
     referrals: [],
     activity: []
   };
-  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "129" });
+  syntheticBrowserState.leadOutbox = [];
+  const backupEnvelope = BackupRecovery.createEnvelope(syntheticBrowserState, { exportedAt: fixedDate.toISOString(), appVersion: "131" });
   const backupPath = join(workDir, "forge-backup.json");
   await writeFile(backupPath, JSON.stringify(backupEnvelope, null, 2), { mode: 0o600 });
   const recovered = BackupRecovery.parse(await readFile(backupPath, "utf8"));
@@ -290,12 +317,13 @@ try {
   assert.match(migration, /unique index if not exists forge_job_leads_request_id_unique/i);
   assert.match(migration, /follow_up_consent boolean not null default false/i);
   assert.match(vercelAdapter, /postLead\(new Request/);
-  assert.match(app, /Lead saved in this browser\. Server delivery is not configured yet\./);
+  assert.match(app, /Saved on this device\. Forge delivery is not available yet\./);
   assert.match(app, /confirmBackupImport/);
   assert.match(app, /event\.key !== "Escape"/);
   assert.match(app, /showBackupRecoveryPreview/);
   assert.match(app, /concurrent idempotent requests must share one provider write|pendingBackupReview/);
-  assert.match(html, /backup-recovery\.js\?v=129/);
+  assert.match(html, /lead-outbox\.js\?v=131/);
+  assert.match(html, /backup-recovery\.js\?v=131/);
   assert.match(html, /Local recovery dry run/);
   assert.match(html, /id="backupReviewTitle" tabindex="-1"/);
   assert.match(html, /Replace local device data/);

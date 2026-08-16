@@ -23,9 +23,10 @@ type LeadEnvelope = {
 const MAX_BODY_BYTES = 32 * 1024;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT = 10;
+const RECEIPT_CONTRACT = "forge.lead-receipt.v1";
 const requestWindows = new Map<string, number[]>();
 const completedRequests = new Map<string, { receivedAt: string; storedIn: string[] }>();
-const forbiddenFieldPattern = /(ssn|social.security|bank|routing|account.number|credit.card|card.number|cvv|password|secret|access.?token|api.?key|authorization|identity.document|passport|driver.?license|tax.id)/i;
+const forbiddenFieldPattern = /(^| )(ssn|social security|bank|routing|account number|credit card|card number|cvv|password|secret|access token|api key|authorization|identity document|passport|tax id|driver license number|drivers license number|license number)( |$)/;
 
 function json(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -85,7 +86,8 @@ function containsForbiddenField(value: unknown, path = ""): string | null {
   if (!value || typeof value !== "object") return null;
   for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
     const nextPath = path ? `${path}.${key}` : key;
-    if (forbiddenFieldPattern.test(key)) return nextPath;
+    const words = key.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/[^A-Za-z0-9]+/g, " ").trim().toLowerCase();
+    if (forbiddenFieldPattern.test(words)) return nextPath;
     const child = containsForbiddenField(nested, nextPath);
     if (child) return child;
   }
@@ -191,27 +193,46 @@ export function createLeadHandler(options: HandlerOptions = {}) {
   const resolveStore = options.resolveStore || (() => options.store === undefined ? createConfiguredLeadStore() : options.store);
 
   return async function handleLead(request: Request) {
-  if (!validateRequestOrigin(request)) return json({ error: "INVALID_REQUEST_ORIGIN" }, 403);
-  if (request.headers.get("content-type")?.split(";")[0] !== "application/json") return json({ error: "JSON_REQUIRED" }, 415);
-  if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES) return json({ error: "PAYLOAD_TOO_LARGE" }, 413);
-  if (!limiter(request)) return json({ error: "RATE_LIMITED" }, 429, { "Retry-After": String(Math.ceil(RATE_WINDOW_MS / 1000)) });
+  const correlationId = crypto.randomUUID();
+  const contractError = (error: string, status: number, deliveryStatus: string, options: {
+    message?: string;
+    requestId?: string;
+    headers?: Record<string, string>;
+  } = {}) => json({
+    contractVersion: RECEIPT_CONTRACT,
+    ok: false,
+    status: deliveryStatus,
+    error,
+    ...(options.requestId ? { requestId: options.requestId } : {}),
+    ...(options.message ? { message: options.message } : {})
+  }, status, {
+    "X-Forge-Correlation-Id": correlationId,
+    ...(options.requestId ? { "X-Forge-Request-Id": options.requestId } : {}),
+    ...(options.headers || {})
+  });
+  if (!validateRequestOrigin(request)) return contractError("INVALID_REQUEST_ORIGIN", 403, "rejected-requires-correction");
+  if (request.headers.get("content-type")?.split(";")[0] !== "application/json") return contractError("JSON_REQUIRED", 415, "rejected-requires-correction");
+  if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES) return contractError("PAYLOAD_TOO_LARGE", 413, "rejected-requires-correction");
+  if (!limiter(request)) return contractError("RATE_LIMITED", 429, "retryable-failure", { headers: { "Retry-After": String(Math.ceil(RATE_WINDOW_MS / 1000)) } });
 
   let input: LeadEnvelope;
   try {
     const rawBody = await request.text();
-    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) return json({ error: "PAYLOAD_TOO_LARGE" }, 413);
+    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) return contractError("PAYLOAD_TOO_LARGE", 413, "rejected-requires-correction");
     input = JSON.parse(rawBody) as LeadEnvelope;
   } catch {
-    return json({ error: "INVALID_JSON" }, 400);
+    return contractError("INVALID_JSON", 400, "rejected-requires-correction");
   }
+  const suppliedRequestId = text(input.requestId, 160);
+  const safeRequestId = /^[A-Za-z0-9._:-]{1,160}$/.test(suppliedRequestId) ? suppliedRequestId : "";
   const validationError = validateEnvelope(input);
-  if (validationError) return json({ error: "INVALID_LEAD", message: validationError }, 400);
+  if (validationError) return contractError("INVALID_LEAD", 400, "rejected-requires-correction", { message: validationError, requestId: safeRequestId });
 
   const receivedAt = now().toISOString();
-  const requestId = text(input.requestId, 160) || crypto.randomUUID();
+  const requestId = safeRequestId || crypto.randomUUID();
   const previous = receipts.get(requestId);
   if (previous) {
-    return json({ ok: true, duplicate: true, requestId, receivedAt: previous.receivedAt, storedIn: previous.storedIn }, 200);
+    return json({ contractVersion: RECEIPT_CONTRACT, ok: true, status: "delivered", duplicate: true, requestId, receivedAt: previous.receivedAt, storedIn: previous.storedIn }, 200, { "X-Forge-Correlation-Id": correlationId, "X-Forge-Request-Id": requestId });
   }
   const normalized = { ...input, type: input.type as LeadKind, payload: input.payload as Record<string, unknown>, requestId };
   const record = databaseRecord(normalized, receivedAt);
@@ -226,10 +247,10 @@ export function createLeadHandler(options: HandlerOptions = {}) {
 
   const store = resolveStore();
   if (!store) {
-    return json({
-      error: "DURABLE_LEAD_STORE_NOT_CONFIGURED",
+    return contractError("DURABLE_LEAD_STORE_NOT_CONFIGURED", 503, "delivery-unavailable", {
+      requestId,
       message: "The local browser copy was preserved, but Forge has no approved durable lead destination."
-    }, 503);
+    });
   }
 
   const existingWrite = inFlight.get(requestId);
@@ -244,17 +265,19 @@ export function createLeadHandler(options: HandlerOptions = {}) {
   try {
     const receipt = await write;
     return json({
+      contractVersion: RECEIPT_CONTRACT,
       ok: true,
+      status: "delivered",
       ...(existingWrite ? { duplicate: true } : {}),
       requestId,
       receivedAt: receipt.receivedAt,
       storedIn: receipt.storedIn
-    }, existingWrite ? 200 : 201);
+    }, existingWrite ? 200 : 201, { "X-Forge-Correlation-Id": correlationId, "X-Forge-Request-Id": requestId });
   } catch (error) {
     if (!existingWrite) {
-      console.error("Forge durable lead write failed", { requestId, type: normalized.type, error: error instanceof Error ? error.message : "unknown" });
+      console.error("Forge durable lead write failed", { correlationId, requestId, type: normalized.type, category: error instanceof Error ? error.name : "unknown" });
     }
-    return json({ error: "DURABLE_LEAD_WRITE_FAILED", requestId }, 502);
+    return contractError("DURABLE_LEAD_WRITE_FAILED", 502, "retryable-failure", { requestId });
   } finally {
     if (!existingWrite && inFlight.get(requestId) === write) inFlight.delete(requestId);
   }

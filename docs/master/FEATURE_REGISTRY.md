@@ -19,7 +19,8 @@ This registry lists existing and planned features, business sections, and operat
 - Implemented / Live in UI for backend readiness: Admin now includes a Lead Delivery Drill to test webhook/backend delivery, verify destination receipt, and preserve local backup before broad sharing.
 - Implemented / Live in UI for admin-auth readiness: Admin now includes an Admin Auth Drill to verify production auth, protected operator routes, stranger access, recovery, audit, export, backup, and webhook safeguards.
 - Implemented / Live in UI for launch decision clarity: Launch Status now includes a Public Launch Go / No-Go Receipt that says controlled demos are allowed while broad public launch remains blocked until proof gates pass.
-- Still local/static MVP only: production auth, Supabase persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
+- Implemented / Live in UI for honest public lead recovery: job and worker submissions enter a shared local outbox before delivery, keep stable request IDs across bounded manual retries, and show a verified server receipt only after the versioned receipt contract passes validation. Delivery Status supports export and explicit-confirmation removal while preserving the original local lead.
+- Still local/static MVP only: production auth, approved durable persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
 
 ## Admitly Presentation Routes
 

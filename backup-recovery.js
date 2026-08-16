@@ -5,6 +5,8 @@
   const MAX_BYTES = 5 * 1024 * 1024;
   const MAX_TOTAL_RECORDS = 100000;
   const REQUIRED_ARRAYS = ["jobs", "workers", "bids", "messages", "referrals", "activity", "accounts"];
+  const OPTIONAL_ARRAYS = ["leadOutbox"];
+  const TRACKED_ARRAYS = [...REQUIRED_ARRAYS, ...OPTIONAL_ARRAYS];
   const FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
   function plainObject(value) {
@@ -30,6 +32,9 @@
     for (const key of REQUIRED_ARRAYS) {
       if (!Array.isArray(state[key])) throw new Error(`Backup is missing the ${key} collection.`);
     }
+    for (const key of OPTIONAL_ARRAYS) {
+      if (state[key] !== undefined && !Array.isArray(state[key])) throw new Error(`Backup ${key} collection is invalid.`);
+    }
     if (!plainObject(state.settings) || !plainObject(state.session)) {
       throw new Error("Backup settings or session metadata is invalid.");
     }
@@ -51,7 +56,8 @@
   function summarize(state) {
     const counts = {};
     for (const key of REQUIRED_ARRAYS) counts[key] = state[key].length;
-    counts.allRecords = REQUIRED_ARRAYS.reduce((total, key) => total + counts[key], 0);
+    for (const key of OPTIONAL_ARRAYS) counts[key] = Array.isArray(state[key]) ? state[key].length : 0;
+    counts.allRecords = TRACKED_ARRAYS.reduce((total, key) => total + counts[key], 0);
     return counts;
   }
 
@@ -99,8 +105,18 @@
     const actualChecksum = checksum(JSON.stringify(state));
     if (actualChecksum !== value.checksum) throw new Error("Backup integrity check failed.");
     const counts = summarize(state);
-    for (const [key, count] of Object.entries(counts)) {
-      if (Number(value.counts?.[key]) !== count) throw new Error("Backup record counts do not match its contents.");
+    for (const key of REQUIRED_ARRAYS) {
+      if (Number(value.counts?.[key]) !== counts[key]) throw new Error("Backup record counts do not match its contents.");
+    }
+    for (const key of OPTIONAL_ARRAYS) {
+      const legacyOmission = value.state[key] === undefined && value.counts?.[key] === undefined && counts[key] === 0;
+      if (!legacyOmission && Number(value.counts?.[key]) !== counts[key]) throw new Error("Backup record counts do not match its contents.");
+    }
+    if (Number(value.counts?.allRecords) !== counts.allRecords) {
+      const legacyTotal = REQUIRED_ARRAYS.reduce((total, key) => total + counts[key], 0);
+      if (Number(value.counts?.allRecords) !== legacyTotal || OPTIONAL_ARRAYS.some((key) => counts[key] > 0)) {
+        throw new Error("Backup record counts do not match its contents.");
+      }
     }
     return {
       state,
@@ -127,7 +143,7 @@
   function preview(text, currentState) {
     const recovered = parse(text);
     const currentCounts = summarize(validateState(currentState));
-    const changes = REQUIRED_ARRAYS.map((collection) => ({
+    const changes = TRACKED_ARRAYS.map((collection) => ({
       collection,
       current: currentCounts[collection],
       replacement: recovered.counts[collection],

@@ -1,4 +1,4 @@
-const CACHE_NAME = "forge-mvp-v129";
+const CACHE_NAME = "forge-mvp-v131";
 const CORE_ASSETS = [
   "./",
   "./request-help/",
@@ -39,6 +39,7 @@ const CORE_ASSETS = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./lead-outbox.js",
   "./backup-recovery.js",
   "./route-loader.js",
   "./homebuilding/index.html",

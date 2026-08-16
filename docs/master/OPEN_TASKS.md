@@ -4,6 +4,10 @@ Track pending build, documentation, legal, operations, deployment, and business 
 
 ## Pending
 
+- Public job/worker delivery remains fail-closed until an approved durable endpoint exists and a synthetic preview receipt is verified end to end.
+- Keep `/admin`, `/capture`, and `/reports` unavailable in production until production-grade operator authentication, audit, and recovery are approved.
+- Complete final legal/privacy, security, monitoring/retention, incident-response, and operational-ownership review before broad public launch.
+
 - Photography & Videography is live in the UI; hardening remains before broad launch:
   - Dedicated admin creative filter/lane polish.
   - Secure upload storage.

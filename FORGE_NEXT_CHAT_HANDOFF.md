@@ -47,7 +47,7 @@ Open locally:
 - Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=127`
 - Admin demo: `http://127.0.0.1:4174/?v=127&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v127`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v131`.
 
 ## What has been built
 

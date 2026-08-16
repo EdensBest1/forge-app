@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=129" />
+    <link rel="stylesheet" href="./styles.css?v=131" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -998,6 +998,7 @@
           <h1 id="confirmTitle">Forge saved this lead.</h1>
           <p id="confirmBody">The next step is ready.</p>
           <div class="confirm-details" id="confirmDetails"></div>
+          <section class="confirm-delivery-status hidden" id="confirmDeliveryStatus" aria-live="polite"></section>
           <div class="confirm-next" id="confirmNextSteps"></div>
           <div class="confirm-handoff" id="confirmHandoff"></div>
           <div class="confirm-follow-up" id="confirmFollowUp" aria-label="First-user next touch"></div>
@@ -1008,6 +1009,46 @@
             <button class="btn ghost" type="button" data-action="copy-confirmation-handoff">Copy Handoff</button>
           </div>
         </section>
+      </section>
+
+      <section class="screen" id="outbox-screen" data-screen="outbox">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Delivery Status</strong>
+        </header>
+        <section class="outbox-layout">
+          <section class="outbox-hero" aria-labelledby="outboxTitle">
+            <div>
+              <span class="split-label">Local delivery outbox</span>
+              <h1 id="outboxTitle" tabindex="-1">Know what is saved here and what actually reached Forge.</h1>
+              <p>Every job or worker submission receives one stable request ID. A record says <strong>Delivered to Forge</strong> only after the server returns a verified receipt.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="export-undelivered-outbox">Export undelivered records</button>
+              <button class="btn ghost" type="button" data-nav="post">Post a Job</button>
+              <button class="btn ghost" type="button" data-nav="signup">Join as Worker</button>
+            </div>
+          </section>
+          <aside class="outbox-safety-note">
+            <strong>This device is part of the safety boundary.</strong>
+            <p>Clearing browser data can remove locally preserved leads. Export undelivered records to an approved encrypted location before clearing data. Exported files can contain contact information; do not email or commit them.</p>
+          </aside>
+          <section class="outbox-summary" id="leadOutboxSummary" aria-label="Delivery outbox summary"></section>
+          <section class="outbox-list" id="leadOutboxList" aria-live="polite"></section>
+        </section>
+        <dialog class="outbox-remove-dialog" id="outboxRemoveDialog" aria-labelledby="outboxRemoveTitle" aria-describedby="outboxRemoveWarning">
+          <span class="split-label">Confirm removal</span>
+          <h2 id="outboxRemoveTitle" tabindex="-1">Remove this delivery record?</h2>
+          <p id="outboxRemoveWarning">This removes only the delivery receipt/outbox entry. The original job or worker lead remains in this browser.</p>
+          <dl class="delivery-receipt-facts">
+            <div><dt>Lead</dt><dd id="outboxRemoveSummary">—</dd></div>
+            <div><dt>Request ID</dt><dd><code id="outboxRemoveRequestId">—</code></dd></div>
+          </dl>
+          <div class="hero-actions">
+            <button class="btn ghost" type="button" data-action="cancel-remove-outbox">Cancel — keep record</button>
+            <button class="btn orange" type="button" data-action="confirm-remove-outbox">Remove delivery record</button>
+          </div>
+        </dialog>
       </section>
 
       <section class="screen" id="launch-status-screen" data-screen="launch-status">
@@ -4890,7 +4931,8 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./backup-recovery.js?v=129"></script>
-    <script src="./app.js?v=129"></script>
+    <script src="./lead-outbox.js?v=131"></script>
+    <script src="./backup-recovery.js?v=131"></script>
+    <script src="./app.js?v=131"></script>
   </body>
 </html>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-15 - Public lead outbox and verified delivery receipts
+
+- Added one shared browser outbox for public job and worker submissions with stable retry IDs, consent evidence, bounded attempts/backoff, reload persistence, safe migration/isolation, storage caps, receipt retention, and backup compatibility.
+- Added honest confirmation and Delivery Status UI that distinguishes local preservation from verified server delivery, supports safe retry/export, warns about clearing browser data, and requires explicit confirmation before outbox removal.
+- Hardened the lead endpoint with a versioned receipt/error contract, sanitized correlation, and payload-free provider failure logging while retaining strict origin, consent, timestamp, sensitive-field, size, timeout, rate-limit, and idempotency gates.
+- Added focused outbox regression coverage and bumped static asset/cache/release references to v131.
+- No durable provider was installed or configured; unconfigured production intake remains fail-closed.
+
 ## 2026-07-10 - Public launch go/no-go receipt
 
 - Added a Launch Status Public Launch Go / No-Go Receipt that clearly separates controlled first-user demos from broad public launch.

@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "129";
+const PUBLIC_LINK_VERSION = "131";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -2410,6 +2410,7 @@ const seedState = {
     label: "Visitor"
   },
   accounts: [],
+  leadOutbox: [],
   customerProfile: {
     name: "John Smith",
     email: "john.smith@email.com",
@@ -3583,8 +3584,11 @@ const startPaths = [
   }
 ];
 
+let outboxLoadIssues = [];
 let state = loadState();
 let pendingBackupReview = null;
+let pendingOutboxRemovalId = null;
+let outboxRemovalReturnFocus = null;
 let postStep = 1;
 let statusMatches = [];
 
@@ -3600,6 +3604,9 @@ function normalizeState(value) {
   const next = { ...structuredClone(seedState), ...value };
   next.settings = { ...seedState.settings, ...(value?.settings || {}) };
   next.session = { ...seedState.session, ...(value?.session || {}) };
+  const normalizedOutbox = ForgeLeadOutbox.normalizeCollection(value?.leadOutbox || []);
+  next.leadOutbox = normalizedOutbox.records;
+  outboxLoadIssues = normalizedOutbox.issues;
   next.activeMessageThreadId = value?.activeMessageThreadId || seedState.activeMessageThreadId;
   next.jobs = value?.jobs || seedState.jobs;
   next.bids = value?.bids || seedState.bids;
@@ -4517,6 +4524,7 @@ function ensureMikeJones(next) {
 }
 
 function saveState() {
+  state.leadOutbox = ForgeLeadOutbox.prune(state.leadOutbox || []);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -4938,6 +4946,7 @@ function render() {
   renderMessages();
   renderDashboards();
   renderConfirmation();
+  renderLeadOutbox();
   renderSafetyCenter();
   renderDeliveryStatus();
   renderLeadDeliveryDrill();
@@ -11609,6 +11618,195 @@ function renderProviderNorthStarDashboard() {
   `;
 }
 
+function outboxStatePresentation(record) {
+  const presentations = {
+    [ForgeLeadOutbox.STATES.LOCAL]: {
+      label: "Saved on this device",
+      body: "Forge has preserved this lead in this browser. Server delivery has not been verified.",
+      tone: "local"
+    },
+    [ForgeLeadOutbox.STATES.SENDING]: {
+      label: "Checking delivery",
+      body: "Forge is attempting delivery with the same protected request ID.",
+      tone: "sending"
+    },
+    [ForgeLeadOutbox.STATES.DELIVERED]: {
+      label: "Delivered to Forge",
+      body: "The server returned a verified receipt for this request.",
+      tone: "delivered"
+    },
+    [ForgeLeadOutbox.STATES.UNAVAILABLE]: {
+      label: "Saved here — delivery unavailable",
+      body: "The local copy is safe, but Forge has no approved durable destination configured yet.",
+      tone: "unavailable"
+    },
+    [ForgeLeadOutbox.STATES.RETRYABLE]: {
+      label: "Saved here — retry available",
+      body: "Delivery did not complete. The local copy remains safe and can be retried after the wait period.",
+      tone: "retryable"
+    },
+    [ForgeLeadOutbox.STATES.REJECTED]: {
+      label: "Saved here — correction required",
+      body: record?.lastFailure?.message || "Review the lead details and consent before attempting delivery again.",
+      tone: "rejected"
+    }
+  };
+  return presentations[record?.deliveryState] || presentations[ForgeLeadOutbox.STATES.LOCAL];
+}
+
+function outboxTime(value) {
+  if (!value) return "Not yet";
+  const date = new Date(value);
+  return Number.isFinite(date.getTime())
+    ? date.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+    : "Unavailable";
+}
+
+function outboxRetryMessage(record) {
+  if (!record) return "This delivery record is unavailable.";
+  if (record.attemptCount >= ForgeLeadOutbox.MAX_ATTEMPTS) return "Retry limit reached. Export the record for operator review.";
+  if (record.nextRetryAt) return `Retry after ${outboxTime(record.nextRetryAt)}.`;
+  return "This record cannot be retried until it is corrected.";
+}
+
+function renderConfirmationDelivery(confirmation) {
+  const target = document.querySelector("#confirmDeliveryStatus");
+  if (!target) return;
+  const record = outboxRecord(confirmation.deliveryRequestId);
+  if (!record) {
+    target.classList.add("hidden");
+    target.innerHTML = "";
+    return;
+  }
+  const presentation = outboxStatePresentation(record);
+  const canRetry = ForgeLeadOutbox.canRetry(record);
+  target.className = `confirm-delivery-status ${presentation.tone}`;
+  target.innerHTML = `
+    <div>
+      <span class="split-label">Delivery receipt</span>
+      <h2>${escapeHtml(presentation.label)}</h2>
+      <p>${escapeHtml(presentation.body)}</p>
+    </div>
+    <dl class="delivery-receipt-facts">
+      <div><dt>Request ID</dt><dd><code>${escapeHtml(record.requestId)}</code></dd></div>
+      <div><dt>Attempts</dt><dd>${escapeHtml(String(record.attemptCount))}/${ForgeLeadOutbox.MAX_ATTEMPTS}</dd></div>
+      <div><dt>Last attempt</dt><dd>${escapeHtml(outboxTime(record.lastAttemptAt))}</dd></div>
+      <div><dt>Server receipt</dt><dd>${escapeHtml(record.serverReceipt ? outboxTime(record.serverReceipt.receivedAt) : "Not verified")}</dd></div>
+    </dl>
+    <p class="delivery-local-warning">Clearing this browser's site data can remove the local copy. Export undelivered records before clearing browser data.</p>
+    <div class="hero-actions">
+      <button class="btn blue small" type="button" data-action="retry-outbox" data-outbox-id="${escapeHtml(record.requestId)}" ${canRetry ? "" : "disabled"}>Retry delivery</button>
+      <button class="btn ghost small" type="button" data-nav="outbox">Open Delivery Status</button>
+    </div>
+  `;
+}
+
+function renderLeadOutbox() {
+  const target = document.querySelector("#leadOutboxList");
+  const summary = document.querySelector("#leadOutboxSummary");
+  if (!target || !summary) return;
+  const records = state.leadOutbox || [];
+  const pending = records.filter((record) => record.deliveryState !== ForgeLeadOutbox.STATES.DELIVERED);
+  const delivered = records.filter((record) => record.deliveryState === ForgeLeadOutbox.STATES.DELIVERED);
+  summary.innerHTML = `
+    <article><strong>${pending.length}</strong><span>Needs delivery or correction</span></article>
+    <article><strong>${delivered.length}</strong><span>Verified receipts retained</span></article>
+    <article><strong>${outboxLoadIssues.length}</strong><span>Unsafe records isolated</span></article>
+  `;
+  if (!records.length) {
+    target.innerHTML = `
+      <article class="outbox-empty">
+        <strong>No delivery records on this device.</strong>
+        <p>Post a job or join as a worker to create a local delivery receipt.</p>
+      </article>
+    `;
+    return;
+  }
+  target.innerHTML = records.map((record) => {
+    const presentation = outboxStatePresentation(record);
+    const canRetry = ForgeLeadOutbox.canRetry(record);
+    const retryHelp = canRetry ? "Retry with the same request ID" : outboxRetryMessage(record);
+    return `
+      <article class="outbox-card ${escapeHtml(presentation.tone)}">
+        <div class="outbox-card-heading">
+          <div>
+            <span class="outbox-state">${escapeHtml(presentation.label)}</span>
+            <h2>${escapeHtml(ForgeLeadOutbox.publicSummary(record))}</h2>
+          </div>
+          <span class="outbox-type">${escapeHtml(humanize(record.type))}</span>
+        </div>
+        <p>${escapeHtml(presentation.body)}</p>
+        <dl class="delivery-receipt-facts">
+          <div><dt>Request ID</dt><dd><code>${escapeHtml(record.requestId)}</code></dd></div>
+          <div><dt>Created</dt><dd>${escapeHtml(outboxTime(record.createdAt))}</dd></div>
+          <div><dt>Attempts</dt><dd>${escapeHtml(String(record.attemptCount))}/${ForgeLeadOutbox.MAX_ATTEMPTS}</dd></div>
+          <div><dt>Next retry</dt><dd>${escapeHtml(record.nextRetryAt ? outboxTime(record.nextRetryAt) : "Not scheduled")}</dd></div>
+        </dl>
+        <div class="hero-actions">
+          <button class="btn blue small" type="button" data-action="retry-outbox" data-outbox-id="${escapeHtml(record.requestId)}" ${canRetry ? "" : "disabled"} title="${escapeHtml(retryHelp)}">Retry delivery</button>
+          <button class="btn ghost small" type="button" data-action="request-remove-outbox" data-outbox-id="${escapeHtml(record.requestId)}">Remove delivery record</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function exportUndeliveredOutbox() {
+  const records = (state.leadOutbox || []).filter((record) => record.deliveryState !== ForgeLeadOutbox.STATES.DELIVERED);
+  if (!records.length) {
+    showToast("No undelivered records are available to export.");
+    return;
+  }
+  exportJson(`forge-undelivered-leads-v${PUBLIC_LINK_VERSION}.json`, {
+    schema: "forge.lead-outbox-export.v1",
+    exportedAt: new Date().toISOString(),
+    appVersion: PUBLIC_LINK_VERSION,
+    records
+  });
+  showToast(`${records.length} undelivered record${records.length === 1 ? "" : "s"} exported.`);
+}
+
+function requestRemoveOutboxRecord(requestId) {
+  const record = outboxRecord(requestId);
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (!record || !dialog) return;
+  pendingOutboxRemovalId = requestId;
+  outboxRemovalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  document.querySelector("#outboxRemoveSummary").textContent = ForgeLeadOutbox.publicSummary(record);
+  document.querySelector("#outboxRemoveRequestId").textContent = requestId;
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+  document.querySelector("#outboxRemoveTitle")?.focus();
+}
+
+function cancelRemoveOutboxRecord() {
+  pendingOutboxRemovalId = null;
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (dialog?.open) dialog.close();
+  else dialog?.removeAttribute("open");
+  const returnFocus = outboxRemovalReturnFocus;
+  outboxRemovalReturnFocus = null;
+  if (returnFocus?.isConnected) returnFocus.focus();
+}
+
+function confirmRemoveOutboxRecord() {
+  if (!pendingOutboxRemovalId) return;
+  const requestId = pendingOutboxRemovalId;
+  const record = outboxRecord(requestId);
+  state.leadOutbox = (state.leadOutbox || []).filter((item) => item.requestId !== requestId);
+  pendingOutboxRemovalId = null;
+  outboxRemovalReturnFocus = null;
+  addActivity(`${humanize(record?.type || "lead")} delivery record removed after explicit confirmation; the original local lead was retained.`);
+  saveState();
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (dialog?.open) dialog.close();
+  else dialog?.removeAttribute("open");
+  renderLeadOutbox();
+  renderConfirmation();
+  document.querySelector("#outboxTitle")?.focus({ preventScroll: true });
+  showToast("Delivery record removed. The original local lead remains on this device.");
+}
+
 function renderConfirmation() {
   const confirmation = state.lastConfirmation || seedState.lastConfirmation;
   document.querySelector("#confirmKicker").textContent = confirmation.type === "worker"
@@ -11646,6 +11844,7 @@ function renderConfirmation() {
                   : "Forge is ready";
   document.querySelector("#confirmTitle").textContent = confirmation.title;
   document.querySelector("#confirmBody").textContent = confirmation.body;
+  renderConfirmationDelivery(confirmation);
   document.querySelector("#confirmDetails").innerHTML = confirmation.details.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
   document.querySelector("#confirmNextSteps").innerHTML = confirmNextSteps(confirmation).map((item, index) => `
     <article>
@@ -11835,8 +12034,8 @@ function confirmationNextTouchRows(confirmation) {
 
 function confirmNextSteps(confirmation) {
   if (confirmation.nextSteps?.length) return confirmation.nextSteps;
-  if (confirmation.type === "job") return ["Forge saves this job to Admin", "Workers can review and bid", "You can check job status with your phone or email"];
-  if (confirmation.type === "worker") return ["Forge saves your worker profile", "The operator can follow up with available jobs", "Your readiness status appears on the worker dashboard"];
+  if (confirmation.type === "job") return ["Forge saves this job on this device", "Check the delivery receipt before expecting team follow-up", "Retry or export the saved copy if delivery is unavailable"];
+  if (confirmation.type === "worker") return ["Forge saves your worker profile on this device", "Check the delivery receipt before expecting team follow-up", "Retry or export the saved copy if delivery is unavailable"];
   if (confirmation.type === "referral") return ["Forge saves the referral in Admin", "The lead appears in the Next 10 outreach queue", "The operator can call, text, email, or move it forward"];
   if (confirmation.type === "bid") return ["Forge attaches this bid to the job", "The customer can compare bids on Job Detail", "Messages keep the next handoff visible"];
   if (confirmation.type === "auto-service") return ["Forge saves this auto service request", "The operator can route it to a qualified auto partner", "Licensed or qualified partners handle regulated sales, repair, towing, transport, financing, and insurance work where required"];
@@ -11878,10 +12077,10 @@ function confirmationHandoffText(confirmation) {
   const steps = confirmNextSteps(confirmation);
   const detail = confirmation.details?.[0] ? ` (${confirmation.details[0]})` : "";
   if (confirmation.type === "job") {
-    return `Forge saved your job${detail}. The team will match it with local workers, keep bids visible in Job Status, and follow up by text, phone, or email. No payment is collected in this MVP.`;
+    return `Forge saved your job on this device${detail}. Check the delivery receipt before expecting team follow-up. If delivery is unavailable, retry or export the saved copy. No payment is collected in this MVP.`;
   }
   if (confirmation.type === "worker") {
-    return `Forge saved your worker profile${detail}. You are on the early access list, and the team can follow up when local jobs fit your trade. No payment or account password is needed for this MVP.`;
+    return `Forge saved your worker profile on this device${detail}. Check the delivery receipt before expecting team follow-up. If delivery is unavailable, retry or export the saved copy. No payment or account password is needed for this MVP.`;
   }
   if (confirmation.type === "referral") {
     return `Forge saved this referral${detail}. The operator can follow up, track the next action, and move the lead into the first 200 launch list.`;
@@ -15477,8 +15676,8 @@ function postJobFromForm() {
   addActivity(`New job lead posted: ${job.title} by ${job.customer}.`);
   state.lastConfirmation = {
     type: "job",
-    title: "Your job is posted.",
-    body: "Forge saved the job lead and added it to the available jobs and admin dashboard.",
+    title: "Your job is saved on this device.",
+    body: "Forge preserved the job in this browser and is checking whether server delivery is available.",
     details: [
       `${job.title} in ${job.location}`,
       `${job.budget} budget range`,
@@ -15488,16 +15687,16 @@ function postJobFromForm() {
       vertical ? `${vertical.title} · ${photoSummary}` : photoSummary
     ],
     nextSteps: [
-      "Forge saves this job to the local Admin queue",
-      "Workers can review the job and submit bids",
-      "Use Check Job Status to see bids and messages"
+      "Forge saved this job on this device before attempting delivery",
+      "Check the delivery receipt before expecting Forge follow-up",
+      "Retry or export the local copy if server delivery is unavailable"
     ],
     primary: { label: "View Job Detail", jobId: job.id },
-    secondary: { label: "Open Admin Leads", screen: "admin" }
+    secondary: { label: "Open Delivery Status", screen: "outbox" }
   };
   saveState();
   sendLead("job", job);
-  showToast("Job submitted. It is now live in Available Jobs and Admin.");
+  showToast("Job saved on this device. Checking delivery status.");
   document.querySelector("#postJobForm").reset();
   postStep = 1;
   navigate("confirm");
@@ -16725,6 +16924,11 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-projects") exportCsv("forge-project-leads.csv", state.projectLeads || []);
   if (action?.dataset.action === "export-bids") exportCsv("forge-bids.csv", state.bids);
   if (action?.dataset.action === "export-backup") exportBackup();
+  if (action?.dataset.action === "export-undelivered-outbox") exportUndeliveredOutbox();
+  if (action?.dataset.action === "retry-outbox") deliverOutboxRecord(action.dataset.outboxId);
+  if (action?.dataset.action === "request-remove-outbox") requestRemoveOutboxRecord(action.dataset.outboxId);
+  if (action?.dataset.action === "cancel-remove-outbox") cancelRemoveOutboxRecord();
+  if (action?.dataset.action === "confirm-remove-outbox") confirmRemoveOutboxRecord();
   if (action?.dataset.action === "cancel-backup-import") cancelBackupImport();
   if (action?.dataset.action === "confirm-backup-import") confirmBackupImport();
   if (action?.dataset.action === "toggle-public-mode") togglePublicMode();
@@ -17320,6 +17524,15 @@ document.querySelector("#backupReviewDialog").addEventListener("keydown", (event
   if (event.key !== "Escape") return;
   event.preventDefault();
   cancelBackupImport();
+});
+document.querySelector("#outboxRemoveDialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  cancelRemoveOutboxRecord();
+});
+document.querySelector("#outboxRemoveDialog").addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  event.preventDefault();
+  cancelRemoveOutboxRecord();
 });
 document.querySelector("#manufacturingSupplierCsvInput").addEventListener("change", importManufacturingSupplierCsv);
 
@@ -18116,8 +18329,8 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
   addActivity(`New worker lead saved: ${state.worker.name} (${state.worker.trade}).`);
   state.lastConfirmation = {
     type: "worker",
-    title: "Your worker profile is on the early list.",
-    body: "Forge saved this worker lead so the team can follow up when jobs start moving.",
+    title: "Your worker profile is saved on this device.",
+    body: "Forge preserved this worker lead in this browser and is checking whether server delivery is available.",
     details: [
       `${state.worker.name} · ${state.worker.trade}`,
       `${state.worker.profileType} · ${state.worker.businessName || "personal profile"}`,
@@ -18132,19 +18345,19 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       providerFlexLead ? "Capital Desk follow-up flagged" : "No Capital Desk follow-up selected"
     ],
     nextSteps: [
-      "Forge saves your worker profile for early access",
-      "Profile Status shows readiness, trust notes, and follow-up status",
-      "Admin can follow up when local jobs fit your trade",
+      "Forge saved your worker profile on this device before attempting delivery",
+      "Check the delivery receipt before expecting Forge follow-up",
+      "Retry or export the local copy if server delivery is unavailable",
       providerNorthStarLead ? "North Star Creative Co. can review your website, Google, ads, CRM, and follow-up needs" : "Use the provider dashboard if you want North Star growth help later",
       providerFlexLead ? "Forge Capital Desk can follow up before any Flex referral link is sent" : "Open Worker Dashboard to browse jobs and submit bids"
     ],
     primary: { label: "Open Profile Status", loginRole: "worker", loginName: state.worker.name, loginScreen: "profile" },
-    secondary: { label: "Open Worker Dashboard", loginRole: "worker", loginName: state.worker.name, loginScreen: "worker" }
+    secondary: { label: "Open Delivery Status", screen: "outbox" }
   };
   saveState();
   sendLead("worker", state.worker);
   if (providerNorthStarLead) sendLead("northstar", providerNorthStarLead);
-  showToast("Worker profile created.");
+  showToast("Worker profile saved on this device. Checking delivery status.");
   navigate("confirm");
 });
 
@@ -18568,41 +18781,132 @@ async function sendLead(type, payload) {
   }
 }
 
-async function sendDurableLead(type, payload) {
-  const requestId = `${type}-${payload.id || payload.email || Date.now()}-${crypto.randomUUID?.() || Date.now()}`;
-  try {
-    const response = await fetch("/api/forge/leads", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Forge-Intent": "lead-capture-v1"
-      },
-      body: JSON.stringify({
-        type,
-        payload,
-        requestId,
-        consent: {
-          followUp: payload.followUpConsent === true,
-          terms: payload.termsAccepted === true,
-          capturedAt: payload.consentCapturedAt || payload.createdAt
-        }
-      })
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || `HTTP_${response.status}`);
-    payload.serverReceiptId = result.requestId;
-    payload.serverReceivedAt = result.receivedAt;
-    updateWebhookDelivery("Durable", type);
-    addActivity(`${humanize(type)} lead saved to the approved server destination.`);
-    saveState();
-    showToast("Lead saved locally and to the server destination.");
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : "DURABLE_LEAD_WRITE_FAILED";
-    updateWebhookDelivery("Local only", type);
-    addActivity(`${humanize(type)} lead kept locally; server delivery unavailable (${reason}).`);
-    saveState();
-    showToast("Lead saved in this browser. Server delivery is not configured yet.");
+const durableLeadInFlight = new Map();
+const DURABLE_LEAD_CLIENT_TIMEOUT_MS = 10_000;
+
+function outboxRecord(requestId) {
+  return (state.leadOutbox || []).find((record) => record.requestId === requestId) || null;
+}
+
+function replaceOutboxRecord(updated) {
+  state.leadOutbox = (state.leadOutbox || []).map((record) => record.requestId === updated.requestId ? updated : record);
+  state.leadOutbox = ForgeLeadOutbox.prune(state.leadOutbox);
+}
+
+function syncLeadReceipt(record) {
+  const collection = record.type === "job" ? state.jobs : state.workers;
+  const lead = collection.find((item) => item.outboxRequestId === record.requestId);
+  if (!lead) return;
+  lead.deliveryState = record.deliveryState;
+  lead.deliveryAttemptCount = record.attemptCount;
+  if (record.serverReceipt) {
+    lead.serverReceiptId = record.serverReceipt.requestId;
+    lead.serverReceivedAt = record.serverReceipt.receivedAt;
   }
+}
+
+function queueDurableLead(type, payload) {
+  let queued;
+  try {
+    queued = ForgeLeadOutbox.enqueue(state.leadOutbox || [], type, payload);
+  } catch (error) {
+    const message = error?.code === "OUTBOX_CAPACITY"
+      ? error.message
+      : "This lead needs correction before Forge can prepare delivery.";
+    updateWebhookDelivery("Local only", type);
+    addActivity(`${humanize(type)} lead kept locally; delivery outbox rejected the record safely.`);
+    saveState();
+    showToast(message);
+    return Promise.resolve(null);
+  }
+  state.leadOutbox = queued.records;
+  payload.outboxRequestId = queued.record.requestId;
+  payload.deliveryState = queued.record.deliveryState;
+  if (state.lastConfirmation) state.lastConfirmation.deliveryRequestId = queued.record.requestId;
+  if (queued.issues.length) {
+    outboxLoadIssues = [...outboxLoadIssues, ...queued.issues];
+    addActivity(`${queued.issues.length} invalid delivery outbox record${queued.issues.length === 1 ? " was" : "s were"} isolated during validation.`);
+  }
+  updateWebhookDelivery("Local only", type);
+  addActivity(`${humanize(type)} lead preserved on this device with delivery request ${queued.record.requestId}.`);
+  saveState();
+  renderConfirmation();
+  renderLeadOutbox();
+  showToast("Saved on this device. Checking Forge delivery now.");
+  if (queued.record.deliveryState === ForgeLeadOutbox.STATES.REJECTED) return Promise.resolve(queued.record);
+  return deliverOutboxRecord(queued.record.requestId);
+}
+
+async function deliverOutboxRecord(requestId) {
+  if (durableLeadInFlight.has(requestId)) return durableLeadInFlight.get(requestId);
+  const initial = outboxRecord(requestId);
+  if (!initial) return null;
+  let sending;
+  try {
+    sending = ForgeLeadOutbox.markSending(initial);
+  } catch (error) {
+    if (error?.code === "RETRY_NOT_READY") showToast(outboxRetryMessage(initial));
+    return initial;
+  }
+  replaceOutboxRecord(sending);
+  syncLeadReceipt(sending);
+  saveState();
+  renderConfirmation();
+  renderLeadOutbox();
+
+  const delivery = (async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), DURABLE_LEAD_CLIENT_TIMEOUT_MS);
+    let updated;
+    try {
+      const response = await fetch("/api/forge/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forge-Intent": "lead-capture-v1"
+        },
+        body: JSON.stringify(ForgeLeadOutbox.requestBody(sending)),
+        signal: controller.signal
+      });
+      const result = await response.json().catch(() => ({}));
+      updated = ForgeLeadOutbox.applyHttpResult(sending, response.status, result, {
+        retryAfterSeconds: response.headers.get("Retry-After")
+      });
+    } catch {
+      updated = ForgeLeadOutbox.applyNetworkFailure(sending);
+    } finally {
+      clearTimeout(timer);
+    }
+    replaceOutboxRecord(updated);
+    syncLeadReceipt(updated);
+    if (updated.deliveryState === ForgeLeadOutbox.STATES.DELIVERED) {
+      updateWebhookDelivery("Durable", updated.type);
+      addActivity(`${humanize(updated.type)} lead delivery verified with request ${updated.requestId}.`);
+      showToast("Delivered to Forge. Your verified receipt is ready.");
+    } else if (updated.deliveryState === ForgeLeadOutbox.STATES.REJECTED) {
+      updateWebhookDelivery("Rejected", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local and needs correction before delivery.`);
+      showToast("Saved on this device, but delivery needs a correction.");
+    } else if (updated.deliveryState === ForgeLeadOutbox.STATES.UNAVAILABLE) {
+      updateWebhookDelivery("Local only", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local; Forge delivery is unavailable.`);
+      showToast("Saved on this device. Forge delivery is not available yet.");
+    } else {
+      updateWebhookDelivery("Local only", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local after a retryable delivery failure.`);
+      showToast("Saved on this device. Delivery did not complete.");
+    }
+    saveState();
+    renderConfirmation();
+    renderLeadOutbox();
+    return updated;
+  })().finally(() => durableLeadInFlight.delete(requestId));
+  durableLeadInFlight.set(requestId, delivery);
+  return delivery;
+}
+
+function sendDurableLead(type, payload) {
+  return queueDurableLead(type, payload);
 }
 
 function sendConfiguredFlexWebhooks(lead) {
