@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mechanic Shops</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body { margin: 0; background: #f7f8fb; color: #111827; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 52px; }
+      a { color: #0f4fb8; font-weight: 800; }
+      .hero, .notice, form, .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 18px 50px rgba(15, 23, 42, .08); }
+      .hero { display: grid; gap: 18px; padding: 34px; }
+      .eyebrow { margin: 0; color: #596579; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 900; }
+      h1 { margin: 0; font-size: clamp(2rem, 5vw, 4.1rem); line-height: .98; letter-spacing: 0; }
+      p { line-height: 1.6; }
+      .button, button { border: 0; border-radius: 8px; background: #111827; color: #fff; padding: 12px 16px; font-weight: 850; text-decoration: none; cursor: pointer; }
+      .ghost { background: #eef2f7; color: #111827; }
+      .notice { margin-top: 18px; padding: 18px; border-color: #f4c36a; background: #fff8e6; box-shadow: none; }
+      form { display: grid; gap: 12px; margin-top: 18px; padding: 18px; box-shadow: none; }
+      label { display: grid; gap: 6px; font-weight: 750; }
+      input, textarea { width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 11px 12px; font: inherit; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+      .card { padding: 18px; box-shadow: none; }
+      .save-state { color: #166534; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><a href="/">Back to home</a></p>
+      <section class="hero">
+        <p class="eyebrow">Mechanics admin</p>
+        <h1>Mechanic Shops</h1>
+        <p>Locked placeholder for shop partner profiles and BAR/license review.</p>
+        <p><a class="button" href="/">Home</a> <a class="button ghost" href="/safety/">Safety</a></p>
+      </section>
+      <section class="notice"><strong>Auth required.</strong><p>This page is a locked admin placeholder. Real data, queues, notes, costs, student records, licensee records, and privileged status changes require server-side auth/RBAC before display.</p></section>
+      
+      <section class="grid">
+        <article class="card"><strong>What is this?</strong><p>A 6-hour sprint route scaffold aligned with the Tuesday MVP and productionization branch.</p></article>
+        <article class="card"><strong>Who is it for?</strong><p>Customers, partners, students, licensees, or admins depending on the route.</p></article>
+        <article class="card"><strong>Next gate</strong><p>Wire server-side auth, persistence, validation, and audit logs before production claims.</p></article>
+      </section>
+    </main>
+    <script src="/productionization-local-store.js"></script>
+  </body>
+</html>

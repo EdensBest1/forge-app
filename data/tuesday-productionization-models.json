@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-07-10T04:50:44.136Z",
+  "persistenceMode": "local/mock until production DB is selected",
+  "forge": [
+    "forge_leads",
+    "forge_partners",
+    "forge_jobs",
+    "forge_categories",
+    "forge_documents",
+    "forge_commissions",
+    "forge_communications"
+  ],
+  "mechanics": [
+    "mechanic_leads",
+    "mechanic_shops",
+    "mechanic_jobs",
+    "mechanic_documents"
+  ],
+  "barbers": [
+    "barber_leads",
+    "barbershop_partners",
+    "barber_appointments",
+    "barber_documents"
+  ],
+  "admitly": [
+    "admitly_students",
+    "admitly_schools",
+    "admitly_applications",
+    "admitly_ambassadors",
+    "campus_leads"
+  ],
+  "stitch": [
+    "stitch_licensees",
+    "stitch_listings",
+    "stitch_inquiries",
+    "stitch_service_requests",
+    "stitch_compliance_reviews",
+    "stitch_dispensaries",
+    "stitch_dispensary_inquiries"
+  ],
+  "system": [
+    "referral_codes",
+    "campaigns",
+    "automation_audits",
+    "security_audit_logs"
+  ]
+}

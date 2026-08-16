@@ -24,7 +24,7 @@ Each section should grow over time through additive documentation, approved proj
 
 ## 3. Forge Current Direction
 
-Forge is a local services marketplace starting in Medford/Southern Oregon. It should allow customers to hire trusted local providers and allow providers to apply to offer services.
+Forge is a local services marketplace starting in Medford/Southern Oregon. It should allow customers to discover and request local providers and allow providers to apply to offer services. Provider-entered information remains unverified until documented human review.
 
 Forge should protect trust, local reputation, service quality, customer intake, provider onboarding, payment readiness, and future operational workflows. Any future app work should reuse existing Forge components, routes, tables, and business logic where possible.
 
@@ -32,7 +32,7 @@ Forge should protect trust, local reputation, service quality, customer intake, 
 
 Customers can hire photographers and videographers for weddings, events, business content, social media content, real estate shoots, family photos, church/community events, music videos, and creative projects.
 
-Dennis may be referenced only as an example trusted local creative, not as the only provider. Do not include private contact information, private addresses, private messages, or sensitive personal details in this repository unless the user intentionally provides them in a secure private config.
+Dennis may be referenced only as an example local creative, not as the only provider, without an endorsement or verification claim. Do not include private contact information, private addresses, private messages, or sensitive personal details in this repository unless the user intentionally provides them in a secure private config.
 
 ## 5. S&A Auto
 

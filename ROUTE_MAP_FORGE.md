@@ -9,6 +9,10 @@ Framework: static HTML/CSS/JS MVP with hash routes and clean alias shells.
 | Route | Label / Purpose | Public Surface | Status | Notes |
 |---|---|---|---|---|
 | `/` | Forge homepage | public clean path | local 200 | Primary marketplace homepage. |
+| `/contractors/` | Nationwide contractor hub | public clean path | local 200 | Contractor role, profile scope, trust states, focus markets, and controlled-beta boundaries. |
+| `/markets/medford-or/` | Medford market | public clean path | local 200 | Medford and Southern Oregon focus-market content and prefilled intake links. |
+| `/markets/los-angeles-ca/` | Los Angeles market | public clean path | local 200 | Los Angeles County focus-market content and prefilled intake links. |
+| `/markets/new-york-ny/` | New York market | public clean path | local 200 | New York City focus-market content and prefilled intake links. |
 | `#home` | home | public or demo route | wired by data-nav/hash router | Preserved service/category route. |
 | `#services` | services | public or demo route | wired by data-nav/hash router | Preserved service/category route. |
 | `#post` | post | public or demo route | wired by data-nav/hash router | Preserved service/category route. |
@@ -48,7 +52,8 @@ Framework: static HTML/CSS/JS MVP with hash routes and clean alias shells.
 
 ## Public Functionality Notes
 
-- Post a Job, Join as Worker, Browse Services, For Businesses, Safety, and Log In / Admin CTAs are wired through `data-nav`.
+- Post a Job, Join as Contractor, Browse Services, For Businesses, Safety, and Log In / Admin CTAs are wired through `data-nav` or clean public paths.
+- Nationwide intake supports every state and Washington, D.C.; Medford, Los Angeles, and New York are focus markets, not guaranteed coverage areas.
 - Existing service categories and clean alias shells are preserved.
 - Clean `/privacy/`, `/terms/`, and `/safety/` paths now route to the existing legal/safety screen.
 - Admin controls use public-mode and role-gate classes; direct admin screens remain demo/protected surfaces, not public homepage tools.

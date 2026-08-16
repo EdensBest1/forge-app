@@ -1,6 +1,12 @@
 const STORAGE_KEY = "forge.wireframe.mvp.v1";
-const PUBLIC_LINK_VERSION = "106";
+const PUBLIC_LINK_VERSION = "133";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
+const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+const forgeNationwideMarket = globalThis.ForgeNationwide;
+
+function operatorDemoAllowed() {
+  return location.protocol === "file:" || LOCAL_OPERATOR_HOSTS.has(location.hostname);
+}
 
 const CREATIVE_CATEGORY_VALUE = "photography_videography";
 const CREATIVE_CATEGORY_LABEL = "Photography & Videography";
@@ -26,6 +32,18 @@ const workerTrustTiers = [
   { tier: "Gold", meaning: "expert/crew lead/business track", steps: ["Crew Lead 1", "Crew Lead 2", "Expert Operator", "Business Ready", "Master Lead"] }
 ];
 const dispatchDecisionLabels = ["Ready to Invite", "Crew-Lead Ready", "Mentor-Only", "Supervised Helper", "Admin Review"];
+const forgeMarketplaceJobStatuses = ["Draft", "Published", "Receiving Quotes", "Provider Selected", "Scheduled", "In Progress", "Awaiting Approval", "Completed", "Cancelled", "Disputed", "Needs Admin Review"];
+const forgeMarketplaceVerificationStates = ["Unverified", "Identity Pending", "Business Verification Pending", "License Verification Pending", "Insurance Verification Pending", "Verified", "Verification Expired", "Suspended"];
+const forgePricingTypes = ["Hourly", "Fixed Bid", "Starting At", "Estimate After Review", "Emergency Rate", "Recurring Plan"];
+const forgeJobTypes = ["One-time Job", "Recurring Service", "Emergency Request", "Bid Walk Needed", "Quote Only", "Maintenance Plan"];
+const forgeJobVisibilityOptions = ["Public Marketplace", "Admin Review Only", "Invite Only"];
+const forgePreferredContactMethods = ["Phone", "Text", "Email", "Forge Message"];
+const forgeAccountRoles = [
+  { id: "customer", label: "Customer", sessionRole: "customer", screen: "customer-dashboard" },
+  { id: "individual-provider", label: "Individual Provider", sessionRole: "worker", screen: "worker" },
+  { id: "company-provider", label: "Company Provider", sessionRole: "worker", screen: "worker" },
+  { id: "admin-request", label: "Forge Admin Invite Request", sessionRole: "guest", screen: "login" }
+];
 const yesNoOptions = ["No", "Yes"];
 const serviceJobStatusLabels = ["Open for bids", "Bid submitted", "Provider selected", "Scheduled", "In progress", "Completed", "Cancelled"];
 const serviceVerticals = [
@@ -676,12 +694,15 @@ const FORGE_ENV = typeof window !== "undefined" ? window.FORGE_ENV || {} : {};
 const FLEX_REFERRAL_URL_PLACEHOLDER = "https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK";
 const FLEX_APP_URL = FORGE_ENV.FLEX_APP_URL || "";
 const NEXT_PUBLIC_FLEX_REFERRAL_URL = FORGE_ENV.NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
-const FLEX_PARTNER_MODE = "referral";
+const FLEX_PARTNER_MODE = "draft";
 const FORGE_CAPITAL_DESK_ENABLED = true;
+const FLEX_PARTNER_ROUTING_ENABLED = false;
+const SENECA_PARTNER_ROUTING_ENABLED = false;
 const FORGE_LEAD_NOTIFY_EMAIL = "admin@forge.local";
-const FORGE_GHL_WEBHOOK_URL = FORGE_ENV.FORGE_GHL_WEBHOOK_URL || "";
-const FORGE_ZAPIER_WEBHOOK_URL = FORGE_ENV.FORGE_ZAPIER_WEBHOOK_URL || "";
-const FLEX_COMPLIANCE_COPY = "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions. Do not submit bank logins, SSNs, full account numbers, or sensitive financial documents through Forge.";
+const FLEX_COMPLIANCE_COPY = "Flex is a draft future-partner concept; no referral relationship or public referral path is active. Forge is not a bank, lender, broker, broker-dealer, underwriter, financial adviser, credit provider, payment processor, ISO, escrow service, Flex employee, or credit decision maker. A future referral could appear only after written partner and legal approval, a signed agreement, approved data-sharing scope and public language, explicit user consent, operator approval, an official HTTPS destination, and a valid server receipt. Do not submit bank credentials, passwords, API keys, SSNs, full bank or card numbers, routing numbers, government IDs, credit reports, financial statements, or sensitive uploads through Forge.";
+const FLEX_RECEIPT_CONTRACT = "forge.flex-receipt.v1";
+const FLEX_DELIVERY_TIMEOUT_MS = 10_000;
+const flexDeliveryInFlight = new Map();
 const BUILDING_COMPLIANCE_COPY = "Forge is a marketplace and project coordination platform. Forge is not the contractor of record, lender, bank, broker-dealer, financial advisor, or credit provider. Partner routing is subject to project fit, customer consent, licensing, insurance, eligibility, written partner approval, and separate agreements between the customer and the applicable partner. Forge does not publicly claim official partnerships, use partner logos, or share customer information with third-party partners unless the required approvals and consent are in place.";
 const MANUFACTURING_COMPLIANCE_COPY = "Forge does not provide legal, medical, FDA, FTC, tax, or compliance advice. Supplement, nutraceutical, CBD/hemp, food, beverage, cosmetic, and pet wellness products may require specialized legal review, testing, labeling, claims review, insurance, and regulatory compliance before sale. Users are responsible for confirming all applicable federal, state, and local requirements.";
 const MANUFACTURING_DIRECTORY_BOUNDARY_COPY = "Thomasnet-style supplier-discovery workflows may be used only as a benchmark for how buyers search, filter, and request quotes. Forge uses original marketplace structure, user-submitted profiles, demo placeholders, and consent-based relationships. Do not scrape, copy, import, or reproduce proprietary supplier listings, descriptions, profiles, categories, images, or data.";
@@ -1183,7 +1204,7 @@ const buildingHelpItems = [
 const buildingPublicCards = [
   {
     title: "Home Projects",
-    body: "For homeowners and property owners who need trusted help with repairs, upgrades, remodels, fencing, gates, decks, concrete, landscaping, painting, roofing, garages, shops, ADUs, and tenant improvements.",
+    body: "For homeowners and property owners who need local-provider review for repairs, upgrades, remodels, fencing, gates, decks, concrete, landscaping, painting, roofing, garages, shops, ADUs, and tenant improvements.",
     bestFor: ["Home repairs", "Remodels", "Fencing and gates", "Concrete and exterior work", "Landscaping", "Garages, shops, and ADUs", "Small business improvements"],
     button: "Start a Home Project",
     action: "focus-building-home"
@@ -1197,9 +1218,9 @@ const buildingPublicCards = [
   },
   {
     title: "Contractor Finance & Business Tools",
-    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can collect a basic request and refer qualified business owners through the Flex referral channel when appropriate.",
+    body: "For contractors, builders, service businesses, and project operators who need stronger systems for cash flow, bill pay, vendor payments, expense cards, working capital, and business finance operations. Forge can save a basic readiness request; Flex remains a draft future-partner concept and no referral is active.",
     bestFor: ["Contractors", "Builders", "Service businesses", "Blue-collar companies", "Project operators", "Businesses with payroll, invoices, vendors, or material costs"],
-    button: "Check Flex Options",
+    button: "Review Finance Readiness",
     action: "open-building-finance-review"
   },
   {
@@ -1210,7 +1231,7 @@ const buildingPublicCards = [
     action: "focus-building-home"
   }
 ];
-const buildingInternalSalesCopy = "Forge is building a blue-collar project engine for Oregon and Washington. It is not just a place to find a handyman. Small jobs go to verified local pros. Bigger projects go through a higher-level review so they can be routed to serious development, construction, finance, and operating partners when there is a fit. Because of Andrew's relationships, Forge is being built around real operators who understand construction, development, business finance, and execution. The goal is to help property owners get projects done, help contractors get more work, and help serious partners find qualified opportunities without wasting time.";
+const buildingInternalSalesCopy = "Forge is building a blue-collar project engine for Oregon and Washington. It is not just a place to find a handyman. Smaller work goes through local-provider review. Bigger projects go through a higher-level review before any approved development, construction, finance, or operating path can be considered. The goal is to help property owners organize projects, help contractors find opportunities, and help future approved partners review qualified opportunities without overstating current relationships.";
 const buildingNorthStarConnectionCopy = "North Star Creative Co. can support Forge Building by generating leads, landing pages, local ads, social content, outreach campaigns, contractor signups, project-owner campaigns, and partner introductions.";
 const autoServiceGroups = [
   {
@@ -1458,7 +1479,7 @@ const operationsVaultDocuments = [
     reviewed: "2026-06-26",
     tags: ["follow-up"],
     checklist: ["Respond quickly", "Restate request", "Confirm next step", "Set follow-up date", "Log outcome"],
-    body: "Follow up with a simple message that restates the request, confirms Forge received it, explains that partner fit must be reviewed, and sets the next follow-up action."
+    body: "Follow up with a simple message that restates the locally saved request, explains that delivery and partner fit must be verified, and sets the next follow-up action."
   },
   {
     id: "quote-request-sop",
@@ -1987,7 +2008,12 @@ const academyTradeOptions = ["Electrical", "Welding", "HVAC", "Plumbing", "Roofi
 const fundingNeedOptions = ["Not sure", "Needs scholarships/grants", "Needs financial aid", "Can self-pay", "Employer sponsored", "Low-cost options only"];
 const routeByScreen = {
   post: "/request-help",
+  jobs: "/marketplace",
+  "customer-dashboard": "/customer-dashboard",
   signup: "/worker-signup",
+  admitly: "/admitly",
+  "admitly-demo": "/admitly/demo",
+  "admitly-stanford": "/admitly/stanford",
   northstar: "/business",
   autos: "/auto",
   "forge-academy": "/forge-academy",
@@ -2014,8 +2040,18 @@ const screenByPath = {
   "/request-help/": "post",
   "/post-job": "post",
   "/post-job/": "post",
+  "/marketplace": "jobs",
+  "/marketplace/": "jobs",
+  "/customer-dashboard": "customer-dashboard",
+  "/customer-dashboard/": "customer-dashboard",
   "/worker-signup": "signup",
   "/worker-signup/": "signup",
+  "/admitly": "admitly",
+  "/admitly/": "admitly",
+  "/admitly/demo": "admitly-demo",
+  "/admitly/demo/": "admitly-demo",
+  "/admitly/stanford": "admitly-stanford",
+  "/admitly/stanford/": "admitly-stanford",
   "/business": "northstar",
   "/business/": "northstar",
   "/privacy": "legal",
@@ -2376,6 +2412,17 @@ const seedState = {
     role: "guest",
     name: "",
     label: "Visitor"
+  },
+  accounts: [],
+  leadOutbox: [],
+  customerProfile: {
+    name: "John Smith",
+    email: "john.smith@email.com",
+    phone: "(541) 555-1234",
+    address: "Medford, OR",
+    preferredContact: "Phone",
+    locations: "Primary home - Medford, OR",
+    profileImageSummary: ""
   },
   worker: {
     name: "Mike Jones",
@@ -3054,6 +3101,8 @@ const seedState = {
       referralAgreementSigned: false,
       dataSharingApproved: false,
       officialPartnerLanguageApproved: false,
+      operatorApproved: false,
+      legalApproved: false,
       featureFlag: "senecaPartnerApproved",
       status: "Draft partner record",
       publicDisplayRule: "Do not show Seneca publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -3075,6 +3124,8 @@ const seedState = {
       referralAgreementSigned: false,
       dataSharingApproved: false,
       officialPartnerLanguageApproved: false,
+      operatorApproved: false,
+      legalApproved: false,
       featureFlag: "flexPartnerApproved",
       status: "Draft partner record",
       publicDisplayRule: "Do not show Flex publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -3444,7 +3495,7 @@ const startPaths = [
     label: "I am building or improving a home",
     title: "Forge Homebuilding & Development.",
     body: "Start a home build, ADU, remodel, investor project, or contractor partnership request.",
-    next: "Forge saves project context and helps route next steps through trusted builders, trades, and support partners.",
+    next: "Forge saves project context and organizes next steps for builder, trade, and support-provider review.",
     screen: "homebuilding",
     action: "Homebuilding",
     tone: "ghost"
@@ -3462,7 +3513,7 @@ const startPaths = [
     label: "I need a photographer or videographer",
     title: "Book a local creative.",
     body: "Request coverage for weddings, events, business content, real estate, social media, family photos, or community work.",
-    next: "Forge saves the creative brief and routes it to approved local photographers and videographers.",
+    next: "Forge saves the creative brief for manual review by local photographer and videographer candidates.",
     screen: "creative",
     action: "Hire a Photographer",
     tone: "orange"
@@ -3479,10 +3530,10 @@ const startPaths = [
   {
     label: "My business needs breathing room",
     title: "Forge Capital Desk.",
-    body: "Tell Forge what your business needs and check whether Flex options may be a fit.",
-    next: "Forge collects basic contact info and consent, then Flex handles applications, approval, onboarding, activation, and support.",
+    body: "Tell Forge what your business needs and save a finance-readiness note. Flex remains an inactive future-partner concept.",
+    next: "Forge keeps the note in Capital Desk review. It is not a financing application and is not sent to Flex.",
     screen: "capital",
-    action: "Check Flex Options",
+    action: "Save Finance Interest",
     tone: "orange"
   },
   {
@@ -3541,7 +3592,11 @@ const startPaths = [
   }
 ];
 
+let outboxLoadIssues = [];
 let state = loadState();
+let pendingBackupReview = null;
+let pendingOutboxRemovalId = null;
+let outboxRemovalReturnFocus = null;
 let postStep = 1;
 let statusMatches = [];
 
@@ -3557,6 +3612,9 @@ function normalizeState(value) {
   const next = { ...structuredClone(seedState), ...value };
   next.settings = { ...seedState.settings, ...(value?.settings || {}) };
   next.session = { ...seedState.session, ...(value?.session || {}) };
+  const normalizedOutbox = ForgeLeadOutbox.normalizeCollection(value?.leadOutbox || []);
+  next.leadOutbox = normalizedOutbox.records;
+  outboxLoadIssues = normalizedOutbox.issues;
   next.activeMessageThreadId = value?.activeMessageThreadId || seedState.activeMessageThreadId;
   next.jobs = value?.jobs || seedState.jobs;
   next.bids = value?.bids || seedState.bids;
@@ -3890,6 +3948,8 @@ function normalizePartner(partner) {
     referralAgreementSigned: false,
     dataSharingApproved: false,
     officialPartnerLanguageApproved: false,
+    operatorApproved: false,
+    legalApproved: false,
     featureFlag: "",
     status: "Draft partner record",
     publicDisplayRule: "Do not show publicly as an official partner unless approved is true and publicDisplayEnabled is true.",
@@ -4154,29 +4214,13 @@ function flexReferralUrl() {
   return NEXT_PUBLIC_FLEX_REFERRAL_URL || FLEX_REFERRAL_URL_PLACEHOLDER;
 }
 
-function flexStatusLabel(status) {
-  return humanize(String(status || "new").replaceAll("_", " "));
+function configuredFlexReferralUrl() {
+  const url = String(flexReferralUrl() || "").trim();
+  return url && url !== FLEX_REFERRAL_URL_PLACEHOLDER ? url : "";
 }
 
-function flexLeadWebhookPayload(lead) {
-  return {
-    source: "forge_capital_desk",
-    partner: "flex",
-    owner_name: lead.owner_name,
-    business_name: lead.business_name,
-    email: lead.email,
-    phone: lead.phone,
-    industry: lead.industry,
-    city: lead.city,
-    state: lead.state,
-    lead_score: lead.lead_score,
-    primary_need: lead.primary_need,
-    interested_in_forge_job_leads: lead.interested_in_forge_job_leads,
-    interested_in_north_star_marketing: lead.interested_in_north_star_marketing,
-    interested_in_payment_processing: lead.interested_in_payment_processing,
-    interested_in_website_crm_automation: lead.interested_in_website_crm_automation,
-    status: lead.status
-  };
+function flexStatusLabel(status) {
+  return humanize(String(status || "new").replaceAll("_", " "));
 }
 
 function normalizeProjectLead(lead) {
@@ -4333,20 +4377,52 @@ function flexPartner() {
 
 function isSenecaPartnerApproved() {
   const partner = senecaPartner();
-  return Boolean(state.settings.senecaPartnerApproved && partner?.approved && partner?.dataSharingApproved);
+  return Boolean(
+    SENECA_PARTNER_ROUTING_ENABLED
+    && state.settings.senecaPartnerApproved
+    && partner?.approved
+    && partner?.referralAgreementSigned
+    && partner?.dataSharingApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function isFlexPartnerApproved() {
   const partner = flexPartner();
-  return Boolean(state.settings.flexPartnerApproved && partner?.approved && partner?.dataSharingApproved);
+  return Boolean(
+    state.settings.flexPartnerApproved
+    && partner?.approved
+    && partner?.publicDisplayEnabled
+    && partner?.logoUseApproved
+    && partner?.referralAgreementSigned
+    && partner?.dataSharingApproved
+    && partner?.officialPartnerLanguageApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
+    && configuredFlexReferralUrl()
+  );
 }
 
 function canPubliclyDisplayPartner(partner) {
-  return Boolean(partner?.approved && partner?.publicDisplayEnabled);
+  return Boolean(
+    partner?.approved
+    && partner?.publicDisplayEnabled
+    && partner?.logoUseApproved
+    && partner?.officialPartnerLanguageApproved
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function partnerCommissionAllowed(partner) {
-  return Boolean(partner?.referralAgreementSigned);
+  if (partner?.id === "flex") return isFlexPartnerApproved();
+  return Boolean(
+    partner?.approved
+    && partner?.referralAgreementSigned
+    && partner?.operatorApproved
+    && partner?.legalApproved
+  );
 }
 
 function normalizeHomebuildingLead(lead) {
@@ -4474,6 +4550,7 @@ function ensureMikeJones(next) {
 }
 
 function saveState() {
+  state.leadOutbox = ForgeLeadOutbox.prune(state.leadOutbox || []);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -4734,7 +4811,12 @@ function normalizeScreen(screen) {
   if (["local-products", "makers", "local-makers", "products", LOCAL_PRODUCTS_CATEGORY_VALUE].includes(screen)) return "local-products";
   if (["launch", "launch-status", "soft-launch", "readiness", "public-readiness"].includes(screen)) return "launch-status";
   if (["academy", "forge-academy", "forge/academy", "dashboard/career", "career-plus", "forge-career-plus"].includes(screen)) return "forge-academy";
-  if (["admitly", "trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
+  if (["customer", "customer-dashboard", "dashboard/customer", "my-jobs"].includes(screen)) return "customer-dashboard";
+  if (["marketplace", "provider-marketplace", "find-providers"].includes(screen)) return "jobs";
+  if (["admitly", "admitly-home", "admitly/"].includes(screen)) return "admitly";
+  if (["admitly/demo", "admitly-demo", "admitly-dashboard-demo", "admitly-app-demo"].includes(screen)) return "admitly-demo";
+  if (["admitly/stanford", "admitly-stanford", "stanford-admitly", "admitly-educator-discussion"].includes(screen)) return "admitly-stanford";
+  if (["trade-pathways", "admitly-trade-pathways", "trade/pathways", "dashboard/trade-pathways"].includes(screen)) return "trade-pathways";
   if (["building", "forge-building", "buildings"].includes(screen)) return "building";
   if (["admin/building-leads", "building-leads", "admin-building"].includes(screen)) return "admin-building-leads";
   if (screen === "admin/projects") return "admin-projects";
@@ -4742,7 +4824,9 @@ function normalizeScreen(screen) {
 }
 
 function visibleScreenFor(screen) {
-  return ["creative-request", "creative-apply"].includes(screen) ? "creative" : screen;
+  if (["creative-request", "creative-apply"].includes(screen)) return "creative";
+  if (["admitly-demo", "admitly-stanford"].includes(screen)) return "admitly";
+  return screen;
 }
 
 function screenExists(screen) {
@@ -4761,7 +4845,12 @@ function navigate(screen, options = {}) {
     showToast("Log in to open Forge Messages.");
     screen = "login";
   }
-  if (operatorScreens.includes(screen) && state.session.role !== "admin") {
+  if (operatorScreens.includes(screen) && !operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    recordGuardedRoute(requestedScreen);
+    showToast("Operator tools are unavailable on this public host.");
+    screen = "home";
+  } else if (operatorScreens.includes(screen) && state.session.role !== "admin") {
     recordGuardedRoute(requestedScreen);
     showToast("Log in as Forge Admin to open operator tools.");
     screen = "login";
@@ -4818,7 +4907,7 @@ function appBaseUrl() {
   const url = new URL(location.href);
   url.hash = "";
   url.search = "";
-  if (["/request-help", "/request-help/", "/post-job", "/post-job/", "/worker-signup", "/worker-signup/", "/business", "/business/", "/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
+  if (["/request-help", "/request-help/", "/post-job", "/post-job/", "/marketplace", "/marketplace/", "/customer-dashboard", "/customer-dashboard/", "/worker-signup", "/worker-signup/", "/admitly", "/admitly/", "/admitly/demo", "/admitly/demo/", "/admitly/stanford", "/admitly/stanford/", "/business", "/business/", "/auto", "/auto/", "/forge-academy", "/forge-academy/", "/forge-academy/apply", "/forge-academy/apply/", "/forge-academy/employers", "/forge-academy/employers/", "/forge-academy/schools", "/forge-academy/schools/", "/dashboard/career", "/dashboard/career/", "/trade-pathways", "/trade-pathways/", "/trade-pathways/apply", "/trade-pathways/apply/", "/dashboard/trade-pathways", "/dashboard/trade-pathways/", "/road-rescue", "/road-rescue/", "/photography", "/photography/", "/photography/request", "/photography/request/", "/photography/apply", "/photography/apply/", "/photography-videography", "/photography-videography/", "/northstar-creative", "/northstar-creative/", "/forge/capital", "/forge/capital/", "/forge/flex", "/forge/flex/", "/partners/flex", "/partners/flex/", "/manufacturing-nutraceuticals", "/manufacturing-nutraceuticals/", "/forge/manufacturing", "/forge/manufacturing/", "/personal-driver", "/personal-driver/", "/private-driver", "/private-driver/", "/forge-payments", "/forge-payments/", "/merchant-services", "/merchant-services/", "/local-products", "/local-products/", "/makers", "/makers/", "/building", "/building/", "/admin/building-leads", "/admin/building-leads/", "/projects", "/projects/", "/admin/projects", "/admin/projects/", "/homebuilding", "/homebuilding/", "/homebuilding/tracker", "/homebuilding/tracker/"].includes(url.pathname)) url.pathname = "/";
   return url.toString().replace(/\/$/, "");
 }
 
@@ -4826,10 +4915,17 @@ function versionQuery(extra = "") {
   return `?v=${PUBLIC_LINK_VERSION}${extra ? `&${extra}` : ""}`;
 }
 
+let staticControlsHydrated = false;
+
 function render() {
   renderSession();
+  renderAccountPrototype();
+  renderCustomerProfileForm();
   renderOperatorGuard();
-  renderSelects();
+  if (!staticControlsHydrated) {
+    renderSelects();
+    staticControlsHydrated = true;
+  }
   renderTimeline();
   renderPremiumMarketplace();
   renderDemoSteps();
@@ -4837,6 +4933,8 @@ function render() {
   renderDemoGuide();
   renderDemoCueCards();
   renderDemoProofSwitchboard();
+  renderPerspectiveSwitchRail();
+  renderPhoneFastPass();
   renderDemoPath();
   renderDemoLinks();
   renderPerspectiveReadiness();
@@ -4857,6 +4955,8 @@ function render() {
   renderLocalProductsPage();
   renderForgeAcademy();
   renderAdmitlyTradePathways();
+  renderAdmitlyPresentation();
+  renderMarketplaceCommandCenter();
   renderProviderGrowthTools();
   renderRequiredTradeCategories();
   renderServiceVerticals();
@@ -4867,9 +4967,7 @@ function render() {
   renderRoadRescue();
   renderOpportunities();
   renderBuildingPage();
-  renderAdminBuildingLeadsPage();
   renderProjectsPage();
-  renderAdminProjectsPage();
   renderHomebuildingPage();
   renderBuildTrackerPage();
   renderDetail();
@@ -4878,22 +4976,49 @@ function render() {
   renderMessages();
   renderDashboards();
   renderConfirmation();
-  renderSettings();
+  renderLeadOutbox();
   renderSafetyCenter();
   renderDeliveryStatus();
+  renderLeadDeliveryDrill();
   renderSoftLaunchPlan();
   renderSoftLaunchInvites();
   renderSoftLaunchRunSheet();
+  renderLaunchShowPlan();
   renderLaunchDemoPack();
   renderLaunchDecision();
+  renderPublicLaunchBlockers();
+  renderLaunchSecuritySweep();
+  renderPublicLaunchGoNoGo();
   renderLaunchFinalChecklist();
   renderLaunchSendBoard();
+  renderLaunchHandoffReceipt();
   renderFirstUserCountBreakdown();
   renderFirst200LaunchQueue();
+  renderLaunchNext10Sprint();
   renderFollowUpAudit();
   renderBackendHandoff();
   renderAuthHandoff();
+  renderAdminAuthDrill();
   renderFirstUserCloseout();
+  renderLaunchGoals();
+  renderFounding200();
+  renderPrivateOperatorSurfaces();
+  renderViewMode();
+  renderNavigationState();
+}
+
+function canRenderPrivateOperatorData() {
+  return operatorDemoAllowed() && state.session.role === "admin" && !state.settings.publicMode;
+}
+
+function renderPrivateOperatorSurfaces() {
+  if (!canRenderPrivateOperatorData()) {
+    redactPrivateOperatorSurfaces();
+    return;
+  }
+  renderAdminBuildingLeadsPage();
+  renderAdminProjectsPage();
+  renderSettings();
   renderLaunchCommandCenter();
   renderOutreachRecap();
   renderOutreachSprintBrief();
@@ -4902,13 +5027,91 @@ function render() {
   renderAdminExtras();
   renderAcademyAdmin();
   renderFlexLeadsAdmin();
-  renderLaunchGoals();
   renderCaptureTriageBoard();
-  renderFounding200();
   renderReports();
-  renderViewMode();
   renderFollowUpQueue();
-  renderNavigationState();
+}
+
+function redactPrivateOperatorSurfaces() {
+  const publicToggle = document.querySelector("#publicModeToggle");
+  if (publicToggle) publicToggle.textContent = state.settings.publicMode ? "Operator View" : "Public View";
+  const webhookUrl = document.querySelector("#webhookUrl");
+  const webhookEnabled = document.querySelector("#webhookEnabled");
+  if (webhookUrl) webhookUrl.value = "";
+  if (webhookEnabled) webhookEnabled.checked = false;
+  ["#jobTemplatePreview", "#workerTemplatePreview", "#adminSenecaPartnerSummary", "#adminBuildingPartnerSummary"].forEach((selector) => {
+    const target = document.querySelector(selector);
+    if (target) target.textContent = "Private operator data is hidden in Public View.";
+  });
+  ["#adminSenecaPartnerBadge", "#adminBuildingPartnerBadge"].forEach((selector) => {
+    const target = document.querySelector(selector);
+    if (target) target.textContent = "Hidden";
+  });
+  document.querySelectorAll("#admin-screen table, #admin-projects-screen table, #admin-building-leads-screen table").forEach((table) => {
+    table.innerHTML = `<tbody><tr><td>Private operator rows are hidden in Public View. Switch to Operator View as Forge Admin to load this table.</td></tr></tbody>`;
+  });
+  document.querySelectorAll([
+    "#adminProfileMini",
+    "#adminStats",
+    "#adminMarketplaceControl",
+    "#adminFoundingGrid",
+    "#launchCommandCenter",
+    "#deliveryStatus",
+    "#leadDeliveryDrill",
+    "#adminAuthDrill",
+    "#autoRevenueSummary",
+    "#vehicleListingReview",
+    "#forgePlatinumDealDesk",
+    "#auctionDealDesk",
+    "#operationsVaultGrid",
+    "#outreachRecap",
+    "#outreachSprintBrief",
+    "#outreachBatch",
+    "#sessionHistory",
+    "#followUpCommandStrip",
+    "#followUpProgress",
+    "#todayFollowUp",
+    "#followUpQueue",
+    "#adminJobPipeline",
+    "#adminWorkerPipeline",
+    "#adminCreativeRequestsPipeline",
+    "#adminCreativeProvidersPipeline",
+    "#adminNorthstarPipeline",
+    "#adminRoadRescuePipeline",
+    "#adminForgeAcademyPipeline",
+    "#adminTradePathwaysPipeline",
+    "#adminAcademyPartners",
+    "#adminManufacturingRfqsPipeline",
+    "#adminManufacturingSuppliersPipeline",
+    "#adminManufacturingSupplierLeadsPipeline",
+    "#adminReferralPipeline",
+    "#adminHomebuildingPipeline",
+    "#adminBuildingLeadsPipeline",
+    "#adminProjectsPipeline",
+    "#adminProjectStats",
+    "#adminPartnerDocuments",
+    "#adminProjectsFullPipeline",
+    "#adminBuildingStats",
+    "#adminBuildingPartnerCards",
+    "#adminBuildingFullPipeline",
+    "#captureTriageBoard",
+    "#reportStats",
+    "#reportActions",
+    "#reportHealth",
+    "#activityLog"
+  ].join(",")).forEach((target) => {
+    target.innerHTML = operatorRedactionCard();
+  });
+}
+
+function operatorRedactionCard() {
+  return `
+    <article class="operator-redaction-card">
+      <span>Public View</span>
+      <strong>Private operator data hidden</strong>
+      <p>Forge keeps follow-up names, admin queues, webhook settings, reports, templates, and partner routing details out of visitor-safe rendering. Switch to Operator View as Forge Admin to load this section.</p>
+    </article>
+  `;
 }
 
 function renderOperatorGuard() {
@@ -4954,6 +5157,7 @@ function renderSession() {
   document.body.classList.remove("role-guest", "role-worker", "role-customer", "role-admin");
   document.body.classList.add(`role-${role}`);
   document.body.classList.toggle("is-authenticated", role !== "guest");
+  document.body.classList.toggle("operator-demo-locked", !operatorDemoAllowed());
 
   const loginButton = document.querySelector("#loginButton");
   if (loginButton) loginButton.textContent = role === "guest" ? "Log In" : "Switch User";
@@ -4979,6 +5183,52 @@ function renderSession() {
   `;
 }
 
+function accountRoleConfig(roleId) {
+  return forgeAccountRoles.find((role) => role.id === roleId) || forgeAccountRoles[0];
+}
+
+function renderAccountPrototype() {
+  const panel = document.querySelector("#accountPrototypePanel");
+  if (panel) {
+    const accounts = state.accounts || [];
+    panel.innerHTML = accounts.length
+      ? accounts.slice(0, 4).map((account) => `
+        <article>
+          <strong>${escapeHtml(account.name)}</strong>
+          <span>${escapeHtml(account.roleLabel)} · ${escapeHtml(account.status)}</span>
+        </article>
+      `).join("")
+      : `<article><strong>No local accounts yet.</strong><span>Create one to test role-based onboarding.</span></article>`;
+  }
+  const table = document.querySelector("#adminAccountsTable");
+  if (table) {
+    renderTable("#adminAccountsTable", (state.accounts || []).map((account) => ({
+      name: account.name,
+      role: account.roleLabel,
+      email: account.email,
+      phone: account.phone,
+      status: account.status,
+      consent: account.termsAccepted ? "Yes" : "No"
+    })));
+  }
+}
+
+function renderCustomerProfileForm() {
+  const form = document.querySelector("#customerProfileForm");
+  if (!form || form.contains(document.activeElement)) return;
+  const profile = {
+    ...seedState.customerProfile,
+    ...(state.customerProfile || {})
+  };
+  if (state.session.role === "customer" && state.session.name && (!profile.name || profile.name === seedState.customerProfile.name)) profile.name = state.session.name;
+  setFieldValue("#customerProfileName", profile.name);
+  setFieldValue("#customerProfileEmail", profile.email);
+  setFieldValue("#customerProfilePhone", profile.phone);
+  setFieldValue("#customerProfileAddress", profile.address);
+  setFieldValue("#customerProfileContact", profile.preferredContact);
+  setFieldValue("#customerProfileLocations", profile.locations);
+}
+
 function renderWorkerProfile() {
   const form = document.querySelector("#workerSignupForm");
   if (!form || form.contains(document.activeElement)) return;
@@ -4990,7 +5240,21 @@ function renderWorkerProfile() {
   setFieldValue("#workerPhone", worker.phone);
   setFieldValue("#workerEmail", worker.email);
   setFieldValue("#workerExperience", worker.experience);
-  setFieldValue("#workerArea", worker.area);
+  setFieldValue("#workerCity", worker.city || worker.locationCity);
+  setFieldValue("#workerState", worker.state || worker.locationState);
+  setFieldValue("#workerZip", worker.zip || worker.locationZip);
+  setFieldValue("#workerServiceRadius", worker.serviceRadiusMiles);
+  setFieldValue("#workerPrimaryServiceArea", worker.primaryServiceArea || worker.area);
+  setFieldValue("#workerAdditionalServiceAreas", Array.isArray(worker.additionalServiceAreas) ? worker.additionalServiceAreas.join(", ") : worker.additionalServiceAreas);
+  setFieldValue("#workerTravelAvailability", worker.travelAvailability);
+  setFieldValue("#workerLicenseNumber", worker.licenseNumber);
+  setFieldValue("#workerLicenseState", worker.licenseState);
+  setFieldValue("#workerLicenseStatus", worker.licenseStatus);
+  setFieldValue("#workerInsuranceStatus", worker.insuranceStatus);
+  setFieldValue("#workerYearsExperience", worker.yearsExperience);
+  setFieldValue("#workerCrewSize", worker.crewSize);
+  setFieldValue("#workerTypicalProjectSize", worker.typicalProjectSize);
+  setFieldValue("#workerPortfolioLink", worker.portfolioLink);
   setFieldValue("#workerServiceVertical", worker.serviceVertical);
   setSelectedValues("#workerTradeCategories", worker.tradeCategories || worker.providerCategories || [worker.trade]);
 }
@@ -5008,7 +5272,12 @@ function renderProfileStatus() {
   document.querySelector("#profileStatusPill").textContent = profile.status;
   document.querySelector("#profileSummary").textContent = profile.summary;
   document.querySelector("#profileReadiness").innerHTML = readinessCard(profile);
+  const profileStatusReceipt = document.querySelector("#profileStatusReceipt");
+  if (profileStatusReceipt) profileStatusReceipt.innerHTML = profileStatusReceiptPanel(profile);
+  renderProfilePerspectiveSwitch(profile);
   renderProfileCommandStrip(profile);
+  const profileVisibility = document.querySelector("#profileVisibilityPanel");
+  if (profileVisibility) profileVisibility.innerHTML = profileVisibilityPanel(profile);
   const profileHandoff = document.querySelector("#profileDemoHandoff");
   if (profileHandoff) profileHandoff.innerHTML = profileDemoHandoff(profile);
   const profileClose = document.querySelector("#profileCloseCard");
@@ -5055,6 +5324,95 @@ function renderProfileStatus() {
       <p>${escapeHtml(item.text)}</p>
     </article>
   `).join("") || `<p class="muted">No activity yet.</p>`;
+}
+
+function renderProfilePerspectiveSwitch(profile) {
+  const target = document.querySelector("#profilePerspectiveSwitch");
+  if (!target) return;
+  const rows = profilePerspectiveRows();
+  target.innerHTML = `
+    <div class="profile-perspective-heading">
+      <div>
+        <span class="split-label">Perspective switch</span>
+        <strong>${escapeHtml(profilePerspectiveTitle(profile))}</strong>
+        <p class="muted">Jump between the views a real homeowner, worker, operator, or public visitor would see.</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-profile-perspective">Copy Lens</button>
+    </div>
+    <div class="profile-perspective-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.role === state.session.role ? "active" : row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <div class="profile-perspective-actions">
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+            ${row.secondaryAction ? `<button class="btn ghost small" type="button" ${profileProofButtonAttrs(row.secondaryAction)}>${escapeHtml(row.secondaryLabel)}</button>` : ""}
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function profilePerspectiveTitle(profile) {
+  if (state.session.role === "customer") return `${profile.name} is viewing job status, bids, messages, and next steps.`;
+  if (state.session.role === "worker") return `${profile.name} is viewing worker readiness, bids, jobs, and messages.`;
+  if (state.session.role === "admin") return "Forge Admin is viewing launch, safety, follow-up, and operations.";
+  return "No account is selected, so private profile status stays locked.";
+}
+
+function profilePerspectiveRows() {
+  return [
+    {
+      role: "customer",
+      label: "John",
+      title: "Customer status",
+      body: "Job poster view: saved job, bids received, selected-bid handoff, messages, and safe next action.",
+      state: "ready",
+      primary: true,
+      actionLabel: "Profile",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "profile" },
+      secondaryLabel: "Status",
+      secondaryAction: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      role: "worker",
+      label: "Mike",
+      title: "Worker readiness",
+      body: "Worker view: local jobs, profile readiness, bids submitted, earnings proof, and message follow-up.",
+      state: "ready",
+      primary: false,
+      actionLabel: "Profile",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "profile" },
+      secondaryLabel: "Jobs",
+      secondaryAction: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      role: "admin",
+      label: "Admin",
+      title: "Operator view",
+      body: "Operator view: first-user queue, launch command, safety boundary, backups, and follow-up controls.",
+      state: "guarded",
+      primary: false,
+      actionLabel: "Profile",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "profile" },
+      secondaryLabel: "Launch",
+      secondaryAction: { type: "login", role: "admin", name: "Forge Admin", screen: "launch-status" }
+    },
+    {
+      role: "guest",
+      label: "Public",
+      title: "Private status locked",
+      body: "Public visitors see the marketplace and calls to action, but not private job, bid, or operator data.",
+      state: "waiting",
+      primary: false,
+      actionLabel: "Guest",
+      action: { type: "action", name: "logout" },
+      secondaryLabel: "Home",
+      secondaryAction: { type: "nav", screen: "home" }
+    }
+  ];
 }
 
 function renderProfileCommandStrip(profile) {
@@ -5181,6 +5539,134 @@ function renderMiniProfile(selector, profile) {
   `;
 }
 
+function profileVisibilityPanel(profile) {
+  const rows = profileVisibilityRows(profile);
+  return `
+    <div class="profile-visibility-heading">
+      <div>
+        <span class="split-label">Profile visibility</span>
+        <strong>${escapeHtml(profileVisibilityTitle(profile))}</strong>
+      </div>
+      <button class="btn orange small" type="button" data-action="copy-profile-visibility">Copy Visibility</button>
+    </div>
+    <div class="profile-visibility-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function profileVisibilityTitle(profile) {
+  if (state.session.role === "worker") return "Mike can see his status, bids, and next work action.";
+  if (state.session.role === "customer") return "John can see where his job stands and what to do next.";
+  if (state.session.role === "admin") return "Admin can see what is safe to run before outreach.";
+  return "Choose a role to reveal the profile status view.";
+}
+
+function profileVisibilityRows(profile) {
+  const readiness = profileReadiness(profile);
+  const nextGap = profile.checklist.find(([done]) => !done)?.[1];
+  if (state.session.role === "worker") {
+    const worker = findWorkerByName(profile.name) || state.worker;
+    const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+    const chosen = bids.filter((bid) => bid.chosen);
+    return [
+      {
+        label: "Worker sees",
+        title: `${worker.trade} status`,
+        body: `${worker.name} sees ${profile.status}, ${worker.area}, ${bids.length} bid${bids.length === 1 ? "" : "s"}, and profile readiness.`,
+        state: "ready"
+      },
+      {
+        label: "Forge sees",
+        title: `${readiness}% profile ready`,
+        body: nextGap ? `Next trust gap: ${nextGap}.` : `${chosen.length} won bid${chosen.length === 1 ? "" : "s"} and contact info are visible for follow-up.`,
+        state: nextGap ? "attention" : "ready"
+      },
+      {
+        label: "Next unlock",
+        title: bids.length ? "Keep messages moving" : "Submit first bid",
+        body: profile.nextAction,
+        state: bids.length ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "customer") {
+    const jobs = state.jobs.filter((job) => samePerson(job.customer, profile.name));
+    const latest = jobs[0];
+    const bids = latest ? state.bids.filter((bid) => bid.jobId === latest.id) : [];
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        label: "Customer sees",
+        title: latest ? latest.status : "No job posted",
+        body: latest ? `${latest.title} has ${bids.length} bid${bids.length === 1 ? "" : "s"} and a status page.` : "John needs one posted job before status proof is visible.",
+        state: latest ? "ready" : "attention"
+      },
+      {
+        label: "Forge sees",
+        title: chosen ? "Selected bid" : bids.length ? "Bids ready" : "Waiting",
+        body: chosen ? `${chosen.worker} is selected at ${chosen.amount}; Messages can confirm schedule.` : bids.length ? "Job Detail should be used to choose the next handoff." : "The job can stay posted until workers bid.",
+        state: chosen || bids.length ? "ready" : "attention"
+      },
+      {
+        label: "Next unlock",
+        title: chosen ? "Schedule handoff" : bids.length ? "Choose + Message" : "Collect bids",
+        body: profile.nextAction,
+        state: chosen ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "admin") {
+    const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+    return [
+      {
+        label: "Admin sees",
+        title: `${totalLeadCount()}/200 first users`,
+        body: "Operator status includes jobs, workers, referrals, messages, reports, backup, and launch command.",
+        state: "ready"
+      },
+      {
+        label: "Guarded",
+        title: needsTouch ? `${needsTouch} need touch` : "Queue clear",
+        body: needsTouch ? "Follow-up queue should be copied before widening outreach." : "No urgent first-user follow-up is blocking the next demo.",
+        state: needsTouch ? "attention" : "ready"
+      },
+      {
+        label: "Next unlock",
+        title: "Run Launch Status",
+        body: profile.nextAction,
+        state: "ready"
+      }
+    ];
+  }
+  return [
+    {
+      label: "Visitor sees",
+      title: "Public profile locked",
+      body: "Profile Status unlocks after choosing John, Mike, or Forge Admin.",
+      state: "attention"
+    },
+    {
+      label: "Forge sees",
+      title: "No role selected",
+      body: "No private account, payment, or password is needed in this MVP demo.",
+      state: "ready"
+    },
+    {
+      label: "Next unlock",
+      title: "Choose demo login",
+      body: profile.nextAction,
+      state: "attention"
+    }
+  ];
+}
+
 function readinessCard(profile) {
   const readiness = profileReadiness(profile);
   const next = profile.checklist.find(([done]) => !done)?.[1] || profile.nextAction || "Ready for the next demo step";
@@ -5200,6 +5686,189 @@ function profileReadiness(profile) {
   const total = profile.checklist.length || 1;
   const done = profile.checklist.filter(([complete]) => complete).length;
   return Math.round((done / total) * 100);
+}
+
+function profileStatusReceiptPanel(profile) {
+  const rows = profileStatusReceiptRows(profile);
+  const primary = profileStatusReceiptPrimaryAction(profile);
+  return `
+    <div class="profile-status-receipt-heading">
+      <div>
+        <span class="split-label">Profile status receipt</span>
+        <strong>${escapeHtml(profileStatusReceiptTitle(profile))}</strong>
+        <p>${escapeHtml(profileStatusReceiptSummary(profile))}</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-profile-status-receipt">Copy Receipt</button>
+    </div>
+    <div class="profile-status-receipt-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+        </article>
+      `).join("")}
+    </div>
+    <div class="profile-status-receipt-actions">
+      <button class="btn blue small" type="button" ${profileProofButtonAttrs(primary.action)}>${escapeHtml(primary.label)}</button>
+      <button class="btn ghost small" type="button" data-action="copy-profile-proof-path">Copy Path</button>
+      <button class="btn ghost small" type="button" data-nav="launch-status">Launch Boundary</button>
+    </div>
+  `;
+}
+
+function profileStatusReceiptTitle(profile) {
+  if (state.session.role === "customer") return `${profile.name}'s job poster view is ready to explain.`;
+  if (state.session.role === "worker") return `${profile.name}'s worker view is ready to explain.`;
+  if (state.session.role === "admin") return "Forge Admin profile shows the operator's next move.";
+  return "Profile status is locked until a demo role is selected.";
+}
+
+function profileStatusReceiptSummary(profile) {
+  const readiness = profileReadiness(profile);
+  const nextGap = profile.checklist.find(([done]) => !done)?.[1];
+  if (state.session.role === "customer") return nextGap ? `${readiness}% ready. Next gap: ${nextGap}.` : `${readiness}% ready. Show job status, bids, messages, and the next ask.`;
+  if (state.session.role === "worker") return nextGap ? `${readiness}% ready. Next gap: ${nextGap}.` : `${readiness}% ready. Show worker readiness, bid path, and messages.`;
+  if (state.session.role === "admin") return `${readiness}% operator ready. Keep broad public launch behind the safety gates.`;
+  return "Choose John, Mike, or Admin to unlock a role-specific profile receipt.";
+}
+
+function profileStatusReceiptRows(profile) {
+  const readiness = profileReadiness(profile);
+  const nextGap = profile.checklist.find(([done]) => !done)?.[1] || "No visible gap";
+  if (state.session.role === "customer") {
+    const jobs = state.jobs.filter((job) => samePerson(job.customer, profile.name));
+    const job = jobs[0] || state.jobs[0];
+    const bids = job ? state.bids.filter((bid) => bid.jobId === job.id) : [];
+    const chosen = bids.find((bid) => bid.chosen);
+    const hasMessage = job ? state.messages.some((message) => message.threadId === `job-${job.id}`) : false;
+    return [
+      {
+        label: "View",
+        title: "Job poster",
+        body: `${profile.name} can see saved job status without payments, passwords, or private operator data.`,
+        state: "ready"
+      },
+      {
+        label: "Proof",
+        title: job ? `${bids.length} bid${bids.length === 1 ? "" : "s"}` : "No job yet",
+        body: chosen ? `${chosen.worker} is selected at ${chosen.amount}.` : job ? `${job.title} is ready for bid review or worker outreach.` : "Post a job before showing customer proof.",
+        state: job ? "ready" : "attention"
+      },
+      {
+        label: "Message",
+        title: hasMessage ? "Thread visible" : "Handoff pending",
+        body: hasMessage ? "The customer has a message path for schedule and access notes." : "Choose a bid to make the message handoff visible.",
+        state: hasMessage ? "ready" : "attention"
+      },
+      {
+        label: "Next",
+        title: `${readiness}% ready`,
+        body: chosen ? "Close by asking for one schedule window or one referral." : `Next gap: ${nextGap}.`,
+        state: chosen ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "worker") {
+    const worker = findWorkerByName(profile.name) || state.worker;
+    const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+    const chosen = bids.filter((bid) => bid.chosen);
+    return [
+      {
+        label: "View",
+        title: "Worker profile",
+        body: `${worker.name} can see ${worker.trade} status, service area, bid activity, and readiness.`,
+        state: "ready"
+      },
+      {
+        label: "Proof",
+        title: bids.length ? `${bids.length} submitted` : "Bid needed",
+        body: bids.length ? `${chosen.length} chosen bid${chosen.length === 1 ? "" : "s"} and message follow-up can be shown.` : "Submit one bid to make the worker-side proof real.",
+        state: bids.length ? "ready" : "attention"
+      },
+      {
+        label: "Trust",
+        title: `${readiness}% ready`,
+        body: nextGap === "No visible gap" ? "Visible profile checks are complete for this demo path." : `Next trust gap: ${nextGap}.`,
+        state: readiness >= 75 ? "ready" : "attention"
+      },
+      {
+        label: "Next",
+        title: bids.length ? "Open messages" : "Bid on a job",
+        body: profile.nextAction,
+        state: bids.length ? "ready" : "attention"
+      }
+    ];
+  }
+  if (state.session.role === "admin") {
+    const needsTouch = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+    return [
+      {
+        label: "View",
+        title: "Operator profile",
+        body: "Admin sees launch command, follow-up, backups, safety gates, and local MVP data.",
+        state: "ready"
+      },
+      {
+        label: "Queue",
+        title: `${needsTouch} need touch`,
+        body: needsTouch ? "Copy the queue before widening outreach." : "No urgent first-user follow-up blocks the next demo.",
+        state: needsTouch ? "attention" : "ready"
+      },
+      {
+        label: "Boundary",
+        title: "Controlled beta",
+        body: "Public traffic still waits on backend lead delivery, admin auth, backup, legal review, and security review.",
+        state: "guarded"
+      },
+      {
+        label: "Next",
+        title: "Launch Status",
+        body: profile.nextAction,
+        state: "ready"
+      }
+    ];
+  }
+  return [
+    {
+      label: "View",
+      title: "Locked",
+      body: "No private job, bid, message, profile, or operator data is shown until a demo role is selected.",
+      state: "attention"
+    },
+    {
+      label: "Customer",
+      title: "John proof",
+      body: "Use John to show job status, bids, detail, messages, and the next ask.",
+      state: "ready"
+    },
+    {
+      label: "Worker",
+      title: "Mike proof",
+      body: "Use Mike to show worker readiness, local jobs, bids, and message follow-up.",
+      state: "ready"
+    },
+    {
+      label: "Next",
+      title: "Choose role",
+      body: profile.nextAction,
+      state: "attention"
+    }
+  ];
+}
+
+function profileStatusReceiptPrimaryAction(profile) {
+  if (state.session.role === "customer") {
+    const job = state.jobs.find((item) => samePerson(item.customer, profile.name)) || state.jobs[0];
+    return job ? { label: "Open Status", action: { type: "login", role: "customer", name: profile.name, screen: "status", jobId: job.id } } : { label: "Post Job", action: { type: "nav", screen: "post" } };
+  }
+  if (state.session.role === "worker") {
+    return { label: "Worker Dashboard", action: { type: "login", role: "worker", name: profile.name, screen: "worker" } };
+  }
+  if (state.session.role === "admin") {
+    return { label: "Launch Status", action: { type: "nav", screen: "launch-status" } };
+  }
+  return { label: "Perspective Demo", action: { type: "nav", screen: "perspective" } };
 }
 
 function profileDemoHandoff(profile) {
@@ -5791,6 +6460,18 @@ function fieldSelectedValues(selector) {
 }
 
 function renderSelects() {
+  const stateOptions = forgeNationwideMarket?.US_STATES?.map((state) => [state.code, `${state.name} (${state.code})`]) || [];
+  fillSelect("#jobState", [["", "Choose state"], ...stateOptions]);
+  fillSelect("#workerState", [["", "Choose state"], ...stateOptions]);
+  fillSelect("#workerLicenseState", [["", "Not supplied / not applicable"], ...stateOptions]);
+  const requestedMarket = new URLSearchParams(location.search);
+  setFieldValue("#jobCity", requestedMarket.get("city"));
+  setFieldValue("#jobState", requestedMarket.get("state"));
+  setFieldValue("#jobZip", requestedMarket.get("zip"));
+  setFieldValue("#workerCity", requestedMarket.get("city"));
+  setFieldValue("#workerState", requestedMarket.get("state"));
+  setFieldValue("#workerZip", requestedMarket.get("zip"));
+  setFieldValue("#workerPrimaryServiceArea", requestedMarket.get("market"));
   fillSelect("#jobCategory", ["", ...categories], "Select a category");
   fillSelect("#listingCategory", ["All Categories", ...categories]);
   fillSelect("#workerServiceVertical", [["", "General Forge worker"], ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
@@ -6048,6 +6729,158 @@ function renderDemoProofSwitchboard() {
       </div>
     </article>
   `).join("");
+}
+
+function renderPerspectiveSwitchRail() {
+  const target = document.querySelector("#perspectiveSwitchRail");
+  if (!target) return;
+  const rows = perspectiveSwitchRailRows();
+  target.innerHTML = `
+    <div class="perspective-switch-heading">
+      <div>
+        <span class="split-label">Perspective switch rail</span>
+        <h2>Choose the side in front of you, then stay on that person's path.</h2>
+        <p>Use this rail when the demo needs to move quickly between homeowner, worker, operator, and public views.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-perspective-switch-rail">Copy Switch Rail</button>
+    </div>
+    <div class="perspective-switch-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.state)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <small>${escapeHtml(row.proof)}</small>
+          <div class="perspective-switch-actions">
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+            <button class="btn ghost small" type="button" ${profileProofButtonAttrs(row.secondaryAction)}>${escapeHtml(row.secondaryLabel)}</button>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function perspectiveSwitchRailRows() {
+  const activeRole = state.session.role || "guest";
+  const demoJob = state.jobs[0] || {};
+  const demoBids = state.bids.filter((bid) => bid.jobId === demoJob.id);
+  const worker = findWorkerByName("Mike Jones") || state.worker;
+  const workerBids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  return [
+    {
+      label: "John",
+      title: "Customer proof",
+      body: `${demoJob.title || "Saved job"} with ${demoBids.length} bid${demoBids.length === 1 ? "" : "s"}, status, messages, and profile clarity.`,
+      proof: "Status -> Detail -> Messages -> Profile",
+      state: activeRole === "customer" ? "active" : "ready",
+      primary: true,
+      actionLabel: "Open Status",
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" },
+      secondaryLabel: "Profile",
+      secondaryAction: { type: "login", role: "customer", name: "John Smith", screen: "profile" }
+    },
+    {
+      label: "Mike",
+      title: "Worker proof",
+      body: `${worker.trade || "Worker"} view with ${workerBids.length} bid${workerBids.length === 1 ? "" : "s"}, opportunity bridge, messages, and readiness.`,
+      proof: "Worker Dashboard -> Bid -> Messages -> Profile",
+      state: activeRole === "worker" ? "active" : "ready",
+      primary: false,
+      actionLabel: "Open Worker",
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" },
+      secondaryLabel: "Profile",
+      secondaryAction: { type: "login", role: "worker", name: "Mike Jones", screen: "profile" }
+    },
+    {
+      label: "Admin",
+      title: "Operator proof",
+      body: `${followUpCount} follow-up${followUpCount === 1 ? "" : "s"} queued with launch, safety, backup, and admin controls visible.`,
+      proof: "Admin -> Launch Status -> Capture -> Backup",
+      state: activeRole === "admin" ? "active" : "guarded",
+      primary: false,
+      actionLabel: "Open Admin",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "admin" },
+      secondaryLabel: "Launch",
+      secondaryAction: { type: "login", role: "admin", name: "Forge Admin", screen: "launch-status" }
+    },
+    {
+      label: "Public",
+      title: "Public boundary",
+      body: "Show the marketplace without private jobs, bids, messages, admin queues, payments, or sensitive data.",
+      proof: "Home -> Post Job -> Worker Signup -> Legal",
+      state: activeRole === "guest" ? "active" : "waiting",
+      primary: false,
+      actionLabel: "Public View",
+      action: { type: "action", name: "logout" },
+      secondaryLabel: "Home",
+      secondaryAction: { type: "nav", screen: "home" }
+    }
+  ];
+}
+
+function renderPhoneFastPass() {
+  const target = document.querySelector("#phoneFastPass");
+  if (!target) return;
+  const rows = phoneFastPassRows();
+  target.innerHTML = `
+    <div class="phone-fast-pass-heading">
+      <div>
+        <span class="split-label">Phone demo fast pass</span>
+        <h2>Run the strongest proof path without scrolling around.</h2>
+        <p class="muted">Use this when Andrew has one minute, one phone, and one person asking what Forge does from their side.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-phone-fast-pass">Copy Fast Pass</button>
+    </div>
+    <div class="phone-fast-pass-grid">
+      ${rows.map((row, index) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function phoneFastPassRows() {
+  return [
+    {
+      title: "John Status",
+      body: "Show the customer side first: saved job, bids, selected path, privacy boundary, and next step.",
+      actionLabel: "Open Status",
+      status: "ready",
+      primary: true,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      title: "Message bridge",
+      body: "Open Messages and copy the bridge so Detail, bid choice, reply, and Status stay connected.",
+      actionLabel: "Messages",
+      status: "ready",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "messages" }
+    },
+    {
+      title: "Mike worker",
+      body: "Switch to Mike so workers see available jobs, profile readiness, and how bids become follow-up.",
+      actionLabel: "Worker",
+      status: "ready",
+      primary: false,
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      title: "Safe close",
+      body: "Finish with Launch Status, one captured next action, and the controlled-beta boundary.",
+      actionLabel: "Launch",
+      status: "attention",
+      primary: false,
+      action: { type: "nav", screen: "launch-status" }
+    }
+  ];
 }
 
 function renderDemoPath() {
@@ -6464,8 +7297,9 @@ function renderCapitalPage() {
   const compliance = document.querySelectorAll("[data-flex-compliance]");
   if (!helps || !problems || !mayHelp || !steps || !recent) return;
 
+  const referralReady = isFlexPartnerApproved();
   compliance.forEach((node) => {
-    node.textContent = FLEX_COMPLIANCE_COPY;
+    node.textContent = `${FLEX_COMPLIANCE_COPY}${referralReady ? "" : " No Flex referral is active in this environment."}`;
   });
 
   helps.innerHTML = [
@@ -6483,20 +7317,23 @@ function renderCapitalPage() {
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   mayHelp.innerHTML = [
-    "Business credit and cash-flow timing",
-    "Vendor payments and business banking tools",
-    "Employee cards and controlled expense management",
-    "Growth capital review",
-    "Fuel/material/equipment spending and payroll timing"
+    "Business banking and business credit readiness",
+    "Expense management and controlled employee cards",
+    "Vendor payments, bill pay, and cash-flow timing",
+    "Working capital and project-financing review",
+    "AP automation, AR automation, and global payments",
+    "Fuel, materials, equipment, inventory, labor, payroll timing, and growth expenses"
   ].map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   steps.innerHTML = [
-    "Tell Forge what your business needs.",
-    "Forge reviews whether your business looks like a fit.",
-    "Forge sends you the official Flex referral link if appropriate.",
-    "You apply directly with Flex.",
-    "Flex handles approval, onboarding, activation, and product support.",
-    "Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations."
+    "Save a basic business-interest note and consent on this device.",
+    "Check the receipt to see whether Forge delivery was verified or remains local.",
+    "Forge reviews the request without collecting banking credentials or sensitive financial documents.",
+    referralReady
+      ? "If the approved Flex path fits, Forge may provide the official referral link after review."
+      : "Flex referral remains unavailable until every written approval, data-sharing, and official-link gate passes.",
+    "Any future provider handles its own eligibility, approval, onboarding, activation, fees, terms, and product support.",
+    "Forge and NorthStar can separately help with customer leads, marketing, websites, CRM, hiring, payment operations, and business systems."
   ].map((item, index) => `
     <article>
       <strong>${index + 1}</strong>
@@ -6504,16 +7341,23 @@ function renderCapitalPage() {
     </article>
   `).join("");
 
-  recent.innerHTML = (state.flexLeads || []).slice(0, 3).map((lead) => `
+  recent.innerHTML = (state.flexLeads || []).filter((lead) => lead.request_id).slice(0, 3).map((lead) => `
     <article>
-      <span class="flex-status ${escapeHtml(lead.status)}">${escapeHtml(flexStatusLabel(lead.status))}</span>
+      <span class="flex-status ${escapeHtml(lead.delivery_state || "locally_preserved")}">${escapeHtml(flexDeliveryLabel(lead.delivery_state))}</span>
       <strong>${escapeHtml(lead.business_name)}</strong>
-      <p>${escapeHtml(lead.industry)} · ${escapeHtml(lead.city || "City pending")} · score ${lead.lead_score}</p>
+      <p>${escapeHtml(lead.industry)} · ${escapeHtml(lead.primary_need || "Need pending")}</p>
+      <small>Request ${escapeHtml(lead.request_id)} · attempt ${escapeHtml(String(lead.attempt_count || 0))}/5</small>
+      ${!["delivered", "rejected-requires-correction"].includes(lead.delivery_state) && Number(lead.attempt_count || 0) < 5
+        ? `<button class="btn ghost small" type="button" data-action="retry-flex-delivery" data-flex-id="${escapeHtml(lead.id)}">Retry Forge delivery</button>`
+        : ""}
     </article>
-  `).join("") || `<article><p class="muted">No Capital Desk leads yet.</p></article>`;
+  `).join("") || `<article><p class="muted">No Capital Desk request has been saved on this device.</p></article>`;
 
   const continueButton = document.querySelector("#flexContinueButton");
-  if (continueButton) continueButton.href = flexReferralUrl();
+  if (continueButton) {
+    continueButton.href = referralReady ? configuredFlexReferralUrl() : "#";
+    continueButton.classList.add("hidden");
+  }
 }
 
 function renderManufacturingPage() {
@@ -6541,14 +7385,24 @@ function renderManufacturingPage() {
   const suppliers = state.manufacturingSuppliers || [];
   const rfqs = state.manufacturingRfqs || [];
   const supplierLeads = state.manufacturingSupplierLeads || [];
-  stats.innerHTML = statCards([
-    ["RFQs", rfqs.length],
-    ["Demo Suppliers", suppliers.length],
-    ["Supplier Leads", supplierLeads.length],
-    ["Supplier Types", manufacturingSupplierTypes.length],
-    ["Documents", manufacturingDocumentTemplates.length],
-    ["Open Pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
-  ]);
+  const privateManufacturingView = canRenderPrivateOperatorData();
+  stats.innerHTML = statCards(privateManufacturingView
+    ? [
+        ["RFQs", rfqs.length],
+        ["Supplier profiles", suppliers.length],
+        ["Supplier leads", supplierLeads.length],
+        ["Supplier types", manufacturingSupplierTypes.length],
+        ["Documents", manufacturingDocumentTemplates.length],
+        ["Open pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
+      ]
+    : [
+        ["Product paths", productPaths.length],
+        ["Supplier types", manufacturingSupplierTypes.length],
+        ["Public matching", "Code first"],
+        ["Identity release", "Manual review"],
+        ["Documents", "Draft only"],
+        ["Payments", "Off"]
+      ]);
 
   const activeProductPath = productPathBySlug(state.activeProductPathSlug);
   productGrid.innerHTML = productPaths.map((path) => `
@@ -6572,26 +7426,38 @@ function renderManufacturingPage() {
   `).join("");
 
   const filteredSuppliers = filteredManufacturingSuppliers(activeFlags);
-  directory.innerHTML = filteredSuppliers.map((supplier) => `
-    <article class="manufacturing-supplier-card">
-      <div>
-        <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
-        <h3>${escapeHtml(supplier.companyName)}</h3>
-        <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
-        <p>${escapeHtml(supplier.capabilities)}</p>
-        <div class="service-category-mini">
-          ${(supplier.productCategories || []).slice(0, 5).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-          ${(supplier.dosageForms || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-          ${(supplier.certifications || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+  const directoryFilters = directory.closest(".manufacturing-directory")?.querySelector(".manufacturing-filters");
+  directoryFilters?.classList.toggle("hidden", !privateManufacturingView);
+  flags.classList.toggle("hidden", !privateManufacturingView);
+  directory.innerHTML = privateManufacturingView
+    ? filteredSuppliers.map((supplier) => `
+      <article class="manufacturing-supplier-card">
+        <div>
+          <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
+          <h3>${escapeHtml(supplier.companyName)}</h3>
+          <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
+          <p>${escapeHtml(supplier.capabilities)}</p>
+          <div class="service-category-mini">
+            ${(supplier.productCategories || []).slice(0, 5).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            ${(supplier.dosageForms || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            ${(supplier.certifications || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          </div>
         </div>
-      </div>
-      <div class="lead-actions">
-        ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
-        <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+        <div class="lead-actions">
+          ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
+          <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+          <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
+        </div>
+      </article>
+    `).join("") || `<article class="manufacturing-supplier-card"><h3>No suppliers match these filters.</h3><p class="muted">Clear filters or create the first supplier profile.</p></article>`
+    : `<article class="manufacturing-supplier-card">
+        <div>
+          <span class="split-label">Public identity boundary</span>
+          <h3>Supplier identities and contact details stay private.</h3>
+          <p>Choose a Product Path to compare three anonymous supplier codes. Forge reviews fit, documentation, compliance, quote math, and release approval before identifying a supplier.</p>
+        </div>
         <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
-      </div>
-    </article>
-  `).join("") || `<article class="manufacturing-supplier-card"><h3>No suppliers match these filters.</h3><p class="muted">Clear filters or create the first supplier profile.</p></article>`;
+      </article>`;
 
   eden.innerHTML = manufacturingEcosystemItems.map((item) => `<article><strong>${escapeHtml(item)}</strong></article>`).join("");
   docs.innerHTML = manufacturingDocumentTemplates.map((title) => `
@@ -6607,20 +7473,24 @@ function renderManufacturingPage() {
       <span>${escapeHtml(status)}</span>
     </article>
   `).join("");
-  rfqList.innerHTML = rfqs.slice(0, 5).map((lead) => `
-    <article>
-      <div>
-        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm)}</span>
-        <strong>${escapeHtml(lead.brandName || "Unnamed manufacturing project")}</strong>
-        <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.locationPreference)}</p>
-      </div>
-      <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
-    </article>
-  `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`;
+  rfqList.innerHTML = privateManufacturingView
+    ? rfqs.slice(0, 5).map((lead) => `
+      <article>
+        <div>
+          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm)}</span>
+          <strong>${escapeHtml(lead.brandName || "Unnamed manufacturing project")}</strong>
+          <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.locationPreference)}</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
+      </article>
+    `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`
+    : "";
 
-  supplierLeadList.innerHTML = supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`;
-  supplierLeadDetail.innerHTML = manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId);
-  outreachTemplate.textContent = MANUFACTURING_OUTREACH_TEMPLATE;
+  supplierLeadList.innerHTML = privateManufacturingView
+    ? supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`
+    : "";
+  supplierLeadDetail.innerHTML = privateManufacturingView ? manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId) : "";
+  outreachTemplate.textContent = privateManufacturingView ? MANUFACTURING_OUTREACH_TEMPLATE : "";
 }
 
 function productPathDetailHtml(path) {
@@ -7130,6 +8000,270 @@ function serviceFieldMarkup(field, idPrefix, dataAttr) {
   return `<label>${escapeHtml(field.label)}<input id="${escapeHtml(id)}" ${common} type="${escapeHtml(field.type || "text")}" placeholder="${escapeHtml(field.placeholder || "")}" /></label>`;
 }
 
+function marketplaceStatus(job = {}) {
+  return job.marketplaceStatus || job.status || "Needs Admin Review";
+}
+
+function providerVerificationState(worker = {}) {
+  return worker.verificationState || worker.licenseStatus || worker.insuranceStatus || worker.status || "Business Verification Pending";
+}
+
+function renderMarketplaceCommandCenter() {
+  const jobs = state.jobs || [];
+  const workers = state.workers || [];
+  const bids = state.bids || [];
+  const publishedJobs = jobs.filter((job) => ["Published", "Receiving Quotes", "Open for bids", "New", "Pending"].includes(marketplaceStatus(job)));
+  const companies = workers.filter((worker) => ["Company / Crew", "Business", "Electrical Contractor / Company", "Diesel Repair Company", "Multi-Trade Crew"].some((label) => normalizeLookup(worker.profileType || worker.providerType || "").includes(normalizeLookup(label))));
+  const pendingProviders = workers.filter((worker) => normalizeLookup(providerVerificationState(worker)).includes("pending") || normalizeLookup(worker.status).includes("new"));
+
+  const ctaGrid = document.querySelector("#marketplaceCtaGrid");
+  if (ctaGrid) {
+    ctaGrid.innerHTML = [
+      ["Post a Job", "Create a customer request with location, timeline, budget, photos, visibility, and contact preference.", "post", "orange"],
+      ["Find a Provider", "Browse provider profiles by service type, area, verification state, availability, tags, and proof signals.", "jobs", "blue"],
+      ["Customer Dashboard", "Review saved requests, bids, next steps, and message handoff from one place.", "customer-dashboard", "ghost"],
+      ["Create Provider Profile", "Join as an individual worker, crew, or company and save readiness details for admin review.", "signup", "ghost"]
+    ].map(([title, body, screen, tone]) => `
+      <article>
+        <span class="split-label">Forge marketplace</span>
+        <h3>${escapeHtml(title)}</h3>
+        <p>${escapeHtml(body)}</p>
+        <button class="btn ${tone} small" type="button" data-nav="${escapeHtml(screen)}">${escapeHtml(title)}</button>
+      </article>
+    `).join("");
+  }
+
+  const discoverySummary = document.querySelector("#marketplaceDiscoverySummary");
+  if (discoverySummary) {
+    discoverySummary.innerHTML = [
+      ["Open jobs", publishedJobs.length],
+      ["Provider profiles", workers.length],
+      ["Company profiles", companies.length],
+      ["Bids saved", bids.length]
+    ].map(([label, value]) => `<article><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></article>`).join("");
+  }
+
+  const customerSummary = document.querySelector("#customerDashboardSummary");
+  if (customerSummary) {
+    const customerName = state.session.role === "customer" ? state.session.name : "";
+    const customerJobs = customerName ? jobs.filter((job) => normalizeLookup(job.customer) === normalizeLookup(customerName)) : jobs.slice(0, 4);
+    customerSummary.innerHTML = statCards([
+      ["Saved requests", customerJobs.length || jobs.length],
+      ["Receiving quotes", jobs.filter((job) => ["Receiving Quotes", "Open for bids"].includes(marketplaceStatus(job))).length],
+      ["Provider profiles", workers.length],
+      ["Admin review items", jobs.filter((job) => marketplaceStatus(job).includes("Review")).length + pendingProviders.length]
+    ]);
+  }
+
+  const customerJobs = document.querySelector("#customerDashboardJobs");
+  if (customerJobs) {
+    const sessionName = state.session.role === "customer" ? state.session.name : "";
+    const rows = (sessionName ? jobs.filter((job) => normalizeLookup(job.customer) === normalizeLookup(sessionName)) : jobs).slice(0, 6);
+    customerJobs.innerHTML = rows.map((job) => `
+      <article class="marketplace-request-card">
+        <div>
+          <span class="split-label">${escapeHtml(marketplaceStatus(job))}</span>
+          <h3>${escapeHtml(job.title)}</h3>
+          <p>${escapeHtml(job.categoryLabel || job.category)} · ${escapeHtml(job.location)} · ${escapeHtml(job.budget)}</p>
+          <p>${escapeHtml(job.jobType || "One-time Job")} · ${escapeHtml(job.visibility || "Public Marketplace")} · ${escapeHtml(job.preferredContact || "Contact preference pending")}</p>
+        </div>
+        <div class="lead-actions">
+          <button class="btn blue small" type="button" data-job="${escapeHtml(job.id)}">View Detail</button>
+          <button class="btn ghost small" type="button" data-action="copy-marketplace-job" data-job-id="${escapeHtml(job.id)}">Copy Status</button>
+        </div>
+      </article>
+    `).join("") || `<article class="marketplace-request-card"><h3>No customer requests yet.</h3><p>Post a job to populate this dashboard.</p></article>`;
+  }
+
+  const nextAction = document.querySelector("#customerDashboardNextAction");
+  if (nextAction) {
+    const newest = jobs[0];
+    const awaitingApproval = jobs.find((job) => marketplaceStatus(job) === "Awaiting Approval");
+    const disputed = jobs.find((job) => marketplaceStatus(job) === "Disputed");
+    const focusJob = disputed || awaitingApproval || newest;
+    const actionCopy = disputed
+      ? "A dispute is open. Review messages, scope, quote terms, and admin notes before moving forward."
+      : awaitingApproval
+        ? "Work is marked complete. Confirm completion, request changes, or open a dispute before closing the job."
+        : newest
+          ? "Check quotes, provider fit, schedule readiness, and message handoff before any real dispatch."
+          : "Create a scoped job request so the marketplace has a real customer workflow to review.";
+    nextAction.innerHTML = `
+      <article>
+        <span class="split-label">Next action</span>
+        <h3>${escapeHtml(focusJob ? `Review ${focusJob.title}` : "Post the first customer job")}</h3>
+        <p>${escapeHtml(actionCopy)}</p>
+        <div class="hero-actions">
+          <button class="btn orange small" type="button" data-nav="${focusJob ? "jobs" : "post"}">${escapeHtml(focusJob ? "Open Marketplace" : "Post Job")}</button>
+          ${awaitingApproval ? `<button class="btn blue small" type="button" data-action="confirm-job-complete" data-job-id="${escapeHtml(awaitingApproval.id)}">Confirm Completion</button>` : ""}
+          <button class="btn ghost small" type="button" data-nav="messages">Messages</button>
+        </div>
+      </article>
+    `;
+  }
+
+  const workerReadiness = document.querySelector("#workerMarketplaceReadiness");
+  if (workerReadiness) {
+    const worker = state.worker || {};
+    const readiness = [
+      ["Profile type", worker.profileType || worker.providerType || "Individual Worker"],
+      ["Verification", providerVerificationState(worker)],
+      ["Pricing", worker.pricingType || "Estimate After Review"],
+      ["Availability", worker.availability || "Availability pending"],
+      ["Minimum job", worker.minimumJobSize || "Not set"]
+    ];
+    workerReadiness.innerHTML = readiness.map(([label, value]) => `<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`).join("");
+  }
+
+  const adminControl = document.querySelector("#adminMarketplaceControl");
+  if (adminControl) {
+    const statusCounts = forgeMarketplaceJobStatuses.map((status) => [status, jobs.filter((job) => marketplaceStatus(job) === status).length]).filter(([, count]) => count);
+    adminControl.innerHTML = `
+      <div class="admin-heading compact">
+        <div>
+          <span class="split-label">Protected marketplace admin</span>
+          <h2>Forge Marketplace Command Center</h2>
+          <p class="muted">Local MVP control plane for customers, jobs, providers, company profiles, bids, verification, and manual dispatch review.</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-marketplace-command">Copy Command</button>
+      </div>
+      <div class="marketplace-command-grid">
+        <article><strong>${jobs.length}</strong><span>Total customer requests</span></article>
+        <article><strong>${workers.length}</strong><span>Total provider profiles</span></article>
+        <article><strong>${companies.length}</strong><span>Company profiles</span></article>
+        <article><strong>${pendingProviders.length}</strong><span>Verification queue</span></article>
+      </div>
+      <div class="status-chip-row">${statusCounts.map(([status, count]) => `<span>${escapeHtml(status)}: ${escapeHtml(count)}</span>`).join("") || "<span>No production statuses yet</span>"}</div>
+      <div class="table-card compact">
+        <table>
+          <thead><tr><th>Provider</th><th>Type</th><th>Verification</th><th>Pricing</th><th>Area</th></tr></thead>
+          <tbody>
+            ${workers.slice(0, 8).map((worker) => `
+              <tr>
+                <td>${escapeHtml(worker.businessName || worker.name)}</td>
+                <td>${escapeHtml(worker.profileType || worker.providerType || worker.trade)}</td>
+                <td>${escapeHtml(providerVerificationState(worker))}</td>
+                <td>${escapeHtml(worker.pricingType || worker.profileDetails?.minimumPrice || "Review")}</td>
+                <td>${escapeHtml(worker.area || worker.serviceArea || "Pending")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-card compact">
+        <h3>Account and onboarding queue</h3>
+        <table id="adminAccountsTable"></table>
+      </div>
+    `;
+  }
+}
+
+function renderAdmitlyPresentation() {
+  const mode = document.querySelector("#admitlyPresentationMode");
+  const body = document.querySelector("#admitlyPresentationBody");
+  if (!mode || !body) return;
+  const view = location.pathname.includes("/stanford") || location.hash.includes("admitly-stanford")
+    ? "stanford"
+    : location.pathname.includes("/demo") || location.hash.includes("admitly-demo")
+      ? "demo"
+      : "home";
+  mode.textContent = view === "stanford" ? "Admitly Stanford Discussion" : view === "demo" ? "Admitly Demo Dashboard" : "Admitly Landing";
+  const sharedActions = `
+    <div class="hero-actions">
+      <button class="btn orange small" type="button" data-nav="admitly">Landing</button>
+      <button class="btn blue small" type="button" data-nav="admitly-demo">Demo</button>
+      <button class="btn ghost small" type="button" data-nav="admitly-stanford">Stanford Discussion</button>
+    </div>
+  `;
+  if (view === "stanford") {
+    body.innerHTML = `
+      ${sharedActions}
+      <section class="admitly-panel">
+        <span class="split-label">Presentation-safe page</span>
+        <h2>Admitly for Educator Discussion</h2>
+        <p>Prepared for discussion with educators and researchers. No Stanford endorsement, sponsorship, approval, or partnership is claimed.</p>
+        <div class="admitly-grid">
+          ${[
+            ["Why it matters", "Students need a clearer, calmer operating system for essays, deadlines, college lists, documents, and next steps."],
+            ["What it does", "Admitly organizes applications, tasks, school targets, profile context, academic inputs, and guidance into one student dashboard."],
+            ["AI boundary", "AI suggestions are framed as planning support, not admissions guarantees, counseling replacement, or institution-backed advice."],
+            ["Demo flow", "Onboarding, profile setup, target schools, academics, dashboard, and tasks mirror the approved wireframe flow."],
+            ["Data posture", "The Forge-hosted demo stores no private production student data and remains separate from Forge marketplace accounts."],
+            ["Educator ask", "Review clarity, student usefulness, risk boundaries, and what a responsible pilot would require."]
+          ].map(([title, text]) => `<article><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("")}
+        </div>
+      </section>
+      <section class="admitly-panel">
+        <h2>Discussion Checklist</h2>
+        <div class="status-chip-row">
+          ${["No Stanford logo", "No endorsement claim", "No admissions guarantee", "No student PII in demo", "Separate Admitly brand", "Human review before launch"].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+        </div>
+      </section>
+    `;
+    return;
+  }
+  if (view === "demo") {
+    body.innerHTML = `
+      ${sharedActions}
+      <section class="admitly-panel">
+        <span class="split-label">Wireframe-aligned flow</span>
+        <h2>Demo Dashboard</h2>
+        <div class="admitly-dashboard-demo">
+          <article><strong>78%</strong><span>Overall Progress</span><p>Profile, goals, academics, and tasks are organized for review.</p></article>
+          <article><strong>4</strong><span>My Colleges</span><p>Target schools stay tracked by planning stage and application state.</p></article>
+          <article><strong>6</strong><span>Open Tasks</span><p>Personal info, short answers, transcripts, activities, FAFSA, and parent info.</p></article>
+          <article><strong>3</strong><span>Guidance Prompts</span><p>AI planning suggestions stay clearly labeled as support, not outcome promises.</p></article>
+        </div>
+      </section>
+      <section class="admitly-panel admitly-task-list">
+        ${["Common App - Personal Info", "Stanford - Short Answer", "Request Transcript", "Add Activities", "FAFSA - Parent Info"].map((task, index) => `
+          <article>
+            <span class="split-label">${index < 2 ? "To Do" : "In Progress"}</span>
+            <h3>${escapeHtml(task)}</h3>
+            <p>${escapeHtml(index < 2 ? "Due soon" : "Needs documents or review")}</p>
+          </article>
+        `).join("")}
+      </section>
+    `;
+    return;
+  }
+  body.innerHTML = `
+    ${sharedActions}
+    <section class="admitly-panel">
+      <span class="split-label">Separate product inside Forge demo</span>
+      <h2>Admitly: Your Future. Admitted.</h2>
+      <p>Admitly is the college admissions planning product in the Eden's Best ecosystem. It stays visually and legally separate from Forge while being presentation-ready through these routes.</p>
+      <div class="admitly-grid">
+        ${[
+          ["Discover & Plan", "Build a school list and understand the work ahead."],
+          ["Build Profile", "Capture student context, academics, activities, and goals."],
+          ["Organize", "Track tasks, deadlines, documents, and application materials."],
+          ["Apply", "Move applications forward with clear next steps."],
+          ["Track & Achieve", "Measure progress without promising admissions outcomes."]
+        ].map(([title, text]) => `<article><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`).join("")}
+      </div>
+    </section>
+    <section class="admitly-form-grid">
+      <form id="admitlyStudentInterestForm" class="admitly-panel">
+        <h2>Student Waitlist</h2>
+        <label>Name<input id="admitlyStudentName" required placeholder="Student name" /></label>
+        <label>Email<input id="admitlyStudentEmail" required type="email" placeholder="student@example.com" /></label>
+        <label>Graduation Year<input id="admitlyStudentGradYear" placeholder="2027" /></label>
+        <label>Target Schools<textarea id="admitlyStudentSchools" placeholder="Stanford, University of Michigan, UCLA..."></textarea></label>
+        <button class="btn orange" type="submit">Join Waitlist</button>
+      </form>
+      <form id="admitlyEducatorInterestForm" class="admitly-panel">
+        <h2>Educator / Counselor Interest</h2>
+        <label>Name<input id="admitlyEducatorName" required placeholder="Educator name" /></label>
+        <label>School / Organization<input id="admitlyEducatorOrg" placeholder="School or organization" /></label>
+        <label>Email<input id="admitlyEducatorEmail" required type="email" placeholder="educator@example.com" /></label>
+        <label>Feedback Focus<textarea id="admitlyEducatorNotes" placeholder="Pilot design, student workflow, privacy, counseling use case..."></textarea></label>
+        <button class="btn blue" type="submit">Save Educator Interest</button>
+      </form>
+    </section>
+  `;
+}
+
 function renderProviderDirectory() {
   const directory = document.querySelector("#providerDirectory");
   const filterOptions = document.querySelector("#providerFilterOptions");
@@ -7164,12 +8298,14 @@ function renderProviderDirectory() {
     const details = worker.profileDetails || {};
     const tradeList = (worker.tradeCategories || worker.providerCategories || [worker.trade]).filter(Boolean).slice(0, 5);
     const trust = workerTrustProfile(worker);
+    const verification = providerVerificationState(worker);
     return `
       <article class="provider-directory-card">
         <div>
           <span class="split-label">${escapeHtml(vertical?.title || worker.trade || "Forge worker")}</span>
           <h3>${escapeHtml(worker.businessName || worker.name)}</h3>
           <p>${escapeHtml(worker.providerType || worker.trade)} · ${escapeHtml(worker.area || worker.serviceArea || "Service area pending")}</p>
+          <p class="provider-marketplace-meta">${escapeHtml(worker.profileType || "Provider profile")} · ${escapeHtml(verification)} · ${escapeHtml(worker.pricingType || details.minimumPrice || "Estimate after review")}</p>
           ${workerTrustLedgerHtml(worker, trust)}
           <div class="service-category-mini">
             ${tradeList.map((category) => `<span>${escapeHtml(category)}</span>`).join("")}
@@ -7181,6 +8317,9 @@ function renderProviderDirectory() {
         </div>
         <div class="lead-actions">
           ${contactLinks(worker.phone, worker.email, workerTemplate(worker))}
+          <button class="btn blue small" type="button" data-action="request-provider-quote" data-worker-email="${escapeHtml(worker.email)}">Request Quote</button>
+          <button class="btn ghost small" type="button" data-action="invite-provider-to-job" data-worker-email="${escapeHtml(worker.email)}">Invite</button>
+          <button class="btn ghost small" type="button" data-action="save-provider" data-worker-email="${escapeHtml(worker.email)}">Save</button>
           <button class="btn ghost small" type="button" data-action="copy-worker-direct" data-worker-email="${escapeHtml(worker.email)}">Copy</button>
         </div>
       </article>
@@ -7189,44 +8328,22 @@ function renderProviderDirectory() {
 }
 
 function workerTrustProfile(worker = {}) {
-  const text = normalizeLookup([
-    worker.status,
-    worker.experience,
-    worker.licenseStatus,
-    worker.insuranceStatus,
-    worker.driverLicenseStatus,
-    worker.insurance,
-    worker.backgroundCheck,
-    worker.referenceStatus,
-    worker.toolsReady,
-    worker.safetyPpeReady,
-    worker.workProofLink,
-    worker.portfolioLink,
-    worker.bio
-  ].join(" "));
-  if (worker.trustTier && worker.trustRank && worker.dispatchDecision) {
+  if (worker.trustReviewStatus === "reviewed" && worker.trustTier && worker.trustRank && worker.dispatchDecision) {
     return { tier: worker.trustTier, rank: worker.trustRank, decision: worker.dispatchDecision };
   }
-  if (text.includes("licensed") || text.includes("insured") || text.includes("5+ years") || text.includes("approved") || text.includes("portfolio")) {
-    return { tier: "Gold", rank: "Crew Lead 1", decision: "Crew-Lead Ready" };
-  }
-  if (text.includes("ready") || text.includes("2-4 years") || text.includes("current") || text.includes("provided")) {
-    return { tier: "Silver", rank: "Reliable Pro", decision: "Ready to Invite" };
-  }
-  if (text.includes("willing") || text.includes("needs review") || text.includes("pending")) {
-    return { tier: "Green", rank: "Tool-Ready Helper", decision: "Supervised Helper" };
-  }
-  return { tier: "Green", rank: "Helper 1", decision: "Admin Review" };
+  const suppliedSignals = [worker.referenceStatus, worker.workProofLink, worker.portfolioLink, worker.toolsReady, worker.vehicleType].filter(Boolean).length;
+  return { tier: "Green", rank: suppliedSignals >= 2 ? "Profile Supplied" : "Profile Started", decision: "Admin Review" };
 }
 
 function workerProofSignals(worker = {}) {
+  const supplied = (value, fallback = "Needed") => value ? `Provider supplied: ${value} — not verified` : fallback;
   const signals = [
-    ["Reference", worker.referenceStatus || worker.reviews ? "Present" : "Needed"],
-    ["Work Proof", worker.workProofLink || worker.portfolioLink || worker.sampleGalleryLinks ? "Present" : "Needed"],
-    ["Tools / Vehicle", worker.toolsReady || worker.vehicleType || worker.equipmentNotes ? "Present" : "Review"],
-    ["Safety / PPE", worker.safetyPpeReady || worker.insuranceStatus || worker.insurance ? "Review" : "Needed"],
-    ["License / Insurance", worker.licenseStatus || worker.driverLicenseStatus || worker.insuranceStatus || worker.insurance || "Review"],
-    ["Paid Trial", worker.paidTrialReadiness || "Optional"]
+    ["Reference", supplied(worker.referenceStatus || worker.reviews)],
+    ["Work Proof", supplied(worker.workProofLink || worker.portfolioLink || worker.sampleGalleryLinks)],
+    ["Tools / Vehicle", supplied(worker.toolsReady || worker.vehicleType || worker.equipmentNotes, "Review needed")],
+    ["Safety / PPE", supplied(worker.safetyPpeReady, "Review needed")],
+    ["License / Insurance", supplied(worker.licenseStatus || worker.driverLicenseStatus || worker.insuranceStatus || worker.insurance, "Review needed")],
+    ["Paid Trial", supplied(worker.paidTrialReadiness, "Optional; not completed in this MVP")]
   ];
   return signals;
 }
@@ -7240,6 +8357,7 @@ function workerTrustLedgerHtml(worker, trust = workerTrustProfile(worker)) {
         <span>${escapeHtml(trust.rank)}</span>
         <span>${escapeHtml(trust.decision)}</span>
       </div>
+      <p class="muted">Triage signal only. Provider-supplied information is not a verified license, insurance policy, background check, safety guarantee, quality guarantee, or outcome guarantee.</p>
       <div class="bid-detail-meta">
         ${workerProofSignals(worker).map(([label, value]) => `<span><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`).join("")}
       </div>
@@ -7751,7 +8869,7 @@ function renderBuildingPage() {
 function buildingStatusTimelineBody(status) {
   const rows = {
     NEW_BUILDING_LEAD: "Forge saves the request and checks whether it belongs in home project, major project, or finance review.",
-    HOME_PROJECT_REVIEW: "Smaller jobs route toward verified local pros before any larger partner review.",
+    HOME_PROJECT_REVIEW: "Smaller jobs route toward local-provider review before any larger partner review.",
     MAJOR_PROJECT_REVIEW: "Large budgets, commercial work, land, multifamily, mixed-use, or investment builds receive higher-level review.",
     FORGE_QUALIFIED: "Forge has enough context to consider next steps, partner fit, licensing, insurance, and consent.",
     CUSTOMER_CONSENT_APPROVED: "Customer consent is recorded before any third-party partner sharing.",
@@ -8141,10 +9259,8 @@ function projectLeadCards(leads) {
 }
 
 function canSendProjectToSeneca(lead) {
-  const partner = senecaPartner();
   return projectLeadRouting(lead).senecaReviewAllowed(lead.status)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function projectPartnerReadinessText(lead) {
@@ -8658,15 +9774,20 @@ function renderDetail() {
       <div><span>Job ID</span><strong>#JOB-${job.id.slice(0, 4).toUpperCase()}</strong></div>
       <div><span>Status</span><strong>${escapeHtml(job.status)}</strong></div>
     </div>
+    ${jobHandoffRail(job, bids, chosenBid)}
     ${jobFlowTracker(job, bids, chosenBid)}
     ${jobFlowBrief(job, bids, chosenBid)}
     ${jobProofTicketPanel(job, bids, chosenBid)}
     ${jobDetailHandoffPanel(job, bids, chosenBid)}
     ${jobCloseoutPanel(job, bids, chosenBid)}
+    ${demoCloseLoop(job, bids, "detail")}
     <div class="hero-actions">
       <button class="btn ghost" type="button" data-action="message">Message Bidders</button>
       <button class="btn blue" type="button" data-bid-job="${job.id}">Submit a Bid</button>
       <button class="btn ${chosenBid ? "ghost" : "orange"}" type="button" data-action="${chosenBid ? "message" : "choose-best"}" data-job-id="${escapeHtml(job.id)}">${escapeHtml(chosenBid ? "Review Messages" : "Choose Suggested Bid")}</button>
+      ${chosenBid ? `<button class="btn ghost" type="button" data-action="mark-job-awaiting-approval" data-job-id="${escapeHtml(job.id)}">Mark Work Complete</button>` : ""}
+      ${job.status === "Awaiting Approval" ? `<button class="btn orange" type="button" data-action="confirm-job-complete" data-job-id="${escapeHtml(job.id)}">Confirm Completion</button>` : ""}
+      ${chosenBid ? `<button class="btn ghost" type="button" data-action="open-job-dispute" data-job-id="${escapeHtml(job.id)}">Open Dispute</button>` : ""}
     </div>
     ${chosenBid ? chosenBidHandoff(job, chosenBid) : ""}
   `;
@@ -8684,6 +9805,8 @@ function renderDetail() {
         <span>${bid.chosen ? "Message handoff ready" : "Choose to create handoff"}</span>
         <button class="btn ${bid.chosen ? "blue" : "orange"} small" type="button" data-choose-bid="${index}">${bid.chosen ? "Selected" : "Choose + Message"}</button>
         <button class="btn ghost small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Thread</button>
+        <button class="btn ghost small" type="button" data-action="revise-bid" data-bid-id="${escapeHtml(bid.id)}">Revise</button>
+        <button class="btn ghost small" type="button" data-action="withdraw-bid" data-bid-id="${escapeHtml(bid.id)}">Withdraw</button>
       </div>
     </article>
   `).join("") || `<p class="muted">No bids yet.</p>`;
@@ -8716,7 +9839,15 @@ function bidDetailMeta(bid) {
   const rows = [
     ["Earliest availability", bid.earliestAvailability],
     ["Estimated duration", bid.estimatedDuration],
+    ["Estimated start", bid.estimatedStartDate],
+    ["Estimated completion", bid.estimatedCompletionDate],
     ["Crew members", bid.crewMembers],
+    ["Labor line items", bid.laborLineItems],
+    ["Materials line items", bid.materialLineItems],
+    ["Exclusions", bid.exclusions],
+    ["Payment milestones", bid.paymentMilestones],
+    ["Quote valid until", bid.validUntil],
+    ["Quote version", bid.quoteVersion],
     ["Materials included", bid.materialsIncluded],
     ["Supplies included", bid.suppliesIncluded],
     ["Equipment included", bid.equipmentIncluded],
@@ -8769,6 +9900,184 @@ function jobFlowTracker(job, bids, chosenBid) {
       </div>
     </section>
   `;
+}
+
+function jobHandoffRail(job, bids, chosenBid) {
+  const rows = jobHandoffRailRows(job, bids, chosenBid);
+  return `
+    <section class="job-handoff-rail" aria-label="Job handoff rail">
+      <div class="job-handoff-rail-heading">
+        <div>
+          <span class="split-label">Handoff rail</span>
+          <h2>Show the job, bid, message, and closeout in order.</h2>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-job-handoff-rail" data-job-id="${escapeHtml(job.id)}">Copy Rail</button>
+      </div>
+      <div class="job-handoff-rail-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${row.attrs}>${escapeHtml(row.actionLabel)}</button>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function jobHandoffRailRows(job, bids, chosenBid) {
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const bestBid = chosenBid || bids[0];
+  return [
+    {
+      label: "1. Status",
+      title: job.status,
+      body: `${job.customer || "Customer"} can see the saved job and next step.`,
+      status: "ready",
+      primary: false,
+      actionLabel: "Open Status",
+      attrs: `data-nav="status"`
+    },
+    {
+      label: "2. Bid",
+      title: chosenBid ? `${chosenBid.worker} selected` : bestBid ? `${bestBid.worker} ready` : "Needs first bid",
+      body: chosenBid
+        ? `${chosenBid.amount} is the active handoff bid.`
+        : bestBid
+          ? `${bestBid.amount} can be selected to create the handoff.`
+          : "Submit or invite one worker bid before showing selection.",
+      status: chosenBid ? "ready" : bestBid ? "attention" : "waiting",
+      primary: Boolean(bestBid && !chosenBid),
+      actionLabel: chosenBid ? "Copy Bid" : bestBid ? "Choose" : "Submit Bid",
+      attrs: chosenBid
+        ? `data-action="copy-bid-handoff" data-job-id="${escapeHtml(job.id)}"`
+        : bestBid
+          ? `data-action="choose-best" data-job-id="${escapeHtml(job.id)}"`
+          : `data-bid-job="${escapeHtml(job.id)}"`
+    },
+    {
+      label: "3. Message",
+      title: hasMessage ? "Thread ready" : chosenBid ? "Open thread" : "Pending choice",
+      body: hasMessage ? "Schedule and follow-up can move through Messages." : chosenBid ? "Open Messages to save the schedule note." : "Choose a bid before message proof is complete.",
+      status: hasMessage ? "ready" : chosenBid ? "attention" : "waiting",
+      primary: Boolean(chosenBid),
+      actionLabel: "Open Thread",
+      attrs: `data-message-thread="job-${escapeHtml(job.id)}"`
+    },
+    {
+      label: "4. Close",
+      title: chosenBid && hasMessage ? "Proof complete" : "Closeout pending",
+      body: chosenBid && hasMessage ? "Copy the receipt and move to the next action." : "Use the closeout to explain what is still missing.",
+      status: chosenBid && hasMessage ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Copy Rail",
+      attrs: `data-action="copy-job-handoff-rail" data-job-id="${escapeHtml(job.id)}"`
+    }
+  ];
+}
+
+function demoCloseLoop(job, bids = [], context = "detail") {
+  if (!job) return "";
+  const rows = demoCloseLoopRows(job, bids);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const headline = context === "messages"
+    ? "Use this loop to get back from the thread to the full proof path."
+    : context === "status"
+      ? "Use this loop when the customer asks what happens next."
+      : "Use this loop to finish the job, bid, message, and profile story.";
+  return `
+    <section class="demo-close-loop" aria-label="Demo close loop">
+      <div class="demo-close-loop-heading">
+        <div>
+          <span class="split-label">Demo close loop</span>
+          <h2>${escapeHtml(headline)}</h2>
+          <p>${escapeHtml(demoCloseLoopSummary(job, bids))}</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-demo-close-loop" data-job-id="${escapeHtml(job.id)}">Copy Loop</button>
+      </div>
+      <div class="demo-close-loop-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="demo-close-loop-actions">
+        <button class="btn ghost small" type="button" ${customerLoginAttrs(job, "status")}>Status</button>
+        <button class="btn ${bids.length ? "blue" : "ghost"} small" type="button" ${customerLoginAttrs(job, "detail")}>Detail</button>
+        <button class="btn ${chosen ? "blue" : "ghost"} small" type="button" ${customerLoginAttrs(job, "messages", { threadId: `job-${job.id}` })}>Messages</button>
+        <button class="btn ${bestBid ? "orange" : "ghost"} small" type="button" ${demoCloseLoopProfileAttrs(job, bestBid)}>Profile</button>
+      </div>
+    </section>
+  `;
+}
+
+function demoCloseLoopRows(job, bids = []) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  return [
+    {
+      label: "1. Status",
+      title: `${job.customer || "Customer"} sees progress`,
+      body: `${job.title} is visible with ${bids.length} bid${bids.length === 1 ? "" : "s"} and the current next step.`,
+      status: "ready"
+    },
+    {
+      label: "2. Detail",
+      title: chosen ? `${chosen.worker} selected` : bestBid ? "Bids ready to compare" : "Waiting for bids",
+      body: chosen
+        ? `${chosen.amount} at ${chosen.timeline} is the active handoff.`
+        : bestBid
+          ? `${bestBid.worker} can be reviewed first from Job Detail.`
+          : "Invite or submit one worker bid before closing the proof path.",
+      status: chosen ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "3. Messages",
+      title: hasMessage ? "Thread visible" : chosen ? "Open thread next" : "Pending selection",
+      body: hasMessage
+        ? "Schedule, access notes, and follow-up can stay in one conversation."
+        : chosen
+          ? "Open Messages and save the next schedule note."
+          : "Choose a bid so Messages can carry the handoff.",
+      status: hasMessage ? "ready" : chosen ? "attention" : "waiting"
+    },
+    {
+      label: "4. Profile",
+      title: bestBid ? `${bestBid.worker} proof` : "Provider proof pending",
+      body: bestBid
+        ? "Show the provider profile/readiness view so the customer understands who is behind the bid."
+        : "Worker profile proof appears after at least one bid exists.",
+      status: bestBid ? "ready" : "waiting"
+    }
+  ];
+}
+
+function demoCloseLoopSummary(job, bids = []) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  if (chosen && hasMessage) return `${job.customer || "The customer"} can see status, selected bid, message handoff, and provider proof in one loop.`;
+  if (chosen) return "The bid is selected; finish by opening Messages and saving the schedule note.";
+  if (bids.length) return "The customer can compare bids now; choose one to make the message handoff real.";
+  return "The job is posted; get one worker bid before showing the full handoff loop.";
+}
+
+function demoCloseLoopProfileAttrs(job, bid) {
+  if (bid?.worker) {
+    return [
+      `data-login-role="worker"`,
+      `data-login-name="${escapeHtml(bid.worker)}"`,
+      `data-login-screen="profile"`,
+      `data-login-job="${escapeHtml(job.id)}"`
+    ].join(" ");
+  }
+  return customerLoginAttrs(job, "profile");
 }
 
 function jobFlowSteps(job, bids, chosenBid) {
@@ -9106,12 +10415,14 @@ function renderStatusResults() {
         <p>${escapeHtml(job.location)} · ${escapeHtml(job.budget)}</p>
         <p>${bids.length} bid${bids.length === 1 ? "" : "s"} received</p>
         ${customerStatusProofSummary(job, bids)}
+        ${statusMessageBridge(job, bids)}
         <div class="lead-actions">
           <button class="btn blue small" type="button" data-detail="${job.id}">View Detail</button>
           <button class="btn ghost small" type="button" data-message-thread="job-${job.id}">Message Forge</button>
         </div>
         ${customerStatusDemoStrip(job, bids)}
         ${customerStatusHandoffPanel(job, bids)}
+        ${demoCloseLoop(job, bids, "status")}
       </article>
     `;
   }).join("") || statusEmptyState();
@@ -9181,6 +10492,79 @@ function statusProofSummaryRows(job, bids, chosen, bestBid, hasMessage) {
       title: hasMessage ? "Thread ready" : "Needs handoff",
       body: hasMessage ? "Schedule and arrival details have a visible place." : "Choose a bid to create the message handoff.",
       ok: hasMessage
+    }
+  ];
+}
+
+function statusMessageBridge(job, bids) {
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage);
+  return `
+    <section class="status-message-bridge" aria-label="Status to message bridge">
+      <div class="status-message-bridge-heading">
+        <div>
+          <span class="split-label">Status to message bridge</span>
+          <strong>${escapeHtml(chosen && hasMessage ? "This customer can move from status to scheduling." : bids.length ? "Next step is visible before the customer leaves status." : "Status stays honest while Forge gets bids.")}</strong>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-status-message-bridge" data-job-id="${escapeHtml(job.id)}">Copy Bridge</button>
+      </div>
+      <div class="status-message-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </article>
+        `).join("")}
+      </div>
+      <div class="status-message-bridge-actions">
+        <button class="btn ${chosen ? "ghost" : "orange"} small" type="button" data-detail="${escapeHtml(job.id)}">${escapeHtml(chosen ? "Review Detail" : bids.length ? "Choose Bid" : "View Job")}</button>
+        <button class="btn blue small" type="button" data-message-thread="job-${escapeHtml(job.id)}">Open Messages</button>
+        <button class="btn ghost small" type="button" data-action="copy-status-message-bridge" data-job-id="${escapeHtml(job.id)}">Copy Bridge</button>
+      </div>
+    </section>
+  `;
+}
+
+function statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage) {
+  return [
+    {
+      label: "1. Job",
+      title: job.status,
+      body: `${job.title} is visible with ${job.budget || "budget"} and ${job.location || "local"} context.`,
+      status: "ready"
+    },
+    {
+      label: "2. Bid",
+      title: chosen ? `${chosen.worker} selected` : bestBid ? `${bestBid.worker} ready` : "No bid yet",
+      body: chosen
+        ? `${chosen.amount} is active for the customer handoff.`
+        : bestBid
+          ? `${bestBid.amount} can be selected from Job Detail.`
+          : "Get one worker response before schedule proof is complete.",
+      status: chosen ? "ready" : bestBid ? "attention" : "waiting"
+    },
+    {
+      label: "3. Message",
+      title: hasMessage ? "Thread ready" : chosen ? "Open thread" : "Pending choice",
+      body: hasMessage
+        ? "Messages can carry schedule, arrival, and follow-up."
+        : chosen
+          ? "Open Messages and save the next schedule note."
+          : "Choose a bid before message proof is complete.",
+      status: hasMessage ? "ready" : chosen ? "attention" : "waiting"
+    },
+    {
+      label: "4. Next",
+      title: chosen && hasMessage ? "Confirm schedule" : bids.length ? "Move the handoff" : "Invite bids",
+      body: chosen && hasMessage
+        ? "The customer has a clear next action from this status screen."
+        : bids.length
+          ? "Use Detail to choose, then Messages to confirm the next touch."
+          : "Keep status accurate while Forge gets the first bid.",
+      status: chosen && hasMessage ? "ready" : "attention"
     }
   ];
 }
@@ -9345,12 +10729,71 @@ function messageSummary(thread) {
         <small>${escapeHtml(lastMessage ? `Last touch: ${lastMessage.sentAt}` : "No saved message yet")}</small>
       </div>
       ${messageFlowMarkup(thread, related)}
+      ${messageContextBridge(thread, related)}
       <div class="hero-actions">
         ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Job</button>` : ""}
         ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
       </div>
     </article>
   `;
+}
+
+function messageContextBridge(thread, related) {
+  if (!related.jobId) return "";
+  const rows = messageContextBridgeRows(thread, related);
+  return `
+    <div class="message-context-bridge" aria-label="Message context bridge">
+      <div class="message-context-bridge-heading">
+        <div>
+          <span>Thread bridge</span>
+          <strong>Keep job detail, selected bid, message, and status in one path.</strong>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+      <div class="message-context-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function messageContextBridgeRows(thread, related) {
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  const chosen = bids.find((bid) => bid.chosen);
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  return [
+    {
+      label: "Detail",
+      title: job ? job.status : "Missing job",
+      body: job ? `${job.title} remains the scope source.` : thread.subtitle,
+      status: job ? "ready" : "waiting"
+    },
+    {
+      label: "Bid",
+      title: chosen ? chosen.worker : bids.length ? "Needs choice" : "Needs bid",
+      body: chosen ? `${chosen.amount} selected for scheduling.` : bids.length ? "Choose one bid before closing the message." : "Get a bid before the message proves handoff.",
+      status: chosen ? "ready" : bids.length ? "attention" : "waiting"
+    },
+    {
+      label: "Message",
+      title: lastMessage ? "Touch saved" : "Draft ready",
+      body: lastMessage ? `${lastMessage.sentAt} is recorded.` : "Save the next touch after sending.",
+      status: lastMessage ? "ready" : "attention"
+    },
+    {
+      label: "Status",
+      title: chosen && lastMessage ? "Customer proof" : "Return after update",
+      body: "Status should show the same job, bid, and next action.",
+      status: chosen && lastMessage ? "ready" : "attention"
+    }
+  ];
 }
 
 function messageHandoffPanel(thread) {
@@ -9374,7 +10817,10 @@ function messageHandoffPanel(thread) {
           </article>
         `).join("")}
       </div>
+      ${messageProofBridge(thread, related)}
       ${messageProofReceipt(thread, related)}
+      ${messageReplyKit(thread, related)}
+      ${messageDemoCloseLoop(related)}
       <div class="message-handoff-actions">
         ${related.jobId ? `<button class="btn blue small" type="button" data-detail="${escapeHtml(related.jobId)}">Open Detail</button>` : ""}
         ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Open Status</button>` : ""}
@@ -9382,6 +10828,76 @@ function messageHandoffPanel(thread) {
       </div>
     </section>
   `;
+}
+
+function messageDemoCloseLoop(related) {
+  if (!related.jobId) return "";
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  return demoCloseLoop(job, bids, "messages");
+}
+
+function messageProofBridge(thread, related) {
+  if (!related.jobId) return "";
+  const rows = messageBridgeRows(thread, related);
+  return `
+    <div class="message-bridge" aria-label="Message proof bridge">
+      <div class="message-bridge-heading">
+        <div>
+          <span>Proof bridge</span>
+          <strong>Detail to selected bid to message to status.</strong>
+        </div>
+        <button class="btn blue small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+      <div class="message-bridge-grid">
+        ${rows.map((row) => `
+          <article class="${escapeHtml(row.status)}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+      <div class="message-bridge-actions">
+        <button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Job Detail</button>
+        <button class="btn ghost small" type="button" data-nav="status">Customer Status</button>
+        <button class="btn orange small" type="button" data-action="copy-message-bridge" data-thread-id="${escapeHtml(thread.id)}">Copy Bridge</button>
+      </div>
+    </div>
+  `;
+}
+
+function messageBridgeRows(thread, related) {
+  const job = state.jobs.find((item) => item.id === related.jobId);
+  const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+  const chosen = bids.find((bid) => bid.chosen);
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  return [
+    {
+      label: "Detail",
+      title: job ? job.status : "Job context",
+      body: job ? `${job.title} is the source of truth for scope and budget.` : thread.subtitle,
+      status: job ? "ready" : "waiting"
+    },
+    {
+      label: "Choice",
+      title: chosen ? `${chosen.worker}` : bids.length ? `${bids.length} bids` : "No bid yet",
+      body: chosen ? `${chosen.amount} at ${chosen.timeline}.` : bids.length ? "Open Detail and choose the bid before schedule confirmation." : "Get one worker bid before proving the handoff.",
+      status: chosen ? "ready" : bids.length ? "attention" : "waiting"
+    },
+    {
+      label: "Reply",
+      title: lastMessage ? "Touch saved" : "Draft ready",
+      body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "Copy or save the reply so the next touch is visible.",
+      status: lastMessage ? "ready" : "attention"
+    },
+    {
+      label: "Status",
+      title: "Customer proof",
+      body: "Status shows job, bids, selected handoff, and next action from the customer's side.",
+      status: chosen ? "ready" : "attention"
+    }
+  ];
 }
 
 function messageProofReceipt(thread, related) {
@@ -9421,6 +10937,107 @@ function messageProofReceiptText(thread, related) {
     return bids.length ? "Use Job Detail to choose the bid, then this thread becomes the schedule handoff." : "Get one worker bid first so the message thread can prove the marketplace flow.";
   }
   return lastMessage ? `Last saved touch: ${lastMessage.sentAt}. Copy this proof before moving the conversation forward.` : "Use the draft and save the touch so the follow-up is visible.";
+}
+
+function messageReplyKit(thread, related) {
+  const rows = messageReplyKitRows(thread, related);
+  return `
+    <div class="message-reply-kit" aria-label="Forge message reply kit">
+      <div class="message-reply-heading">
+        <div>
+          <span>Reply kit</span>
+          <strong>${escapeHtml(related.jobId ? "Send the next schedule/status reply." : "Send the next saved follow-up.")}</strong>
+        </div>
+        <button class="btn orange small" type="button" data-action="copy-message-reply-kit" data-thread-id="${escapeHtml(thread.id)}">Copy Reply Kit</button>
+      </div>
+      <p>${escapeHtml(messageReplyText(thread, related))}</p>
+      <div class="message-reply-grid">
+        ${rows.map((row) => `
+          <article class="${row.status}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <small>${escapeHtml(row.body)}</small>
+          </article>
+        `).join("")}
+      </div>
+      <div class="message-reply-actions">
+        <button class="btn blue small" type="button" data-action="copy-message-reply-kit" data-thread-id="${escapeHtml(thread.id)}">Copy Reply</button>
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-nav="status">Status</button>` : ""}
+        ${related.jobId ? `<button class="btn ghost small" type="button" data-detail="${escapeHtml(related.jobId)}">Detail</button>` : ""}
+        ${related.screen ? `<button class="btn ghost small" type="button" data-nav="${escapeHtml(related.screen)}">${escapeHtml(related.action)}</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function messageReplyKitRows(thread, related) {
+  const lastMessage = state.messages.find((message) => message.threadId === thread.id);
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    return [
+      {
+        label: "Reply",
+        title: chosen ? "Confirm schedule" : bids.length ? "Help choose bid" : "Get first bid",
+        body: chosen
+          ? `Reply centers on ${chosen.worker}, ${chosen.amount}, and scheduling.`
+          : bids.length
+            ? "Reply asks the customer to pick a bid before schedule confirmation."
+            : "Reply keeps the customer warm while Forge gets worker bids.",
+        status: chosen ? "ready" : "attention"
+      },
+      {
+        label: "Proof",
+        title: chosen ? `${chosen.amount} selected` : bids.length ? `${bids.length} bid${bids.length === 1 ? "" : "s"} visible` : "Bid pending",
+        body: job ? `${job.title} stays connected to status, detail, and messages.` : thread.subtitle,
+        status: chosen || bids.length ? "ready" : "waiting"
+      },
+      {
+        label: "Log",
+        title: lastMessage ? "Last touch saved" : "Save after send",
+        body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "After sending, use Save as Sent so the demo has a record.",
+        status: lastMessage ? "ready" : "attention"
+      }
+    ];
+  }
+  return [
+    {
+      label: "Reply",
+      title: related.next,
+      body: "Use the draft as the first sentence, then confirm the one next action.",
+      status: "attention"
+    },
+    {
+      label: "Thread",
+      title: thread.kind,
+      body: thread.subtitle,
+      status: "ready"
+    },
+    {
+      label: "Log",
+      title: lastMessage ? "Last touch saved" : "Save after send",
+      body: lastMessage ? `${lastMessage.sentAt} is visible in Messages.` : "Save the sent message so follow-up stays visible.",
+      status: lastMessage ? "ready" : "waiting"
+    }
+  ];
+}
+
+function messageReplyText(thread, related) {
+  if (related.jobId) {
+    const job = state.jobs.find((item) => item.id === related.jobId);
+    const bids = state.bids.filter((bid) => bid.jobId === related.jobId);
+    const chosen = bids.find((bid) => bid.chosen);
+    const customer = job?.customer || "there";
+    if (chosen) {
+      return `Hi ${customer}, Forge has ${chosen.worker} selected at ${chosen.amount}. Reply with the best schedule window and any access notes, and we will keep your status page updated.`;
+    }
+    if (bids.length) {
+      return `Hi ${customer}, Forge has ${bids.length} bid${bids.length === 1 ? "" : "s"} ready for ${job?.title || "your job"}. Review the bids, choose the best fit, then we will help confirm schedule details.`;
+    }
+    return `Hi ${customer}, Forge has your job saved and is working to get it in front of the right local workers. We will update you as soon as bids are ready.`;
+  }
+  return `${thread.draft} Next step: ${related.next}.`;
 }
 
 function messageHandoffRows(thread, related) {
@@ -9707,6 +11324,7 @@ function renderDashboards() {
   const merchantServiceLeads = state.merchantServiceLeads || [];
   const localProductVendors = state.localProductVendors || [];
   const flexLeads = state.flexLeads || [];
+  const accounts = state.accounts || [];
   const manufacturingRfqs = state.manufacturingRfqs || [];
   const manufacturingSuppliers = state.manufacturingSuppliers || [];
   const manufacturingSupplierLeads = state.manufacturingSupplierLeads || [];
@@ -9724,9 +11342,11 @@ function renderDashboards() {
     ["Jobs Won", chosenBids.length],
     ["Earnings", chosenBids.length ? "$2,450" : "$0"]
   ]);
+  renderWorkerOpportunityBridge(sessionWorkerName, workerBids);
   renderProviderNorthStarDashboard();
   document.querySelector("#adminStats").innerHTML = statCards([
     ["New Jobs", newJobs],
+    ["Accounts", accounts.length],
     ["Workers", workers],
     ["Creative Requests", creativeRequests.length],
     ["Creative Providers", creativeProviders.length],
@@ -9929,6 +11549,98 @@ function renderDashboards() {
   renderLeadPipelines();
 }
 
+function renderWorkerOpportunityBridge(workerName = state.worker.name, workerBids = []) {
+  const target = document.querySelector("#workerOpportunityBridge");
+  if (!target) return;
+  const worker = findWorkerByName(workerName) || state.worker;
+  const bids = workerBids.length ? workerBids : state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const rows = workerOpportunityBridgeRows(worker, bids);
+  target.innerHTML = `
+    <div class="worker-opportunity-heading">
+      <div>
+        <span class="split-label">Worker opportunity bridge</span>
+        <strong>${escapeHtml(workerOpportunityBridgeTitle(worker, bids))}</strong>
+        <p>Use this when showing a worker what Forge looks like from their side: profile, jobs, bid, message, and next step.</p>
+      </div>
+      <button class="btn ghost small" type="button" data-action="copy-worker-opportunity-bridge" data-worker-name="${escapeHtml(worker.name)}">Copy Bridge</button>
+    </div>
+    <div class="worker-opportunity-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${row.attrs}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function workerOpportunityBridgeTitle(worker, bids) {
+  const chosen = bids.filter((bid) => bid.chosen).length;
+  if (chosen) return `${worker.name} has a won bid and a follow-up path.`;
+  if (bids.length) return `${worker.name} has submitted bid proof and can open messages.`;
+  return `${worker.name} can review jobs and submit the first bid.`;
+}
+
+function workerOpportunityBridgeRows(worker, workerBids = []) {
+  const openJobs = state.jobs.filter((job) => job.status !== "Completed");
+  const activeJob = state.jobs.find((job) => job.id === state.activeJobId) || openJobs[0] || state.jobs[0];
+  const activeBid = activeJob ? workerBids.find((bid) => bid.jobId === activeJob.id) : null;
+  const firstBid = activeBid || workerBids[0];
+  const relatedJob = firstBid ? state.jobs.find((job) => job.id === firstBid.jobId) : activeJob;
+  const hasMessage = relatedJob ? state.messages.some((message) => message.threadId === `job-${relatedJob.id}`) : false;
+  const trust = workerTrustProfile(worker);
+  return [
+    {
+      label: "1. Profile",
+      title: worker.status || trust.decision,
+      body: `${worker.trade || "Worker"} in ${worker.area || "service area pending"}; trust route: ${trust.tier} / ${trust.rank}.`,
+      status: worker.phone && worker.email ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Profile",
+      attrs: `data-nav="profile"`
+    },
+    {
+      label: "2. Jobs",
+      title: `${openJobs.length} open job${openJobs.length === 1 ? "" : "s"}`,
+      body: relatedJob ? `${relatedJob.title} is available in ${relatedJob.location || "the local area"}.` : "No active job is available yet.",
+      status: relatedJob ? "ready" : "waiting",
+      primary: false,
+      actionLabel: relatedJob ? "View Job" : "Jobs",
+      attrs: relatedJob ? `data-detail="${escapeHtml(relatedJob.id)}"` : `data-nav="jobs"`
+    },
+    {
+      label: "3. Bid",
+      title: firstBid ? `${firstBid.amount} submitted` : "Submit first bid",
+      body: firstBid ? `${firstBid.status || "Bid"} on ${relatedJob?.title || "a Forge job"}; ${firstBid.timeline || "timeline pending"}.` : "Open the bid form so the worker can show real action.",
+      status: firstBid ? "ready" : relatedJob ? "attention" : "waiting",
+      primary: Boolean(!firstBid && relatedJob),
+      actionLabel: firstBid ? "Open Thread" : "Submit Bid",
+      attrs: firstBid && relatedJob ? `data-message-thread="job-${escapeHtml(relatedJob.id)}"` : relatedJob ? `data-bid-job="${escapeHtml(relatedJob.id)}"` : `data-nav="jobs"`
+    },
+    {
+      label: "4. Message",
+      title: hasMessage ? "Thread ready" : firstBid ? "Follow-up pending" : "Needs bid first",
+      body: hasMessage ? "Messages show the bid handoff and customer follow-up." : firstBid ? "Open Messages after the customer responds or bid is selected." : "Submit a bid before message proof is complete.",
+      status: hasMessage ? "ready" : firstBid ? "attention" : "waiting",
+      primary: Boolean(hasMessage && relatedJob),
+      actionLabel: "Messages",
+      attrs: relatedJob ? `data-message-thread="job-${escapeHtml(relatedJob.id)}"` : `data-nav="messages"`
+    },
+    {
+      label: "5. Next",
+      title: firstBid?.chosen ? "Confirm work details" : firstBid ? "Watch for response" : "Bid on one job",
+      body: firstBid?.chosen ? "Use Messages to confirm schedule, materials, and arrival details." : firstBid ? "Keep profile ready and follow up from Messages." : "Review jobs, submit one bid, and keep profile status complete.",
+      status: firstBid ? "ready" : "attention",
+      primary: false,
+      actionLabel: "Copy Bridge",
+      attrs: `data-action="copy-worker-opportunity-bridge" data-worker-name="${escapeHtml(worker.name)}"`
+    }
+  ];
+}
+
 function renderProviderNorthStarDashboard() {
   const target = document.querySelector("#providerNorthstarPanel");
   if (!target) return;
@@ -9976,6 +11688,195 @@ function renderProviderNorthStarDashboard() {
   `;
 }
 
+function outboxStatePresentation(record) {
+  const presentations = {
+    [ForgeLeadOutbox.STATES.LOCAL]: {
+      label: "Saved on this device",
+      body: "Forge has preserved this lead in this browser. Server delivery has not been verified.",
+      tone: "local"
+    },
+    [ForgeLeadOutbox.STATES.SENDING]: {
+      label: "Checking delivery",
+      body: "Forge is attempting delivery with the same protected request ID.",
+      tone: "sending"
+    },
+    [ForgeLeadOutbox.STATES.DELIVERED]: {
+      label: "Delivered to Forge",
+      body: "The server returned a verified receipt for this request.",
+      tone: "delivered"
+    },
+    [ForgeLeadOutbox.STATES.UNAVAILABLE]: {
+      label: "Saved here — delivery unavailable",
+      body: "The local copy is safe, but Forge has no approved durable destination configured yet.",
+      tone: "unavailable"
+    },
+    [ForgeLeadOutbox.STATES.RETRYABLE]: {
+      label: "Saved here — retry available",
+      body: "Delivery did not complete. The local copy remains safe and can be retried after the wait period.",
+      tone: "retryable"
+    },
+    [ForgeLeadOutbox.STATES.REJECTED]: {
+      label: "Saved here — correction required",
+      body: record?.lastFailure?.message || "Review the lead details and consent before attempting delivery again.",
+      tone: "rejected"
+    }
+  };
+  return presentations[record?.deliveryState] || presentations[ForgeLeadOutbox.STATES.LOCAL];
+}
+
+function outboxTime(value) {
+  if (!value) return "Not yet";
+  const date = new Date(value);
+  return Number.isFinite(date.getTime())
+    ? date.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+    : "Unavailable";
+}
+
+function outboxRetryMessage(record) {
+  if (!record) return "This delivery record is unavailable.";
+  if (record.attemptCount >= ForgeLeadOutbox.MAX_ATTEMPTS) return "Retry limit reached. Export the record for operator review.";
+  if (record.nextRetryAt) return `Retry after ${outboxTime(record.nextRetryAt)}.`;
+  return "This record cannot be retried until it is corrected.";
+}
+
+function renderConfirmationDelivery(confirmation) {
+  const target = document.querySelector("#confirmDeliveryStatus");
+  if (!target) return;
+  const record = outboxRecord(confirmation.deliveryRequestId);
+  if (!record) {
+    target.classList.add("hidden");
+    target.innerHTML = "";
+    return;
+  }
+  const presentation = outboxStatePresentation(record);
+  const canRetry = ForgeLeadOutbox.canRetry(record);
+  target.className = `confirm-delivery-status ${presentation.tone}`;
+  target.innerHTML = `
+    <div>
+      <span class="split-label">Delivery receipt</span>
+      <h2>${escapeHtml(presentation.label)}</h2>
+      <p>${escapeHtml(presentation.body)}</p>
+    </div>
+    <dl class="delivery-receipt-facts">
+      <div><dt>Request ID</dt><dd><code>${escapeHtml(record.requestId)}</code></dd></div>
+      <div><dt>Attempts</dt><dd>${escapeHtml(String(record.attemptCount))}/${ForgeLeadOutbox.MAX_ATTEMPTS}</dd></div>
+      <div><dt>Last attempt</dt><dd>${escapeHtml(outboxTime(record.lastAttemptAt))}</dd></div>
+      <div><dt>Server receipt</dt><dd>${escapeHtml(record.serverReceipt ? outboxTime(record.serverReceipt.receivedAt) : "Not verified")}</dd></div>
+    </dl>
+    <p class="delivery-local-warning">Clearing this browser's site data can remove the local copy. Export undelivered records before clearing browser data.</p>
+    <div class="hero-actions">
+      <button class="btn blue small" type="button" data-action="retry-outbox" data-outbox-id="${escapeHtml(record.requestId)}" ${canRetry ? "" : "disabled"}>Retry delivery</button>
+      <button class="btn ghost small" type="button" data-nav="outbox">Open Delivery Status</button>
+    </div>
+  `;
+}
+
+function renderLeadOutbox() {
+  const target = document.querySelector("#leadOutboxList");
+  const summary = document.querySelector("#leadOutboxSummary");
+  if (!target || !summary) return;
+  const records = state.leadOutbox || [];
+  const pending = records.filter((record) => record.deliveryState !== ForgeLeadOutbox.STATES.DELIVERED);
+  const delivered = records.filter((record) => record.deliveryState === ForgeLeadOutbox.STATES.DELIVERED);
+  summary.innerHTML = `
+    <article><strong>${pending.length}</strong><span>Needs delivery or correction</span></article>
+    <article><strong>${delivered.length}</strong><span>Verified receipts retained</span></article>
+    <article><strong>${outboxLoadIssues.length}</strong><span>Unsafe records isolated</span></article>
+  `;
+  if (!records.length) {
+    target.innerHTML = `
+      <article class="outbox-empty">
+        <strong>No delivery records on this device.</strong>
+        <p>Post a job or join as a worker to create a local delivery receipt.</p>
+      </article>
+    `;
+    return;
+  }
+  target.innerHTML = records.map((record) => {
+    const presentation = outboxStatePresentation(record);
+    const canRetry = ForgeLeadOutbox.canRetry(record);
+    const retryHelp = canRetry ? "Retry with the same request ID" : outboxRetryMessage(record);
+    return `
+      <article class="outbox-card ${escapeHtml(presentation.tone)}">
+        <div class="outbox-card-heading">
+          <div>
+            <span class="outbox-state">${escapeHtml(presentation.label)}</span>
+            <h2>${escapeHtml(ForgeLeadOutbox.publicSummary(record))}</h2>
+          </div>
+          <span class="outbox-type">${escapeHtml(humanize(record.type))}</span>
+        </div>
+        <p>${escapeHtml(presentation.body)}</p>
+        <dl class="delivery-receipt-facts">
+          <div><dt>Request ID</dt><dd><code>${escapeHtml(record.requestId)}</code></dd></div>
+          <div><dt>Created</dt><dd>${escapeHtml(outboxTime(record.createdAt))}</dd></div>
+          <div><dt>Attempts</dt><dd>${escapeHtml(String(record.attemptCount))}/${ForgeLeadOutbox.MAX_ATTEMPTS}</dd></div>
+          <div><dt>Next retry</dt><dd>${escapeHtml(record.nextRetryAt ? outboxTime(record.nextRetryAt) : "Not scheduled")}</dd></div>
+        </dl>
+        <div class="hero-actions">
+          <button class="btn blue small" type="button" data-action="retry-outbox" data-outbox-id="${escapeHtml(record.requestId)}" ${canRetry ? "" : "disabled"} title="${escapeHtml(retryHelp)}">Retry delivery</button>
+          <button class="btn ghost small" type="button" data-action="request-remove-outbox" data-outbox-id="${escapeHtml(record.requestId)}">Remove delivery record</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function exportUndeliveredOutbox() {
+  const records = (state.leadOutbox || []).filter((record) => record.deliveryState !== ForgeLeadOutbox.STATES.DELIVERED);
+  if (!records.length) {
+    showToast("No undelivered records are available to export.");
+    return;
+  }
+  exportJson(`forge-undelivered-leads-v${PUBLIC_LINK_VERSION}.json`, {
+    schema: "forge.lead-outbox-export.v1",
+    exportedAt: new Date().toISOString(),
+    appVersion: PUBLIC_LINK_VERSION,
+    records
+  });
+  showToast(`${records.length} undelivered record${records.length === 1 ? "" : "s"} exported.`);
+}
+
+function requestRemoveOutboxRecord(requestId) {
+  const record = outboxRecord(requestId);
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (!record || !dialog) return;
+  pendingOutboxRemovalId = requestId;
+  outboxRemovalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  document.querySelector("#outboxRemoveSummary").textContent = ForgeLeadOutbox.publicSummary(record);
+  document.querySelector("#outboxRemoveRequestId").textContent = requestId;
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+  document.querySelector("#outboxRemoveTitle")?.focus();
+}
+
+function cancelRemoveOutboxRecord() {
+  pendingOutboxRemovalId = null;
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (dialog?.open) dialog.close();
+  else dialog?.removeAttribute("open");
+  const returnFocus = outboxRemovalReturnFocus;
+  outboxRemovalReturnFocus = null;
+  if (returnFocus?.isConnected) returnFocus.focus();
+}
+
+function confirmRemoveOutboxRecord() {
+  if (!pendingOutboxRemovalId) return;
+  const requestId = pendingOutboxRemovalId;
+  const record = outboxRecord(requestId);
+  state.leadOutbox = (state.leadOutbox || []).filter((item) => item.requestId !== requestId);
+  pendingOutboxRemovalId = null;
+  outboxRemovalReturnFocus = null;
+  addActivity(`${humanize(record?.type || "lead")} delivery record removed after explicit confirmation; the original local lead was retained.`);
+  saveState();
+  const dialog = document.querySelector("#outboxRemoveDialog");
+  if (dialog?.open) dialog.close();
+  else dialog?.removeAttribute("open");
+  renderLeadOutbox();
+  renderConfirmation();
+  document.querySelector("#outboxTitle")?.focus({ preventScroll: true });
+  showToast("Delivery record removed. The original local lead remains on this device.");
+}
+
 function renderConfirmation() {
   const confirmation = state.lastConfirmation || seedState.lastConfirmation;
   document.querySelector("#confirmKicker").textContent = confirmation.type === "worker"
@@ -10013,6 +11914,7 @@ function renderConfirmation() {
                   : "Forge is ready";
   document.querySelector("#confirmTitle").textContent = confirmation.title;
   document.querySelector("#confirmBody").textContent = confirmation.body;
+  renderConfirmationDelivery(confirmation);
   document.querySelector("#confirmDetails").innerHTML = confirmation.details.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
   document.querySelector("#confirmNextSteps").innerHTML = confirmNextSteps(confirmation).map((item, index) => `
     <article>
@@ -10202,8 +12104,8 @@ function confirmationNextTouchRows(confirmation) {
 
 function confirmNextSteps(confirmation) {
   if (confirmation.nextSteps?.length) return confirmation.nextSteps;
-  if (confirmation.type === "job") return ["Forge saves this job to Admin", "Workers can review and bid", "You can check job status with your phone or email"];
-  if (confirmation.type === "worker") return ["Forge saves your worker profile", "The operator can follow up with available jobs", "Your readiness status appears on the worker dashboard"];
+  if (confirmation.type === "job") return ["Forge saves this job on this device", "Check the delivery receipt before expecting team follow-up", "Retry or export the saved copy if delivery is unavailable"];
+  if (confirmation.type === "worker") return ["Forge saves your worker profile on this device", "Check the delivery receipt before expecting team follow-up", "Retry or export the saved copy if delivery is unavailable"];
   if (confirmation.type === "referral") return ["Forge saves the referral in Admin", "The lead appears in the Next 10 outreach queue", "The operator can call, text, email, or move it forward"];
   if (confirmation.type === "bid") return ["Forge attaches this bid to the job", "The customer can compare bids on Job Detail", "Messages keep the next handoff visible"];
   if (confirmation.type === "auto-service") return ["Forge saves this auto service request", "The operator can route it to a qualified auto partner", "Licensed or qualified partners handle regulated sales, repair, towing, transport, financing, and insurance work where required"];
@@ -10212,10 +12114,10 @@ function confirmNextSteps(confirmation) {
   if (confirmation.type === "opportunity") return ["Forge saves this career interest", "The operator can copy an application plan and follow up", "Official applications happen through the school, union, employer, or program"];
   if (confirmation.type === "project") return ["Forge saves and routes this project opportunity", "Smaller home projects route to normal Forge Pros while major projects move to Major Projects Review", "Third-party partner sharing requires consent, Forge approval, and written partner agreement"];
   if (confirmation.type === "homebuilding") return ["Forge saves and pre-screens this project lead", "Accepted major leads stay inside Forge until consent and approved-partner gates pass", "All contracts remain between the client and the approved partner or licensed contractor"];
-  if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can match it with approved local creatives", "Customer contact info stays for booking and provider matching"];
+  if (confirmation.type === "creative") return ["Forge saves this photography_videography request", "The operator can review possible local creative providers", "Customer contact info stays private during review"];
   if (confirmation.type === "creative-provider") return ["Forge saves this photography_videography provider application", "The operator reviews portfolio, availability, and provider terms", "Approved providers can be matched to creative requests"];
   if (confirmation.type === "northstar") return ["Forge saves this as a NorthStar Creative Co. business growth lead", "Admin can review marketing and operations needs", "NorthStar can scope websites, branding, CRM, lead follow-up, job tracking, and operations support"];
-  if (confirmation.type === "flex") return ["Forge saves this as a Forge Capital Desk lead", "Forge reviews whether the business looks like a fit", "Flex handles eligibility, approval, onboarding, activation, and product support"];
+  if (confirmation.type === "flex") return ["Forge saves this as a Capital Desk interest note", "Check the receipt to see whether Forge delivery was verified", "Flex remains inactive and this is not a financing application"];
   if (confirmation.type === "manufacturing-rfq") return ["Forge saves this manufacturing RFQ", "Admin reviews product, formula, dosage, MOQ, packaging, certification, testing, and compliance flags", "Supplier matching uses original Forge profiles and company-created supplier profiles only"];
   if (confirmation.type === "manufacturing-supplier") return ["Forge saves this supplier profile", "Admin reviews capability, MOQ, dosage forms, certifications, support areas, and contact details", "Verified-by-Forge remains a placeholder until manual review and approval"];
   return ["Choose a path", "Save the right info", "Keep the next follow-up visible"];
@@ -10235,7 +12137,7 @@ function confirmationHandoffTitle(confirmation) {
   if (confirmation.type === "creative") return "Tell the customer how Forge creative matching works.";
   if (confirmation.type === "creative-provider") return "Tell the provider how approved-provider review works.";
   if (confirmation.type === "northstar") return "Tell the business owner how NorthStar growth support works.";
-  if (confirmation.type === "flex") return "Tell the business owner how the Flex referral channel works.";
+  if (confirmation.type === "flex") return "Tell the business owner what was saved and which future-partner gates remain closed.";
   if (confirmation.type === "manufacturing-rfq") return "Tell the buyer how manufacturing supplier matching works.";
   if (confirmation.type === "manufacturing-supplier") return "Tell the supplier how onboarding review works.";
   return "Use this as the next message.";
@@ -10245,10 +12147,10 @@ function confirmationHandoffText(confirmation) {
   const steps = confirmNextSteps(confirmation);
   const detail = confirmation.details?.[0] ? ` (${confirmation.details[0]})` : "";
   if (confirmation.type === "job") {
-    return `Forge saved your job${detail}. The team will match it with local workers, keep bids visible in Job Status, and follow up by text, phone, or email. No payment is collected in this MVP.`;
+    return `Forge saved your job on this device${detail}. Check the delivery receipt before expecting team follow-up. If delivery is unavailable, retry or export the saved copy. No payment is collected in this MVP.`;
   }
   if (confirmation.type === "worker") {
-    return `Forge saved your worker profile${detail}. You are on the early access list, and the team can follow up when local jobs fit your trade. No payment or account password is needed for this MVP.`;
+    return `Forge saved your worker profile on this device${detail}. Check the delivery receipt before expecting team follow-up. If delivery is unavailable, retry or export the saved copy. No payment or account password is needed for this MVP.`;
   }
   if (confirmation.type === "referral") {
     return `Forge saved this referral${detail}. The operator can follow up, track the next action, and move the lead into the first 200 launch list.`;
@@ -10257,7 +12159,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this bid${detail}. The job poster can compare it on the job detail screen, and Messages keep the next schedule handoff visible.`;
   }
   if (confirmation.type === "auto-service") {
-    return `Forge saved this auto service request${detail}. The operator can route it to a trusted auto partner, mechanic, transport provider, or dealership partner. Regulated work must be handled by properly licensed or qualified partners where required.`;
+    return `Forge saved this auto service request${detail}. The operator can review possible mechanics, transport providers, or dealer candidates. Forge has not verified a provider through this MVP; regulated work must be handled by properly licensed or qualified providers where required.`;
   }
   if (confirmation.type === "vehicle") {
     return `Forge saved this vehicle listing${detail}. Buyers can copy the seller contact info, but title, inspection, financing, and payment stay outside Forge in this MVP.`;
@@ -10275,7 +12177,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this homebuilding request${detail}. Forge pre-screens qualified project leads and keeps accepted major leads inside Forge until customer consent, partner approval, and data-sharing gates pass. Any approved partner may accept or decline review. Any referral or success fee must be governed by a separate written agreement. All construction and development contracts remain between the client and the approved partner or licensed contractor. Forge is not the contractor of record. Sensitive documents and payment details stay outside Forge in this MVP.`;
   }
   if (confirmation.type === "creative") {
-    return `Forge saved this photography and videography request${detail}. The operator can match it with approved local creative providers without publishing private contact information.`;
+    return `Forge saved this photography and videography request${detail}. The operator can review possible local creative providers without publishing private contact information. Provider approval is not implied.`;
   }
   if (confirmation.type === "creative-provider") {
     return `Forge saved this creative provider application${detail}. The operator can review portfolio, availability, insurance or licensing notes, and provider terms before matching the provider with customers.`;
@@ -10284,7 +12186,7 @@ function confirmationHandoffText(confirmation) {
     return `Forge saved this NorthStar Creative Co. request${detail}. Admin can review the business, services needed, budget, biggest problem, and 30-90 day goal, then NorthStar can scope the right marketing and operations support.`;
   }
   if (confirmation.type === "flex") {
-    return `Forge saved this Capital Desk lead${detail}. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex handles eligibility, approval, onboarding, activation, and product support. Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker.`;
+    return `Forge saved this Capital Desk interest note${detail}. Check the delivery receipt before expecting Forge follow-up. It was not sent to Flex, Flex remains an inactive future-partner concept, and this is not a financing application. Forge is not a bank, lender, broker, broker-dealer, underwriter, payment processor, ISO, escrow service, or credit decision maker.`;
   }
   if (confirmation.type === "manufacturing-rfq") {
     return `Forge saved this manufacturing RFQ${detail}. The operator can review formula status, dosage form, MOQ, packaging, testing, certifications, CBD/hemp flags, and supplier fit before any quote request. Compliance, legal, label, claims, testing, and insurance review remain the user's responsibility.`;
@@ -10401,6 +12303,19 @@ function renderDeliveryStatus() {
   `).join("");
 }
 
+function renderLeadDeliveryDrill() {
+  const target = document.querySelector("#leadDeliveryDrill");
+  if (!target) return;
+  target.innerHTML = leadDeliveryDrillRows().map((item, index) => `
+    <article class="${item.ok ? "ready" : "attention"}">
+      <span>${index + 1}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(item.body)}</p>
+      <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
 function renderSoftLaunchPlan() {
   const target = document.querySelector("#softLaunchPlan");
   if (!target) return;
@@ -10449,6 +12364,78 @@ function renderLaunchDemoPack() {
       <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
     </article>
   `).join("");
+}
+
+function renderLaunchShowPlan() {
+  const target = document.querySelector("#launchShowPlan");
+  if (!target) return;
+  const rows = launchShowPlanRows();
+  target.innerHTML = `
+    <div class="launch-show-plan-heading">
+      <div>
+        <span class="split-label">Show plan</span>
+        <h2>Run Forge safely when someone is ready to see it.</h2>
+        <p class="muted">Use this from a phone or laptop before asking for one real next action.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-launch-show-plan">Copy Show Plan</button>
+    </div>
+    <div class="launch-show-plan-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchShowPlanRows() {
+  const leadCount = totalLeadCount();
+  const followUpCount = filteredFollowUpRows("All Lead Types", "Needs Follow-Up").length;
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      label: "1. Mode",
+      title: publicMode ? "Visitor-safe mode on" : "Turn Public View on",
+      body: publicMode ? "Operator-only screens are hidden before handing the device over." : "Turn this on before someone else touches the app.",
+      status: publicMode ? "ready" : "attention",
+      primary: !publicMode,
+      actionLabel: publicMode ? "Copy Gate" : "Public View",
+      action: publicMode ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "2. Proof",
+      title: "Use the one-minute path",
+      body: "Copy the Phone Fast Pass or open Perspective Demo, then show John Status, Messages, Mike Worker, and Launch.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Copy Fast Pass",
+      action: { type: "action", name: "copy-phone-fast-pass" }
+    },
+    {
+      label: "3. Capture",
+      title: `${leadCount}/200 saved`,
+      body: followUpCount ? `${followUpCount} lead${followUpCount === 1 ? "" : "s"} need touch. Capture one next action before widening outreach.` : "Capture one job, worker, referral, auto, career, or business lead.",
+      status: followUpCount ? "attention" : "ready",
+      primary: false,
+      actionLabel: "Capture",
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "capture" }
+    },
+    {
+      label: "4. Stop",
+      title: backupCurrent ? "Close with boundary" : "Back up after block",
+      body: backupCurrent ? "No payments, deposits, sensitive documents, title paperwork, or final contracts in the MVP." : `Export JSON after this block so ${leadCount} saved records are recoverable.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Boundary" : "Export",
+      action: backupCurrent ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "export-backup" }
+    }
+  ];
 }
 
 function renderLaunchDecision() {
@@ -10527,6 +12514,7 @@ function renderLaunchFinalChecklist() {
       </div>
       <button class="btn blue small" type="button" data-action="copy-launch-final-checklist">Copy Checklist</button>
     </div>
+    ${launchRunOrderPanel()}
     <div class="launch-final-grid">
       ${rows.map((row) => `
         <article class="${escapeHtml(row.status)}">
@@ -10538,6 +12526,79 @@ function renderLaunchFinalChecklist() {
       `).join("")}
     </div>
   `;
+}
+
+function launchRunOrderPanel() {
+  const rows = launchRunOrderRows();
+  return `
+    <section class="launch-run-order" aria-label="First-user demo run order">
+      <div class="launch-run-order-heading">
+        <div>
+          <span class="split-label">Demo run order</span>
+          <h3>Show the same proof path every time.</h3>
+          <p>Use this when someone is standing next to you and you need to make Forge clear in under five minutes.</p>
+        </div>
+        <button class="btn orange small" type="button" data-action="copy-launch-run-order">Copy Run Order</button>
+      </div>
+      <div class="launch-run-order-grid">
+        ${rows.map((row, index) => `
+          <article>
+            <span>${index + 1}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+            <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function launchRunOrderRows() {
+  return [
+    {
+      title: "Start with Perspective Demo",
+      body: "Pick the person in front of you: homeowner, worker, operator, auto, career, or business.",
+      actionLabel: "Open Demo",
+      primary: true,
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      title: "Show customer status",
+      body: "Open John status so they see a saved job, bid state, privacy boundary, and next step.",
+      actionLabel: "John Status",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "status" }
+    },
+    {
+      title: "Show job detail proof",
+      body: "Open Job Detail, show bids, proof ticket, chosen bid, and the handoff into Messages.",
+      actionLabel: "Job Detail",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "detail" }
+    },
+    {
+      title: "Copy the message reply kit",
+      body: "Open Messages, use the reply kit, and show how Forge turns a selected bid into a schedule reply.",
+      actionLabel: "Messages",
+      primary: false,
+      action: { type: "login", role: "customer", name: "John Smith", screen: "messages" }
+    },
+    {
+      title: "Show worker profile",
+      body: "Switch to Mike Jones so workers see jobs, bids, profile readiness, and what they can do next.",
+      actionLabel: "Mike Worker",
+      primary: false,
+      action: { type: "login", role: "worker", name: "Mike Jones", screen: "worker" }
+    },
+    {
+      title: "Capture one next action",
+      body: "Finish with Quick Capture, the Send Board, or one invite link, then export backup after the block.",
+      actionLabel: "Capture",
+      primary: false,
+      action: { type: "login", role: "admin", name: "Forge Admin", screen: "capture" }
+    }
+  ];
 }
 
 function launchFinalChecklistRows() {
@@ -10631,6 +12692,114 @@ function renderLaunchSendBoard() {
       `).join("")}
     </div>
   `;
+}
+
+function renderLaunchHandoffReceipt() {
+  const target = document.querySelector("#launchHandoffReceipt");
+  if (!target) return;
+  const rows = launchHandoffReceiptRows();
+  target.innerHTML = `
+    <div class="launch-handoff-heading">
+      <div>
+        <span class="split-label">First-user handoff receipt</span>
+        <h2>Close the demo with one safe next step.</h2>
+        <p class="muted">Copy this after each conversation so the person hears the same beta boundary, follow-up path, and backup rule.</p>
+      </div>
+      <div class="launch-handoff-actions">
+        <button class="btn blue small" type="button" data-action="copy-launch-handoff-receipt">Copy Handoff</button>
+        <button class="btn ghost small" type="button" data-action="copy-first-user-closeout">Copy Closeout</button>
+      </div>
+    </div>
+    <div class="launch-handoff-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <div>
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(row.title)}</strong>
+            <p>${escapeHtml(row.body)}</p>
+          </div>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchHandoffReceiptRows() {
+  const leadCount = totalLeadCount();
+  const followUps = filteredFollowUpRows("All Lead Types", "Needs Follow-Up");
+  const nextTouch = followUps[0];
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const reviewCount = first200ManualReviewCount();
+  return [
+    {
+      label: "Proof shown",
+      title: "John + Mike path ready",
+      body: "Use Perspective Demo, John Status, Job Detail, Messages, and Mike Worker before asking for the next action.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Run Order",
+      action: { type: "action", name: "copy-launch-run-order" }
+    },
+    {
+      label: "Next touch",
+      title: nextTouch ? `${nextTouch.person}` : "Capture one real lead",
+      body: nextTouch
+        ? `${nextTouch.kind}: ${nextTouch.title}. Contact this person before widening the invite list.`
+        : "No urgent queue item is waiting. End the demo by capturing one consented job, worker, referral, auto, career, or business lead.",
+      status: nextTouch ? "attention" : "ready",
+      primary: Boolean(nextTouch),
+      actionLabel: nextTouch ? "Copy Queue" : "Capture",
+      action: nextTouch ? { type: "action", name: "copy-follow-up-queue" } : { type: "nav", screen: "capture" }
+    },
+    {
+      label: "Boundary",
+      title: publicMode ? "Visitor-safe mode on" : "Turn on Public View",
+      body: publicMode
+        ? `${reviewCount} guarded lead${reviewCount === 1 ? "" : "s"} stay in manual review. No payments or sensitive documents belong in the MVP.`
+        : "Operator screens are still visible. Turn on Public View before handing Forge to someone else.",
+      status: publicMode ? "ready" : "attention",
+      primary: !publicMode,
+      actionLabel: publicMode ? "Copy Gate" : "Public View",
+      action: publicMode ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Export after block",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON after this outreach block so ${leadCount} saved first-user records are recoverable.`,
+      status: backupCurrent ? "ready" : "hold",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Closeout" : "Export",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
+function firstUserHandoffNote() {
+  const leadCount = totalLeadCount();
+  const followUps = filteredFollowUpRows("All Lead Types", "Needs Follow-Up");
+  const nextTouch = followUps[0];
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  const nextStep = nextTouch
+    ? `Andrew follows up with ${nextTouch.person} about ${nextTouch.title}.`
+    : "Capture one consented job, worker, referral, auto, career, or business lead before ending the conversation.";
+  return [
+    "Thanks for looking at Forge. This is a controlled local beta for people Andrew can personally follow up with.",
+    `Next safe step: ${nextStep}`,
+    "Forge is not collecting payments, deposits, sensitive identity documents, title paperwork, or final contracts in the MVP.",
+    publicMode
+      ? "Public View is on for handoff demos, with operator screens hidden."
+      : "Before handing over the device, turn on Public View so operator screens stay hidden.",
+    backupCurrent
+      ? `Backup status: current through ${state.settings.lastBackupAt} for ${backupCount} leads.`
+      : `Backup status: export JSON after this block so ${leadCount} saved leads are recoverable.`
+  ].join("\n");
 }
 
 function firstUserSendBoardSummary() {
@@ -10870,6 +13039,163 @@ function first200LaunchQueueRows() {
       action: { type: "nav", screen: "launch-status" }
     }
   ];
+}
+
+function renderLaunchNext10Sprint() {
+  const target = document.querySelector("#launchNext10Sprint");
+  if (!target) return;
+  const rows = launchNext10SprintRows();
+  const summary = launchNext10SprintSummary();
+  target.innerHTML = `
+    <div class="launch-next-10-heading">
+      <div>
+        <span class="split-label">Next 10 invite sprint</span>
+        <h2>${escapeHtml(summary.title)}</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <div class="launch-next-10-summary">
+        <strong>${escapeHtml(summary.metric)}</strong>
+        <span>${escapeHtml(summary.label)}</span>
+        <button class="btn blue small" type="button" data-action="copy-launch-next-10-sprint">Copy Sprint</button>
+      </div>
+    </div>
+    <div class="launch-next-10-grid">
+      ${rows.map((row) => row.type === "lead" ? launchNext10LeadCard(row) : launchNext10LaneCard(row)).join("")}
+    </div>
+  `;
+}
+
+function launchNext10SprintSummary() {
+  const canShowLeads = launchNext10CanShowLeads();
+  const rows = canShowLeads ? outreachBatchRows() : [];
+  const hotCount = rows.filter((row) => row.priority === "Hot").length;
+  const leadCount = totalLeadCount();
+  const first = rows[0];
+  return rows.length
+    ? {
+      title: `${rows.length} contacts ready for the next outreach sprint.`,
+      body: first
+        ? `Start with ${first.person}: ${first.reason}. Keep the link controlled, then mark each person Contacted or Move Forward.`
+        : "Copy the sprint, contact the highest-priority people, and save movement before inviting a wider group.",
+      metric: `${hotCount} hot`,
+      label: `${leadCount}/200 saved`
+    }
+    : {
+      title: canShowLeads ? "No saved follow-ups yet. Invite from these starter lanes." : "Starter lanes are safe to show publicly.",
+      body: canShowLeads
+        ? "Use the lane prompts below to find the next homeowner, worker, auto, business, or career conversation, then capture consent before follow-up."
+        : "Private lead names stay hidden outside Admin Operator View. Use these lanes to explain who Andrew should invite next without exposing contact details.",
+      metric: "5 lanes",
+      label: `${leadCount}/200 saved`
+    };
+}
+
+function launchNext10CanShowLeads() {
+  return canRenderPrivateOperatorData();
+}
+
+function launchNext10SprintRows() {
+  const batch = launchNext10CanShowLeads() ? outreachBatchRows() : [];
+  if (batch.length) {
+    return batch.map((row, index) => ({
+      ...row,
+      type: "lead",
+      rank: index + 1
+    }));
+  }
+  return launchNext10StarterLanes();
+}
+
+function launchNext10StarterLanes() {
+  return [
+    {
+      type: "lane",
+      rank: 1,
+      label: "Homeowner",
+      title: "Ask for one real job",
+      body: "Find someone with a fence, yard, cleaning, moving, repair, restaurant, or small business task and post it with clear follow-up consent.",
+      status: "ready",
+      actionLabel: "Post Job",
+      action: { type: "nav", screen: "post" }
+    },
+    {
+      type: "lane",
+      rank: 2,
+      label: "Worker",
+      title: "Add one local provider",
+      body: "Invite a worker, contractor, handyman, cleaner, mover, mechanic, creative, or blue-collar operator to join the first local worker list.",
+      status: "ready",
+      actionLabel: "Worker Signup",
+      action: { type: "nav", screen: "signup" }
+    },
+    {
+      type: "lane",
+      rank: 3,
+      label: "Referral",
+      title: "Ask for one warm intro",
+      body: "Use the Perspective Demo, then ask who should see Forge next. Capture the referral instead of relying on memory.",
+      status: "attention",
+      actionLabel: "Perspective",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      type: "lane",
+      rank: 4,
+      label: "Auto",
+      title: "Route a vehicle lead",
+      body: "Capture buyer, seller, dealer, transport, repair, detailing, or Road Rescue interest and keep any transaction handoff in manual review.",
+      status: "hold",
+      actionLabel: "Forge Auto",
+      action: { type: "nav", screen: "auto" }
+    },
+    {
+      type: "lane",
+      rank: 5,
+      label: "Career",
+      title: "Open a training path",
+      body: "Ask about trade school, union apprenticeship, resume help, or blue-collar AI field work and save the next career step.",
+      status: "ready",
+      actionLabel: "Careers",
+      action: { type: "nav", screen: "opportunities" }
+    }
+  ];
+}
+
+function launchNext10LeadCard(row) {
+  return `
+    <article class="launch-next-10-card lead ${row.priority === "Hot" ? "attention" : "ready"}">
+      <div class="launch-next-10-rank">${escapeHtml(String(row.rank))}</div>
+      <div>
+        <span>${escapeHtml(row.kind)} · ${escapeHtml(row.priority)} · score ${escapeHtml(String(row.score))}</span>
+        <strong>${escapeHtml(row.person)}</strong>
+        <p>${escapeHtml(row.reason)}</p>
+      </div>
+      <div class="launch-next-10-message">
+        <span>Next message</span>
+        <p>${escapeHtml(row.message)}</p>
+      </div>
+      <div class="launch-next-10-actions">
+        ${contactLinks(row.phone, row.email, row.message)}
+        <button class="btn ghost small" type="button" data-action="${escapeHtml(row.copyAction)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">Copy</button>
+        <button class="btn blue small" type="button" data-action="${escapeHtml(row.action)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">Contacted</button>
+        <button class="btn orange small" type="button" data-action="${escapeHtml(row.forwardAction)}" data-${kebab(row.dataName)}="${escapeHtml(row.id)}">${escapeHtml(row.forwardLabel)}</button>
+      </div>
+    </article>
+  `;
+}
+
+function launchNext10LaneCard(row) {
+  return `
+    <article class="launch-next-10-card lane ${escapeHtml(row.status)}">
+      <div class="launch-next-10-rank">${escapeHtml(String(row.rank))}</div>
+      <div>
+        <span>${escapeHtml(row.label)}</span>
+        <strong>${escapeHtml(row.title)}</strong>
+        <p>${escapeHtml(row.body)}</p>
+      </div>
+      <button class="btn ${row.status === "ready" ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+    </article>
+  `;
 }
 
 function renderFollowUpAudit() {
@@ -11156,6 +13482,54 @@ function deliveryStatusRows() {
   ];
 }
 
+function leadDeliveryDrillRows() {
+  const enabled = Boolean(state.settings.webhookEnabled);
+  const hasUrl = Boolean(state.settings.webhookUrl);
+  const configured = enabled && hasUrl;
+  const sent = ["Sent", "Attempted"].includes(state.settings.webhookLastStatus);
+  const last = state.settings.webhookLastAt ? `${state.settings.webhookLastType || "Lead"} at ${state.settings.webhookLastAt}` : "No test recorded yet";
+  return [
+    {
+      title: configured ? "Webhook setup is saved" : "Configure delivery first",
+      body: configured
+        ? "Forge will save locally first, then attempt webhook delivery for the next lead."
+        : "Paste the approved Zapier/backend URL, enable delivery, and save before sending the public link.",
+      ok: configured,
+      primary: !configured,
+      actionLabel: configured ? "Copy Status" : "Backend Handoff",
+      action: configured ? { type: "action", name: "copy-delivery-status" } : { type: "action", name: "copy-backend-handoff" }
+    },
+    {
+      title: "Send one test lead",
+      body: configured
+        ? "Use Send Test Lead from Lead Capture Setup, then confirm the destination received it."
+        : "Do not send a test until the approved endpoint is saved.",
+      ok: sent,
+      primary: configured && !sent,
+      actionLabel: "Send Test",
+      action: { type: "action", name: "test-webhook" }
+    },
+    {
+      title: sent ? "Delivery attempt recorded" : "Verify the destination",
+      body: sent
+        ? `${state.settings.webhookLastStatus}: ${last}. Check Zapier/Supabase/Monday before broad sharing.`
+        : "The destination must show the test lead outside this browser before public traffic grows.",
+      ok: sent,
+      primary: false,
+      actionLabel: "Copy Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
+    },
+    {
+      title: "Keep a local fallback",
+      body: "Every lead should still save locally first. Export Backup JSON after the test and after each outreach block.",
+      ok: Boolean(state.settings.lastBackupAt),
+      primary: !state.settings.lastBackupAt,
+      actionLabel: state.settings.lastBackupAt ? "Copy Closeout" : "Export Backup",
+      action: state.settings.lastBackupAt ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    }
+  ];
+}
+
 function renderBackendHandoff() {
   const target = document.querySelector("#backendHandoff");
   if (!target) return;
@@ -11200,6 +13574,19 @@ function renderAuthHandoff() {
   `).join("");
 }
 
+function renderAdminAuthDrill() {
+  const target = document.querySelector("#adminAuthDrill");
+  if (!target) return;
+  target.innerHTML = adminAuthDrillRows().map((item, index) => `
+    <article class="${item.ok ? "ready" : "hold"}">
+      <span>${index + 1}</span>
+      <strong>${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(item.body)}</p>
+      <button class="btn ${item.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(item.action)}>${escapeHtml(item.actionLabel)}</button>
+    </article>
+  `).join("");
+}
+
 function authHandoffRows() {
   return [
     {
@@ -11216,6 +13603,43 @@ function authHandoffRows() {
       label: "Minimum test",
       title: "Direct admin URLs must require auth",
       body: "Verify #admin, #capture, and #reports cannot show operator data unless the operator has authenticated through the intended protected path."
+    }
+  ];
+}
+
+function adminAuthDrillRows() {
+  return [
+    {
+      title: "Pick the production gate",
+      body: "Choose Cloudflare Access, Netlify protection, Vercel middleware, Supabase Auth, or another server-enforced admin gate before broad traffic.",
+      ok: false,
+      primary: true,
+      actionLabel: "Auth Handoff",
+      action: { type: "action", name: "copy-auth-handoff" }
+    },
+    {
+      title: "Protect every operator route",
+      body: "Admin, capture, reports, export, import, backup, webhook setup, project queues, and follow-up queues must require the production gate.",
+      ok: false,
+      primary: false,
+      actionLabel: "Copy Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
+    },
+    {
+      title: "Test as a stranger",
+      body: "In a fresh private browser, direct admin/capture/reports URLs must fail closed before any private operator data loads.",
+      ok: false,
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    },
+    {
+      title: "Record recovery and audit",
+      body: "Define the first admin accounts, password reset/recovery, audit log expectations, and who can export or change webhook settings.",
+      ok: false,
+      primary: false,
+      actionLabel: "Copy Gate",
+      action: { type: "action", name: "copy-final-gate" }
     }
   ];
 }
@@ -11261,6 +13685,342 @@ function publicReadinessBlockers() {
   blockers.push("Complete final legal review of early-access terms and privacy language.");
   blockers.push("Run the full security review checklist before announcing the public link.");
   return blockers;
+}
+
+function renderPublicLaunchBlockers() {
+  const target = document.querySelector("#publicLaunchBlockers");
+  if (!target) return;
+  const summary = publicReadinessSummary();
+  const rows = publicLaunchBlockerRows();
+  target.innerHTML = `
+    <div class="public-launch-heading">
+      <div>
+        <span class="split-label">Public launch blocker receipt</span>
+        <h2>Controlled demos can continue. Broad sharing waits on these gates.</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-public-launch-blockers">Copy Blockers</button>
+    </div>
+    <div class="public-launch-score">
+      <strong>${summary.score}%</strong>
+      <span>Demo readiness</span>
+      <p>${escapeHtml(summary.blockers.length ? `${summary.blockers.length} public-launch gates remain.` : "All public launch gates appear clear; still complete the final human review.")}</p>
+    </div>
+    <div class="public-launch-blocker-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function publicLaunchBlockerRows() {
+  const rows = [
+    {
+      label: "Allowed now",
+      title: "Controlled first-user demos",
+      body: "Use Forge with people Andrew can personally follow up with. Keep payments, deposits, sensitive documents, and final contracts outside the MVP.",
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    }
+  ];
+  publicReadinessBlockers().forEach((blocker) => rows.push(publicLaunchBlockerRow(blocker)));
+  return rows;
+}
+
+function publicLaunchBlockerRow(blocker) {
+  const text = String(blocker || "");
+  if (/zapier|backend|leads leave/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Lead delivery",
+      body: text,
+      status: "hold",
+      primary: false,
+      actionLabel: "Backend Handoff",
+      action: { type: "action", name: "copy-backend-handoff" }
+    };
+  }
+  if (/auth|authentication|admin/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Admin protection",
+      body: text,
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Handoff",
+      action: { type: "action", name: "copy-auth-handoff" }
+    };
+  }
+  if (/backup/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Backup current",
+      body: text,
+      status: "attention",
+      primary: false,
+      actionLabel: "Export Backup",
+      action: { type: "action", name: "export-backup" }
+    };
+  }
+  if (/legal|privacy|terms/i.test(text)) {
+    return {
+      label: "Required",
+      title: "Legal review",
+      body: text,
+      status: "attention",
+      primary: false,
+      actionLabel: "Terms",
+      action: { type: "nav", screen: "legal" }
+    };
+  }
+  return {
+    label: "Required",
+    title: "Security review",
+    body: text,
+    status: "hold",
+    primary: false,
+    actionLabel: "Copy Check",
+    action: { type: "action", name: "copy-security-command" }
+  };
+}
+
+function renderLaunchSecuritySweep() {
+  const target = document.querySelector("#launchSecuritySweep");
+  if (!target) return;
+  const rows = launchSecuritySweepRows();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  target.innerHTML = `
+    <div class="launch-security-heading">
+      <div>
+        <span class="split-label">Public share safety sweep</span>
+        <h2>${readyCount}/${rows.length} gates are safe for controlled demos.</h2>
+        <p class="muted">Run this before sending Forge beyond people Andrew can personally follow up with.</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-launch-security-sweep">Copy Sweep</button>
+    </div>
+    <div class="launch-security-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function launchSecuritySweepRows() {
+  const leadCount = totalLeadCount();
+  const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const privateOperatorHidden = !canRenderPrivateOperatorData();
+  return [
+    {
+      label: "Demo",
+      title: "Controlled beta only",
+      body: `Use with known first users and personal follow-up. Current launch list: ${leadCount}/200.`,
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      label: "View",
+      title: privateOperatorHidden ? "Operator data hidden" : "Turn on Public View",
+      body: privateOperatorHidden
+        ? "Hidden admin tables, follow-up queues, outreach batches, reports, webhook fields, templates, and project pipelines are redacted."
+        : "Switch to Public View before handing Forge to anyone outside the operator seat.",
+      status: privateOperatorHidden ? "ready" : "attention",
+      primary: !privateOperatorHidden,
+      actionLabel: privateOperatorHidden ? "Copy Gate" : "Public View",
+      action: privateOperatorHidden ? { type: "action", name: "copy-launch-gate" } : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Leads",
+      title: webhookReady ? "Lead delivery configured" : "Backend still required",
+      body: webhookReady
+        ? "Webhook is enabled; submit a test lead and confirm it arrives outside the browser before broad sharing."
+        : "Connect Zapier, Supabase, or another backend so public leads do not live only in local storage.",
+      status: webhookReady ? "ready" : "hold",
+      primary: !webhookReady,
+      actionLabel: "Delivery Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
+    },
+    {
+      label: "Admin",
+      title: "Production auth not connected",
+      body: "Demo guards exist, but broad public traffic requires real admin authentication for admin, capture, reports, exports, imports, backup, and webhook setup.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
+    },
+    {
+      label: "Backup",
+      title: backupCurrent ? "Backup current" : "Export backup",
+      body: backupCurrent
+        ? `Backup covers ${backupCount} leads from ${state.settings.lastBackupAt}.`
+        : `Export JSON before collecting the next public-facing batch of ${leadCount} saved records.`,
+      status: backupCurrent ? "ready" : "attention",
+      primary: !backupCurrent,
+      actionLabel: backupCurrent ? "Copy Closeout" : "Export Backup",
+      action: backupCurrent ? { type: "action", name: "copy-first-user-closeout" } : { type: "action", name: "export-backup" }
+    },
+    {
+      label: "Review",
+      title: "Legal and security review remain",
+      body: "Keep payments, deposits, title paperwork, bank/card data, sensitive identity documents, and final contracts outside Forge until human review passes.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    }
+  ];
+}
+
+function renderPublicLaunchGoNoGo() {
+  const target = document.querySelector("#publicLaunchGoNoGo");
+  if (!target) return;
+  const rows = publicLaunchGoNoGoRows();
+  const summary = publicLaunchGoNoGoSummary(rows);
+  target.innerHTML = `
+    <div class="public-launch-go-no-go-heading">
+      <div>
+        <span class="split-label">Public launch go / no-go receipt</span>
+        <h2>${escapeHtml(summary.title)}</h2>
+        <p class="muted">${escapeHtml(summary.body)}</p>
+      </div>
+      <button class="btn blue small" type="button" data-action="copy-public-launch-go-no-go">Copy Receipt</button>
+    </div>
+    <div class="public-launch-go-no-go-meter">
+      <article class="go">
+        <span>GO</span>
+        <strong>${escapeHtml(summary.goTitle)}</strong>
+        <p>${escapeHtml(summary.goBody)}</p>
+      </article>
+      <article class="hold">
+        <span>HOLD</span>
+        <strong>${escapeHtml(summary.holdTitle)}</strong>
+        <p>${escapeHtml(summary.holdBody)}</p>
+      </article>
+    </div>
+    <div class="public-launch-go-no-go-grid">
+      ${rows.map((row) => `
+        <article class="${escapeHtml(row.status)}">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${escapeHtml(row.title)}</strong>
+          <p>${escapeHtml(row.body)}</p>
+          <button class="btn ${row.primary ? "blue" : "ghost"} small" type="button" ${profileProofButtonAttrs(row.action)}>${escapeHtml(row.actionLabel)}</button>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function publicLaunchGoNoGoSummary(rows = publicLaunchGoNoGoRows()) {
+  const blockers = publicReadinessBlockers();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  return {
+    title: blockers.length ? "Controlled demos are GO. Broad public launch is HOLD." : "Controlled demos are ready. Public launch still needs human sign-off.",
+    body: `${readyCount}/${rows.length} launch proof gates read ready in the local MVP. Use this as an operator receipt, not legal or security approval.`,
+    goTitle: "Known first users",
+    goBody: "Show Forge to people Andrew can personally follow up with, capture one consented next action, keep payments off, and export backup after the outreach block.",
+    holdTitle: blockers.length ? `${blockers.length} public gates remain` : "Human review still required",
+    holdBody: blockers.length ? blockers[0] : "Run the final security and legal review before broad marketing, paid traffic, or stranger signups."
+  };
+}
+
+function publicLaunchGoNoGoRows() {
+  const leadCount = totalLeadCount();
+  const blockers = publicReadinessBlockers();
+  const webhookReady = state.settings.webhookEnabled && Boolean(state.settings.webhookUrl);
+  const deliveryStatus = state.settings.webhookLastStatus || "";
+  const deliveryPassed = webhookReady && deliveryStatus === "Sent";
+  const deliveryAttempted = webhookReady && ["Sent", "Attempted"].includes(deliveryStatus);
+  const backupCount = Number(state.settings.lastBackupLeadCount || 0);
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  const publicMode = Boolean(state.settings.publicMode);
+  return [
+    {
+      label: "GO today",
+      title: "Controlled first-user demos",
+      body: `Use with known people and personal follow-up only. Current first-user list: ${leadCount}/200.`,
+      status: "ready",
+      primary: true,
+      actionLabel: "Demo Paths",
+      action: { type: "nav", screen: "perspective" }
+    },
+    {
+      label: blockers.length ? "HOLD" : "Review",
+      title: "Broad public sharing",
+      body: blockers.length
+        ? `Do not share broadly yet. ${blockers.length} gate${blockers.length === 1 ? "" : "s"} remain; first blocker: ${blockers[0]}`
+        : "Local checks appear clear, but public marketing still waits on final human security and legal sign-off.",
+      status: blockers.length ? "hold" : "attention",
+      primary: false,
+      actionLabel: blockers.length ? "Copy Blockers" : "Security Pack",
+      action: blockers.length ? { type: "action", name: "copy-public-launch-blockers" } : { type: "action", name: "copy-security-review" }
+    },
+    {
+      label: "Proof",
+      title: deliveryPassed ? "Lead delivery sent" : deliveryAttempted ? "Lead delivery attempted" : webhookReady ? "Send delivery test" : "Backend delivery missing",
+      body: deliveryPassed
+        ? `${state.settings.webhookLastType || "Lead"} was sent at ${state.settings.webhookLastAt}. Confirm it exists in the destination before public traffic.`
+        : deliveryAttempted
+          ? `${deliveryStatus} at ${state.settings.webhookLastAt || "unknown time"}. Confirm the outside destination before broad sharing.`
+          : webhookReady
+            ? "Webhook is configured; run one test lead and verify it outside the browser."
+            : "Connect Zapier, Supabase, or another backend so public leads do not live only in local storage.",
+      status: deliveryPassed ? "ready" : deliveryAttempted ? "attention" : "hold",
+      primary: !deliveryAttempted,
+      actionLabel: "Delivery Drill",
+      action: { type: "action", name: "copy-lead-delivery-drill" }
+    },
+    {
+      label: "Proof",
+      title: "Production admin auth",
+      body: "Admin, capture, reports, exports, imports, backup, and webhook setup need a real host/backend auth gate before broad traffic.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Auth Drill",
+      action: { type: "action", name: "copy-admin-auth-drill" }
+    },
+    {
+      label: "Handoff",
+      title: backupCurrent && publicMode ? "Backup and Public View ready" : "Backup or Public View needs check",
+      body: backupCurrent && publicMode
+        ? `Backup covers ${backupCount} leads and Public View is on for handoff demos.`
+        : `${backupCurrent ? `Backup covers ${backupCount} leads.` : `Export backup for ${leadCount} saved leads.`} ${publicMode ? "Public View is on." : "Turn Public View on before handing the device over."}`,
+      status: backupCurrent && publicMode ? "ready" : "attention",
+      primary: !backupCurrent || !publicMode,
+      actionLabel: !backupCurrent ? "Export Backup" : publicMode ? "Copy Closeout" : "Public View",
+      action: !backupCurrent
+        ? { type: "action", name: "export-backup" }
+        : publicMode
+          ? { type: "action", name: "copy-first-user-closeout" }
+          : { type: "action", name: "toggle-public-mode" }
+    },
+    {
+      label: "Review",
+      title: "Legal and security review",
+      body: "Keep payments, deposits, title paperwork, bank/card data, sensitive documents, verified-provider claims, and final contracts outside Forge until review passes.",
+      status: "hold",
+      primary: false,
+      actionLabel: "Security Pack",
+      action: { type: "action", name: "copy-security-review" }
+    }
+  ];
 }
 
 function finalSecurityGateRows() {
@@ -11607,7 +14367,7 @@ function launchCommandRows() {
       needTouch: (state.flexLeads || []).filter((lead) => ["new", "qualified"].includes(lead.status)).length,
       contacted: (state.flexLeads || []).filter((lead) => ["contacted", "flex_link_sent"].includes(lead.status)).length,
       moving: (state.flexLeads || []).filter((lead) => ["application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"].includes(lead.status)).length,
-      next: "Confirm consent, review fit, and look for Forge or NorthStar upsell opportunities before any official Flex referral handoff.",
+      next: "Confirm consent, review the need inside Forge, and keep every future-partner gate closed while Flex remains inactive.",
       screen: "capital",
       action: "Capital Desk"
     },
@@ -12934,10 +15694,22 @@ function postJobFromForm() {
   const title = document.querySelector("#jobTitle").value.trim();
   const selectedCategory = document.querySelector("#jobCategory").value;
   const vertical = serviceVerticalForCategory(selectedCategory);
+  let nationwideLocation;
+  try {
+    nationwideLocation = forgeNationwideMarket.normalizeLocation({
+      city: fieldValue("#jobCity"),
+      state: fieldValue("#jobState"),
+      zip: fieldValue("#jobZip"),
+      county: fieldValue("#jobCounty")
+    });
+  } catch (error) {
+    showToast(error.message || "Choose a valid U.S. job location.");
+    return;
+  }
   const validation = forgeTradeCategorySchema.validateJob({
     title,
     category: selectedCategory,
-    location: document.querySelector("#jobLocation").value.trim(),
+    location: nationwideLocation.label,
     customer: document.querySelector("#customerName").value.trim()
   });
   if (!validation.ok) {
@@ -12946,6 +15718,7 @@ function postJobFromForm() {
   }
   const serviceDetails = vertical ? collectServiceDetails("data-service-job-field") : {};
   const photoSummary = selectedFileSummary("#jobPhotos", "photo");
+  const createdAt = new Date().toISOString();
   const job = {
     id: `${Date.now()}`,
     title,
@@ -12955,16 +15728,36 @@ function postJobFromForm() {
     serviceVerticalTitle: vertical?.title || "",
     serviceDetails,
     servicePhotoSummary: photoSummary,
-    location: document.querySelector("#jobLocation").value.trim(),
+    location: nationwideLocation.label,
+    city: nationwideLocation.city,
+    state: nationwideLocation.state,
+    zip: nationwideLocation.zip,
+    county: nationwideLocation.county,
+    marketSlug: nationwideLocation.marketSlug,
+    marketStatus: nationwideLocation.marketStatus,
+    customerAddress: fieldValue("#customerAddress"),
+    propertyType: fieldValue("#jobPropertyType") || "Other",
+    jobType: fieldValue("#jobType") || "One-time Job",
     urgency: document.querySelector("#jobUrgency").value,
+    preferredDate: fieldValue("#jobPreferredDate"),
+    preferredTime: fieldValue("#jobPreferredTime"),
     budget: document.querySelector("#jobBudget").value,
+    visibility: fieldValue("#jobVisibility") || "Public Marketplace",
+    invitedProviders: fieldValue("#jobInviteProviders"),
+    referenceFileSummary: fieldValue("#jobReferenceFiles"),
     bids: 0,
     status: vertical ? "Open for bids" : "New",
+    marketplaceStatus: "Published",
     posted: "Today",
     description: document.querySelector("#jobDescription").value.trim() || "New Forge job lead ready for bids.",
     customer: document.querySelector("#customerName").value.trim(),
     phone: document.querySelector("#customerPhone").value.trim(),
     email: document.querySelector("#customerEmail").value.trim(),
+    preferredContact: fieldValue("#customerPreferredContact") || "Phone",
+    followUpConsent: fieldChecked("#jobFollowUpConsent"),
+    termsAccepted: fieldChecked("#terms"),
+    consentCapturedAt: createdAt,
+    createdAt,
     notes: vertical ? `New ${vertical.title} lead from Forge MVP.` : "New lead from Forge MVP."
   };
   state.jobs.unshift(job);
@@ -12972,25 +15765,27 @@ function postJobFromForm() {
   addActivity(`New job lead posted: ${job.title} by ${job.customer}.`);
   state.lastConfirmation = {
     type: "job",
-    title: "Your job is posted.",
-    body: "Forge saved the job lead and added it to the available jobs and admin dashboard.",
+    title: "Your job is saved on this device.",
+    body: "Forge preserved the job in this browser and is checking whether server delivery is available.",
     details: [
       `${job.title} in ${job.location}`,
       `${job.budget} budget range`,
       `${job.urgency} timeline`,
+      `${job.jobType} · ${job.visibility}`,
+      `${job.preferredContact} preferred contact`,
       vertical ? `${vertical.title} · ${photoSummary}` : photoSummary
     ],
     nextSteps: [
-      "Forge saves this job to the local Admin queue",
-      "Workers can review the job and submit bids",
-      "Use Check Job Status to see bids and messages"
+      "Forge saved this job on this device before attempting delivery",
+      "Check the delivery receipt before expecting Forge follow-up",
+      "Retry or export the local copy if server delivery is unavailable"
     ],
     primary: { label: "View Job Detail", jobId: job.id },
-    secondary: { label: "Open Admin Leads", screen: "admin" }
+    secondary: { label: "Open Delivery Status", screen: "outbox" }
   };
   saveState();
   sendLead("job", job);
-  showToast("Job submitted. It is now live in Available Jobs and Admin.");
+  showToast("Job saved on this device. Checking delivery status.");
   document.querySelector("#postJobForm").reset();
   postStep = 1;
   navigate("confirm");
@@ -13041,7 +15836,7 @@ function submitBuildingLead() {
       lead.consentToShareWithApprovedPartners ? "Approved-partner sharing consent captured" : "No third-party sharing consent yet"
     ],
     nextSteps: [
-      lead.status === "HOME_PROJECT_REVIEW" ? "Review as a smaller home project and route to verified local pros when appropriate" : lead.status === "FLEX_REVIEW_ELIGIBLE" ? "Review as a contractor finance request inside Forge before any finance partner routing" : "Review as a Major Projects Review candidate",
+      lead.status === "HOME_PROJECT_REVIEW" ? "Review as a smaller home project and evaluate local provider candidates" : lead.status === "FLEX_REVIEW_ELIGIBLE" ? "Review as a contractor finance request inside Forge before any future finance-partner routing" : "Review as a Major Projects Review candidate",
       "Do not share customer data with Seneca, Flex, or any partner unless consent and approval flags are true",
       "Use Building Leads admin to qualify, request consent, or mark partner-review eligibility"
     ],
@@ -13061,11 +15856,9 @@ function canMarkBuildingSenecaEligible(lead) {
 }
 
 function canSendBuildingToSeneca(lead) {
-  const partner = senecaPartner();
   return canMarkBuildingSenecaEligible(lead)
     && Boolean(lead.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function canMarkBuildingFlexEligible(lead) {
@@ -13073,11 +15866,10 @@ function canMarkBuildingFlexEligible(lead) {
 }
 
 function canSendBuildingToFlex(lead) {
-  const partner = flexPartner();
   return canMarkBuildingFlexEligible(lead)
     && Boolean(lead.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && FLEX_PARTNER_ROUTING_ENABLED
+    && isFlexPartnerApproved();
 }
 
 function buildingPartnerReadinessText(lead) {
@@ -13180,7 +15972,7 @@ function submitCreativeLead() {
     ],
     nextSteps: [
       "Forge saves this as a photography_videography job lead",
-      "The operator can match the request with approved local creatives",
+      "The operator can review possible local creative providers",
       "Customer contact info is used only for booking and provider matching"
     ],
     primary: { label: "View Job Detail", jobId: lead.id },
@@ -13350,11 +16142,162 @@ function submitNorthStarLead() {
   navigate("confirm");
 }
 
+function createFlexRequestId() {
+  if (globalThis.crypto?.randomUUID) return `capital-${globalThis.crypto.randomUUID()}`;
+  return `capital-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+}
+
+function flexDeliveryLabel(stateValue) {
+  return ({
+    locally_preserved: "Saved on this device",
+    sending: "Checking Forge delivery",
+    delivered: "Delivered to Forge",
+    delivery_unavailable: "Forge delivery unavailable",
+    retryable_failure: "Delivery needs retry",
+    "rejected-requires-correction": "Correction required"
+  })[stateValue] || "Saved on this device";
+}
+
+function flexApiPayload(lead) {
+  return {
+    request_id: lead.request_id,
+    created_at: lead.created_at,
+    consent_captured_at: lead.consent_captured_at,
+    owner_name: lead.owner_name,
+    business_name: lead.business_name,
+    email: lead.email,
+    phone: lead.phone,
+    city: lead.city,
+    state: lead.state,
+    industry: lead.industry,
+    website: lead.website,
+    years_in_business: lead.years_in_business,
+    monthly_revenue_range: lead.monthly_revenue_range,
+    monthly_spend_range: lead.monthly_spend_range,
+    employee_count: lead.employee_count,
+    primary_need: lead.primary_need,
+    interested_in_forge_job_leads: lead.interested_in_forge_job_leads,
+    interested_in_north_star_marketing: lead.interested_in_north_star_marketing,
+    interested_in_payment_processing: lead.interested_in_payment_processing,
+    interested_in_website_crm_automation: lead.interested_in_website_crm_automation,
+    consent_to_contact: lead.consent_to_contact,
+    consent_to_receive_flex_referral: lead.consent_to_receive_flex_referral,
+    referral_source: "forge_capital_desk",
+    notes: lead.notes
+  };
+}
+
+function validFlexReceipt(body, lead) {
+  if (!body || body.contractVersion !== FLEX_RECEIPT_CONTRACT || body.ok !== true || body.status !== "delivered") return false;
+  if (body.requestId !== lead.request_id || !Array.isArray(body.storedIn) || body.storedIn.length < 1) return false;
+  const receivedAt = new Date(body.receivedAt);
+  return Number.isFinite(receivedAt.getTime()) && receivedAt.toISOString() === body.receivedAt;
+}
+
+function renderFlexDeliveryReceipt(lead) {
+  const facts = document.querySelector("#flexDeliveryReceipt");
+  const message = document.querySelector("#flexLeadSuccessMessage");
+  const retry = document.querySelector("#flexRetryDeliveryButton");
+  if (!facts || !message || !lead) return;
+  facts.innerHTML = `
+    <div><dt>Status</dt><dd>${escapeHtml(flexDeliveryLabel(lead.delivery_state))}</dd></div>
+    <div><dt>Request ID</dt><dd><code>${escapeHtml(lead.request_id)}</code></dd></div>
+    <div><dt>Attempts</dt><dd>${escapeHtml(String(lead.attempt_count || 0))} of 5</dd></div>
+    <div><dt>Referral</dt><dd>${isFlexPartnerApproved() ? "Eligible for operator review" : "Not active"}</dd></div>
+  `;
+  message.textContent = lead.delivery_state === "delivered"
+    ? "Forge verified delivery of this Capital Desk interest note. This is not a financing application and it was not sent to Flex."
+    : lead.delivery_state === "rejected-requires-correction"
+      ? "This request remains on this device, but it needs correction before Forge can accept delivery. It was not sent to Flex."
+      : "This request is preserved in this browser. Forge delivery is not verified, it has not been sent to Flex, and it is not a financing application.";
+  if (retry) {
+    retry.dataset.flexId = lead.id;
+    retry.classList.toggle("hidden", ["delivered", "rejected-requires-correction"].includes(lead.delivery_state) || Number(lead.attempt_count || 0) >= 5);
+  }
+}
+
+async function deliverFlexLead(id) {
+  if (flexDeliveryInFlight.has(id)) return flexDeliveryInFlight.get(id);
+  const lead = (state.flexLeads || []).find((item) => item.id === id);
+  if (!lead || Number(lead.attempt_count || 0) >= 5 || ["delivered", "rejected-requires-correction"].includes(lead.delivery_state)) return lead;
+  lead.delivery_state = "sending";
+  lead.attempt_count = Number(lead.attempt_count || 0) + 1;
+  lead.last_attempt_at = new Date().toISOString();
+  saveState();
+  renderCapitalPage();
+  renderFlexDeliveryReceipt(lead);
+
+  const delivery = (async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FLEX_DELIVERY_TIMEOUT_MS);
+    try {
+      const response = await fetch("/api/forge/flex-leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forge-Intent": "capital-desk-v1",
+          "X-Forge-Request-Id": lead.request_id
+        },
+        body: JSON.stringify(flexApiPayload(lead)),
+        signal: controller.signal
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.ok && validFlexReceipt(result, lead)) {
+        lead.delivery_state = "delivered";
+        lead.server_receipt = {
+          requestId: result.requestId,
+          receivedAt: result.receivedAt,
+          storedIn: result.storedIn
+        };
+      } else if ([400, 403, 413].includes(response.status)) {
+        lead.delivery_state = "rejected-requires-correction";
+        lead.failure_category = String(result.error || "INVALID_CAPITAL_DESK_REQUEST").slice(0, 80);
+      } else if (response.status === 503) {
+        lead.delivery_state = "delivery_unavailable";
+        lead.failure_category = "DURABLE_CAPITAL_DESK_DESTINATION_NOT_CONFIGURED";
+      } else {
+        lead.delivery_state = "retryable_failure";
+        lead.failure_category = "CAPITAL_DESK_DELIVERY_FAILED";
+      }
+    } catch {
+      lead.delivery_state = "retryable_failure";
+      lead.failure_category = "CAPITAL_DESK_NETWORK_FAILURE";
+    } finally {
+      clearTimeout(timer);
+    }
+    lead.updated_at = new Date().toISOString();
+    saveState();
+    renderCapitalPage();
+    const success = document.querySelector("#flexLeadSuccess");
+    if (success?.dataset.flexId === lead.id) renderFlexDeliveryReceipt(lead);
+    showToast(lead.delivery_state === "delivered"
+      ? "Delivered to Forge. This was not sent to Flex."
+      : lead.delivery_state === "rejected-requires-correction"
+        ? "Saved on this device. Delivery needs a correction."
+        : "Saved on this device. Forge delivery is not available yet.");
+    return lead;
+  })().finally(() => flexDeliveryInFlight.delete(id));
+  flexDeliveryInFlight.set(id, delivery);
+  return delivery;
+}
+
+function retryFlexDelivery(id) {
+  return deliverFlexLead(id);
+}
+
 function submitFlexLead() {
+  const capturedAt = new Date().toISOString();
   const lead = normalizeFlexLead({
     id: `flex-${Date.now()}`,
-    created_at: "Today",
-    updated_at: "Today",
+    request_id: createFlexRequestId(),
+    created_at: capturedAt,
+    updated_at: capturedAt,
+    consent_captured_at: capturedAt,
+    delivery_state: "locally_preserved",
+    attempt_count: 0,
+    last_attempt_at: "",
+    failure_category: "",
+    server_receipt: null,
     owner_name: fieldValue("#flexOwnerName"),
     business_name: fieldValue("#flexCompanyName"),
     email: fieldValue("#flexEmail"),
@@ -13383,28 +16326,27 @@ function submitFlexLead() {
   addActivity(`Flex Capital Desk lead saved: ${lead.business_name} (${lead.industry}) score ${lead.lead_score}.`);
   state.lastConfirmation = {
     type: "flex",
-    title: "Thank you.",
-    body: "Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.",
+    title: "Saved on this device.",
+    body: "Forge preserved this Capital Desk interest note in this browser before checking delivery. It has not been sent to Flex and is not a financing application.",
     details: [
       `${lead.business_name} · ${lead.industry}`,
-      `${lead.primary_need || "Need pending"} · score ${lead.lead_score}`,
-      lead.consent_to_receive_flex_referral ? "Flex referral consent captured" : "Flex referral consent not captured"
+      `${lead.primary_need || "Need pending"} · request ${lead.request_id}`,
+      "Future referral consent captured; Flex referral is not active"
     ],
     nextSteps: [
-      "Forge stores the basic lead and consent details",
-      "Use admin review before any official Flex referral link is opened",
-      "Flex handles eligibility, approval, onboarding, activation, and product support"
+      "Keep this browser copy until Forge delivery is verified",
+      "Use Capital Desk status to retry the same request ID safely",
+      "No Flex link or data sharing is allowed until every partner approval gate passes"
     ],
     primary: { label: "Open Capital Desk", screen: "capital" },
     secondary: { label: "Talk to Forge Capital Desk", screen: "capital" }
   };
   saveState();
-  sendLead("forge-flex", flexLeadWebhookPayload(lead));
-  sendConfiguredFlexWebhooks(lead);
   showFlexLeadSuccess(lead);
-  showToast("Capital Desk request received.");
+  showToast("Saved on this device. Checking Forge delivery now.");
   document.querySelector("#flexLeadForm").reset();
   renderCapitalPage();
+  deliverFlexLead(lead.id);
 }
 
 function showFlexLeadSuccess(lead) {
@@ -13414,7 +16356,12 @@ function showFlexLeadSuccess(lead) {
   if (!form || !success) return;
   form.classList.add("hidden");
   success.classList.remove("hidden");
-  if (continueButton) continueButton.href = flexReferralUrl();
+  success.dataset.flexId = lead.id;
+  if (continueButton) {
+    continueButton.href = isFlexPartnerApproved() ? configuredFlexReferralUrl() : "#";
+    continueButton.classList.add("hidden");
+  }
+  renderFlexDeliveryReceipt(lead);
   success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -13423,6 +16370,7 @@ function resetFlexForm() {
   const success = document.querySelector("#flexLeadSuccess");
   if (!form || !success) return;
   success.classList.add("hidden");
+  delete success.dataset.flexId;
   form.classList.remove("hidden");
   focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
 }
@@ -13946,6 +16894,13 @@ function currentStepValid() {
 }
 
 function loginAs(role, name, screen) {
+  if (role === "admin" && !operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    recordGuardedRoute(screen || "admin");
+    navigate("home");
+    showToast("Forge Admin is disabled on public deployments until server authentication is configured.");
+    return false;
+  }
   const account = demoAccounts.find((item) => item.role === role) || demoAccounts[0];
   state.session = {
     role: account.role,
@@ -13959,6 +16914,7 @@ function loginAs(role, name, screen) {
   saveState();
   navigate(screen || account.screen);
   showToast(`Logged in as ${state.session.name}.`);
+  return true;
 }
 
 function logout() {
@@ -13966,6 +16922,7 @@ function logout() {
   state.settings.publicMode = true;
   addActivity("Demo user logged out to Public View.");
   saveState();
+  clearDemoShortcut();
   navigate("home");
   showToast("Logged out. Public View is on.");
 }
@@ -14035,7 +16992,7 @@ function focusBuildingForm(leadType, projectType) {
 
 function configuredFlexAppUrl() {
   const url = String(FLEX_APP_URL || "").trim();
-  return /^https?:\/\//i.test(url) ? url : "";
+  return /^https:\/\//i.test(url) ? url : "";
 }
 
 function createPendingBuildingFinanceLead() {
@@ -14076,7 +17033,7 @@ function openBuildingFinanceReview() {
     }
     return;
   }
-  const url = configuredFlexAppUrl();
+  const url = isFlexPartnerApproved() ? configuredFlexAppUrl() : "";
   if (url) {
     window.open(url, "_blank", "noopener,noreferrer");
     showToast("Configured Flex app link opened.");
@@ -14209,12 +17166,24 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "export-projects") exportCsv("forge-project-leads.csv", state.projectLeads || []);
   if (action?.dataset.action === "export-bids") exportCsv("forge-bids.csv", state.bids);
   if (action?.dataset.action === "export-backup") exportBackup();
+  if (action?.dataset.action === "export-undelivered-outbox") exportUndeliveredOutbox();
+  if (action?.dataset.action === "retry-outbox") deliverOutboxRecord(action.dataset.outboxId);
+  if (action?.dataset.action === "request-remove-outbox") requestRemoveOutboxRecord(action.dataset.outboxId);
+  if (action?.dataset.action === "cancel-remove-outbox") cancelRemoveOutboxRecord();
+  if (action?.dataset.action === "confirm-remove-outbox") confirmRemoveOutboxRecord();
+  if (action?.dataset.action === "cancel-backup-import") cancelBackupImport();
+  if (action?.dataset.action === "confirm-backup-import") confirmBackupImport();
   if (action?.dataset.action === "toggle-public-mode") togglePublicMode();
   if (action?.dataset.action === "copy-daily-brief") copyDailyBrief();
   if (action?.dataset.action === "copy-delivery-status") copyDeliveryStatus();
+  if (action?.dataset.action === "copy-lead-delivery-drill") copyLeadDeliveryDrill();
   if (action?.dataset.action === "copy-backend-handoff") copyBackendHandoff();
   if (action?.dataset.action === "copy-auth-handoff") copyAuthHandoff();
+  if (action?.dataset.action === "copy-admin-auth-drill") copyAdminAuthDrill();
   if (action?.dataset.action === "copy-profile-command") copyProfileCommand();
+  if (action?.dataset.action === "copy-profile-status-receipt") copyProfileStatusReceipt();
+  if (action?.dataset.action === "copy-profile-perspective") copyProfilePerspective();
+  if (action?.dataset.action === "copy-profile-visibility") copyProfileVisibility();
   if (action?.dataset.action === "copy-profile-brief") copyProfileBrief();
   if (action?.dataset.action === "copy-profile-demo-handoff") copyProfileDemoHandoff();
   if (action?.dataset.action === "copy-profile-close-ask") copyProfileCloseAsk();
@@ -14222,13 +17191,20 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-follow-up-queue") copyFollowUpQueue();
   if (action?.dataset.action === "copy-safety-checklist") copySafetyChecklist();
   if (action?.dataset.action === "copy-launch-gate") copyLaunchGate();
+  if (action?.dataset.action === "copy-launch-show-plan") copyLaunchShowPlan();
   if (action?.dataset.action === "copy-launch-decision") copyLaunchDecision();
+  if (action?.dataset.action === "copy-public-launch-blockers") copyPublicLaunchBlockers();
+  if (action?.dataset.action === "copy-launch-security-sweep") copyLaunchSecuritySweep();
+  if (action?.dataset.action === "copy-public-launch-go-no-go") copyPublicLaunchGoNoGo();
   if (action?.dataset.action === "copy-launch-final-checklist") copyLaunchFinalChecklist();
+  if (action?.dataset.action === "copy-launch-run-order") copyLaunchRunOrder();
   if (action?.dataset.action === "copy-launch-send-board") copyLaunchSendBoard();
   if (action?.dataset.action === "copy-launch-send-link") copyLaunchSendLink(action.dataset.sendLane);
+  if (action?.dataset.action === "copy-launch-handoff-receipt") copyLaunchHandoffReceipt();
   if (action?.dataset.action === "copy-first-user-count") copyFirstUserCountBreakdown();
   if (action?.dataset.action === "copy-first-200-queue") copyFirst200LaunchQueue();
   if (action?.dataset.action === "copy-follow-up-audit") copyFollowUpAudit();
+  if (action?.dataset.action === "copy-launch-next-10-sprint") copyLaunchNext10Sprint();
   if (action?.dataset.action === "copy-soft-launch") copySoftLaunchPlan();
   if (action?.dataset.action === "copy-soft-launch-invite") copySoftLaunchInvite(action.dataset.inviteRole);
   if (action?.dataset.action === "copy-soft-launch-invite-kit") copySoftLaunchInviteKit();
@@ -14253,9 +17229,13 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-message-draft") copyMessageDraft();
   if (action?.dataset.action === "copy-message-handoff") copyMessageHandoff(action.dataset.threadId);
   if (action?.dataset.action === "copy-message-proof") copyMessageProof(action.dataset.threadId);
+  if (action?.dataset.action === "copy-message-bridge") copyMessageBridge(action.dataset.threadId);
+  if (action?.dataset.action === "copy-message-reply-kit") copyMessageReplyKit(action.dataset.threadId);
   if (action?.dataset.action === "copy-demo-script") copyDemoScript();
   if (action?.dataset.action === "copy-demo-cue") copyDemoCue(action.dataset.demoCueRole);
   if (action?.dataset.action === "copy-demo-pack") copyDemoPack();
+  if (action?.dataset.action === "copy-perspective-switch-rail") copyPerspectiveSwitchRail();
+  if (action?.dataset.action === "copy-phone-fast-pass") copyPhoneFastPass();
   if (action?.dataset.action === "copy-launch-receipt") copyLaunchReceipt();
   if (action?.dataset.action === "copy-close-ask") copyCloseAsk();
   if (action?.dataset.action === "copy-confirmation-handoff") copyConfirmationHandoff();
@@ -14282,12 +17262,14 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-northstar-queue") copyNorthStarQueue();
   if (action?.dataset.action === "copy-northstar-lead") copyNorthStarLead(action.dataset.northstarId);
   if (action?.dataset.action === "focus-flex-form") focusAutoPanel("#flexLeadFormSection", "#flexOwnerName");
+  if (action?.dataset.action === "focus-flex-readiness") focusAutoPanel("#flexReadinessSection", null);
   if (action?.dataset.action === "copy-flex-brief") copyFlexBrief();
   if (action?.dataset.action === "copy-flex-queue") copyFlexQueue();
   if (action?.dataset.action === "copy-flex-outreach") copyFlexOutreach(action.dataset.flexId);
   if (action?.dataset.action === "open-flex-referral") openFlexReferral(action.dataset.flexLeadId);
   if (action?.dataset.action === "create-flex-upsell-task") createFlexUpsellTask(action.dataset.flexId);
   if (action?.dataset.action === "reset-flex-form") resetFlexForm();
+  if (action?.dataset.action === "retry-flex-delivery") retryFlexDelivery(action.dataset.flexId);
   if (action?.dataset.action === "mark-flex-status") markFlexStatus(action.dataset.flexId, action.dataset.flexStatusValue);
   if (action?.dataset.action === "focus-manufacturing-rfq") focusAutoPanel("#manufacturingRfqForm", "#manufacturingProductType");
   if (action?.dataset.action === "focus-manufacturing-supplier") focusAutoPanel("#manufacturingSupplierForm", "#manufacturingSupplierCompany");
@@ -14367,13 +17349,29 @@ document.addEventListener("click", (event) => {
   if (action?.dataset.action === "copy-worker-template") copyText(workerTemplate(state.workers[0]), "Worker follow-up copied.");
   if (action?.dataset.action === "copy-job-direct") copyJobDirect(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-flow-brief") copyJobFlowBrief(action.dataset.jobId);
+  if (action?.dataset.action === "copy-job-handoff-rail") copyJobHandoffRail(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-proof-ticket") copyJobProofTicket(action.dataset.jobId);
   if (action?.dataset.action === "copy-detail-handoff") copyDetailHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-job-closeout") copyJobCloseout(action.dataset.jobId);
+  if (action?.dataset.action === "copy-demo-close-loop") copyDemoCloseLoop(action.dataset.jobId || state.activeJobId);
   if (action?.dataset.action === "copy-bid-handoff") copyBidHandoff(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-proof") copyStatusProofSummary(action.dataset.jobId);
+  if (action?.dataset.action === "copy-status-message-bridge") copyStatusMessageBridge(action.dataset.jobId);
   if (action?.dataset.action === "copy-status-handoff") copyStatusHandoff(action.dataset.jobId);
+  if (action?.dataset.action === "copy-worker-opportunity-bridge") copyWorkerOpportunityBridge(action.dataset.workerName);
   if (action?.dataset.action === "copy-worker-direct") copyWorkerDirect(action.dataset.workerEmail);
+  if (action?.dataset.action === "revise-bid") reviseBid(action.dataset.bidId);
+  if (action?.dataset.action === "withdraw-bid") withdrawBid(action.dataset.bidId);
+  if (action?.dataset.action === "mark-job-awaiting-approval") setJobLifecycleStatus(action.dataset.jobId, "Awaiting Approval", "Job marked complete and awaiting customer approval.");
+  if (action?.dataset.action === "confirm-job-complete") setJobLifecycleStatus(action.dataset.jobId, "Completed", "Job marked completed.");
+  if (action?.dataset.action === "open-job-dispute") setJobLifecycleStatus(action.dataset.jobId, "Disputed", "Job moved to disputed status.");
+  if (action?.dataset.action === "copy-marketplace-job") copyMarketplaceJob(action.dataset.jobId);
+  if (action?.dataset.action === "copy-marketplace-command") copyMarketplaceCommand();
+  if (action?.dataset.action === "request-provider-quote") requestProviderQuote(action.dataset.workerEmail);
+  if (action?.dataset.action === "invite-provider-to-job") inviteProviderToJob(action.dataset.workerEmail);
+  if (action?.dataset.action === "save-provider") saveProvider(action.dataset.workerEmail);
+  if (action?.dataset.action === "copy-auth-prototype") copyAuthPrototype();
+  if (action?.dataset.action === "start-company-profile") startCompanyProfile();
   if (action?.dataset.action === "copy-referral-direct") copyReferralDirect(action.dataset.referralId);
   if (action?.dataset.action === "copy-homebuilding-lead") copyHomebuildingLead(action.dataset.homebuildingId);
   if (action?.dataset.action === "send-homebuilding-seneca") sendHomebuildingToSeneca(action.dataset.homebuildingId);
@@ -14421,6 +17419,13 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.addEventListener("submit", (event) => {
+  if (event.target.matches("#accountSignupForm")) submitLocalAccountSignup(event);
+  if (event.target.matches("#customerProfileForm")) submitCustomerProfile(event);
+  if (event.target.matches("#admitlyStudentInterestForm")) submitAdmitlyStudentInterest(event);
+  if (event.target.matches("#admitlyEducatorInterestForm")) submitAdmitlyEducatorInterest(event);
+});
+
 function suggestedBidIndex(bids) {
   if (!bids.length) return -1;
   return bids.reduce((bestIndex, bid, index) => {
@@ -14466,7 +17471,8 @@ function chooseBidForJob(jobId, bidIndex) {
   bids.forEach((bid) => bid.chosen = false);
   selectedBid.chosen = true;
   selectedBid.status = "Selected";
-  job.status = (isServiceVerticalJob(job) || isManufacturingJob(job)) ? "Provider selected" : "In Progress";
+  job.status = "Provider Selected";
+  job.marketplaceStatus = "Provider Selected";
   if (job.manufacturingRfqId) {
     const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === job.manufacturingRfqId);
     if (rfq) rfq.status = "Manufacturing selected";
@@ -14498,6 +17504,56 @@ function chooseBidForJob(jobId, bidIndex) {
   saveState();
   showToast(`Bid chosen. Job moved to ${job.status}.`);
   navigate("confirm");
+}
+
+function reviseBid(bidId) {
+  const bid = state.bids.find((item) => item.id === bidId);
+  const job = bid ? state.jobs.find((item) => item.id === bid.jobId) : null;
+  if (!bid || !job) return;
+  state.activeJobId = job.id;
+  navigate("bid");
+  setTimeout(() => {
+    setFieldValue("#bidJobSelect", job.title);
+    setFieldValue("#bidWorkerName", bid.worker);
+    setFieldValue("#bidAmount", bid.amount);
+    setFieldValue("#bidTimeline", bid.timeline);
+    setFieldValue("#bidEarliestAvailability", bid.earliestAvailability);
+    setFieldValue("#bidDuration", bid.estimatedDuration);
+    setFieldValue("#bidStartDate", bid.estimatedStartDate);
+    setFieldValue("#bidCompletionDate", bid.estimatedCompletionDate);
+    setFieldValue("#bidCrewCount", bid.crewMembers);
+    setFieldValue("#bidLaborLineItems", bid.laborLineItems);
+    setFieldValue("#bidMaterialLineItems", bid.materialLineItems);
+    setFieldValue("#bidExclusions", bid.exclusions);
+    setFieldValue("#bidPaymentMilestones", bid.paymentMilestones);
+    setFieldValue("#bidValidUntil", bid.validUntil);
+    setFieldValue("#bidQuoteVersion", `revision of ${bid.quoteVersion || "v1"}`);
+    setFieldValue("#bidMessage", bid.message);
+    showToast("Quote loaded for revision. Submit to save a new version.");
+  }, 50);
+}
+
+function withdrawBid(bidId) {
+  const bid = state.bids.find((item) => item.id === bidId);
+  if (!bid) return;
+  bid.status = "Withdrawn";
+  bid.chosen = false;
+  const job = state.jobs.find((item) => item.id === bid.jobId);
+  addActivity(`Quote withdrawn: ${bid.worker}${job ? ` for ${job.title}` : ""}.`);
+  saveState();
+  render();
+  showToast("Quote withdrawn.");
+}
+
+function setJobLifecycleStatus(jobId, status, message) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  job.status = status;
+  job.marketplaceStatus = status;
+  addActivity(`${job.title} moved to ${status}.`);
+  saveState();
+  render();
+  showToast(message || `Job moved to ${status}.`);
 }
 
 document.addEventListener("change", (event) => {
@@ -14704,6 +17760,24 @@ document.addEventListener("change", (event) => {
 });
 
 document.querySelector("#backupImport").addEventListener("change", importBackup);
+document.querySelector("#backupReviewDialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  cancelBackupImport();
+});
+document.querySelector("#backupReviewDialog").addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  event.preventDefault();
+  cancelBackupImport();
+});
+document.querySelector("#outboxRemoveDialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  cancelRemoveOutboxRecord();
+});
+document.querySelector("#outboxRemoveDialog").addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  event.preventDefault();
+  cancelRemoveOutboxRecord();
+});
 document.querySelector("#manufacturingSupplierCsvInput").addEventListener("change", importManufacturingSupplierCsv);
 
 document.addEventListener("input", (event) => {
@@ -15031,7 +18105,7 @@ document.querySelector("#autoServiceForm").addEventListener("submit", (event) =>
     title: request.service === "Find Me a Vehicle" ? "Vehicle buyer request saved." : "Auto service request saved.",
     body: request.service === "Find Me a Vehicle"
       ? "Forge saved this buyer-concierge request for S&A Auto or an approved seller-of-record path to review."
-      : "Forge saved this vehicle request so the operator can route it to the right trusted auto partner.",
+      : "Forge saved this vehicle request so the operator can review possible local auto providers.",
     details: [
       `${request.name} · ${request.service}`,
       `${request.vehicle} · ${request.mileage}`,
@@ -15039,7 +18113,7 @@ document.querySelector("#autoServiceForm").addEventListener("submit", (event) =>
     ],
     nextSteps: [
       request.service === "Find Me a Vehicle" ? "Forge saves the request in the S&A Auto buyer pipeline" : "Forge saves the request in the Auto service queue",
-      "The operator routes it to a trusted mechanic, auto partner, transport provider, or dealer partner",
+      "The operator reviews possible mechanics, transport providers, or dealer candidates",
       "Licensed or qualified partners perform regulated sales, financing, repair, towing, transport, and insurance-related work where required"
     ],
     primary: { label: "Open Forge Auto", screen: "auto" },
@@ -15114,8 +18188,8 @@ document.querySelector("#roadRescueForm").addEventListener("submit", (event) => 
   addActivity(`Road Rescue request saved: ${request.name} needs ${roadRescueIssueSummary(request)} near ${request.location}.`);
   state.lastConfirmation = {
     type: "road-rescue",
-    title: "Forge Road Rescue received your request.",
-    body: "Forge Road Rescue received your request. If this is an emergency or anyone is hurt, call 911 now. We are checking for available local providers who can help with your roadside, tire, tow, wheel, or mechanic issue. Please stay in a safe location and upload photos if you can.",
+    title: "Forge Road Rescue saved your request on this device.",
+    body: "Forge Road Rescue saved your request in this browser. Delivery is not confirmed. If this is an emergency or anyone is hurt, call 911 now. Please stay in a safe location while you review the delivery status.",
     details: [
       `${request.name} · ${roadRescueIssueSummary(request)}`,
       `${request.location} · ${request.serviceRequested}`,
@@ -15420,6 +18494,45 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     selectedVertical?.categories?.[0],
     categoryLabel(fieldValue("#workerTrade"))
   ].filter((category) => forgeTradeCategorySchema.acceptsCategory(category)));
+  const profileType = fieldValue("#workerProfileType") || "Individual Worker";
+  const companyName = fieldValue("#workerCompanyName") || profileDetails.businessName || "";
+  const logoSummary = fieldValue("#workerLogo") || "No public logo link supplied";
+  const coverSummary = fieldValue("#workerCover") || "No public portfolio gallery supplied";
+  let nationwideProfile;
+  try {
+    nationwideProfile = forgeNationwideMarket.normalizeContractor({
+      profileType,
+      displayName: companyName || document.querySelector("#workerName").value.trim(),
+      legalBusinessName: companyName,
+      contactMethod: "Forge Message",
+      city: fieldValue("#workerCity"),
+      state: fieldValue("#workerState"),
+      zip: fieldValue("#workerZip"),
+      serviceRadiusMiles: Number(fieldValue("#workerServiceRadius")),
+      primaryServiceArea: fieldValue("#workerPrimaryServiceArea"),
+      additionalServiceAreas: fieldValue("#workerAdditionalServiceAreas"),
+      travelAvailability: fieldValue("#workerTravelAvailability"),
+      remoteAvailability: fieldValue("#workerTravelAvailability") === "Remote services only" ? "Remote" : "On-site",
+      services: selectedTradeCategories.length ? selectedTradeCategories : [document.querySelector("#workerTrade").value.trim()],
+      projectTypes: [fieldValue("#workerProfileType"), fieldValue("#workerTrade")],
+      residentialCommercial: "Residential and commercial",
+      licenseNumber: fieldValue("#workerLicenseNumber"),
+      licenseState: fieldValue("#workerLicenseState"),
+      selfReportedLicenseStatus: fieldValue("#workerLicenseStatus"),
+      selfReportedInsuranceStatus: fieldValue("#workerInsuranceStatus"),
+      yearsExperience: Number(fieldValue("#workerYearsExperience")),
+      crewSize: Number(fieldValue("#workerCrewSize")),
+      typicalProjectSize: fieldValue("#workerTypicalProjectSize"),
+      availability: fieldValue("#workerOperatingHours") || "Availability supplied during follow-up",
+      portfolioLink: fieldValue("#workerPortfolioLink"),
+      consent: fieldChecked("#workerFollowUpConsent"),
+      privacyAcknowledged: fieldChecked("#workerTerms")
+    });
+  } catch (error) {
+    showToast(error.message || "Review the contractor service area fields.");
+    return;
+  }
+  const verificationState = nationwideProfile.trustState;
   const providerValidation = forgeTradeCategorySchema.validateProvider({
     name: document.querySelector("#workerName").value.trim(),
     phone: document.querySelector("#workerPhone").value.trim(),
@@ -15438,21 +18551,55 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     phone: document.querySelector("#workerPhone").value.trim(),
     email: document.querySelector("#workerEmail").value.trim(),
     experience: document.querySelector("#workerExperience").value,
-    area: profileDetails.serviceArea || document.querySelector("#workerArea").value,
-    serviceArea: profileDetails.serviceArea || document.querySelector("#workerArea").value,
-    businessName: profileDetails.businessName || "",
+    area: nationwideProfile.primaryServiceArea,
+    serviceArea: nationwideProfile.primaryServiceArea,
+    primaryServiceArea: nationwideProfile.primaryServiceArea,
+    additionalServiceAreas: [...nationwideProfile.additionalServiceAreas],
+    city: nationwideProfile.location.city,
+    state: nationwideProfile.location.state,
+    zip: nationwideProfile.location.zip,
+    marketSlug: nationwideProfile.location.marketSlug,
+    marketStatus: nationwideProfile.location.marketStatus,
+    serviceRadiusMiles: nationwideProfile.serviceRadiusMiles,
+    travelAvailability: nationwideProfile.travelAvailability,
+    profileType,
+    businessName: companyName,
+    profileSlug: fieldValue("#workerProfileSlug"),
+    logoSummary,
+    coverSummary,
     ownerName: profileDetails.ownerName || document.querySelector("#workerName").value.trim(),
     contactMethod: profileDetails.contactMethod || "",
-    availability: profileDetails.availability || "",
-    licenseStatus: profileDetails.licenseStatus || "",
-    insuranceStatus: profileDetails.insuranceStatus || "",
+    availability: profileDetails.availability || fieldValue("#workerOperatingHours"),
+    operatingHours: fieldValue("#workerOperatingHours"),
+    emergencyAvailability: fieldValue("#workerEmergencyAvailability"),
+    licenseNumber: nationwideProfile.licenseNumber,
+    licenseState: nationwideProfile.licenseState,
+    licenseStatus: nationwideProfile.selfReportedLicenseStatus,
+    insuranceStatus: nationwideProfile.selfReportedInsuranceStatus,
+    licenseNotes: fieldValue("#workerCertifications"),
+    insuranceNotes: fieldValue("#workerInsuranceNotes"),
+    certifications: fieldValue("#workerCertifications"),
+    minimumJobSize: fieldValue("#workerMinimumJobSize"),
+    pricingType: fieldValue("#workerPricingType") || "Estimate After Review",
+    portfolioSummary: fieldValue("#workerPortfolioSummary"),
+    portfolioLink: nationwideProfile.portfolioLink,
+    yearsExperience: nationwideProfile.yearsExperience,
+    crewSize: nationwideProfile.crewSize,
+    typicalProjectSize: nationwideProfile.typicalProjectSize,
+    teamMembers: fieldValue("#workerTeamMembers"),
+    equipment: fieldValue("#workerEquipment"),
+    warrantyPolicy: fieldValue("#workerWarranty"),
+    paymentMethods: fieldValue("#workerPaymentMethods"),
+    verificationState,
+    trustState: verificationState,
+    verificationClaimAllowed: false,
     serviceVertical: selectedVertical?.id || "",
     serviceVerticalTitle: selectedVertical?.title || "",
     providerCategory: selectedVertical?.id || selectedTradeCategories[0] || "",
     category: selectedTradeCategories[0] || selectedVertical?.categories?.[0] || "",
     tradeCategories: selectedTradeCategories,
     providerCategories: selectedTradeCategories,
-    providerType: fieldValue("#workerProviderType") || selectedVertical?.providerTypes?.[0] || "",
+    providerType: fieldValue("#workerProviderType") || profileType || selectedVertical?.providerTypes?.[0] || "",
     profileDetails,
     tags: providerTags,
     businessSize,
@@ -15462,6 +18609,8 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     termsAccepted: fieldChecked("#workerTerms"),
     privacyAcknowledged: fieldChecked("#workerTerms"),
     earlyAccessAcknowledged: fieldChecked("#workerTerms"),
+    consentCapturedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     status: "New"
   };
   const existingWorker = state.workers.findIndex((worker) => worker.email.toLowerCase() === state.worker.email.toLowerCase());
@@ -15475,12 +18624,14 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
   addActivity(`New worker lead saved: ${state.worker.name} (${state.worker.trade}).`);
   state.lastConfirmation = {
     type: "worker",
-    title: "Your worker profile is on the early list.",
-    body: "Forge saved this worker lead so the team can follow up when jobs start moving.",
+    title: "Your worker profile is saved on this device.",
+    body: "Forge preserved this worker lead in this browser and is checking whether server delivery is available.",
     details: [
       `${state.worker.name} · ${state.worker.trade}`,
+      `${state.worker.profileType} · ${state.worker.businessName || "personal profile"}`,
       `${state.worker.area} service area`,
       `${state.worker.experience} experience`,
+      `${state.worker.verificationState} · ${state.worker.pricingType}`,
       selectedVertical ? `${selectedVertical.title} · ${state.worker.providerType || "Provider"}` : "General Forge worker",
       `${businessSize} · ${northStarMarketingNeed}`,
       state.worker.followUpConsent ? "Follow-up consent captured" : "Follow-up consent missing",
@@ -15489,19 +18640,19 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
       providerFlexLead ? "Capital Desk follow-up flagged" : "No Capital Desk follow-up selected"
     ],
     nextSteps: [
-      "Forge saves your worker profile for early access",
-      "Profile Status shows readiness, trust notes, and follow-up status",
-      "Admin can follow up when local jobs fit your trade",
+      "Forge saved your worker profile on this device before attempting delivery",
+      "Check the delivery receipt before expecting Forge follow-up",
+      "Retry or export the local copy if server delivery is unavailable",
       providerNorthStarLead ? "North Star Creative Co. can review your website, Google, ads, CRM, and follow-up needs" : "Use the provider dashboard if you want North Star growth help later",
       providerFlexLead ? "Forge Capital Desk can follow up before any Flex referral link is sent" : "Open Worker Dashboard to browse jobs and submit bids"
     ],
     primary: { label: "Open Profile Status", loginRole: "worker", loginName: state.worker.name, loginScreen: "profile" },
-    secondary: { label: "Open Worker Dashboard", loginRole: "worker", loginName: state.worker.name, loginScreen: "worker" }
+    secondary: { label: "Open Delivery Status", screen: "outbox" }
   };
   saveState();
   sendLead("worker", state.worker);
   if (providerNorthStarLead) sendLead("northstar", providerNorthStarLead);
-  showToast("Worker profile created.");
+  showToast("Worker profile saved on this device. Checking delivery status.");
   navigate("confirm");
 });
 
@@ -15516,7 +18667,15 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     timeline: document.querySelector("#bidTimeline").value.trim(),
     earliestAvailability: fieldValue("#bidEarliestAvailability"),
     estimatedDuration: fieldValue("#bidDuration"),
+    estimatedStartDate: fieldValue("#bidStartDate"),
+    estimatedCompletionDate: fieldValue("#bidCompletionDate"),
     crewMembers: fieldValue("#bidCrewCount"),
+    laborLineItems: fieldValue("#bidLaborLineItems"),
+    materialLineItems: fieldValue("#bidMaterialLineItems"),
+    exclusions: fieldValue("#bidExclusions"),
+    paymentMilestones: fieldValue("#bidPaymentMilestones"),
+    validUntil: fieldValue("#bidValidUntil"),
+    quoteVersion: fieldValue("#bidQuoteVersion") || "v1",
     materialsIncluded: fieldValue("#bidMaterialsIncluded"),
     suppliesIncluded: fieldValue("#bidSuppliesIncluded"),
     equipmentIncluded: fieldValue("#bidEquipmentIncluded"),
@@ -15533,7 +18692,7 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     manufacturingTestingCost: fieldValue("#bidManufacturingTestingCost"),
     manufacturingLeadTime: fieldValue("#bidManufacturingLeadTime"),
     manufacturingProductionTimeline: fieldValue("#bidManufacturingProductionTimeline"),
-    manufacturingPaymentTerms: fieldValue("#bidManufacturingPaymentTerms"),
+    manufacturingPaymentTerms: fieldValue("#bidManufacturingPaymentTerms") || fieldValue("#bidManufacturingTerms"),
     manufacturingCertifications: fieldValue("#bidManufacturingCertifications"),
     manufacturingTestingIncluded: fieldValue("#bidManufacturingTestingIncluded"),
     manufacturingFormulationIncluded: fieldValue("#bidManufacturingFormulationIncluded"),
@@ -15549,9 +18708,9 @@ document.querySelector("#bidForm").addEventListener("submit", (event) => {
     chosen: false
   };
   state.bids.unshift(bid);
-  selectedJob.bids += 1;
-  if ((isServiceVerticalJob(selectedJob) || isManufacturingJob(selectedJob)) && ["Open for bids", "New"].includes(selectedJob.status)) selectedJob.status = "Bid submitted";
-  else if (selectedJob.status === "New") selectedJob.status = "Matching";
+  selectedJob.bids = Number(selectedJob.bids || 0) + 1;
+  if (["Open for bids", "New", "Published"].includes(selectedJob.status)) selectedJob.status = "Receiving Quotes";
+  selectedJob.marketplaceStatus = "Receiving Quotes";
   if (selectedJob.manufacturingRfqId) {
     const rfq = (state.manufacturingRfqs || []).find((lead) => lead.id === selectedJob.manufacturingRfqId);
     if (rfq && ["Request received", "Sourcing manufacturers"].includes(rfq.status)) rfq.status = "Awaiting bids";
@@ -15657,9 +18816,11 @@ document.querySelector("#quickLeadForm").addEventListener("submit", (event) => {
 
 const initial = initialScreen();
 const demoRole = new URLSearchParams(location.search).get("demo");
-const demoAccount = demoAccounts.find((account) => account.role === demoRole);
+stripPublicAdminShortcut();
+const requestedDemoAccount = demoAccounts.find((account) => account.role === demoRole);
+const demoAccount = requestedDemoAccount?.role === "admin" && !operatorDemoAllowed() ? null : requestedDemoAccount;
+enforcePublicOperatorBoundary();
 expireAdminSession(demoAccount);
-render();
 if (demoAccount) {
   const landing = screenExists(initial) ? initial : demoAccount.screen;
   loginAs(demoAccount.role, demoAccount.name, landing);
@@ -15678,11 +18839,35 @@ function initialScreen() {
 }
 
 function expireAdminSession(demoAccount) {
+  if (!operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    return;
+  }
   if (demoAccount?.role === "admin" || state.session.role !== "admin") return;
   state.session = structuredClone(seedState.session);
   state.settings.publicMode = true;
   addActivity("Admin session expired on fresh public load.");
   saveState();
+}
+
+function enforcePublicOperatorBoundary() {
+  if (operatorDemoAllowed()) return;
+  const unsafeSession = state.session?.role === "admin";
+  const unsafeView = state.settings?.publicMode !== true;
+  if (unsafeSession) state.session = structuredClone(seedState.session);
+  state.settings.publicMode = true;
+  if (unsafeSession || unsafeView) saveState();
+}
+
+function stripPublicAdminShortcut() {
+  if (operatorDemoAllowed() || demoRole !== "admin") return;
+  clearDemoShortcut();
+}
+
+function clearDemoShortcut() {
+  const url = new URL(location.href);
+  url.searchParams.delete("demo");
+  history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
 function exportCsv(filename, rows) {
@@ -15705,7 +18890,7 @@ function exportCsv(filename, rows) {
 }
 
 function csvCell(value) {
-  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+  return ForgeCsv.cell(value);
 }
 
 async function importManufacturingSupplierCsv(event) {
@@ -15845,7 +19030,7 @@ function saveWebhookSettings() {
 
 function sendTestWebhook() {
   saveWebhookSettings();
-  addActivity("Webhook test lead sent from Admin.");
+  addActivity("Synthetic webhook connectivity test started from local Admin.");
   saveState();
   sendLead("test", {
     source: "Forge MVP",
@@ -15855,70 +19040,171 @@ function sendTestWebhook() {
 }
 
 async function sendLead(type, payload) {
-  if (!state.settings.webhookEnabled || !state.settings.webhookUrl) {
+  if (["job", "worker"].includes(type)) {
+    await sendDurableLead(type, payload);
+    return;
+  }
+  if (type !== "test" || !operatorDemoAllowed() || !state.settings.webhookEnabled || !state.settings.webhookUrl) {
     updateWebhookDelivery("Local only", type);
     return;
   }
+  const endpoint = String(state.settings.webhookUrl || "").trim();
+  if (!/^https:\/\//i.test(endpoint) && !/^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?\//i.test(endpoint)) {
+    updateWebhookDelivery("Rejected", type);
+    showToast("Synthetic test endpoint must use HTTPS or local development.");
+    return;
+  }
   const body = JSON.stringify({ type, payload, app: "Forge MVP", createdAt: new Date().toISOString() });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8_000);
   try {
-    await fetch(state.settings.webhookUrl, {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body
+      body,
+      signal: controller.signal
     });
-    updateWebhookDelivery("Sent", type);
-    addActivity(`${type} lead sent to webhook.`);
+    if (!response.ok) throw new Error("Synthetic endpoint test failed");
+    updateWebhookDelivery("Synthetic test reached endpoint", type);
+    addActivity("Synthetic webhook connectivity test reached the configured operator endpoint.");
     saveState();
-    showToast("Lead sent to webhook.");
+    showToast("Synthetic connectivity test completed.");
   } catch {
-    try {
-      await fetch(state.settings.webhookUrl, { method: "POST", mode: "no-cors", body });
-      updateWebhookDelivery("Attempted", type);
-      addActivity(`${type} lead attempted via webhook.`);
-      saveState();
-      showToast("Lead sent to webhook.");
-    } catch {
-      updateWebhookDelivery("Failed", type);
-      addActivity(`${type} lead saved locally; webhook failed.`);
-      saveState();
-      showToast("Lead saved locally. Webhook did not respond.");
-    }
+    updateWebhookDelivery("Failed", type);
+    addActivity("Synthetic webhook connectivity test failed without sending user lead data.");
+    saveState();
+    showToast("Synthetic connectivity test failed.");
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-function sendConfiguredFlexWebhooks(lead) {
-  const payload = flexLeadWebhookPayload(lead);
-  [
-    ["FORGE_GHL_WEBHOOK_URL", FORGE_GHL_WEBHOOK_URL],
-    ["FORGE_ZAPIER_WEBHOOK_URL", FORGE_ZAPIER_WEBHOOK_URL]
-  ].forEach(([label, url]) => {
-    if (!url) return;
-    postConfiguredLeadWebhook(label, url, payload);
-  });
+const durableLeadInFlight = new Map();
+const DURABLE_LEAD_CLIENT_TIMEOUT_MS = 10_000;
+
+function outboxRecord(requestId) {
+  return (state.leadOutbox || []).find((record) => record.requestId === requestId) || null;
 }
 
-async function postConfiguredLeadWebhook(label, url, payload) {
-  try {
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    addActivity(`Capital Desk lead sent to ${label}.`);
-    updateWebhookDelivery("Sent", label);
-    saveState();
-  } catch {
-    try {
-      await fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-      addActivity(`Capital Desk lead attempted via ${label}.`);
-      updateWebhookDelivery("Attempted", label);
-      saveState();
-    } catch {
-      addActivity(`Capital Desk lead saved locally; ${label} failed.`);
-      updateWebhookDelivery("Failed", label);
-      saveState();
-    }
+function replaceOutboxRecord(updated) {
+  state.leadOutbox = (state.leadOutbox || []).map((record) => record.requestId === updated.requestId ? updated : record);
+  state.leadOutbox = ForgeLeadOutbox.prune(state.leadOutbox);
+}
+
+function syncLeadReceipt(record) {
+  const collection = record.type === "job" ? state.jobs : state.workers;
+  const lead = collection.find((item) => item.outboxRequestId === record.requestId);
+  if (!lead) return;
+  lead.deliveryState = record.deliveryState;
+  lead.deliveryAttemptCount = record.attemptCount;
+  if (record.serverReceipt) {
+    lead.serverReceiptId = record.serverReceipt.requestId;
+    lead.serverReceivedAt = record.serverReceipt.receivedAt;
   }
+}
+
+function queueDurableLead(type, payload) {
+  let queued;
+  try {
+    queued = ForgeLeadOutbox.enqueue(state.leadOutbox || [], type, payload);
+  } catch (error) {
+    const message = error?.code === "OUTBOX_CAPACITY"
+      ? error.message
+      : "This lead needs correction before Forge can prepare delivery.";
+    updateWebhookDelivery("Local only", type);
+    addActivity(`${humanize(type)} lead kept locally; delivery outbox rejected the record safely.`);
+    saveState();
+    showToast(message);
+    return Promise.resolve(null);
+  }
+  state.leadOutbox = queued.records;
+  payload.outboxRequestId = queued.record.requestId;
+  payload.deliveryState = queued.record.deliveryState;
+  if (state.lastConfirmation) state.lastConfirmation.deliveryRequestId = queued.record.requestId;
+  if (queued.issues.length) {
+    outboxLoadIssues = [...outboxLoadIssues, ...queued.issues];
+    addActivity(`${queued.issues.length} invalid delivery outbox record${queued.issues.length === 1 ? " was" : "s were"} isolated during validation.`);
+  }
+  updateWebhookDelivery("Local only", type);
+  addActivity(`${humanize(type)} lead preserved on this device with delivery request ${queued.record.requestId}.`);
+  saveState();
+  renderConfirmation();
+  renderLeadOutbox();
+  showToast("Saved on this device. Checking Forge delivery now.");
+  if (queued.record.deliveryState === ForgeLeadOutbox.STATES.REJECTED) return Promise.resolve(queued.record);
+  return deliverOutboxRecord(queued.record.requestId);
+}
+
+async function deliverOutboxRecord(requestId) {
+  if (durableLeadInFlight.has(requestId)) return durableLeadInFlight.get(requestId);
+  const initial = outboxRecord(requestId);
+  if (!initial) return null;
+  let sending;
+  try {
+    sending = ForgeLeadOutbox.markSending(initial);
+  } catch (error) {
+    if (error?.code === "RETRY_NOT_READY") showToast(outboxRetryMessage(initial));
+    return initial;
+  }
+  replaceOutboxRecord(sending);
+  syncLeadReceipt(sending);
+  saveState();
+  renderConfirmation();
+  renderLeadOutbox();
+
+  const delivery = (async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), DURABLE_LEAD_CLIENT_TIMEOUT_MS);
+    let updated;
+    try {
+      const response = await fetch("/api/forge/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forge-Intent": "lead-capture-v1"
+        },
+        body: JSON.stringify(ForgeLeadOutbox.requestBody(sending)),
+        signal: controller.signal
+      });
+      const result = await response.json().catch(() => ({}));
+      updated = ForgeLeadOutbox.applyHttpResult(sending, response.status, result, {
+        retryAfterSeconds: response.headers.get("Retry-After")
+      });
+    } catch {
+      updated = ForgeLeadOutbox.applyNetworkFailure(sending);
+    } finally {
+      clearTimeout(timer);
+    }
+    replaceOutboxRecord(updated);
+    syncLeadReceipt(updated);
+    if (updated.deliveryState === ForgeLeadOutbox.STATES.DELIVERED) {
+      updateWebhookDelivery("Durable", updated.type);
+      addActivity(`${humanize(updated.type)} lead delivery verified with request ${updated.requestId}.`);
+      showToast("Delivered to Forge. Your verified receipt is ready.");
+    } else if (updated.deliveryState === ForgeLeadOutbox.STATES.REJECTED) {
+      updateWebhookDelivery("Rejected", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local and needs correction before delivery.`);
+      showToast("Saved on this device, but delivery needs a correction.");
+    } else if (updated.deliveryState === ForgeLeadOutbox.STATES.UNAVAILABLE) {
+      updateWebhookDelivery("Local only", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local; Forge delivery is unavailable.`);
+      showToast("Saved on this device. Forge delivery is not available yet.");
+    } else {
+      updateWebhookDelivery("Local only", updated.type);
+      addActivity(`${humanize(updated.type)} lead remains local after a retryable delivery failure.`);
+      showToast("Saved on this device. Delivery did not complete.");
+    }
+    saveState();
+    renderConfirmation();
+    renderLeadOutbox();
+    return updated;
+  })().finally(() => durableLeadInFlight.delete(requestId));
+  durableLeadInFlight.set(requestId, delivery);
+  return delivery;
+}
+
+function sendDurableLead(type, payload) {
+  return queueDurableLead(type, payload);
 }
 
 function updateWebhookDelivery(status, type) {
@@ -16014,7 +19300,7 @@ async function copySignupChecklist() {
     `Local Products / Makers: ${base}/local-products${versionQuery()}`,
     `Training & Careers: ${base}${versionQuery()}#opportunities`,
     `Check status: ${base}${versionQuery()}#status`,
-    `Open admin: ${base}${versionQuery("demo=admin")}#admin`
+    `Open admin locally: http://127.0.0.1:4174/${versionQuery("demo=admin")}#admin`
   ].join("\n");
   await copyText(checklist, "Signup checklist copied.");
 }
@@ -16084,6 +19370,53 @@ async function copyDemoCue(role) {
     roleDemoLink(demoRole, screen)
   ].join("\n");
   await copyText(text, `${cue.audience} cue copied.`);
+}
+
+async function copyPhoneFastPass() {
+  const lines = [
+    "Forge phone demo fast pass",
+    "",
+    "Use this when someone has one minute and the phone is in your hand.",
+    "",
+    ...phoneFastPassRows().map((row, index) => `${index + 1}. ${row.title}: ${row.body}`),
+    "",
+    "Live words:",
+    "Forge connects local jobs, local workers, and follow-up in one simple flow.",
+    "First I will show the customer side, then the selected-bid message handoff, then the worker side, then the safe launch boundary.",
+    "If this makes sense, the next step is one real action: post a job, join as a worker, ask for auto/career/business help, or give one referral.",
+    "",
+    "Open links:",
+    `John Status: ${roleDemoLink("customer", "status")}`,
+    `John Messages: ${roleDemoLink("customer", "messages")}`,
+    `Mike Worker: ${roleDemoLink("worker", "worker")}`,
+    `Launch Status: ${roleDemoLink("admin", "launch-status")}`,
+    "",
+    "Safety boundary: controlled first-user demo only. No payments, deposits, sensitive identity documents, title paperwork, or final contracts in the MVP."
+  ];
+  await copyText(lines.join("\n"), "Phone fast pass copied.");
+}
+
+async function copyPerspectiveSwitchRail() {
+  const rows = perspectiveSwitchRailRows();
+  const lines = [
+    "Forge perspective switch rail",
+    "",
+    "Use this to choose the right Forge view for the person in front of you.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body} Proof path: ${row.proof}.`),
+    "",
+    "Open links:",
+    `John status: ${roleDemoLink("customer", "status")}`,
+    `John profile: ${roleDemoLink("customer", "profile")}`,
+    `Mike worker dashboard: ${roleDemoLink("worker", "worker")}`,
+    `Mike profile: ${roleDemoLink("worker", "profile")}`,
+    `Admin dashboard: ${roleDemoLink("admin", "admin")}`,
+    `Launch status: ${roleDemoLink("admin", "launch-status")}`,
+    `Public home: ${appBaseUrl()}${versionQuery()}#home`,
+    "",
+    "Boundary: public visitors should not see private jobs, bids, messages, admin queues, payments, passwords, sensitive documents, or final contracts in this MVP."
+  ];
+  await copyText(lines.join("\n"), "Perspective switch rail copied.");
 }
 
 async function copyDemoPack() {
@@ -16239,6 +19572,7 @@ function perspectiveLink(role) {
 
 function roleDemoLink(role, screen) {
   const normalizedScreen = normalizeScreen(screen);
+  if (role === "admin") return `http://127.0.0.1:4174/${versionQuery("demo=admin")}#${normalizedScreen}`;
   const base = appBaseUrl();
   const demoQuery = versionQuery(`demo=${encodeURIComponent(role)}`);
   if (routeByScreen[normalizedScreen] && location.protocol !== "file:") {
@@ -16440,8 +19774,8 @@ function copyCreativeBrief() {
   const lines = [
     "Forge Photography & Videography brief",
     "Headline: Photography & Videography",
-    "Positioning: Forge helps customers in Medford and surrounding areas book trusted local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
-    "Provider note: Forge helps customers connect with approved local creative providers after portfolio, availability, terms, and safety review.",
+    "Positioning: Forge helps customers in Medford and surrounding areas request local creatives for weddings, events, business content, real estate, social media, family shoots, church/community events, music videos, and creative content.",
+    "Provider note: Forge can review local creative-provider candidates after portfolio, availability, terms, and safety review; the MVP does not imply verification or approval.",
     `Customer category value: ${CREATIVE_CATEGORY_VALUE}`,
     `Creative requests: ${state.jobs.filter(isCreativeJob).length}`,
     `Creative providers: ${state.workers.filter(isCreativeProvider).length}`,
@@ -16560,12 +19894,12 @@ function copyNorthStarBrief() {
 }
 
 function flexOutreachText(lead) {
-  if (!lead) return "No Flex leads yet.";
+  if (!lead) return "No Capital Desk interest notes yet.";
   return [
     `Hi ${lead.owner_name || "there"}, this is Forge Capital Desk.`,
     `I saved your request for ${lead.business_name || "your business"} around ${lead.city || "your area"}.`,
     `You mentioned ${lead.primary_need || "business finance tools"} and a monthly spend range of ${lead.monthly_spend_range || "not provided"}.`,
-    "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Flex handles eligibility, approval, onboarding, activation, and product support.",
+    "This note is for Forge review only. Flex remains an inactive future-partner concept, and this is not a financing application or promise of referral, approval, terms, or funding.",
     "Can you confirm the best time to talk?"
   ].join(" ");
 }
@@ -16573,7 +19907,7 @@ function flexOutreachText(lead) {
 function flexLeadLines(lead) {
   if (!lead) return ["No Flex lead selected."];
   return [
-    "Forge Capital Desk Flex lead",
+    "Forge Capital Desk interest note",
     `${lead.business_name} - ${lead.owner_name}`,
     `Source: forge_capital_desk`,
     `Partner: flex`,
@@ -16608,9 +19942,9 @@ function copyFlexOutreach(id) {
     copyText([
       "Forge Capital Desk",
       "",
-      "Business owners need breathing room. If your business is juggling cash flow, bill pay, vendor payments, employee cards, materials, equipment, payroll timing, or working capital, Forge can collect the request and help determine whether a Flex referral is a fit.",
+      "Business owners need breathing room. If a business is juggling cash flow, bill pay, vendor payments, controlled-spend cards, materials, equipment, payroll timing, inventory, or working capital, Forge can save a basic finance-readiness interest note for internal review.",
       "",
-      "Forge is not a bank, lender, broker-dealer, underwriter, or credit decision maker. Forge may refer eligible business owners to Flex through an approved partner/referral relationship. Flex products are subject to eligibility, approval, fees, terms, and conditions."
+      "Flex remains a draft future-partner concept. No referral relationship or referral link is active. Forge is not a bank, lender, broker, broker-dealer, underwriter, payment processor, ISO, escrow service, or credit decision maker."
     ].join("\n"), "Capital Desk message copied.");
     return;
   }
@@ -16634,15 +19968,15 @@ function copyFlexBrief() {
     "Forge Capital Desk brief",
     "",
     "Title: Business owners need breathing room.",
-    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.",
+    "Subtitle: Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators organize business-finance needs for Forge review.",
     "",
     "How it works:",
     "1. Tell Forge what your business needs.",
-    "2. Forge checks whether you look like a fit.",
-    "3. Forge sends you the official Flex referral link if appropriate.",
-    "4. You apply directly with Flex.",
-    "5. Flex handles approval, onboarding, activation, and product support.",
-    "6. Forge can also help with job leads, marketing, websites, CRM, hiring, payment processing, and operations.",
+    "2. Forge preserves the note locally before checking its own delivery.",
+    "3. The receipt distinguishes a local save from verified Forge delivery.",
+    "4. No request is sent to Flex and no financing application is created.",
+    "5. A future referral stays hidden unless every written approval, consent, legal, operator, data-sharing, and official-link gate passes.",
+    "6. Forge can separately record interest in job leads, marketing, websites, CRM, hiring, payments operations, and business systems without cross-sharing consent.",
     "",
     FLEX_COMPLIANCE_COPY,
     "",
@@ -17153,7 +20487,7 @@ function roadRescueProviderNotification(request) {
 
 function roadRescueCustomerText(request) {
   if (!request) return "No Road Rescue requests yet.";
-  return `Hi ${request.name}, this is Forge Road Rescue. We received your ${roadRescueIssueSummary(request)} request near ${request.location}. If this is an emergency or anyone is hurt, call 911 now. Please stay somewhere safe while Forge checks for available local providers for ${request.serviceRequested || "roadside help"}.`;
+  return `Hi ${request.name}, this is Forge Road Rescue. We have your ${roadRescueIssueSummary(request)} request near ${request.location} in the local Forge review queue. If this is an emergency or anyone is hurt, call 911 now. Please stay somewhere safe while delivery and provider availability are checked for ${request.serviceRequested || "roadside help"}.`;
 }
 
 function roadRescueRequestLines(request) {
@@ -17235,7 +20569,7 @@ function copyAutoMarketBrief() {
   const lines = [
     "Forge Auto Services brief",
     "",
-    "Positioning: Forge Auto helps customers buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles through trusted auto partners, mechanics, transport providers, and dealership partners.",
+    "Positioning: Forge Auto organizes requests to buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles for manual review by possible mechanics, transport providers, and dealer candidates.",
     `Auto service requests: ${(state.autoRequests || []).length}`,
     `Vehicle listings: ${(state.vehicles || []).length}`,
     `Dealer partners: ${autoDealers.map((dealer) => dealer.name).join(", ")}`,
@@ -17483,6 +20817,32 @@ function copyJobFlowBrief(jobId) {
   copyText(lines.join("\n"), "Job flow brief copied.");
 }
 
+function copyJobHandoffRail(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosenBid = bids.find((bid) => bid.chosen);
+  const rows = jobHandoffRailRows(job, bids, chosenBid);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const lines = [
+    "Forge job handoff rail",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosenBid ? `Selected bid: ${chosenBid.worker} at ${chosenBid.amount}` : "Selected bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosenBid ? bidHandoffText(job, chosenBid) : bids.length ? "Next action: choose the suggested bid, then open Messages and Status." : "Next action: get one worker bid before showing the full handoff.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Job handoff rail copied.");
+}
+
 function copyJobProofTicket(jobId) {
   const job = state.jobs.find((item) => item.id === jobId);
   if (!job) return;
@@ -17561,6 +20921,42 @@ function copyJobCloseout(jobId) {
   copyText(lines.join("\n"), "Job closeout copied.");
 }
 
+function copyDemoCloseLoop(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const rows = demoCloseLoopRows(job, bids);
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const lines = [
+    "Forge demo close loop",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected bid: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Suggested bid: ${bestBid.worker} at ${bestBid.amount}` : "Suggested bid: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    demoCloseLoopSummary(job, bids),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Live demo order:",
+    "1. Open Status so the customer sees the job and progress.",
+    "2. Open Detail to compare bids and choose the handoff.",
+    "3. Open Messages to confirm schedule, access notes, and follow-up.",
+    "4. Open Profile so the customer sees who is behind the bid.",
+    "5. End with one next ask and keep broad public sharing behind the launch blockers.",
+    "",
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`,
+    `Open profile: ${roleDemoLink(bestBid ? "worker" : "customer", "profile")}`
+  ];
+  copyText(lines.join("\n"), "Demo close loop copied.");
+}
+
 function copyBidHandoff(jobId) {
   const job = state.jobs.find((item) => item.id === jobId);
   const bid = state.bids.find((item) => item.jobId === jobId && item.chosen);
@@ -17622,6 +21018,33 @@ function copyStatusProofSummary(jobId) {
   copyText(lines.join("\n"), "Status proof copied.");
 }
 
+function copyStatusMessageBridge(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  const bids = state.bids.filter((bid) => bid.jobId === job.id);
+  const chosen = bids.find((bid) => bid.chosen);
+  const bestBid = chosen || bids[0];
+  const hasMessage = state.messages.some((message) => message.threadId === `job-${job.id}`);
+  const rows = statusMessageBridgeRows(job, bids, chosen, bestBid, hasMessage);
+  const lines = [
+    "Forge status to message bridge",
+    "",
+    `${job.title} - ${job.customer || "Customer"}`,
+    `Status: ${job.status}`,
+    `Bids: ${bids.length}`,
+    chosen ? `Selected bid: ${chosen.worker} at ${chosen.amount}` : bestBid ? `Next bid to review: ${bestBid.worker} at ${bestBid.amount}` : "Next bid to review: none yet",
+    `Message thread: ${hasMessage ? "ready" : "pending"}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen && hasMessage ? "Next action: confirm the schedule window and keep status updated." : bids.length ? "Next action: choose a bid from Detail, then confirm through Messages." : "Next action: get one worker bid, then continue the handoff.",
+    `Open detail: ${roleDemoLink("customer", "detail")}`,
+    `Open status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Status-message bridge copied.");
+}
+
 function copyMessageHandoff(threadId = state.activeMessageThreadId) {
   const thread = getMessageThreads().find((item) => item.id === threadId);
   if (!thread) return;
@@ -17664,10 +21087,324 @@ function copyMessageProof(threadId = state.activeMessageThreadId) {
   copyText(lines.join("\n"), "Message proof copied.");
 }
 
+function copyMessageBridge(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  if (!related.jobId) {
+    copyMessageHandoff(threadId);
+    return;
+  }
+  const lines = [
+    "Forge message proof bridge",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `Next step: ${related.next}`,
+    "",
+    ...messageBridgeRows(thread, related).map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Reply to send:",
+    messageReplyText(thread, related),
+    "",
+    `Open job detail: ${roleDemoLink("customer", "detail")}`,
+    `Open customer status: ${roleDemoLink("customer", "status")}`,
+    `Open messages: ${roleDemoLink("customer", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Message bridge copied.");
+}
+
+function copyMessageReplyKit(threadId = state.activeMessageThreadId) {
+  const thread = getMessageThreads().find((item) => item.id === threadId);
+  if (!thread) return;
+  const related = messageContext(thread);
+  const rows = messageReplyKitRows(thread, related);
+  const lines = [
+    "Forge message reply kit",
+    "",
+    `${thread.title} - ${thread.kind}`,
+    `To: ${thread.to || "Contact"}`,
+    `Next: ${related.next}`,
+    "",
+    "Reply to send:",
+    messageReplyText(thread, related),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    related.jobId ? `Open messages: ${roleDemoLink("customer", "messages")}` : "",
+    related.jobId ? `Open status: ${roleDemoLink("customer", "status")}` : "",
+    related.jobId ? `Open detail: ${roleDemoLink("customer", "detail")}` : "",
+    related.screen ? `Open related screen: ${roleDemoLink("admin", related.screen)}` : ""
+  ].filter(Boolean);
+  copyText(lines.join("\n"), "Message reply kit copied.");
+}
+
+function copyWorkerOpportunityBridge(workerName = state.session.name || state.worker.name) {
+  const worker = findWorkerByName(workerName) || state.worker;
+  const bids = state.bids.filter((bid) => samePerson(bid.worker, worker.name));
+  const chosen = bids.filter((bid) => bid.chosen);
+  const rows = workerOpportunityBridgeRows(worker, bids);
+  const lines = [
+    "Forge worker opportunity bridge",
+    "",
+    `${worker.name} - ${worker.trade || "Forge worker"}`,
+    `Status: ${worker.status || "Profile saved"}`,
+    `Service area: ${worker.area || worker.serviceArea || "Not provided"}`,
+    `Bids submitted: ${bids.length}`,
+    `Jobs won: ${chosen.length}`,
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    chosen.length ? "Next action: confirm schedule and job details through Messages." : bids.length ? "Next action: watch Messages and keep profile readiness current." : "Next action: review available jobs and submit one bid.",
+    `Open worker dashboard: ${roleDemoLink("worker", "worker")}`,
+    `Open worker profile: ${roleDemoLink("worker", "profile")}`,
+    `Open worker messages: ${roleDemoLink("worker", "messages")}`
+  ];
+  copyText(lines.join("\n"), "Worker opportunity bridge copied.");
+}
+
 function copyWorkerDirect(email) {
   const worker = state.workers.find((item) => item.email === email);
   if (!worker) return;
   copyText(workerTemplate(worker), "Worker follow-up copied.");
+}
+
+function marketplaceJobLines(job) {
+  return [
+    `Forge marketplace job: ${job.title}`,
+    `Customer: ${job.customer || "Pending"}`,
+    `Category: ${job.categoryLabel || job.category || "Pending"}`,
+    `Location: ${job.location || "Pending"}`,
+    `Type: ${job.jobType || "One-time Job"}`,
+    `Status: ${marketplaceStatus(job)}`,
+    `Visibility: ${job.visibility || "Public Marketplace"}`,
+    `Budget: ${job.budget || "Pending"}`,
+    `Timeline: ${job.urgency || "Pending"} ${job.preferredDate ? `- ${job.preferredDate}` : ""}`.trim(),
+    `Preferred contact: ${job.preferredContact || "Pending"}`,
+    `Invited providers: ${job.invitedProviders || "None yet"}`,
+    `Reference notes: ${job.referenceFileSummary || "None yet"}`,
+    "",
+    "MVP boundary: no payment, production dispatch, credentialed login, or verified contractor match is active yet."
+  ];
+}
+
+function copyMarketplaceJob(jobId) {
+  const job = state.jobs.find((item) => item.id === jobId);
+  if (!job) return;
+  copyText(marketplaceJobLines(job).join("\n"), "Marketplace job status copied.");
+}
+
+function copyMarketplaceCommand() {
+  const lines = [
+    "Forge Marketplace Command Center",
+    "",
+    `Customer requests: ${(state.jobs || []).length}`,
+    `Provider profiles: ${(state.workers || []).length}`,
+    `Bids saved: ${(state.bids || []).length}`,
+    `Verification queue: ${(state.workers || []).filter((worker) => normalizeLookup(providerVerificationState(worker)).includes("pending") || normalizeLookup(worker.status).includes("new")).length}`,
+    "",
+    "Next operator tasks:",
+    "1. Review new customer requests for scope, privacy, and contact consent.",
+    "2. Review provider/company profiles for identity, license, insurance, proof, pricing, and availability.",
+    "3. Invite providers only after manual fit review.",
+    "4. Keep payments and dispatch blocked until backend, auth, Stripe, contracts, and support workflows are live."
+  ];
+  copyText(lines.join("\n"), "Marketplace command copied.");
+}
+
+function providerByEmail(email) {
+  return (state.workers || []).find((worker) => worker.email === email);
+}
+
+function requestProviderQuote(email) {
+  const worker = providerByEmail(email);
+  if (!worker) return;
+  const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+  addActivity(`Quote request staged for ${worker.businessName || worker.name}${job ? ` on ${job.title}` : ""}.`);
+  saveState();
+  copyText([
+    `Quote request for ${worker.businessName || worker.name}`,
+    `Provider type: ${worker.profileType || worker.providerType || worker.trade}`,
+    `Verification: ${providerVerificationState(worker)}`,
+    job ? `Job: ${job.title} (${job.location}, ${job.budget})` : "Job: Select a customer request first",
+    "",
+    "MVP note: this is a staged request only. Confirm scope, licensing, insurance, price, and schedule before dispatch."
+  ].join("\n"), "Quote request copied.");
+}
+
+function inviteProviderToJob(email) {
+  const worker = providerByEmail(email);
+  const job = state.jobs.find((item) => item.id === state.activeJobId) || state.jobs[0];
+  if (!worker || !job) return;
+  job.invitedProviders = uniqueValues([job.invitedProviders, worker.email].filter(Boolean).flatMap((value) => String(value).split(/,\s*/))).join(", ");
+  job.marketplaceStatus = job.marketplaceStatus || "Receiving Quotes";
+  addActivity(`Provider invite staged: ${worker.businessName || worker.name} -> ${job.title}.`);
+  saveState();
+  render();
+  showToast("Provider invite staged for admin review.");
+}
+
+function saveProvider(email) {
+  const worker = providerByEmail(email);
+  if (!worker) return;
+  state.savedProviders = uniqueValues([...(state.savedProviders || []), email]);
+  addActivity(`Provider saved: ${worker.businessName || worker.name}.`);
+  saveState();
+  showToast("Provider saved to local MVP state.");
+}
+
+function submitLocalAccountSignup(event) {
+  event.preventDefault();
+  const roleConfig = accountRoleConfig(fieldValue("#accountRole"));
+  if (!fieldChecked("#accountCredentialPlan")) {
+    showToast("Please acknowledge production auth setup is required.");
+    return;
+  }
+  if (!fieldChecked("#accountTerms")) {
+    showToast("Please accept the Early Access Terms & Privacy.");
+    return;
+  }
+  const account = {
+    id: `acct-${Date.now()}`,
+    role: roleConfig.id,
+    roleLabel: roleConfig.label,
+    sessionRole: roleConfig.sessionRole,
+    name: fieldValue("#accountName"),
+    email: fieldValue("#accountEmail"),
+    phone: fieldValue("#accountPhone"),
+    status: roleConfig.id === "admin-request" ? "Admin invite request pending" : "Email verification pending",
+    emailVerification: "Prototype only",
+    credentialPolicy: "Production auth required; no password collected or stored in MVP",
+    termsAccepted: true,
+    created: "Today"
+  };
+  state.accounts = state.accounts || [];
+  const existing = state.accounts.findIndex((item) => normalizeLookup(item.email) === normalizeLookup(account.email));
+  if (existing >= 0) state.accounts[existing] = { ...state.accounts[existing], ...account };
+  else state.accounts.unshift(account);
+  if (roleConfig.id === "customer") {
+    state.customerProfile = {
+      ...(state.customerProfile || {}),
+      name: account.name,
+      email: account.email,
+      phone: account.phone,
+      preferredContact: state.customerProfile?.preferredContact || "Phone"
+    };
+  }
+  if (roleConfig.id !== "admin-request") {
+    state.session = {
+      role: roleConfig.sessionRole,
+      name: account.name,
+      label: roleConfig.label
+    };
+  }
+  addActivity(`Local account shell saved: ${account.name} (${account.roleLabel}).`);
+  saveState();
+  sendLead("account", account);
+  event.target.reset();
+  showToast(roleConfig.id === "admin-request" ? "Admin invite request saved for review." : "Local account created.");
+  navigate(roleConfig.screen);
+}
+
+function submitCustomerProfile(event) {
+  event.preventDefault();
+  const profile = {
+    name: fieldValue("#customerProfileName"),
+    email: fieldValue("#customerProfileEmail"),
+    phone: fieldValue("#customerProfilePhone"),
+    address: fieldValue("#customerProfileAddress"),
+    preferredContact: fieldValue("#customerProfileContact"),
+    locations: fieldValue("#customerProfileLocations"),
+    profileImageSummary: selectedFileSummary("#customerProfileImage", "profile image"),
+    updated: "Today"
+  };
+  state.customerProfile = profile;
+  state.accounts = state.accounts || [];
+  const existing = state.accounts.findIndex((account) => normalizeLookup(account.email) === normalizeLookup(profile.email));
+  const account = {
+    id: existing >= 0 ? state.accounts[existing].id : `acct-${Date.now()}`,
+    role: "customer",
+    roleLabel: "Customer",
+    sessionRole: "customer",
+    name: profile.name,
+    email: profile.email,
+    phone: profile.phone,
+    status: existing >= 0 ? state.accounts[existing].status : "Profile saved",
+    termsAccepted: existing >= 0 ? state.accounts[existing].termsAccepted : false,
+    created: existing >= 0 ? state.accounts[existing].created : "Today"
+  };
+  if (existing >= 0) state.accounts[existing] = { ...state.accounts[existing], ...account };
+  else state.accounts.unshift(account);
+  addActivity(`Customer profile saved: ${profile.name}.`);
+  saveState();
+  sendLead("customer-profile", profile);
+  showToast("Customer profile saved.");
+  render();
+}
+
+function copyAuthPrototype() {
+  const lines = [
+    "Forge auth/account prototype",
+    "",
+    "Current state: browser-only local account shell for demo onboarding.",
+    "Credential handling: production password setup, password reset, email verification, and secure sessions are required later; no password is collected or stored in the MVP.",
+    "Roles: Customer, Individual Provider, Company Provider, and Admin Invite Request.",
+    "Admin access: invite requests are saved; operator access is not automatically granted from signup.",
+    "Production requirements: real auth provider, email verification, password reset, server sessions, RBAC, audit logs, RLS, and backend persistence."
+  ];
+  copyText(lines.join("\n"), "Auth prototype notes copied.");
+}
+
+function startCompanyProfile() {
+  navigate("signup");
+  setTimeout(() => {
+    setFieldValue("#workerProfileType", "Company / Crew");
+    setFieldValue("#workerBusinessSize", "Small Local Business");
+    focusAutoPanel("#workerSignupForm", "#workerCompanyName");
+  }, 50);
+}
+
+function submitAdmitlyStudentInterest(event) {
+  event.preventDefault();
+  const lead = {
+    id: `admitly-student-${Date.now()}`,
+    fullName: fieldValue("#admitlyStudentName"),
+    email: fieldValue("#admitlyStudentEmail"),
+    graduationYear: fieldValue("#admitlyStudentGradYear"),
+    targetSchools: fieldValue("#admitlyStudentSchools"),
+    pathway: "College admissions planning",
+    status: "Student Waitlist",
+    priority: "Warm",
+    notes: "Saved from Admitly presentation route inside Forge.",
+    created: "Today"
+  };
+  state.tradePathwayLeads.unshift(lead);
+  addActivity(`Admitly student interest saved: ${lead.fullName}.`);
+  saveState();
+  sendLead("admitly-student-interest", lead);
+  event.target.reset();
+  showToast("Admitly student interest saved.");
+}
+
+function submitAdmitlyEducatorInterest(event) {
+  event.preventDefault();
+  const lead = {
+    id: `admitly-educator-${Date.now()}`,
+    fullName: fieldValue("#admitlyEducatorName"),
+    organization: fieldValue("#admitlyEducatorOrg"),
+    email: fieldValue("#admitlyEducatorEmail"),
+    feedbackFocus: fieldValue("#admitlyEducatorNotes"),
+    pathway: "Educator / counselor review",
+    status: "Educator Interest",
+    priority: "Warm",
+    notes: "No Stanford endorsement, sponsorship, approval, or partnership is claimed.",
+    created: "Today"
+  };
+  state.tradePathwayLeads.unshift(lead);
+  addActivity(`Admitly educator interest saved: ${lead.fullName}.`);
+  saveState();
+  sendLead("admitly-educator-interest", lead);
+  event.target.reset();
+  showToast("Admitly educator interest saved.");
 }
 
 function copyReferralDirect(id) {
@@ -18026,7 +21763,7 @@ function copyManufacturingBrief() {
   const lines = [
     "Forge Manufacturing + Nutraceuticals brief",
     "",
-    "Forge Manufacturing + Nutraceuticals helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs find trusted partners to manufacture vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other compliant health products.",
+    "Forge Manufacturing + Nutraceuticals helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs request review by potential manufacturers for vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other regulated product categories.",
     "",
     "Core paths:",
     "1. Find a Manufacturer",
@@ -18099,11 +21836,9 @@ function markHomebuildingContacted(id) {
 }
 
 function canSendHomebuildingToSeneca(lead) {
-  const partner = senecaPartner();
   return Boolean(lead?.senecaEligible)
     && Boolean(lead?.consentToShareWithApprovedPartners)
-    && Boolean(partner?.approved)
-    && Boolean(partner?.dataSharingApproved);
+    && isSenecaPartnerApproved();
 }
 
 function sendHomebuildingToSeneca(id) {
@@ -18380,9 +22115,16 @@ function markFlexContacted(id) {
 function markFlexStatus(id, status) {
   const lead = (state.flexLeads || []).find((item) => item.id === id);
   if (!lead || !flexLeadStatuses.includes(status)) return;
+  const referralStatuses = new Set(["flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid"]);
+  if (referralStatuses.has(status) && (!lead.consent_to_receive_flex_referral || !isFlexPartnerApproved())) {
+    addActivity("Blocked inactive Flex status change for " + lead.business_name + ": complete referral approval is missing.");
+    saveState();
+    showToast("Flex remains inactive; referral and downstream statuses are locked.");
+    return;
+  }
   lead.status = status;
   lead.updated_at = "Today";
-  if (status === "flex_link_sent" && !lead.flex_referral_url_sent) lead.flex_referral_url_sent = flexReferralUrl();
+  if (status === "flex_link_sent" && !lead.flex_referral_url_sent) lead.flex_referral_url_sent = configuredFlexReferralUrl();
   addActivity(`Flex lead status changed: ${lead.business_name} -> ${flexStatusLabel(status)}.`);
   saveState();
   render();
@@ -18394,7 +22136,15 @@ function moveFlexForward(id) {
   if (!lead) return;
   const order = ["new", "contacted", "qualified", "flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid", "forge_upsell_offered", "forge_client_won"];
   const index = order.indexOf(lead.status);
-  lead.status = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "qualified";
+  const nextStatus = index >= 0 ? order[Math.min(index + 1, order.length - 1)] : "qualified";
+  if (["flex_link_sent", "application_started", "activated", "commission_expected", "commission_paid"].includes(nextStatus)
+    && (!lead.consent_to_receive_flex_referral || !isFlexPartnerApproved())) {
+    addActivity("Blocked inactive Flex progression for " + lead.business_name + ": complete referral approval is missing.");
+    saveState();
+    showToast("Flex remains inactive; the next referral status is locked.");
+    return;
+  }
+  lead.status = nextStatus;
   lead.updated_at = "Today";
   addActivity(`Flex lead moved forward: ${lead.business_name} is ${flexStatusLabel(lead.status)}.`);
   saveState();
@@ -18427,40 +22177,32 @@ function moveManufacturingForward(id) {
 
 function openFlexReferral(leadId) {
   const lead = (state.flexLeads || []).find((item) => item.id === leadId);
-  const url = flexReferralUrl();
-  if (lead) {
-    if (!lead.consent_to_receive_flex_referral) {
-      showToast("Collect Flex referral consent before opening the link.");
-      return;
-    }
-    const partner = flexPartner();
-    if (!partner?.approved || !partner?.dataSharingApproved) {
-      lead.notes = [lead.notes, "Flex referral link blocked: partner approval and data-sharing approval are not recorded."].filter(Boolean).join("\n");
-      lead.updated_at = "Today";
-      addActivity(`Blocked Flex referral link for ${lead.business_name}: partner approval or data-sharing approval is missing.`);
-      saveState();
-      render();
-      showToast("Flex referral blocked until partner approval and data-sharing approval are true.");
-      return;
-    }
-    if (!url || url === FLEX_REFERRAL_URL_PLACEHOLDER) {
-      lead.notes = [lead.notes, "Finance partner link blocked: no configured referral URL is present."].filter(Boolean).join("\n");
-      lead.updated_at = "Today";
-      addActivity(`Blocked finance partner link for ${lead.business_name}: no configured referral URL is present.`);
-      saveState();
-      render();
-      showToast("Finance partner link is not configured.");
-      return;
-    }
-    lead.status = "flex_link_sent";
-    lead.flex_referral_url_sent = url;
+  if (!lead) {
+    showToast("Capital Desk interest note unavailable.");
+    return;
+  }
+  if (!lead.consent_to_receive_flex_referral) {
+    showToast("Explicit future-referral consent is required.");
+    return;
+  }
+  const url = configuredFlexReferralUrl();
+  if (!isFlexPartnerApproved() || !/^https:\/\//i.test(url)) {
+    lead.notes = [lead.notes, "Future referral blocked: every written partner, agreement, public-language, consent, legal, operator, data-sharing, brand-use, and official-HTTPS-link gate is not verified."].filter(Boolean).join("\n");
     lead.updated_at = "Today";
-    addActivity(`Configured Flex referral link opened for ${lead.business_name}.`);
+    addActivity(`Blocked inactive future referral for ${lead.business_name}: the complete approval policy did not pass.`);
     saveState();
     render();
+    showToast("Flex remains inactive; the full referral gate is closed.");
+    return;
   }
+  lead.status = "flex_link_sent";
+  lead.flex_referral_url_sent = url;
+  lead.updated_at = "Today";
+  addActivity(`Approved referral destination opened for ${lead.business_name}.`);
+  saveState();
+  render();
   window.open(url, "_blank", "noopener,noreferrer");
-  showToast("Configured Flex referral link opened.");
+  showToast("Approved referral destination opened.");
 }
 
 function createFlexUpsellTask(id) {
@@ -18515,6 +22257,21 @@ function copyDeliveryStatus() {
   copyText(lines.join("\n"), "Delivery status copied.");
 }
 
+function copyLeadDeliveryDrill() {
+  const rows = leadDeliveryDrillRows();
+  const lines = [
+    "Forge lead delivery drill",
+    "",
+    "Goal: prove one public lead leaves the browser before broad sharing.",
+    "",
+    ...rows.map((row, index) => `${index + 1}. ${row.ok ? "[Ready]" : "[Do first]"} ${row.title}. ${row.body}`),
+    "",
+    "Pass rule: a test lead is visible in the approved backend/Zapier destination, the local Forge copy remains available, and a fresh backup is exported.",
+    "Stop rule: if delivery is local-only, failed, unverified, or not backed up, keep the launch controlled and personally followed up."
+  ];
+  copyText(lines.join("\n"), "Lead delivery drill copied.");
+}
+
 function copyBackendHandoff() {
   const lines = [
     "Forge backend handoff",
@@ -18549,6 +22306,21 @@ function copyAuthHandoff() {
   copyText(lines.join("\n"), "Auth handoff copied.");
 }
 
+function copyAdminAuthDrill() {
+  const rows = adminAuthDrillRows();
+  const lines = [
+    "Forge admin auth drill",
+    "",
+    "Goal: prove operator tools are locked before public launch.",
+    "",
+    ...rows.map((row, index) => `${index + 1}. ${row.ok ? "[Ready]" : "[Hold]"} ${row.title}. ${row.body}`),
+    "",
+    "Pass rule: a stranger cannot open admin, capture, reports, exports, imports, backup, webhook setup, project queues, or follow-up queues without the production admin gate.",
+    "Stop rule: if any private operator data loads before production auth, keep Forge in controlled demo mode only."
+  ];
+  copyText(lines.join("\n"), "Admin auth drill copied.");
+}
+
 function copyProfileCommand() {
   const profile = getProfileStatus();
   const rows = profileCommandRows(profile);
@@ -18570,6 +22342,58 @@ function copyProfileCommand() {
   copyText(lines.join("\n"), "Profile command copied.");
 }
 
+function copyProfileStatusReceipt() {
+  const profile = getProfileStatus();
+  const rows = profileStatusReceiptRows(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const primary = profileStatusReceiptPrimaryAction(profile);
+  const lines = [
+    "Forge profile status receipt",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    profileStatusReceiptTitle(profile),
+    profileStatusReceiptSummary(profile),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Primary next action: ${primary.label}`,
+    `Profile link: ${roleDemoLink(role, "profile")}`,
+    `Launch boundary: ${roleDemoLink("admin", "launch-status")}`,
+    "",
+    "Safety boundary: this MVP profile receipt does not collect payments, passwords, sensitive documents, contracts, or verified-provider claims."
+  ];
+  copyText(lines.join("\n"), "Profile status receipt copied.");
+}
+
+function copyProfilePerspective() {
+  const profile = getProfileStatus();
+  const rows = profilePerspectiveRows();
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : null;
+  const currentLink = role ? roleDemoLink(role, "profile") : `${appBaseUrl()}${versionQuery()}#profile`;
+  const lines = [
+    "Forge profile perspective lens",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    "Use this when someone asks what Forge looks like from their side.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Current profile link: ${currentLink}`,
+    `Customer profile: ${roleDemoLink("customer", "profile")}`,
+    `Worker profile: ${roleDemoLink("worker", "profile")}`,
+    `Admin profile: ${roleDemoLink("admin", "profile")}`,
+    "",
+    "Safety boundary: public visitors do not see private jobs, bids, messages, phone/email details, operator queues, payments, passwords, sensitive documents, or final contracts in this MVP."
+  ];
+  copyText(lines.join("\n"), "Profile perspective copied.");
+}
+
 function copyProfileBrief() {
   const profile = getProfileStatus();
   const rows = profileBriefRows(profile);
@@ -18589,6 +22413,27 @@ function copyProfileBrief() {
     `Open profile: ${roleDemoLink(role, "profile")}`
   ];
   copyText(lines.join("\n"), "Status brief copied.");
+}
+
+function copyProfileVisibility() {
+  const profile = getProfileStatus();
+  const rows = profileVisibilityRows(profile);
+  const role = ["worker", "customer", "admin"].includes(state.session.role) ? state.session.role : "customer";
+  const lines = [
+    "Forge profile visibility",
+    "",
+    `${profile.name} - ${profile.roleLabel}`,
+    `Status: ${profile.status}`,
+    `Readiness: ${profileReadiness(profile)}%`,
+    "",
+    profileVisibilityTitle(profile),
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    `Next action: ${profile.nextAction}`,
+    `Open profile: ${roleDemoLink(role, "profile")}`
+  ];
+  copyText(lines.join("\n"), "Profile visibility copied.");
 }
 
 function copyProfileProofPath() {
@@ -18686,6 +22531,26 @@ function copyLaunchDecision() {
   copyText(lines.join("\n"), "Launch decision copied.");
 }
 
+function copyLaunchShowPlan() {
+  const rows = launchShowPlanRows();
+  const lines = [
+    "Forge launch show plan",
+    "",
+    "Use this when someone is ready to see Forge and Andrew needs the safest shortest path.",
+    "",
+    ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Open proof links:",
+    `Perspective Demo: ${roleDemoLink("customer", "perspective")}`,
+    `John Status: ${roleDemoLink("customer", "status")}`,
+    `Mike Worker: ${roleDemoLink("worker", "worker")}`,
+    `Launch Status: ${roleDemoLink("admin", "launch-status")}`,
+    "",
+    "Close: capture one real next action, keep payments and sensitive documents out of the MVP, follow up personally, and export backup after the outreach block."
+  ];
+  copyText(lines.join("\n"), "Launch show plan copied.");
+}
+
 function copyLaunchFinalChecklist() {
   const rows = launchFinalChecklistRows();
   const lines = [
@@ -18693,10 +22558,26 @@ function copyLaunchFinalChecklist() {
     "",
     ...rows.map((row) => `${row.label}: ${row.title}. ${row.body}`),
     "",
+    "Demo run order:",
+    ...launchRunOrderRows().map((row, index) => `${index + 1}. ${row.title}. ${row.body} Link: ${roleDemoLink(row.action.role || "admin", row.action.screen || "launch-status")}`),
+    "",
     "Run order: open the proof path, capture one real next action, clear or copy the follow-up queue, export a backup if needed, and use Public View before handing Forge to someone else.",
     `Open launch status: ${roleDemoLink("admin", "launch-status")}`
   ];
   copyText(lines.join("\n"), "Final checklist copied.");
+}
+
+function copyLaunchRunOrder() {
+  const lines = [
+    "Forge first-user demo run order",
+    "",
+    "Use this when someone is watching and you need Forge to make sense quickly.",
+    "",
+    ...launchRunOrderRows().map((row, index) => `${index + 1}. ${row.title}: ${row.body}\n   ${roleDemoLink(row.action.role || "admin", row.action.screen || "launch-status")}`),
+    "",
+    "Close: capture one real next action, keep payments off, use controlled first-user follow-up, and export backup after the outreach block."
+  ];
+  copyText(lines.join("\n"), "Run order copied.");
 }
 
 function copyLaunchSendBoard() {
@@ -18725,6 +22606,22 @@ function copyLaunchSendLink(lane) {
     `Guardrail: ${row.guardrail}`
   ];
   copyText(lines.join("\n"), `${row.label} link copied.`);
+}
+
+function copyLaunchHandoffReceipt() {
+  const lines = [
+    "Forge first-user handoff receipt",
+    "",
+    `First-user count: ${totalLeadCount()}/200`,
+    "",
+    ...launchHandoffReceiptRows().map((row) => `${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Follow-up note:",
+    firstUserHandoffNote(),
+    "",
+    `Open launch status: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Launch handoff copied.");
 }
 
 function copyFirstUserCountBreakdown() {
@@ -18762,6 +22659,38 @@ function copyFirst200LaunchQueue() {
     "4. Export Backup JSON after every outreach block."
   ];
   copyText(lines.join("\n"), "First 200 queue copied.");
+}
+
+function copyLaunchNext10Sprint() {
+  const rows = launchNext10CanShowLeads() ? outreachBatchRows() : [];
+  const summary = launchNext10SprintSummary();
+  const lines = [
+    "Forge next 10 invite sprint",
+    "",
+    `${summary.title} ${summary.body}`,
+    `First-user count: ${totalLeadCount()}/200`,
+    "",
+    ...(rows.length
+      ? rows.map((row, index) => [
+        `${index + 1}. ${row.person} (${row.kind}, ${row.priority}, score ${row.score})`,
+        `Need: ${row.title}`,
+        `Why now: ${row.reason}`,
+        `Message: ${row.message}`
+      ].join("\n"))
+      : launchNext10StarterLanes().map((row) => [
+        `${row.rank}. ${row.label}: ${row.title}`,
+        row.body,
+        `Open: ${roleDemoLink("customer", row.action.screen || "perspective")}`
+      ].join("\n"))),
+    "",
+    launchNext10CanShowLeads()
+      ? "Privacy mode: Admin Operator View can include private lead names for Andrew's follow-up."
+      : "Privacy mode: private lead names are hidden outside Admin Operator View; use starter lanes only.",
+    "",
+    "Closeout rule: mark each real contact as Contacted or Move Forward, copy the recap, then export Backup JSON before inviting a wider group.",
+    "Safety boundary: keep payments, deposits, title documents, sensitive identity documents, and bank/card details outside Forge during the MVP soft launch."
+  ];
+  copyText(lines.join("\n\n"), "Next 10 invite sprint copied.");
 }
 
 function copySoftLaunchPlan() {
@@ -18982,6 +22911,68 @@ function copyFinalSecurityGate() {
     "Verification command: npm run check"
   ];
   copyText(lines.join("\n"), "Final gate copied.");
+}
+
+function copyPublicLaunchBlockers() {
+  const summary = publicReadinessSummary();
+  const rows = publicLaunchBlockerRows();
+  const lines = [
+    "Forge public launch blocker receipt",
+    "",
+    `Demo readiness score: ${summary.score}%`,
+    "Decision: continue controlled first-user demos only. Hold broad public sharing until every required gate is closed.",
+    "",
+    ...rows.map((row) => `${row.status === "ready" ? "[Allowed]" : "[Required]"} ${row.title}: ${row.body}`),
+    "",
+    "Next operator move:",
+    "1. Use Perspective Demo for the person in front of you.",
+    "2. Capture one consented next action.",
+    "3. Export Backup JSON after the outreach block.",
+    "4. Do not collect payments, deposits, bank/card data, sensitive identity documents, title paperwork, or final contracts in the MVP.",
+    "",
+    "Verification command before public launch: npm run check"
+  ];
+  copyText(lines.join("\n"), "Public launch blocker receipt copied.");
+}
+
+function copyLaunchSecuritySweep() {
+  const rows = launchSecuritySweepRows();
+  const readyCount = rows.filter((row) => row.status === "ready").length;
+  const lines = [
+    "Forge public share safety sweep",
+    "",
+    `${readyCount}/${rows.length} gates are safe for controlled demos.`,
+    "Decision: keep controlled first-user demos moving, but hold broad public sharing until lead delivery, production admin auth, backup, legal review, and final security review are complete.",
+    "",
+    ...rows.map((row) => `${row.status === "ready" ? "[Ready]" : "[Hold]"} ${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Operator rule: Public View must be on before handing Forge to another person.",
+    "MVP boundary: no payments, deposits, title paperwork, bank/card data, sensitive identity documents, or final contracts inside Forge.",
+    "Verification command before public launch: npm run check"
+  ];
+  copyText(lines.join("\n"), "Public share safety sweep copied.");
+}
+
+function copyPublicLaunchGoNoGo() {
+  const rows = publicLaunchGoNoGoRows();
+  const summary = publicLaunchGoNoGoSummary(rows);
+  const lines = [
+    "Forge public launch go / no-go receipt",
+    "",
+    summary.title,
+    summary.body,
+    "",
+    `GO: ${summary.goTitle}. ${summary.goBody}`,
+    `HOLD: ${summary.holdTitle}. ${summary.holdBody}`,
+    "",
+    "Gate receipt:",
+    ...rows.map((row) => `${row.status === "ready" ? "[Ready]" : row.status === "attention" ? "[Check]" : "[Hold]"} ${row.label}: ${row.title}. ${row.body}`),
+    "",
+    "Decision today: controlled demos and first-user signups can continue with known people Andrew can personally follow up with.",
+    "No-go today: broad public sharing, paid marketing, payments, sensitive documents, final contracts, title paperwork, bank/card data, and stranger traffic wait until all proof gates pass.",
+    `Open launch status: ${roleDemoLink("admin", "launch-status")}`
+  ];
+  copyText(lines.join("\n"), "Go / no-go receipt copied.");
 }
 
 function copySecurityReviewPack() {
@@ -19246,7 +23237,8 @@ function completeOutreachSprint() {
 function exportBackup() {
   state.settings.lastBackupAt = new Date().toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   state.settings.lastBackupLeadCount = totalLeadCount();
-  exportJson("forge-mvp-backup.json", state);
+  const envelope = ForgeBackupRecovery.createEnvelope(state, { appVersion: PUBLIC_LINK_VERSION });
+  exportJson(`forge-mvp-backup-v${PUBLIC_LINK_VERSION}.json`, envelope);
   addActivity("Full backup JSON exported.");
   saveState();
   renderSafetyCenter();
@@ -19273,17 +23265,65 @@ async function importBackup(event) {
   if (!file) return;
   try {
     const text = await file.text();
-    state = normalizeState(JSON.parse(text));
-    addActivity("Backup JSON imported.");
-    saveState();
-    render();
-    navigate("admin");
-    showToast("Backup imported.");
-  } catch {
-    showToast("Could not import that backup.");
+    showBackupRecoveryPreview(ForgeBackupRecovery.preview(text, state));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown backup error.";
+    showToast(`Backup not imported: ${message}`);
   } finally {
     event.target.value = "";
   }
+}
+
+function showBackupRecoveryPreview(review) {
+  pendingBackupReview = review;
+  document.querySelector("#backupReviewSchema").textContent = review.schema;
+  document.querySelector("#backupReviewVersion").textContent = review.appVersion;
+  document.querySelector("#backupReviewCreated").textContent = review.exportedAt;
+  document.querySelector("#backupReviewChecksum").textContent = review.checksumStatus;
+  document.querySelector("#backupReviewCurrentTotal").textContent = String(review.currentCounts.allRecords);
+  document.querySelector("#backupReviewReplacementTotal").textContent = String(review.counts.allRecords);
+  document.querySelector("#backupReviewWarning").textContent = review.legacy
+    ? "Legacy backup: no checksum was available. Nothing has changed yet; review every count carefully."
+    : "Checksum and record counts verified. Nothing has changed yet; review the replacement below.";
+  const changes = document.querySelector("#backupReviewChanges");
+  changes.replaceChildren(...review.changes.map((change) => {
+    const item = document.createElement("li");
+    const delta = change.delta === 0 ? "no count change" : `${change.delta > 0 ? "+" : ""}${change.delta}`;
+    item.textContent = `${change.collection}: ${change.current} → ${change.replacement} (${delta})`;
+    return item;
+  }));
+  const dialog = document.querySelector("#backupReviewDialog");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+  document.querySelector("#backupReviewTitle").focus();
+  showToast("Backup verified. Review the dry run before replacing data.");
+}
+
+function cancelBackupImport() {
+  const dialog = document.querySelector("#backupReviewDialog");
+  pendingBackupReview = null;
+  if (dialog.open && typeof dialog.close === "function") dialog.close();
+  else dialog.removeAttribute("open");
+  document.querySelector("#backupImport").focus();
+  showToast("Backup import canceled. Current device data was not changed.");
+}
+
+function confirmBackupImport() {
+  if (!pendingBackupReview) {
+    showToast("Choose and verify a backup file first.");
+    return;
+  }
+  const recovered = pendingBackupReview;
+  pendingBackupReview = null;
+  const dialog = document.querySelector("#backupReviewDialog");
+  if (dialog.open && typeof dialog.close === "function") dialog.close();
+  else dialog.removeAttribute("open");
+  state = normalizeState(recovered.state);
+  addActivity(`Verified ${recovered.legacy ? "legacy " : ""}backup JSON imported from local file.`);
+  saveState();
+  render();
+  navigate("admin");
+  showToast("Verified backup imported on this device.");
 }
 
 function clearActivity() {
@@ -19297,10 +23337,19 @@ function clearActivity() {
 function resetDemoData() {
   const leadCount = totalLeadCount();
   const backupCount = Number(state.settings.lastBackupLeadCount || 0);
-  const warning = leadCount > backupCount
-    ? `Reset local Forge demo data? This clears ${leadCount} leads saved in this browser. Export Backup JSON first if you need to keep them.`
-    : "Reset local Forge demo data? This clears leads saved in this browser.";
-  if (!confirm(warning)) return;
+  const backupCurrent = Boolean(state.settings.lastBackupAt) && backupCount >= leadCount;
+  if (!backupCurrent) {
+    showToast(`Reset blocked. Export Backup JSON for all ${leadCount} saved leads first.`);
+    return;
+  }
+  const confirmationPhrase = `DELETE ${leadCount} LEADS`;
+  const confirmation = prompt(
+    `This permanently replaces the ${leadCount} leads saved in this browser with synthetic demo data. The current backup covers ${backupCount} leads. Type ${confirmationPhrase} to continue.`
+  );
+  if (confirmation !== confirmationPhrase) {
+    showToast("Reset cancelled. Every saved lead remains in this browser.");
+    return;
+  }
   state = normalizeState(structuredClone(seedState));
   saveState();
   render();
@@ -19309,6 +23358,13 @@ function resetDemoData() {
 }
 
 function togglePublicMode() {
+  if (!operatorDemoAllowed()) {
+    enforcePublicOperatorBoundary();
+    render();
+    navigate("home");
+    showToast("Operator View is disabled on public deployments until server authentication is configured.");
+    return;
+  }
   state.settings.publicMode = !state.settings.publicMode;
   addActivity(state.settings.publicMode ? "Public View enabled." : "Operator View enabled.");
   saveState();
@@ -19423,7 +23479,47 @@ function normalizeLookup(value) {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
-  navigator.serviceWorker.register("./service-worker.js").catch(() => {
-    // The MVP should keep working even if install/offline support is unavailable.
+  let activationRequested = false;
+
+  const offerReleaseUpdate = (worker) => {
+    if (!worker || document.querySelector("#forgeReleaseUpdate")) return;
+    const notice = document.createElement("section");
+    notice.id = "forgeReleaseUpdate";
+    notice.className = "release-update";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+
+    const title = document.createElement("strong");
+    title.textContent = "A fresh Forge update is ready.";
+    const copy = document.createElement("p");
+    copy.textContent = "Refresh once to use the current release. Information already saved in this browser will remain here.";
+    const action = document.createElement("button");
+    action.type = "button";
+    action.textContent = "Refresh Forge";
+    action.addEventListener("click", () => {
+      activationRequested = true;
+      action.disabled = true;
+      action.textContent = "Refreshing…";
+      worker.postMessage({ type: "FORGE_ACTIVATE_RELEASE", release: PUBLIC_LINK_VERSION });
+    });
+    notice.append(title, copy, action);
+    document.body.appendChild(notice);
+  };
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (activationRequested) window.location.reload();
+  });
+
+  navigator.serviceWorker.register(`./service-worker.js?v=${PUBLIC_LINK_VERSION}`).then((registration) => {
+    if (registration.waiting && navigator.serviceWorker.controller) offerReleaseUpdate(registration.waiting);
+    registration.addEventListener("updatefound", () => {
+      const installing = registration.installing;
+      if (!installing) return;
+      installing.addEventListener("statechange", () => {
+        if (installing.state === "installed" && navigator.serviceWorker.controller) offerReleaseUpdate(installing);
+      });
+    });
+  }).catch(() => {
+    // The public experience remains usable when install or offline support is unavailable.
   });
 }

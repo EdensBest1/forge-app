@@ -1,5 +1,9 @@
 import { execute } from "../../nexus/orchestrator.mjs";
 
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
 type VercelRequest = {
   method?: string;
   headers: Record<string, string | string[] | undefined>;

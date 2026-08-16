@@ -1,5 +1,7 @@
 # Public Route Map
 
+This 2026-06-27 snapshot is superseded by FORGE_V133_ROUTE_INVENTORY.md and the executable config/forge-route-registry.mjs. It remains only as historical context.
+
 Generated: 2026-06-27
 
 ## Highlight Routes

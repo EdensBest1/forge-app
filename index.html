@@ -3,24 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0648b7" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="forge-release" content="v133" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta
       name="description"
-      content="Forge helps homeowners, businesses, and local operators find trusted workers, crews, and service providers, starting in Medford and Southern Oregon."
+      content="Forge accepts service requests and contractor applications across the United States, with focused marketplace development in Medford, Los Angeles, and New York."
     />
     <link rel="canonical" href="https://hireonforge.com/" />
     <meta property="og:title" content="Forge - Hire Local Workers, Crews, and Service Providers" />
-    <meta property="og:description" content="Post local work, join as a worker, or request business growth support through Forge's controlled beta marketplace." />
+    <meta property="og:description" content="Post a project or join as a contractor nationwide, with focused marketplace development in Medford, Los Angeles, and New York." />
     <meta property="og:url" content="https://hireonforge.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://hireonforge.com/assets/forge-hero.png" />
+    <meta property="og:image" content="https://hireonforge.com/assets/forge-hero-v133.avif" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Forge - Post the Job. Get the Crew." />
-    <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
-    <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
+    <meta name="twitter:description" content="Nationwide service-request and contractor intake, focused first on Medford, Los Angeles, and New York." />
+    <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero-v133.avif" />
     <title>Forge - Post the Job. Get the Crew.</title>
-    <link rel="stylesheet" href="./styles.css?v=106" />
+    <link rel="stylesheet" href="./styles.css?v=133" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/forge-icon.svg" />
   </head>
@@ -36,20 +37,20 @@
             <span>FORGE</span>
           </a>
           <nav class="public-nav" aria-label="Forge public navigation">
-            <a class="nav-link" href="/request-help/">Request Help</a>
+            <a class="nav-link" href="/request-help/">Find Help</a>
             <button class="nav-link" type="button" data-nav="services">Services</button>
-            <button class="nav-link" type="button" data-nav="signup">For Workers</button>
+            <a class="nav-link" href="/contractors/">For Contractors</a>
             <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
-            <a class="nav-link" href="/post-job/">Post a Job</a>
-            <a class="nav-link" href="/pricing/">Pricing</a>
-            <a class="nav-link" href="/impact/">Impact</a>
-            <button class="nav-link" type="button" data-nav="launch-status">Launch Status</button>
+            <a class="nav-link home-nav-optional" href="/post-job/">Post a Job</a>
+            <a class="nav-link home-nav-optional" href="/pricing/">Pricing</a>
+            <a class="nav-link home-nav-optional" href="/impact/">Impact</a>
+            <button class="nav-link home-nav-optional" type="button" data-nav="launch-status">Launch Status</button>
             <button class="nav-link" type="button" data-nav="legal">Safety</button>
           </nav>
           <div class="header-actions">
             <button class="search-pill" type="button" data-nav="services" aria-label="Search Forge services">Search</button>
             <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
-            <button class="btn header-worker small" type="button" data-nav="signup">Join as Worker</button>
+            <button class="btn header-worker small" type="button" data-nav="signup">Join as Contractor</button>
             <details class="explore-menu">
               <summary>Explore</summary>
               <div class="explore-panel" role="group" aria-label="Explore Forge">
@@ -58,7 +59,7 @@
                   <button type="button" data-nav="perspective">Perspectives</button>
                   <button type="button" data-nav="services">Services</button>
                   <button type="button" data-nav="post">Post a Job</button>
-                  <button type="button" data-nav="signup">Join as Worker</button>
+                  <a href="/contractors/">Join as Contractor</a>
                   <a href="/pricing/">Pricing / Upgrades</a>
                   <button type="button" data-nav="launch-status">Launch Status</button>
                 </section>
@@ -98,32 +99,86 @@
 
         <section class="home-hero">
           <div class="hero-copy">
-            <h1>Medford's Marketplace for Work, Workers, and Local Services.</h1>
-            <p>Forge routes Medford jobs, workers, business growth, suppliers, and vehicle requests into one clean local workflow.</p>
-            <p class="hero-trust-line">Post the job. Get matched. Stay reviewed. · Admin-reviewed leads · No payments collected in MVP · Built for Medford first</p>
+            <span class="hero-eyebrow">Nationwide intake · focused marketplace development in three launch markets</span>
+            <h1>Post the project.<br />Find the right crew.</h1>
+            <p>Forge gives customers and contractors across the United States one clear place to start, with focused marketplace development in Medford, Los Angeles, and New York.</p>
+            <p class="hero-trust-line">Coverage is confirmed case by case · Honest delivery receipts · No payments collected in this early-access release</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-nav="post">I Need Help</button>
-              <button class="btn blue" type="button" data-nav="signup">I Need Work</button>
-              <button class="btn ghost" type="button" data-nav="northstar">I Own a Business</button>
-              <button class="btn ghost" type="button" data-nav="manufacturing">I Need Suppliers</button>
-              <button class="btn ghost" type="button" data-nav="auto">I Need a Vehicle</button>
+              <button class="btn orange" type="button" data-nav="post">Post a Job</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as a Contractor</button>
+              <button class="btn ghost" type="button" data-nav="signup">Create Provider Profile</button>
+              <button class="btn ghost" type="button" data-action="start-company-profile">Create Company Profile</button>
+              <button class="btn ghost" type="button" data-nav="login">Sign In</button>
+              <button class="btn ghost" type="button" data-nav="login">Sign Up</button>
             </div>
           </div>
           <figure class="hero-photo">
-            <img src="./assets/forge-hero.png" alt="Local worker preparing for a job" />
+            <picture>
+              <source srcset="./assets/forge-hero-v133.avif" type="image/avif" />
+              <img src="./assets/forge-hero-v133.avif" width="1717" height="916" alt="Local worker preparing for a job" fetchpriority="high" decoding="async" />
+            </picture>
           </figure>
         </section>
 
         <section class="feature-strip" aria-label="Forge benefits">
           <article><span class="icon">Q</span><strong>Quick Posting</strong><small>Post in minutes</small></article>
-          <article><span class="icon">L</span><strong>Local Pros</strong><small>In Medford</small></article>
+          <article><span class="icon">M</span><strong>Focused Markets</strong><small>Medford · LA · NYC</small></article>
           <article><span class="icon">S</span><strong>Safety First</strong><small>Admin-reviewed leads</small></article>
+        </section>
+
+        <section class="nationwide-market-panel" aria-labelledby="nationwide-market-title">
+          <div class="nationwide-market-heading">
+            <div>
+              <span class="split-label">Nationwide request and contractor intake</span>
+              <h2 id="nationwide-market-title">Start anywhere. Build depth market by market.</h2>
+              <p>Forge accepts service requests and contractor applications across the United States. Active coverage is never assumed; every match still depends on category, location, availability, project fit, and human review.</p>
+            </div>
+            <a class="btn ghost" href="/contractors/">Contractor information</a>
+          </div>
+          <div class="nationwide-market-grid">
+            <article>
+              <span>MEDFORD · OREGON</span>
+              <h3>Southern Oregon, local-first.</h3>
+              <p>Residential projects, repairs, remodeling, homebuilding, fencing, excavation, and specialty trades.</p>
+              <a href="/markets/medford-or/">Explore Medford</a>
+            </article>
+            <article>
+              <span>LOS ANGELES · CALIFORNIA</span>
+              <h3>Property work at metro scale.</h3>
+              <p>Remodeling, commercial improvements, maintenance, creative services, and licensed specialty trades.</p>
+              <a href="/markets/los-angeles-ca/">Explore Los Angeles</a>
+            </article>
+            <article>
+              <span>NEW YORK · NEW YORK</span>
+              <h3>Dense projects, careful coordination.</h3>
+              <p>Apartment and commercial improvements, maintenance, project coordination, and licensed specialty trades.</p>
+              <a href="/markets/new-york-ny/">Explore New York</a>
+            </article>
+            <article class="nationwide-intake-card">
+              <span>ALL 50 STATES + WASHINGTON, D.C.</span>
+              <h3>Outside a focus market?</h3>
+              <p>Post the project or share your contractor service area. Forge will show an honest early-market state if compatible coverage is not yet confirmed.</p>
+              <div><button class="btn orange small" type="button" data-nav="post">Post a Job</button><button class="btn blue small" type="button" data-nav="signup">Join as Contractor</button></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="marketplace-entry-panel" aria-label="Forge marketplace paths">
+          <div class="section-title compact">
+            <div>
+              <span class="split-label">Forge Marketplace MVP</span>
+              <h2>Customers, providers, companies, and admin review now share one marketplace workflow.</h2>
+              <p class="muted">Local-state demo only: no payments, passwords, production dispatch, or backend claims are active yet.</p>
+            </div>
+            <button class="btn blue small" type="button" data-nav="customer-dashboard">Customer Dashboard</button>
+          </div>
+          <div class="marketplace-entry-grid" id="marketplaceCtaGrid"></div>
         </section>
 
         <section class="impact-trust-strip" aria-label="House of Heaven impact tracker">
           <div>
             <span class="split-label">Built to serve</span>
-            <p>10% of net profit goes to Mountain Church. 10% of net profit goes to House of Heaven orphanages in India.</p>
+            <p>Forge's stated future policy allocates 10% of net profit to Mountain Church and 10% to House of Heaven orphanages in India. No distribution or impact outcome is claimed in this release.</p>
           </div>
           <strong>Impact tracker coming soon - verified updates will be published after launch.</strong>
           <a class="btn ghost small" href="/impact/">Impact Page</a>
@@ -133,9 +188,9 @@
         <section class="premium-marketplace" aria-label="Forge premium service marketplace">
           <div class="premium-marketplace-head">
             <div>
-              <span class="split-label">Medford launch marketplace</span>
+              <span class="split-label">Priority-market service marketplace</span>
               <h2>What project do you need completed?</h2>
-              <p>Start with the highest-value local trades first. Forge keeps the first click simple, then routes every lead into the existing post-job and provider flows.</p>
+              <p>Start with the highest-value trades. Forge keeps the first click simple, then uses service area, category, availability, and project fit to prepare reviewed matches.</p>
             </div>
             <form class="premium-service-search" id="premiumServiceSearchForm">
               <label class="visually-hidden" for="homeServiceSearch">Search any Forge service</label>
@@ -149,9 +204,9 @@
 
         <section class="role-gateway-panel" aria-label="Primary Forge paths">
           <article>
-            <span class="split-label">I need workers</span>
-            <h2>Post the scope and get reviewed follow-up.</h2>
-            <p>Share the job, location, timeline, and contact consent. Forge keeps the lead in admin review while bids and follow-up are coordinated.</p>
+              <span class="split-label">I need something done</span>
+              <h2>Tell us about the job.</h2>
+              <p>Share the scope, location, and timing. Your request is saved before Forge attempts delivery, and you always see what happened next.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-nav="post">Post Job</button>
               <a class="btn ghost" href="/pricing/">Featured Job Options</a>
@@ -159,19 +214,19 @@
             </div>
           </article>
           <article>
-            <span class="split-label">I need work</span>
-            <h2>Create a provider profile.</h2>
-            <p>List your service area, experience, availability, categories, and proof signals so Forge can route matching local jobs.</p>
+              <span class="split-label">I provide construction services</span>
+              <h2>Build a clear contractor profile.</h2>
+              <p>List your U.S. service area, project types, availability, experience, and self-reported license and insurance status for review.</p>
             <div class="hero-actions">
-              <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as Contractor</button>
               <a class="btn ghost" href="/pricing/">Compare Profile Upgrades</a>
               <button class="btn ghost" type="button" data-nav="jobs">Browse Jobs</button>
             </div>
           </article>
           <article>
-            <span class="split-label">I run a business</span>
-            <h2>Get leads and tighten operations.</h2>
-            <p>Request help with local leads, websites, Google Business, ads, CRM, payments, manufacturing, or growth follow-up.</p>
+              <span class="split-label">I run a business</span>
+              <h2>Find the right growth lane.</h2>
+              <p>Explore customer leads, NorthStar marketing, project support, manufacturing, payment operations, or finance readiness from one calm starting point.</p>
             <div class="hero-actions">
               <button class="btn blue" type="button" data-nav="northstar">Grow My Business</button>
               <button class="btn ghost" type="button" data-nav="manufacturing">Manufacturing Help</button>
@@ -210,6 +265,64 @@
             </div>
           </article>
         </section>
+
+        <section class="home-business-support" aria-labelledby="businessSupportTitle">
+          <div class="home-section-heading">
+            <span class="split-label">For local business owners</span>
+            <h2 id="businessSupportTitle">Support the work behind the work.</h2>
+            <p>Choose one focused path now. The rest of the Forge network stays available when you need it.</p>
+          </div>
+          <div class="home-business-grid">
+            <article>
+              <span class="home-card-icon" aria-hidden="true">N</span>
+              <h3>Win more local work</h3>
+              <p>NorthStar helps with websites, Google Business, reviews, content, ads, CRM, and lead follow-up.</p>
+              <button class="home-text-link" type="button" data-nav="northstar">Explore NorthStar <span aria-hidden="true">→</span></button>
+            </article>
+            <article>
+              <span class="home-card-icon" aria-hidden="true">B</span>
+              <h3>Plan a serious project</h3>
+              <p>Route home projects, commercial work, development opportunities, and contractor needs into the right review lane.</p>
+              <button class="home-text-link" type="button" data-nav="building">Explore Building <span aria-hidden="true">→</span></button>
+            </article>
+            <article>
+              <span class="home-card-icon" aria-hidden="true">C</span>
+              <h3>Prepare for business-finance options</h3>
+              <p>Save a Capital Desk interest note for business credit, expense tools, vendor payments, working capital, or future approved Flex review.</p>
+              <p class="home-readiness-note">Flex referral is not active until written partner, consent, data-sharing, and official-link gates pass.</p>
+              <button class="home-text-link" type="button" data-nav="capital">Explore Capital Desk <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-how-it-works" aria-labelledby="howForgeWorksTitle">
+          <div class="home-section-heading">
+            <span class="split-label">A clear next step</span>
+            <h2 id="howForgeWorksTitle">How Forge works today.</h2>
+          </div>
+          <ol class="home-step-list">
+            <li><span>1</span><div><strong>Choose one path</strong><p>Post a job, join as a worker, or open the business support that fits.</p></div></li>
+            <li><span>2</span><div><strong>Save the right details</strong><p>Forge keeps public intake focused and refuses passwords, banking details, government IDs, and secret information.</p></div></li>
+            <li><span>3</span><div><strong>See an honest receipt</strong><p>You can tell whether a submission is only on this device or was verified as delivered to Forge.</p></div></li>
+          </ol>
+        </section>
+
+        <details class="home-network-details">
+          <summary>
+            <span><strong>Explore the complete Forge network</strong><small>Auto, creative, manufacturing, careers, payments, makers, rides, and more</small></span>
+            <span aria-hidden="true">+</span>
+          </summary>
+          <div class="home-network-grid">
+            <button type="button" data-nav="auto"><strong>Auto &amp; Transport</strong><span>Buy, sell, source, repair, or move a vehicle.</span></button>
+            <button type="button" data-nav="creative"><strong>Photography &amp; Video</strong><span>Creative work for people, events, property, and business.</span></button>
+            <button type="button" data-nav="manufacturing"><strong>Manufacturing</strong><span>Products, packaging, labs, compliance, and sourcing.</span></button>
+            <button type="button" data-nav="forge-academy"><strong>Careers &amp; Forge Academy</strong><span>Trade, school, apprenticeship, and career planning.</span></button>
+            <button type="button" data-nav="personal-driver"><strong>Personal Driver</strong><span>Scheduled rides with manual safety review.</span></button>
+            <button type="button" data-nav="payments"><strong>Payment Operations</strong><span>Merchant-service interest only; no processing in Forge.</span></button>
+            <button type="button" data-nav="local-products"><strong>Local Products &amp; Makers</strong><span>Custom products and local brand interest.</span></button>
+            <a href="/impact/"><strong>Community Impact</strong><span>See the current verified-impact boundary.</span></a>
+          </div>
+        </details>
 
         <section class="vertical-showroom-panel" aria-label="Forge specialty verticals">
           <article>
@@ -334,13 +447,13 @@
           <article>
             <span class="split-label">I need auto help</span>
             <h2>Buy, sell, repair, transport, or customize a vehicle.</h2>
-            <p>Forge Auto routes vehicle needs through trusted mechanics, detailers, transport providers, and dealer partners.</p>
+            <p>Forge Auto organizes vehicle needs for manual review by local mechanic, detailing, transport, and dealer candidates.</p>
             <button class="btn ghost" type="button" data-nav="auto">Open Forge Auto</button>
           </article>
           <article>
             <span class="split-label">I hit a pothole</span>
             <h2>Road Rescue</h2>
-            <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge connects you with trusted local roadside and auto-service providers.</p>
+            <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge helps you request local roadside and auto-service support for manual review.</p>
             <button class="btn orange" type="button" data-nav="road-rescue">Get Road Help</button>
           </article>
           <article>
@@ -358,7 +471,7 @@
           <article>
             <span class="split-label">I need breathing room</span>
             <h2>Forge Capital Desk</h2>
-            <p>Basic business-owner intake and consent before continuing through the official Flex referral channel.</p>
+            <p>Basic business-owner intake and consent for Forge review. The possible Flex path remains inactive.</p>
             <button class="btn ghost" type="button" data-nav="capital">Check Flex Options</button>
           </article>
           <article>
@@ -412,7 +525,7 @@
           <article>
             <span class="split-label">I am building a home</span>
             <h2>Forge Homebuilding & Development</h2>
-            <p>Protecting What Matters Most. Forge connects homeowners, investors, and builders with trusted contractors, crews, designers, landscapers, logistics partners, and financing/support partners.</p>
+            <p>Protecting What Matters Most. Forge organizes requests for local contractors, crews, designers, landscapers, logistics providers, and future financing/support paths.</p>
             <button class="btn ghost" type="button" data-nav="homebuilding">Open Homebuilding</button>
           </article>
         </section>
@@ -524,7 +637,7 @@
             <article class="service-category-card">
               <span class="split-label">Community service</span>
               <h3>Road Rescue</h3>
-              <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge connects you with trusted local roadside and auto-service providers.</p>
+              <p>Hit a pothole? Flat tire? Need a tow, inspection, or help fast? Forge helps you request local roadside and auto-service support for manual review.</p>
               <button class="btn ghost small" type="button" data-nav="road-rescue">Get Road Help</button>
             </article>
             <article class="service-category-card">
@@ -651,6 +764,35 @@
             <span class="split-label">Demo accounts</span>
             <h1>Choose who you are testing as.</h1>
             <p class="muted">Forge now opens the right tools for each person: workers see jobs and bids, customers see job status, and admins see the operator dashboard.</p>
+            <section class="account-auth-panel" aria-label="Forge account prototype">
+              <span class="split-label">Local account prototype</span>
+              <h2>Create a role-based account shell.</h2>
+              <p>Use this to test customer, provider, and company onboarding. Passwords are validated for length but not stored in this browser-only MVP.</p>
+              <form id="accountSignupForm" class="account-auth-form">
+                <div class="field-row">
+                  <label>Role
+                    <select id="accountRole" required>
+                      <option value="customer">Customer</option>
+                      <option value="individual-provider">Individual Provider</option>
+                      <option value="company-provider">Company Provider</option>
+                      <option value="admin-request">Forge Admin Invite Request</option>
+                    </select>
+                  </label>
+                  <label>Full name<input id="accountName" required autocomplete="name" placeholder="Jane Smith" /></label>
+                </div>
+                <div class="field-row">
+                  <label>Email<input id="accountEmail" required type="email" autocomplete="email" placeholder="jane@example.com" /></label>
+                  <label>Phone<input id="accountPhone" autocomplete="tel" placeholder="(541) 555-0000" /></label>
+                </div>
+                <label class="check-row"><input id="accountCredentialPlan" required type="checkbox" /> I understand real password setup, reset, and email verification require production authentication and are not collected in this MVP.</label>
+                <label class="check-row"><input id="accountTerms" required type="checkbox" /> I agree to Forge's Early Access Terms & Privacy.</label>
+                <div class="hero-actions">
+                  <button class="btn orange" type="submit">Create Local Account</button>
+                  <button class="btn ghost" type="button" data-action="copy-auth-prototype">Copy Auth Notes</button>
+                </div>
+              </form>
+              <div class="account-auth-status" id="accountPrototypePanel"></div>
+            </section>
             <section class="profile-login-prompt" aria-label="Profile status login note">
               <span class="split-label">Profile Status</span>
               <h2>Pick the person whose view you want to show.</h2>
@@ -695,6 +837,7 @@
             <h1>Pick who you are sitting with.</h1>
             <p class="muted">Open Forge as a homeowner, worker, or operator and walk through the screens they would actually use.</p>
           </div>
+          <section class="perspective-switch-rail" id="perspectiveSwitchRail" aria-label="Perspective switch rail"></section>
           <section class="demo-command-strip" aria-label="Demo day command strip">
             <article>
               <span class="split-label">Demo day command</span>
@@ -763,6 +906,7 @@
               </div>
             </div>
           </section>
+          <section class="phone-fast-pass" id="phoneFastPass" aria-label="Phone demo fast pass"></section>
           <section class="perspective-readiness" aria-label="Perspective demo readiness receipt">
             <div class="perspective-readiness-heading">
               <div>
@@ -954,6 +1098,7 @@
           <h1 id="confirmTitle">Forge saved this lead.</h1>
           <p id="confirmBody">The next step is ready.</p>
           <div class="confirm-details" id="confirmDetails"></div>
+          <section class="confirm-delivery-status hidden" id="confirmDeliveryStatus" aria-live="polite"></section>
           <div class="confirm-next" id="confirmNextSteps"></div>
           <div class="confirm-handoff" id="confirmHandoff"></div>
           <div class="confirm-follow-up" id="confirmFollowUp" aria-label="First-user next touch"></div>
@@ -964,6 +1109,46 @@
             <button class="btn ghost" type="button" data-action="copy-confirmation-handoff">Copy Handoff</button>
           </div>
         </section>
+      </section>
+
+      <section class="screen" id="outbox-screen" data-screen="outbox">
+        <header class="simple-bar">
+          <button class="back-link" type="button" data-nav="home">← Home</button>
+          <strong>Forge Delivery Status</strong>
+        </header>
+        <section class="outbox-layout">
+          <section class="outbox-hero" aria-labelledby="outboxTitle">
+            <div>
+              <span class="split-label">Local delivery outbox</span>
+              <h1 id="outboxTitle" tabindex="-1">Know what is saved here and what actually reached Forge.</h1>
+              <p>Every job or worker submission receives one stable request ID. A record says <strong>Delivered to Forge</strong> only after the server returns a verified receipt.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn orange" type="button" data-action="export-undelivered-outbox">Export undelivered records</button>
+              <button class="btn ghost" type="button" data-nav="post">Post a Job</button>
+              <button class="btn ghost" type="button" data-nav="signup">Join as Worker</button>
+            </div>
+          </section>
+          <aside class="outbox-safety-note">
+            <strong>This device is part of the safety boundary.</strong>
+            <p>Clearing browser data can remove locally preserved leads. Export undelivered records to an approved encrypted location before clearing data. Exported files can contain contact information; do not email or commit them.</p>
+          </aside>
+          <section class="outbox-summary" id="leadOutboxSummary" aria-label="Delivery outbox summary"></section>
+          <section class="outbox-list" id="leadOutboxList" aria-live="polite"></section>
+        </section>
+        <dialog class="outbox-remove-dialog" id="outboxRemoveDialog" aria-labelledby="outboxRemoveTitle" aria-describedby="outboxRemoveWarning">
+          <span class="split-label">Confirm removal</span>
+          <h2 id="outboxRemoveTitle" tabindex="-1">Remove this delivery record?</h2>
+          <p id="outboxRemoveWarning">This removes only the delivery receipt/outbox entry. The original job or worker lead remains in this browser.</p>
+          <dl class="delivery-receipt-facts">
+            <div><dt>Lead</dt><dd id="outboxRemoveSummary">—</dd></div>
+            <div><dt>Request ID</dt><dd><code id="outboxRemoveRequestId">—</code></dd></div>
+          </dl>
+          <div class="hero-actions">
+            <button class="btn ghost" type="button" data-action="cancel-remove-outbox">Cancel — keep record</button>
+            <button class="btn orange" type="button" data-action="confirm-remove-outbox">Remove delivery record</button>
+          </div>
+        </dialog>
       </section>
 
       <section class="screen" id="launch-status-screen" data-screen="launch-status">
@@ -1023,6 +1208,7 @@
               </article>
             </div>
           </section>
+          <section class="launch-show-plan" id="launchShowPlan" aria-label="Launch show plan"></section>
           <section class="launch-demo-pack" aria-label="First-user demo pack">
             <div class="launch-demo-pack-heading">
               <div>
@@ -1034,8 +1220,12 @@
             <div class="launch-demo-pack-grid" id="launchDemoPack"></div>
           </section>
           <section class="launch-decision-card" id="launchDecisionCard" aria-label="Soft launch decision"></section>
+          <section class="public-launch-blockers" id="publicLaunchBlockers" aria-label="Public launch blocker receipt"></section>
+          <section class="launch-security-sweep" id="launchSecuritySweep" aria-label="Public share safety sweep"></section>
+          <section class="public-launch-go-no-go" id="publicLaunchGoNoGo" aria-label="Public launch go or no-go receipt"></section>
           <section class="launch-final-checklist" id="launchFinalChecklist" aria-label="Final first-user checklist"></section>
           <section class="launch-send-board" id="launchSendBoard" aria-label="First-user send board"></section>
+          <section class="launch-handoff-receipt" id="launchHandoffReceipt" aria-label="First-user handoff receipt"></section>
           <section class="first-user-breakdown" aria-label="First-user count breakdown">
             <div class="first-user-breakdown-heading">
               <div>
@@ -1061,6 +1251,7 @@
             </div>
             <div class="first-200-queue-grid" id="first200QueueGrid"></div>
           </section>
+          <section class="launch-next-10-sprint" id="launchNext10Sprint" aria-label="Next 10 invite sprint"></section>
           <section class="follow-up-audit" aria-label="First-user follow-up and backup audit">
             <div class="follow-up-audit-heading">
               <div>
@@ -1206,18 +1397,35 @@
 
             <fieldset class="step-panel" data-step="2">
               <h1>Where is the job?</h1>
-              <label>Location<input id="jobLocation" required value="Medford, OR" /></label>
+              <div class="field-row nationwide-location-row">
+                <label>City<input id="jobCity" required autocomplete="address-level2" placeholder="Medford" /></label>
+                <label>State<select id="jobState" required autocomplete="address-level1" aria-label="Job state"></select></label>
+                <label>ZIP code<input id="jobZip" required inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="97501" /></label>
+              </div>
+              <label>County (optional)<input id="jobCounty" autocomplete="address-level3" placeholder="Jackson County" /></label>
+              <label>Project address or service area<input id="customerAddress" placeholder="Keep the exact address private until an authorized handoff" /></label>
+              <label>Property / project type<select id="jobPropertyType"><option>Single-family home</option><option>Multi-family property</option><option>Apartment / condo</option><option>Commercial property</option><option>Industrial property</option><option>Land / sitework</option><option>Public / nonprofit facility</option><option>Other</option></select></label>
+              <label>Job Type<select id="jobType"><option>One-time Job</option><option>Recurring Service</option><option>Emergency Request</option><option>Bid Walk Needed</option><option>Quote Only</option><option>Maintenance Plan</option></select></label>
               <label>When do you need this done?<select id="jobUrgency"><option>ASAP</option><option>This week</option><option>Flexible</option></select></label>
+              <div class="field-row">
+                <label>Preferred Date<input id="jobPreferredDate" type="date" /></label>
+                <label>Preferred Time<input id="jobPreferredTime" placeholder="Morning, afternoon, after 5..." /></label>
+              </div>
               <label>Budget Range<select id="jobBudget"><option>$150 - $250</option><option>$250 - $500</option><option>$500 - $1,000</option><option>$1,000+</option></select></label>
+              <label>Visibility<select id="jobVisibility"><option>Public Marketplace</option><option>Admin Review Only</option><option>Invite Only</option></select></label>
               <label>Upload photos (optional)<input id="jobPhotos" type="file" multiple /></label>
+              <label>Reference docs or notes<textarea id="jobReferenceFiles" placeholder="Permits, measurements, preferred materials, links, or file names to collect later"></textarea></label>
             </fieldset>
 
             <fieldset class="step-panel" data-step="3">
               <h1>Your contact information</h1>
-              <label>Full Name<input id="customerName" required value="John Smith" /></label>
-              <label>Phone Number<input id="customerPhone" required value="(541) 555-1234" /></label>
-              <label>Email Address<input id="customerEmail" required type="email" value="john.smith@email.com" /></label>
+              <label>Full Name<input id="customerName" required autocomplete="name" placeholder="Your name" /></label>
+              <label>Phone Number<input id="customerPhone" required autocomplete="tel" placeholder="Your phone number" /></label>
+              <label>Email Address<input id="customerEmail" required type="email" autocomplete="email" placeholder="you@example.com" /></label>
+              <label>Preferred Contact<select id="customerPreferredContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
+              <label>Providers to invite first<textarea id="jobInviteProviders" placeholder="Optional: names, trades, or emails of providers to invite first"></textarea></label>
               <p class="trust-note"><strong>Early access note:</strong> Forge will use this contact info to follow up about this job by text, phone, or email. No payment is collected in this MVP.</p>
+              <label class="check-row"><input id="jobFollowUpConsent" required type="checkbox" /> I agree Forge may contact me by text, phone, or email about this job.</label>
               <label class="check-row"><input id="terms" required type="checkbox" /> I agree to Forge's early access terms and privacy policy.</label>
               <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
             </fieldset>
@@ -1231,18 +1439,65 @@
         </section>
       </section>
 
+      <section class="screen" id="customer-dashboard-screen" data-screen="customer-dashboard">
+        <header class="blue-bar">
+          <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
+          <div class="bar-icons"><button type="button" data-nav="post">Post</button><button type="button" data-nav="jobs">Market</button></div>
+        </header>
+        <section class="content-wrap">
+          <div class="section-title compact">
+            <div>
+              <span class="split-label">Customer Dashboard</span>
+              <h1>Review requests, quotes, providers, and next steps.</h1>
+              <p class="muted">This dashboard is MVP/local-state only and shows what a customer account will become once auth and backend storage are connected.</p>
+            </div>
+            <button class="btn orange small" type="button" data-nav="post">Post Another Job</button>
+          </div>
+          <div class="stat-row" id="customerDashboardSummary"></div>
+          <section class="customer-dashboard-layout">
+            <div>
+              <h2>My Requests</h2>
+              <div class="marketplace-request-list" id="customerDashboardJobs"></div>
+            </div>
+            <aside>
+              <section id="customerDashboardNextAction"></section>
+              <form class="customer-profile-form" id="customerProfileForm">
+                <span class="split-label">Customer Profile</span>
+                <h2>Contact and project locations.</h2>
+                <label>Full name<input id="customerProfileName" required autocomplete="name" /></label>
+                <label>Email<input id="customerProfileEmail" required type="email" autocomplete="email" /></label>
+                <label>Phone<input id="customerProfilePhone" required autocomplete="tel" /></label>
+                <label>Primary address<input id="customerProfileAddress" placeholder="Medford, OR" /></label>
+                <label>Preferred contact<select id="customerProfileContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
+                <label>Saved project locations<textarea id="customerProfileLocations" placeholder="Home, rental property, shop, project address..."></textarea></label>
+                <label>Profile image placeholder<input id="customerProfileImage" type="file" accept="image/*" /></label>
+                <button class="btn blue full" type="submit">Save Customer Profile</button>
+              </form>
+            </aside>
+          </section>
+        </section>
+      </section>
+
       <section class="screen" id="jobs-screen" data-screen="jobs">
         <header class="blue-bar">
           <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
-          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+          <div class="bar-icons"><button type="button" aria-label="Search jobs">⌕</button><button type="button" aria-label="Open jobs menu">☰</button></div>
         </header>
         <section class="content-wrap">
           <h1>Available Jobs</h1>
           <p class="muted">Find work and get paid.</p>
+          <section class="marketplace-discovery-panel">
+            <div>
+              <span class="split-label">Marketplace discovery</span>
+              <h2>Search jobs and provider profiles from one public-safe surface.</h2>
+              <p class="muted">Provider identity, business profile, verification state, quote request, invite, and save actions are visible here for demo review.</p>
+            </div>
+            <div class="marketplace-discovery-summary" id="marketplaceDiscoverySummary"></div>
+          </section>
           <div class="filter-row">
-            <select id="listingCategory"></select>
-            <select id="listingBudget"><option>All Budgets</option><option>$100 - $250</option><option>$250 - $500</option><option>$500+</option></select>
-            <select id="listingDate"><option>All Dates</option><option>ASAP</option><option>This week</option><option>Flexible</option></select>
+            <select id="listingCategory" aria-label="Filter jobs by category"></select>
+            <select id="listingBudget" aria-label="Filter jobs by budget"><option>All Budgets</option><option>$100 - $250</option><option>$250 - $500</option><option>$500+</option></select>
+            <select id="listingDate" aria-label="Filter jobs by date"><option>All Dates</option><option>ASAP</option><option>This week</option><option>Flexible</option></select>
           </div>
           <div class="job-feed" id="jobFeed"></div>
           <section class="provider-directory-panel">
@@ -1254,9 +1509,9 @@
               <button class="btn ghost small" type="button" data-nav="signup">Join as Provider</button>
             </div>
             <div class="provider-directory-controls">
-              <select id="providerVerticalFilter"></select>
-              <input id="providerSearch" placeholder="Search provider tags, services, or notes" />
-              <input id="providerServiceArea" placeholder="Service area" />
+              <select id="providerVerticalFilter" aria-label="Filter providers by service type"></select>
+              <input id="providerSearch" aria-label="Search provider tags, services, or notes" placeholder="Search provider tags, services, or notes" />
+              <input id="providerServiceArea" aria-label="Filter providers by service area" placeholder="Service area" />
             </div>
             <div class="provider-filter-options" id="providerFilterOptions"></div>
             <div class="provider-directory" id="providerDirectory"></div>
@@ -1271,12 +1526,15 @@
         </header>
         <section class="creative-hero">
           <figure>
-            <img src="./assets/forge-hero.png" alt="Local Forge professional preparing for a customer project" />
+            <picture>
+              <source srcset="./assets/forge-hero-v133.avif" type="image/avif" />
+              <img src="./assets/forge-hero-v133.avif" width="1717" height="916" alt="Local Forge professional preparing for a customer project" loading="lazy" decoding="async" />
+            </picture>
           </figure>
           <div class="creative-hero-copy">
             <span class="split-label">Photography & Videography</span>
             <h1>Photography & Videography</h1>
-            <p>Hire trusted local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</p>
+            <p>Request local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-creative-lead">Request a Shoot</button>
               <button class="btn blue" type="button" data-action="focus-creative-provider">Apply as a Photographer</button>
@@ -1290,7 +1548,7 @@
               <div>
                 <span class="split-label">Local creative marketplace</span>
                 <h2>Local creators for real moments.</h2>
-                <p>Forge helps customers connect with trusted local creatives, including photographers, videographers, and approved local creative providers in the community.</p>
+                <p>Forge helps customers request local creatives, including photographers and videographers. Provider claims remain pending until reviewed.</p>
               </div>
               <button class="btn ghost small" type="button" data-action="copy-creative-queue">Copy Creative Queue</button>
             </section>
@@ -1299,7 +1557,7 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Service types</span>
-                  <h2>Hire trusted local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</h2>
+                  <h2>Request local photographers and videographers for weddings, events, business content, real estate, social media, and special moments.</h2>
                 </div>
               </div>
               <div class="creative-service-grid" id="creativeServiceGrid"></div>
@@ -1609,15 +1867,18 @@
         <section class="capital-hero">
           <div class="capital-hero-copy">
             <span class="split-label">Forge Capital Desk</span>
-            <h1>Business owners need breathing room.</h1>
-            <p>Forge Capital Desk helps contractors, service businesses, auto shops, transport companies, creatives, builders, and local operators discover modern business finance tools through our Flex referral channel.</p>
+            <h1>Explore business-finance readiness without pressure.</h1>
+            <p>Save a private, local interest note for business credit, expense management, vendor payments, working capital, or project-finance support. A Flex referral is not active unless every written approval and official-link gate is complete.</p>
             <div class="hero-actions">
-              <button class="btn orange" type="button" data-action="focus-flex-form">Check Flex Options</button>
-              <button class="btn ghost light" type="button" data-action="copy-flex-outreach">Talk to Forge Capital Desk</button>
+              <button class="btn orange" type="button" data-action="focus-flex-form">Save Finance Interest</button>
+              <button class="btn ghost light" type="button" data-action="focus-flex-readiness">How readiness works</button>
             </div>
           </div>
           <figure class="capital-hero-photo">
-            <img src="./assets/forge-hero.png" alt="Local business owner reviewing work before a job" />
+            <picture>
+              <source srcset="./assets/forge-hero-v133.avif" type="image/avif" />
+              <img src="./assets/forge-hero-v133.avif" width="1717" height="916" alt="Local business owner reviewing work before a job" loading="lazy" decoding="async" />
+            </picture>
           </figure>
         </section>
         <section class="capital-layout">
@@ -1633,13 +1894,13 @@
               <ul id="flexProblemsList"></ul>
             </section>
             <section class="capital-section capital-flex-help">
-              <span class="split-label">What Flex may help with</span>
-              <h2>Modern business finance tools through Flex.</h2>
+              <span class="split-label">Finance needs to review</span>
+              <h2>Business tools an approved finance path may support.</h2>
               <ul id="flexMayHelpList"></ul>
             </section>
-            <section class="capital-section">
-              <span class="split-label">How Flex referral works</span>
-              <h2>Forge collects consent. Flex handles the product path.</h2>
+            <section class="capital-section" id="flexReadinessSection">
+              <span class="split-label">Future referral readiness</span>
+              <h2>Forge saves your interest. No referral is active until every gate passes.</h2>
               <div class="capital-steps" id="flexHowItWorks"></div>
             </section>
             <section class="capital-section compliance">
@@ -1657,7 +1918,8 @@
               </div>
             </section>
             <section class="capital-section recent">
-              <span class="split-label">Recent Capital Desk leads</span>
+              <span class="split-label">Saved on this device</span>
+              <h2>Your Capital Desk requests</h2>
               <div class="capital-recent-grid" id="flexRecentLeads"></div>
             </section>
           </div>
@@ -1665,7 +1927,7 @@
             <form class="capital-form" id="flexLeadForm">
               <span class="split-label">Lead form</span>
               <h2>Forge Capital Desk Lead Form</h2>
-              <p class="muted">Forge only collects basic lead and consent details before sending business owners to the official Flex referral URL.</p>
+              <p class="muted">Forge stores this basic business-interest note on this device first. It is not sent to Flex, and Forge will not show an external referral link, unless every approval gate is active.</p>
               <label>Owner name<input id="flexOwnerName" required autocomplete="name" placeholder="Full name" /></label>
               <label>Business name<input id="flexCompanyName" required placeholder="Business name" /></label>
               <label>Email<input id="flexEmail" required type="email" autocomplete="email" placeholder="owner@example.com" /></label>
@@ -1694,16 +1956,18 @@
               </div>
               <p class="trust-note" data-flex-compliance></p>
               <label class="check-row"><input id="flexConsentToContact" required type="checkbox" /> I consent to Forge contacting me about this request.</label>
-              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> I consent to receive the official Flex referral link.</label>
-              <button class="btn orange full" type="submit">Check Flex Options</button>
+              <label class="check-row"><input id="flexConsentReferral" required type="checkbox" /> If an approved referral becomes available, I consent to receive the official link after Forge review.</label>
+              <button class="btn orange full" type="submit">Save Finance Interest</button>
             </form>
             <div class="capital-success hidden" id="flexLeadSuccess" aria-live="polite">
-              <span class="split-label">Capital Desk request received</span>
-              <h2>Thank you.</h2>
-              <p>Forge received your Capital Desk request. We will review your business information and may send you the official Flex referral link if it looks like a fit. Forge does not make credit decisions and does not guarantee approval.</p>
+              <span class="split-label">Capital Desk local receipt</span>
+              <h2>Saved on this device.</h2>
+              <p id="flexLeadSuccessMessage">This request is preserved in this browser. It has not been sent to Flex and is not a financing application.</p>
+              <dl class="delivery-receipt-facts" id="flexDeliveryReceipt"></dl>
               <p class="trust-note" data-flex-compliance></p>
               <div class="hero-actions">
-                <a class="btn orange" id="flexContinueButton" href="https://REPLACE-WITH-OFFICIAL-FLEX-PARTNER-LINK" target="_blank" rel="noopener noreferrer">Continue to Flex</a>
+                <a class="btn orange hidden" id="flexContinueButton" href="#" target="_blank" rel="noopener noreferrer">Continue to approved referral</a>
+                <button class="btn blue small hidden" id="flexRetryDeliveryButton" type="button" data-action="retry-flex-delivery">Retry Forge delivery</button>
                 <button class="btn ghost small" type="button" data-action="reset-flex-form">Submit Another</button>
               </div>
             </div>
@@ -1723,12 +1987,15 @@
         </header>
         <section class="manufacturing-hero">
           <figure>
-            <img src="./assets/forge-hero.png" alt="Forge team preparing a customer project" />
+            <picture>
+              <source srcset="./assets/forge-hero-v133.avif" type="image/avif" />
+              <img src="./assets/forge-hero-v133.avif" width="1717" height="916" alt="Forge team preparing a customer project" loading="lazy" decoding="async" />
+            </picture>
           </figure>
           <div class="manufacturing-hero-copy">
             <span class="split-label">Forge Manufacturing + Nutraceuticals</span>
             <h1>Find the right manufacturing partner for compliant wellness products.</h1>
-            <p>Forge helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs find trusted partners to manufacture vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other compliant health products.</p>
+            <p>Forge helps founders, health brands, retailers, wellness companies, gyms, creators, and local entrepreneurs request review by potential manufacturing partners for vitamins, supplements, gummies, chews, powders, beverages, skincare, pet wellness products, and other regulated product categories.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-manufacturing-rfq">Find a Manufacturer</button>
               <button class="btn blue" type="button" data-action="focus-manufacturing-supplier">Create Supplier Profile</button>
@@ -1742,7 +2009,7 @@
               <div>
                 <span class="split-label">Direct supplier discovery</span>
                 <h2>Forge builds original profiles, quote requests, and project pipelines.</h2>
-                <p>Forge does not copy supplier directories. We build direct relationships, verified profiles, quote requests, and project pipelines so manufacturers and buyers can do business faster.</p>
+                <p>Forge does not copy supplier directories. We use original, user-supplied profile candidates, quote requests, and review pipelines; verification remains pending until documented.</p>
               </div>
               <button class="btn ghost small" type="button" data-action="copy-manufacturing-brief">Copy Brief</button>
             </section>
@@ -1790,22 +2057,28 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Supplier discovery</span>
-                  <h2>Search Forge demo suppliers and future verified profiles.</h2>
+                  <h2>Explore supplier paths without exposing private identities.</h2>
                 </div>
-                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue">Copy Manufacturing Queue</button>
+                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue" data-operator-only>Copy Manufacturing Queue</button>
               </div>
               <div class="manufacturing-filters">
+                <label class="visually-hidden" for="manufacturingProductFilter">Filter suppliers by product category</label>
                 <select id="manufacturingProductFilter"></select>
+                <label class="visually-hidden" for="manufacturingSupplierFilter">Filter suppliers by supplier type</label>
                 <select id="manufacturingSupplierFilter"></select>
+                <label class="visually-hidden" for="manufacturingDosageFilter">Filter suppliers by dosage form</label>
                 <select id="manufacturingDosageFilter"></select>
+                <label class="visually-hidden" for="manufacturingLocationFilter">Filter suppliers by location</label>
                 <input id="manufacturingLocationFilter" placeholder="Location" />
+                <label class="visually-hidden" for="manufacturingMoqFilter">Filter suppliers by minimum order quantity</label>
                 <select id="manufacturingMoqFilter"></select>
+                <label class="visually-hidden" for="manufacturingCertificationFilter">Filter suppliers by certification</label>
                 <select id="manufacturingCertificationFilter"></select>
               </div>
               <div class="manufacturing-filter-flags" id="manufacturingFilterFlags"></div>
               <div class="manufacturing-directory-grid" id="manufacturingSupplierDirectory"></div>
             </section>
-            <section class="manufacturing-directory" id="manufacturingLeadSourceCrm">
+            <section class="manufacturing-directory" id="manufacturingLeadSourceCrm" data-operator-only>
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Lead-source CRM</span>
@@ -1853,7 +2126,7 @@
                 </div>
               </div>
               <div class="manufacturing-status-grid" id="manufacturingStatusGrid"></div>
-              <div class="manufacturing-rfq-list" id="manufacturingRfqList"></div>
+              <div class="manufacturing-rfq-list" id="manufacturingRfqList" data-operator-only></div>
             </section>
             <section class="manufacturing-compliance">
               <span class="split-label">Compliance notice</span>
@@ -2245,10 +2518,13 @@
       <section class="screen auto-screen" id="autos-screen" data-screen="autos">
         <header class="blue-bar auto-bar">
           <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
-          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+          <div class="bar-icons"><button type="button" aria-label="Search auto services">⌕</button><button type="button" aria-label="Open auto menu">☰</button></div>
         </header>
         <section class="auto-hero">
-          <img src="./assets/forge-auto-services-hero.png" alt="Forge Auto Services mechanic shop, diesel truck, trailer transport, detailing, and dealer inventory" />
+          <picture>
+            <source srcset="./assets/forge-auto-services-hero-v133.avif" type="image/avif" />
+            <img src="./assets/forge-auto-services-hero-v133.avif" width="1672" height="941" alt="Forge Auto Services mechanic shop, diesel truck, trailer transport, detailing, and dealer inventory" loading="lazy" decoding="async" />
+          </picture>
           <div class="auto-hero-copy">
             <span class="split-label">Forge Auto & Transport · Forge Auto Services</span>
             <h1>Forge Auto & Transport</h1>
@@ -2269,7 +2545,7 @@
               <div>
                 <span class="split-label">Forge Auto division</span>
                 <h1>Buy, sell, transport, repair, inspect, detail, customize, and maintain vehicles.</h1>
-                <p class="muted">Forge Auto helps customers through trusted auto partners, mechanics, transport providers, and dealership partners while keeping licensing and compliance boundaries clear.</p>
+                <p class="muted">Forge Auto organizes customer requests for potential mechanics, transport providers, and dealer candidates while keeping licensing and compliance boundaries clear.</p>
               </div>
               <button class="btn orange small" type="button" data-action="copy-auto-market-brief">Copy Auto Brief</button>
             </div>
@@ -2369,7 +2645,7 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Dealer network</span>
-                  <h2>Route sales and buyer requests through trusted dealer partners.</h2>
+                  <h2>Route sales and buyer requests for dealer-candidate review.</h2>
                 </div>
                 <button class="btn ghost small" type="button" data-action="copy-auto-dealer-plan">Copy Dealer Plan</button>
               </div>
@@ -2496,7 +2772,7 @@
           <div class="road-rescue-hero-copy">
             <span class="split-label">Faith in action. Help when it matters. Service that gives glory to Jesus.</span>
             <h1>Forge Road Rescue</h1>
-            <p>When the road damages your vehicle, Forge helps you find trusted local help fast.</p>
+            <p>When the road damages your vehicle, Forge helps you request local help for manual review.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-road-rescue-request">Request Road Rescue</button>
               <button class="btn blue" type="button" data-action="focus-road-hazard">Report a Road Hazard</button>
@@ -2646,7 +2922,7 @@
       <section class="screen" id="opportunities-screen" data-screen="opportunities">
         <header class="blue-bar">
           <a class="brand light" href="#home" data-nav="home"><span class="flame">F</span><span>FORGE</span></a>
-          <div class="bar-icons"><button type="button">⌕</button><button type="button">☰</button></div>
+          <div class="bar-icons"><button type="button" aria-label="Search homebuilding">⌕</button><button type="button" aria-label="Open homebuilding menu">☰</button></div>
         </header>
         <section class="opportunity-layout">
           <div class="opportunity-main">
@@ -2841,6 +3117,25 @@
         </section>
       </section>
 
+      <section class="screen admitly-presentation-screen" id="admitly-screen" data-screen="admitly">
+        <header class="admitly-bar">
+          <a class="admitly-brand" href="#admitly" data-nav="admitly">ADMITLY</a>
+          <div class="bar-icons">
+            <button type="button" data-nav="admitly-demo">Demo</button>
+            <button type="button" data-nav="admitly-stanford">Stanford</button>
+            <button type="button" data-nav="home">Forge</button>
+          </div>
+        </header>
+        <section class="admitly-presentation-hero">
+          <div>
+            <span class="split-label" id="admitlyPresentationMode">Admitly Landing</span>
+            <h1>Admitly admissions planning, presentation-ready inside Forge.</h1>
+            <p>Separate product, separate brand, and safe discussion copy for students, parents, educators, and a possible Stanford conversation.</p>
+          </div>
+        </section>
+        <section class="admitly-presentation-body" id="admitlyPresentationBody"></section>
+      </section>
+
       <section class="screen trade-pathways-screen" id="trade-pathways-screen" data-screen="trade-pathways">
         <header class="admitly-bar">
           <a class="admitly-brand" href="#trade-pathways" data-nav="trade-pathways">ADMITLY</a>
@@ -2928,7 +3223,7 @@
           <div class="projects-hero-copy">
             <span class="split-label">Forge Projects</span>
             <h1>Big projects need more than a handyman. They need real operators.</h1>
-            <p>Forge connects homeowners, property owners, investors, and businesses across Oregon and Washington with trusted project partners for home projects, major renovations, multifamily opportunities, mixed-use projects, and ground-up construction.</p>
+            <p>Forge organizes project requests across Oregon and Washington for local-provider or major-project review, including home projects, renovations, multifamily opportunities, mixed-use projects, and ground-up construction.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-project-intake">Start a Home Project</button>
               <button class="btn blue" type="button" data-action="focus-project-major">Submit a Major Build</button>
@@ -3087,8 +3382,8 @@
         <section class="building-hero">
           <div class="building-hero-copy">
             <span class="split-label">Forge Building</span>
-            <h1>Build smarter. Fund smarter. Finish with trusted operators.</h1>
-            <p>Forge helps homeowners, property owners, contractors, businesses, and investors organize projects and connect with the right level of support. Small jobs route to verified local pros. Larger projects go through Major Projects Review. Contractor finance requests go through Finance Partner Review.</p>
+            <h1>Build smarter. Fund smarter. Find the right next step.</h1>
+            <p>Forge helps homeowners, property owners, contractors, businesses, and investors organize projects for the right level of review. Smaller work is triaged for local-provider review. Larger projects go through Major Projects Review. Contractor finance requests remain inside Forge Capital Desk unless every future partner gate passes.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="focus-building-home">Start a Home Project</button>
               <button class="btn blue" type="button" data-action="focus-building-major">Submit a Major Build</button>
@@ -3106,9 +3401,9 @@
           <div class="building-main">
             <section class="building-copy-block">
               <span class="split-label">Forge Building</span>
-              <h2>Build smarter. Fund smarter. Finish with trusted operators.</h2>
+              <h2>Build smarter. Fund smarter. Find the right next step.</h2>
               <p>Forge helps homeowners, property owners, contractors, businesses, and investors organize projects and connect with the right level of support.</p>
-              <p>For smaller jobs, Forge routes customers to verified local pros.</p>
+              <p>For smaller jobs, Forge organizes the request for local-provider review; provider credentials are not verified by this MVP.</p>
               <p>For larger projects, Forge sends the opportunity through Major Projects Review before it is routed to any development, construction, finance, or operating partner.</p>
             </section>
 
@@ -3135,7 +3430,7 @@
                 <span class="split-label">Contractor Finance Review</span>
                 <h2>For builders, service businesses, and project operators.</h2>
                 <p>If you are a contractor, builder, service business, or project operator, Forge can also help you check Flex options through Forge Capital Desk.</p>
-                <p>Qualified finance requests may move through the official Flex referral channel after your consent.</p>
+                <p>Finance requests stay in Forge review. A possible Flex referral remains inactive unless every written approval, consent, legal, operator, data-sharing, and official-link gate passes.</p>
               </article>
             </section>
 
@@ -3282,14 +3577,17 @@
         </header>
 
         <section class="homebuilding-hero-section">
-          <img src="./assets/forge-homebuilding-hero.png" alt="Custom home under construction with contractors reviewing plans" />
+          <picture>
+            <source srcset="./assets/forge-homebuilding-hero-v133.avif" type="image/avif" />
+            <img src="./assets/forge-homebuilding-hero-v133.avif" width="1740" height="904" alt="Custom home under construction with contractors reviewing plans" loading="lazy" decoding="async" />
+          </picture>
           <div class="homebuilding-hero-overlay"></div>
           <div class="homebuilding-hero-copy">
             <span class="homebuilding-kicker">Forge Homebuilding & Development</span>
             <h1>Forge Homebuilding & Development</h1>
             <p class="homebuilding-tagline">Protecting What Matters Most.</p>
             <h2>Build the home. Protect the future.</h2>
-            <p>From land prep to finished construction, Forge connects homeowners, investors, and builders with trusted blue-collar professionals.</p>
+            <p>From land prep to finished construction, Forge helps homeowners, investors, and builders organize requests for local blue-collar professionals.</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-action="scroll-homebuilding-intake">Start a Home Build</button>
               <button class="btn blue" type="button" data-action="scroll-homebuilding-contractors">Partner as a Contractor</button>
@@ -3302,7 +3600,7 @@
           <div class="homebuilding-panel wide">
             <span class="homebuilding-kicker">Customer-facing project platform</span>
             <h2>Forge helps customers build, improve, and protect homes.</h2>
-            <p>Forge connects project owners with trusted contractors, builders, designers, tradespeople, roofing crews, landscapers, logistics partners, and financing/support partners so every phase has a clearer next step.</p>
+            <p>Forge helps project owners organize potential contractor, builder, designer, trade, roofing, landscaping, logistics, and future financing/support paths so every phase has a clearer next step.</p>
           </div>
           <div class="homebuilding-metric-grid">
             <article><strong>Build</strong><span>New homes, ADUs, investor builds, remodels, additions</span></article>
@@ -3338,7 +3636,7 @@
           </div>
           <div class="homebuilding-image-block after">
             <span>After</span>
-            <h2>Documented build plan, trusted crews, protected next step.</h2>
+            <h2>Documented build plan, reviewed crew candidates, protected next step.</h2>
           </div>
         </section>
 
@@ -3368,7 +3666,7 @@
         <section class="homebuilding-section homebuilding-contractors" id="homebuildingContractors">
           <div class="homebuilding-section-heading">
             <span class="homebuilding-kicker">Contractor Partner Network</span>
-            <h2>Trusted blue-collar professionals for every phase.</h2>
+            <h2>Blue-collar provider candidates for every phase.</h2>
           </div>
           <div class="homebuilding-partner-grid">
             <article>General contractors</article>
@@ -3569,7 +3867,19 @@
               <label>Earliest available date/time<input id="bidEarliestAvailability" placeholder="Tomorrow 9 AM" /></label>
               <label>Estimated job duration<input id="bidDuration" placeholder="3 hours, 1 day, 2 visits" /></label>
             </div>
+            <div class="field-row">
+              <label>Estimated start date<input id="bidStartDate" type="date" /></label>
+              <label>Estimated completion date<input id="bidCompletionDate" type="date" /></label>
+            </div>
             <label>Number of workers / cleaners / crew members<input id="bidCrewCount" placeholder="2 cleaners, 3-person crew" /></label>
+            <label>Labor line items<textarea id="bidLaborLineItems" rows="2" placeholder="Labor, hours, crew size, rate, site visit, cleanup..."></textarea></label>
+            <label>Materials line items<textarea id="bidMaterialLineItems" rows="2" placeholder="Materials, supplies, equipment rental, disposal, delivery..."></textarea></label>
+            <label>Exclusions<textarea id="bidExclusions" rows="2" placeholder="Permits, hidden damage, customer-provided materials, extra trips..."></textarea></label>
+            <label>Payment milestones<textarea id="bidPaymentMilestones" rows="2" placeholder="Deposit, material payment, progress payment, final approval..."></textarea></label>
+            <div class="field-row">
+              <label>Quote valid until<input id="bidValidUntil" type="date" /></label>
+              <label>Quote version<input id="bidQuoteVersion" value="v1" /></label>
+            </div>
             <div class="field-row">
               <label>Materials included<select id="bidMaterialsIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
               <label>Supplies included<select id="bidSuppliesIncluded"><option>No</option><option>Yes</option><option>Not applicable</option></select></label>
@@ -3701,7 +4011,10 @@
             </div>
             <p class="muted" id="profileSummary"></p>
             <div class="readiness-card" id="profileReadiness"></div>
+            <section class="profile-status-receipt" id="profileStatusReceipt" aria-label="Profile status receipt"></section>
+            <section class="profile-perspective-switch" id="profilePerspectiveSwitch" aria-label="Profile perspective switcher"></section>
             <section class="profile-command-strip" id="profileCommandStrip" aria-label="Profile command summary"></section>
+            <section class="profile-visibility-panel" id="profileVisibilityPanel" aria-label="Profile visibility summary"></section>
             <section class="profile-demo-handoff" id="profileDemoHandoff" aria-label="Profile demo handoff"></section>
             <section class="profile-close-card" id="profileCloseCard" aria-label="Profile close ask"></section>
             <section class="profile-brief">
@@ -3730,14 +4043,21 @@
 
       <section class="screen" id="signup-screen" data-screen="signup">
         <section class="signup-layout">
-          <figure class="signup-photo"><img src="./assets/forge-hero.png" alt="Worker ready for local jobs" /></figure>
+          <figure class="signup-photo"><picture><source srcset="./assets/forge-hero-v133.avif" type="image/avif" /><img src="./assets/forge-hero-v133.avif" width="1717" height="916" alt="Worker ready for local jobs" loading="lazy" decoding="async" /></picture></figure>
           <form class="signup-form" id="workerSignupForm">
             <button class="back-link" type="button" data-nav="home">← Home</button>
-            <h1>Join Forge as a Worker</h1>
-            <p class="muted">Build a profile as a local worker, crew, or business and bid on jobs.</p>
-            <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
-            <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
+            <h1>Join Forge as a Contractor</h1>
+            <p class="muted">Build a nationwide-ready profile as an individual, company, crew, general contractor, project manager, or specialty trade. Information supplied is never labeled verified until Forge review evidence exists.</p>
+            <label>Full Name<input id="workerName" required autocomplete="name" placeholder="Your name" /></label>
+            <label>Trade / Skills<input id="workerTrade" required placeholder="General contracting, remodeling, electrical..." /></label>
             <label>Service vertical<select id="workerServiceVertical"></select></label>
+            <label>Profile Type<select id="workerProfileType"><option>Individual Worker</option><option>Company / Crew</option><option>Licensed Trade Business</option><option>Supplier / Partner</option></select></label>
+            <div class="field-row">
+              <label>Company / Public Profile Name<input id="workerCompanyName" placeholder="Optional business or crew name" /></label>
+              <label>Profile Slug<input id="workerProfileSlug" placeholder="rogue-valley-electric" /></label>
+            </div>
+            <label>Logo or profile image link<input id="workerLogo" type="url" inputmode="url" placeholder="https://... (optional public link)" /></label>
+            <label>Portfolio gallery link<input id="workerCover" type="url" inputmode="url" placeholder="https://... (optional public link)" /></label>
             <label>Trade categories<select id="workerTradeCategories" multiple size="6"></select></label>
             <label>Business size classification<select id="workerBusinessSize" required></select></label>
             <section class="provider-growth-tools northstar-provider-question">
@@ -3751,12 +4071,51 @@
                 <button class="btn ghost small" type="button" data-nav="northstar">Get Help with My Website, Google, Ads, and Follow-Up</button>
               </div>
             </section>
-            <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
-            <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
+            <label>Phone Number<input id="workerPhone" required autocomplete="tel" placeholder="Your phone number" /></label>
+            <label>Email Address<input id="workerEmail" required type="email" autocomplete="email" placeholder="you@example.com" /></label>
             <div class="field-row">
               <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
-              <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
+              <label>Years of experience<input id="workerYearsExperience" type="number" min="0" max="80" inputmode="numeric" value="0" /></label>
             </div>
+            <div class="field-row nationwide-location-row">
+              <label>Primary city<input id="workerCity" required autocomplete="address-level2" placeholder="Los Angeles" /></label>
+              <label>State<select id="workerState" required autocomplete="address-level1" aria-label="Contractor state"></select></label>
+              <label>ZIP code<input id="workerZip" required inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="90012" /></label>
+            </div>
+            <div class="field-row">
+              <label>Service radius (miles)<input id="workerServiceRadius" required type="number" min="1" max="500" inputmode="numeric" value="25" /></label>
+              <label>Travel availability<select id="workerTravelAvailability"><option>Within stated service area</option><option>Available statewide after review</option><option>Available in multiple states after review</option><option>Remote services only</option></select></label>
+            </div>
+            <label>Primary service area<input id="workerPrimaryServiceArea" required placeholder="Los Angeles County" /></label>
+            <label>Additional service areas<input id="workerAdditionalServiceAreas" placeholder="Pasadena, Long Beach, Orange County" /></label>
+            <div class="field-row">
+              <label>License number (when applicable)<input id="workerLicenseNumber" autocomplete="off" placeholder="Number only; do not upload identity documents" /></label>
+              <label>Issuing state<select id="workerLicenseState" aria-label="License issuing state"><option value="">Not supplied / not applicable</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>License status (self-reported)<select id="workerLicenseStatus"><option>Not supplied</option><option>Current, self-reported</option><option>Expired, self-reported</option><option>Not required for stated work</option><option>Unsure / needs review</option></select></label>
+              <label>Insurance status (self-reported)<select id="workerInsuranceStatus"><option>Not supplied</option><option>Current, self-reported</option><option>Needs renewal</option><option>Not applicable / unsure</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Crew size<input id="workerCrewSize" type="number" min="1" max="500" inputmode="numeric" value="1" /></label>
+              <label>Typical project size<input id="workerTypicalProjectSize" placeholder="$5,000-$100,000 or estimate after review" /></label>
+            </div>
+            <label>Portfolio website or public work link<input id="workerPortfolioLink" type="url" inputmode="url" placeholder="https://... (no raw documents)" /></label>
+            <div class="field-row">
+              <label>Pricing Type<select id="workerPricingType"><option>Estimate After Review</option><option>Hourly</option><option>Fixed Bid</option><option>Starting At</option><option>Emergency Rate</option><option>Recurring Plan</option></select></label>
+              <label>Minimum Job Size<input id="workerMinimumJobSize" placeholder="$250 minimum, bid walk required..." /></label>
+            </div>
+            <div class="field-row">
+              <label>Operating Hours<input id="workerOperatingHours" placeholder="Mon-Fri, Saturdays by request" /></label>
+              <label>Emergency Availability<select id="workerEmergencyAvailability"><option>No</option><option>Yes</option><option>By request</option></select></label>
+            </div>
+            <label>Certifications / licenses to review<textarea id="workerCertifications" placeholder="License number, certifications, trade cards, proof to review later"></textarea></label>
+            <label>Insurance notes<textarea id="workerInsuranceNotes" placeholder="General liability, bond, auto/commercial, or needs review"></textarea></label>
+            <label>Portfolio / work proof summary<textarea id="workerPortfolioSummary" placeholder="Past jobs, links, before/after examples, references to collect"></textarea></label>
+            <label>Team members / crew notes<textarea id="workerTeamMembers" placeholder="Crew size, lead contact, subcontractor boundaries"></textarea></label>
+            <label>Equipment / tools<textarea id="workerEquipment" placeholder="Truck, trailer, tools, specialty equipment"></textarea></label>
+            <label>Warranty or workmanship policy<textarea id="workerWarranty" placeholder="Optional warranty/redo policy or review needed"></textarea></label>
+            <label>Accepted payment methods<textarea id="workerPaymentMethods" placeholder="Cash, check, invoice, card later, payment terms to review"></textarea></label>
             <div class="dynamic-service-fields hidden" id="providerProfileFields"></div>
             <section class="provider-growth-tools">
               <span class="split-label">Business Growth Tools</span>
@@ -3780,7 +4139,7 @@
                 </article>
               </div>
             </section>
-            <p class="trust-note"><strong>Profile status:</strong> Basic profile ready for Forge verification review before live job matching. <strong>Worker follow-up:</strong> Forge will use this contact info to follow up about early worker opportunities by text, phone, or email.</p>
+            <p class="trust-note"><strong>Profile status:</strong> Information supplied. License and insurance details remain self-reported until reviewed. <strong>Contractor follow-up:</strong> Forge will use this contact info only with your consent about compatible opportunities and review steps.</p>
             <label class="check-row"><input id="workerFollowUpConsent" required type="checkbox" /> I agree Forge may contact me by text, phone, or email about early worker opportunities.</label>
             <label class="check-row"><input id="workerTerms" required type="checkbox" /> I agree to Forge's Early Access Terms & Privacy.</label>
             <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
@@ -3810,6 +4169,17 @@
                 <button class="btn ghost small" type="button" data-bid-job="bathroom-vanity">Submit Bid</button>
                 <button class="btn ghost small" type="button" data-message-thread="job-bathroom-vanity">Open Messages</button>
               </div>
+            </section>
+            <section class="worker-opportunity-bridge" id="workerOpportunityBridge" aria-label="Worker opportunity bridge"></section>
+            <section class="worker-marketplace-readiness" aria-label="Provider marketplace readiness">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Provider marketplace readiness</span>
+                  <h2>Profile, verification, pricing, and availability.</h2>
+                </div>
+                <button class="btn ghost small" type="button" data-nav="profile">Profile Status</button>
+              </div>
+              <div class="marketplace-command-grid" id="workerMarketplaceReadiness"></div>
             </section>
             <div class="stat-row" id="workerStats"></div>
             <section class="provider-northstar-panel" id="providerNorthstarPanel"></section>
@@ -3865,6 +4235,7 @@
               </article>
             </section>
             <div class="stat-row" id="adminStats"></div>
+            <section class="settings-card marketplace-command" id="adminMarketplaceControl"></section>
             <section class="settings-card">
               <div class="admin-heading compact">
                 <div>
@@ -3898,6 +4269,17 @@
                 <button class="btn ghost small" type="button" data-action="copy-delivery-status">Copy Status</button>
               </div>
               <div class="delivery-grid" id="deliveryStatus"></div>
+            </section>
+            <section class="settings-card delivery-drill">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Lead delivery drill</span>
+                  <h2>Prove one public lead leaves the browser.</h2>
+                  <p class="muted">Run this before broad sharing so the first real signup has a verified destination and a backup path.</p>
+                </div>
+                <button class="btn blue small" type="button" data-action="copy-lead-delivery-drill">Copy Drill</button>
+              </div>
+              <div class="delivery-drill-grid" id="leadDeliveryDrill"></div>
             </section>
             <section class="settings-card soft-launch">
               <div class="admin-heading compact">
@@ -3954,6 +4336,17 @@
               </div>
               <div class="auth-grid" id="authHandoff"></div>
             </section>
+            <section class="settings-card auth-drill">
+              <div class="admin-heading compact">
+                <div>
+                  <span class="split-label">Admin auth drill</span>
+                  <h2>Prove operator tools are locked before public launch.</h2>
+                  <p class="muted">Use this to test admin, capture, reports, exports, imports, backup, and webhook setup before the public link spreads.</p>
+                </div>
+                <button class="btn blue small" type="button" data-action="copy-admin-auth-drill">Copy Auth Drill</button>
+              </div>
+              <div class="auth-drill-grid" id="adminAuthDrill"></div>
+            </section>
             <section class="settings-card first-user-closeout">
               <div class="admin-heading compact">
                 <div>
@@ -3981,6 +4374,30 @@
                 <button class="btn ghost" type="button" data-action="copy-daily-brief">Copy Daily Brief</button>
                 <button class="btn ghost" type="button" data-action="reset-demo">Reset Demo Data</button>
               </div>
+              <dialog class="backup-review-dialog" id="backupReviewDialog" aria-labelledby="backupReviewTitle" aria-describedby="backupReviewWarning">
+                <div class="backup-review-heading">
+                  <span class="split-label">Local recovery dry run</span>
+                  <h2 id="backupReviewTitle" tabindex="-1">Review this backup before replacing device data</h2>
+                  <p class="muted" id="backupReviewWarning">Nothing has changed yet. Verify the source and record changes below.</p>
+                </div>
+                <dl class="backup-review-facts">
+                  <div><dt>Schema</dt><dd id="backupReviewSchema">—</dd></div>
+                  <div><dt>App version</dt><dd id="backupReviewVersion">—</dd></div>
+                  <div><dt>Created</dt><dd id="backupReviewCreated">—</dd></div>
+                  <div><dt>Checksum</dt><dd id="backupReviewChecksum">—</dd></div>
+                  <div><dt>Current records</dt><dd id="backupReviewCurrentTotal">—</dd></div>
+                  <div><dt>Replacement records</dt><dd id="backupReviewReplacementTotal">—</dd></div>
+                </dl>
+                <div>
+                  <h3>Collection replacement preview</h3>
+                  <ul class="backup-review-changes" id="backupReviewChanges"></ul>
+                </div>
+                <p class="trust-note">Replacing affects only this browser. Export the current device data first if it must be preserved.</p>
+                <div class="share-actions backup-review-actions">
+                  <button class="btn ghost" type="button" data-action="cancel-backup-import">Cancel — keep current data</button>
+                  <button class="btn orange" type="button" data-action="confirm-backup-import">Replace local device data</button>
+                </div>
+              </dialog>
             </section>
             <section class="settings-card safety-center">
               <div class="admin-heading compact">
@@ -4075,8 +4492,8 @@
                 </div>
               </div>
               <div class="filter-row">
-                <input id="operationsVaultSearch" placeholder="Search operations documents, categories, owners, or tags" />
-                <select id="operationsVaultCategory">
+                <input id="operationsVaultSearch" aria-label="Search operations documents" placeholder="Search operations documents, categories, owners, or tags" />
+                <select id="operationsVaultCategory" aria-label="Filter operations documents by category">
                   <option>All Categories</option>
                   <option>Master Business Operations</option>
                   <option>Customer Operations</option>
@@ -4139,7 +4556,7 @@
               </div>
               <div class="follow-up-command-strip" id="followUpCommandStrip"></div>
               <div class="filter-row">
-                <select id="queueTypeFilter">
+                <select id="queueTypeFilter" aria-label="Filter follow-up queue by lead type">
                   <option>All Lead Types</option>
                   <option>Homebuilding</option>
                   <option>Building</option>
@@ -4155,7 +4572,7 @@
                   <option>Referrals</option>
                   <option>Careers</option>
                 </select>
-                <select id="queueStatusFilter">
+                <select id="queueStatusFilter" aria-label="Filter follow-up queue by status">
                   <option>Needs Follow-Up</option>
                   <option>All Statuses</option>
                   <option>New</option>
@@ -4247,14 +4664,14 @@
               <button class="btn ghost small" type="button" data-action="export-jobs">Export Jobs CSV</button>
             </div>
             <div class="filter-row">
-              <select id="adminTradeCategoryFilter"></select>
+              <select id="adminTradeCategoryFilter" aria-label="Filter admin jobs by trade category"></select>
             </div>
             <div class="table-card"><table id="adminLeadsTable"></table></div>
             <div class="lead-board" id="adminJobPipeline"></div>
             <div class="admin-heading">
               <div>
                 <h2>Worker Leads</h2>
-                <p class="muted">Worker Trust / Proof Ledger uses Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decisions for admin review.</p>
+                <p class="muted">Worker Trust / Proof Ledger uses Green/Silver/Gold tier labels, rank steps, proof signals, and dispatch decisions for admin review. Provider-supplied information stays unverified until documented human review; no tier guarantees safety, licensing, insurance, quality, or outcomes.</p>
               </div>
               <button class="btn ghost small" type="button" data-action="export-workers">Export Workers CSV</button>
             </div>
@@ -4385,7 +4802,7 @@
                 <div>
                   <span class="split-label">Forge Capital Desk</span>
                   <h2>Flex Leads</h2>
-                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and the official Flex referral link handoff.</p>
+                  <p class="muted">Review basic business-owner leads, consent, score, status, notes, and the inactive future-referral gates.</p>
                 </div>
                 <div class="compact-actions">
                   <button class="btn ghost small" type="button" data-action="copy-flex-queue">Copy Queue</button>
@@ -4393,11 +4810,11 @@
                 </div>
               </div>
               <div class="filter-row flex-filter-row">
-                <select id="flexStatusFilter"></select>
-                <input id="flexIndustryFilter" placeholder="Industry" />
-                <input id="flexCityFilter" placeholder="City" />
-                <input id="flexStateFilter" maxlength="2" placeholder="State" />
-                <select id="flexScoreFilter">
+                <select id="flexStatusFilter" aria-label="Filter Capital Desk leads by status"></select>
+                <input id="flexIndustryFilter" aria-label="Filter Capital Desk leads by industry" placeholder="Industry" />
+                <input id="flexCityFilter" aria-label="Filter Capital Desk leads by city" placeholder="City" />
+                <input id="flexStateFilter" aria-label="Filter Capital Desk leads by state" maxlength="2" placeholder="State" />
+                <select id="flexScoreFilter" aria-label="Filter Capital Desk leads by score">
                   <option value="0">Any score</option>
                   <option value="20">20+</option>
                   <option value="40">40+</option>
@@ -4558,12 +4975,12 @@
               <button class="btn ghost small" type="button" data-nav="building">Open Public Intake</button>
             </div>
             <div class="filter-row building-filter-row">
-              <select id="buildingStatusFilter"></select>
-              <select id="buildingLeadTypeFilter"></select>
-              <select id="buildingProjectTypeFilter"></select>
-              <input id="buildingStateFilter" maxlength="5" placeholder="State" />
-              <select id="buildingBudgetFilter"></select>
-              <select id="buildingPartnerEligibilityFilter">
+              <select id="buildingStatusFilter" aria-label="Filter building leads by status"></select>
+              <select id="buildingLeadTypeFilter" aria-label="Filter building leads by lead type"></select>
+              <select id="buildingProjectTypeFilter" aria-label="Filter building leads by project type"></select>
+              <input id="buildingStateFilter" aria-label="Filter building leads by state" maxlength="5" placeholder="State" />
+              <select id="buildingBudgetFilter" aria-label="Filter building leads by budget"></select>
+              <select id="buildingPartnerEligibilityFilter" aria-label="Filter building leads by partner eligibility">
                 <option>All Partner Eligibility</option>
                 <option>Seneca eligible</option>
                 <option>Flex eligible</option>
@@ -4668,6 +5085,10 @@
 
     <button class="operator-fab" id="operatorFab" type="button" data-action="toggle-public-mode" data-admin-control>Operator</button>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=106"></script>
+    <script src="./csv-utils.js?v=133"></script>
+    <script src="./lead-outbox.js?v=133"></script>
+    <script src="./backup-recovery.js?v=133"></script>
+    <script src="./nationwide-market.js?v=133"></script>
+    <script src="./app.js?v=133"></script>
   </body>
 </html>

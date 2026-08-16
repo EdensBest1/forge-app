@@ -91,9 +91,9 @@ Open `index.html` in a browser to use it. Demo jobs, selected bids, and worker p
 - Optional Zapier/webhook lead forwarding
 - Optional Flex lead forwarding through `/api/forge/flex-leads` when `FORGE_GHL_WEBHOOK_URL` or `FORGE_ZAPIER_WEBHOOK_URL` is configured in a server-backed deployment
 - CSV export for job and worker leads
-- Full JSON backup export
+- Checksummed JSON backup export with record counts, version metadata, and integrity validation
 - Backup freshness tracking before resets and demos
-- JSON backup import
+- Confirm-before-replace JSON recovery import with legacy-backup compatibility
 - Copyable invite text for sharing with early users
 - First-user signup readiness panel that explains controlled beta use, what is safe to collect, and what still needs public-launch infrastructure
 - Copyable signup checklist for inviting the first controlled group without collecting payments
@@ -159,6 +159,7 @@ npm run check
 - `ADMIN_AUTH_PLAN.md`
 - `SUPABASE_SCHEMA.sql`
 - `WEBHOOK_PAYLOADS.md`
+- `docs/lead-durability-local-recovery.md`
 - `forge-flex-capital-desk-outreach.md`
 - `docs/forge-capital-desk-readme.md`
 - `docs/forge-flex-capital-desk-outreach.md`

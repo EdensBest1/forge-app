@@ -1,6 +1,6 @@
 # Forge Next Chat Handoff
 
-Saved: June 26, 2026
+Saved: July 10, 2026
 
 ## Where the work lives
 
@@ -35,19 +35,19 @@ Current local snapshot:
 
 ## Current build
 
-Forge is at `v106`.
+Forge is at `v127`.
 
 Open locally:
 
-- Home: `http://127.0.0.1:4174/?v=106#home`
-- Best demo start: `http://127.0.0.1:4174/?v=106#perspective`
-- Homeowner demo: `http://127.0.0.1:4174/?v=106&demo=customer#status`
-- Worker demo: `http://127.0.0.1:4174/?v=106&demo=worker#worker`
-- Training & Careers: `http://127.0.0.1:4174/?v=106#opportunities`
-- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=106`
-- Admin demo: `http://127.0.0.1:4174/?v=106&demo=admin#admin`
+- Home: `http://127.0.0.1:4174/?v=127#home`
+- Best demo start: `http://127.0.0.1:4174/?v=127#perspective`
+- Homeowner demo: `http://127.0.0.1:4174/?v=127&demo=customer#status`
+- Worker demo: `http://127.0.0.1:4174/?v=127&demo=worker#worker`
+- Training & Careers: `http://127.0.0.1:4174/?v=127#opportunities`
+- Forge Auto & Transport: `http://127.0.0.1:4174/auto?v=127`
+- Admin demo: `http://127.0.0.1:4174/?v=127&demo=admin#admin`
 
-If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v106`.
+If the browser shows an older version, refresh. The app uses service worker cache `forge-mvp-v131`.
 
 ## What has been built
 
@@ -116,7 +116,7 @@ If the browser shows an older version, refresh. The app uses service worker cach
 
 ## Last verified
 
-These passed after v106:
+These passed after v127:
 
 ```bash
 node --check app.js
@@ -127,7 +127,7 @@ npm run check
 curl -I http://127.0.0.1:4174/
 ```
 
-Automated verification after v106 also covers:
+Automated verification after v127 also covers:
 
 - Perspective Demo renders the One-click proof switchboard for Customer, Worker, Operator, and Auto proof paths.
 - The switchboard is covered by `smoke-test.mjs` for HTML, JS, and CSS selectors.
@@ -148,6 +148,27 @@ Automated verification after v106 also covers:
 - v104 adds the Launch Status first-user send board for homeowner, worker, auto, career, and business/project links with guardrails.
 - v105 adds the Quick Capture triage board for consent, lane selection, latest lead copy, and backup closeout.
 - v106 adds the Job Detail proof ticket for posted job, bids, selected choice, and message handoff proof.
+- v107 adds the Product Paths Supplier Match Engine/fencing regression coverage and a Messages reply kit for copying the next schedule/status reply from the active thread.
+- v108 adds a Launch Status demo run order with a copyable six-step first-user walkthrough: Perspective Demo, John Status, Job Detail, Messages reply kit, Mike Worker, and Capture.
+- v109 adds Profile visibility cards so John, Mike, Admin, and visitor views explain what the person sees, what Forge sees, and what unlocks next.
+- v110 adds a Launch Status First-user Handoff receipt with proof, next touch, boundary, backup cards, and a copyable safe follow-up note for controlled demos.
+- v111 adds a Messages proof bridge that ties Job Detail, selected bid, reply, and Customer Status into one copyable demo path.
+- v112 adds a Perspective Demo Phone Fast Pass with four one-tap proof steps and a copyable one-minute phone demo script.
+- v113 adds a Profile Status perspective switcher for John, Mike, Admin, and Public views with a copyable profile perspective lens.
+- v114 adds a Launch Status Show Plan for safe mode, proof, capture, and stop rule with a copyable demo checklist.
+- v115 adds a Job Detail handoff rail so status, bid choice, message, and closeout are visible before deeper proof panels.
+- v116 adds Status to Message Bridge cards on Customer Status and a Message Thread Bridge on Messages so job, bid, message, and status stay connected across the demo flow.
+- v117 adds a Worker Opportunity Bridge on Mike's dashboard so profile, jobs, bid, message, and next action are visible from the worker perspective.
+- v118 adds a Perspective Switch Rail at the top of Perspective Demo so John, Mike, Admin, and Public views are one tap away with a copyable switch script.
+- v119 adds a Launch Status Public Launch Blocker Receipt so controlled demos, lead delivery, admin auth, backup, legal review, and security review gates are visible and copyable from one panel.
+- v120 adds a reusable Demo Close Loop on Customer Status, Job Detail, and Messages so status, bid detail, message handoff, and profile proof are one visible/copyable flow.
+- v121 adds a role-aware Profile Status Receipt above the profile panels so John, Mike, and Admin views immediately show what is visible, ready, pending, and safe to do next; public visitors still route to the locked login/profile prompt.
+- v122 adds a Launch Status Next 10 Invite Sprint so the next outreach block is visible and copyable from the launch screen; private ranked leads appear only in Admin Operator View, while public-safe views show starter lanes.
+- v123 adds a private operator data redaction gate so public/guest rendering does not populate hidden admin tables, follow-up queues, outreach batches, reports, webhook fields, templates, capture triage, or project/building admin pipelines; Admin Operator View still loads them.
+- v124 adds a Launch Status Public Share Safety Sweep with controlled-demo, Public View, backend, admin auth, backup, legal, and security gates plus a copyable operator script.
+- v125 adds an Admin Lead Delivery Drill for proving one public lead leaves the browser, confirming the external destination, preserving local backup, and keeping broad sharing blocked until the drill passes.
+- v126 adds an Admin Auth Drill for production admin gate selection, protected operator routes, stranger/private-browser testing, recovery, audit, export, backup, and webhook safeguards.
+- v127 adds a Launch Status Public Launch Go / No-Go Receipt that keeps controlled demos moving while broad public launch remains blocked until delivery, auth, backup/Public View, and legal/security proof gates pass.
 - The in-app browser did not attach during the previous v90 switchboard heartbeat pass, so no browser screenshot was recorded for that specific switchboard change.
 
 The preceding browser pass confirmed:
@@ -211,4 +232,4 @@ The preceding browser pass confirmed:
 
 Use this in a new chat:
 
-“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v106 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”
+“This chat is for Forge. Please open `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_START_TOMORROW.md` and `/Users/andrewoommern/Documents/Codex/2026-06-14/this-chat-is-for-forge/FORGE_NEXT_CHAT_HANDOFF.md`, then continue from the v127 Forge MVP. Keep building toward giving it to the first 200 users. Preserve existing work, run `npm run check` after code changes, and keep the wireframe style: white, orange, and strong blue.”

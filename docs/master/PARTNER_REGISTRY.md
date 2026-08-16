@@ -12,7 +12,7 @@ Track approved partners and provider examples without exposing private informati
 
 | Partner / Example | Area | Public-Safe Notes |
 | --- | --- | --- |
-| Dennis | Photography & Videography | Example trusted local creative/provider only; not the only provider. No private contact information included. |
+| Dennis | Photography & Videography | Example local creative/provider only; not the only provider. No verification or endorsement is implied. No private contact information included. |
 | Michael Hamilton / Seneca Dev Co. | Construction / Development | Example construction and development partner only. No private contact information included. |
 
 ## Future Partner Categories
