@@ -8,17 +8,17 @@
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta
       name="description"
-      content="Forge helps homeowners, businesses, and local operators find local workers, crews, and service providers, starting in Medford and Southern Oregon."
+      content="Forge accepts service requests and contractor applications across the United States, with focused marketplace development in Medford, Los Angeles, and New York."
     />
     <link rel="canonical" href="https://hireonforge.com/" />
     <meta property="og:title" content="Forge - Hire Local Workers, Crews, and Service Providers" />
-    <meta property="og:description" content="Post local work, join as a worker, or request business growth support through Forge's controlled beta marketplace." />
+    <meta property="og:description" content="Post a project or join as a contractor nationwide, with focused marketplace development in Medford, Los Angeles, and New York." />
     <meta property="og:url" content="https://hireonforge.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Forge - Post the Job. Get the Crew." />
-    <meta name="twitter:description" content="Find local workers, crews, and service providers through Forge's controlled beta marketplace in Medford and Southern Oregon." />
+    <meta name="twitter:description" content="Nationwide service-request and contractor intake, focused first on Medford, Los Angeles, and New York." />
     <meta name="twitter:image" content="https://hireonforge.com/assets/forge-hero.png" />
     <title>Forge - Post the Job. Get the Crew.</title>
     <link rel="stylesheet" href="./styles.css?v=133" />
@@ -39,7 +39,7 @@
           <nav class="public-nav" aria-label="Forge public navigation">
             <a class="nav-link" href="/request-help/">Find Help</a>
             <button class="nav-link" type="button" data-nav="services">Services</button>
-            <button class="nav-link" type="button" data-nav="signup">For Workers</button>
+            <a class="nav-link" href="/contractors/">For Contractors</a>
             <button class="nav-link" type="button" data-nav="northstar">For Businesses</button>
             <a class="nav-link home-nav-optional" href="/post-job/">Post a Job</a>
             <a class="nav-link home-nav-optional" href="/pricing/">Pricing</a>
@@ -50,7 +50,7 @@
           <div class="header-actions">
             <button class="search-pill" type="button" data-nav="services" aria-label="Search Forge services">Search</button>
             <button class="btn orange small" type="button" data-nav="post">Post a Job</button>
-            <button class="btn header-worker small" type="button" data-nav="signup">Join as Worker</button>
+            <button class="btn header-worker small" type="button" data-nav="signup">Join as Contractor</button>
             <details class="explore-menu">
               <summary>Explore</summary>
               <div class="explore-panel" role="group" aria-label="Explore Forge">
@@ -59,7 +59,7 @@
                   <button type="button" data-nav="perspective">Perspectives</button>
                   <button type="button" data-nav="services">Services</button>
                   <button type="button" data-nav="post">Post a Job</button>
-                  <button type="button" data-nav="signup">Join as Worker</button>
+                  <a href="/contractors/">Join as Contractor</a>
                   <a href="/pricing/">Pricing / Upgrades</a>
                   <button type="button" data-nav="launch-status">Launch Status</button>
                 </section>
@@ -99,13 +99,13 @@
 
         <section class="home-hero">
           <div class="hero-copy">
-            <span class="hero-eyebrow">Built for Medford and Southern Oregon</span>
-            <h1>Post the job.<br />Get the crew.</h1>
-            <p>Forge gives homeowners, local workers, and growing businesses one clear place to start—without making you sort through every service at once.</p>
-            <p class="hero-trust-line">Local-first · Honest delivery receipts · No payments collected in this early-access release</p>
+            <span class="hero-eyebrow">Nationwide intake · focused marketplace development in three launch markets</span>
+            <h1>Post the project.<br />Find the right crew.</h1>
+            <p>Forge gives customers and contractors across the United States one clear place to start, with focused marketplace development in Medford, Los Angeles, and New York.</p>
+            <p class="hero-trust-line">Coverage is confirmed case by case · Honest delivery receipts · No payments collected in this early-access release</p>
             <div class="hero-actions">
               <button class="btn orange" type="button" data-nav="post">Post a Job</button>
-              <button class="btn blue" type="button" data-nav="signup">Join as a Worker</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as a Contractor</button>
               <button class="btn ghost" type="button" data-nav="signup">Create Provider Profile</button>
               <button class="btn ghost" type="button" data-action="start-company-profile">Create Company Profile</button>
               <button class="btn ghost" type="button" data-nav="login">Sign In</button>
@@ -122,8 +122,45 @@
 
         <section class="feature-strip" aria-label="Forge benefits">
           <article><span class="icon">Q</span><strong>Quick Posting</strong><small>Post in minutes</small></article>
-          <article><span class="icon">L</span><strong>Local Pros</strong><small>In Medford</small></article>
+          <article><span class="icon">M</span><strong>Focused Markets</strong><small>Medford · LA · NYC</small></article>
           <article><span class="icon">S</span><strong>Safety First</strong><small>Admin-reviewed leads</small></article>
+        </section>
+
+        <section class="nationwide-market-panel" aria-labelledby="nationwide-market-title">
+          <div class="nationwide-market-heading">
+            <div>
+              <span class="split-label">Nationwide request and contractor intake</span>
+              <h2 id="nationwide-market-title">Start anywhere. Build depth market by market.</h2>
+              <p>Forge accepts service requests and contractor applications across the United States. Active coverage is never assumed; every match still depends on category, location, availability, project fit, and human review.</p>
+            </div>
+            <a class="btn ghost" href="/contractors/">Contractor information</a>
+          </div>
+          <div class="nationwide-market-grid">
+            <article>
+              <span>MEDFORD · OREGON</span>
+              <h3>Southern Oregon, local-first.</h3>
+              <p>Residential projects, repairs, remodeling, homebuilding, fencing, excavation, and specialty trades.</p>
+              <a href="/markets/medford-or/">Explore Medford</a>
+            </article>
+            <article>
+              <span>LOS ANGELES · CALIFORNIA</span>
+              <h3>Property work at metro scale.</h3>
+              <p>Remodeling, commercial improvements, maintenance, creative services, and licensed specialty trades.</p>
+              <a href="/markets/los-angeles-ca/">Explore Los Angeles</a>
+            </article>
+            <article>
+              <span>NEW YORK · NEW YORK</span>
+              <h3>Dense projects, careful coordination.</h3>
+              <p>Apartment and commercial improvements, maintenance, project coordination, and licensed specialty trades.</p>
+              <a href="/markets/new-york-ny/">Explore New York</a>
+            </article>
+            <article class="nationwide-intake-card">
+              <span>ALL 50 STATES + WASHINGTON, D.C.</span>
+              <h3>Outside a focus market?</h3>
+              <p>Post the project or share your contractor service area. Forge will show an honest early-market state if compatible coverage is not yet confirmed.</p>
+              <div><button class="btn orange small" type="button" data-nav="post">Post a Job</button><button class="btn blue small" type="button" data-nav="signup">Join as Contractor</button></div>
+            </article>
+          </div>
         </section>
 
         <section class="marketplace-entry-panel" aria-label="Forge marketplace paths">
@@ -151,9 +188,9 @@
         <section class="premium-marketplace" aria-label="Forge premium service marketplace">
           <div class="premium-marketplace-head">
             <div>
-              <span class="split-label">Medford launch marketplace</span>
+              <span class="split-label">Priority-market service marketplace</span>
               <h2>What project do you need completed?</h2>
-              <p>Start with the highest-value local trades first. Forge keeps the first click simple, then routes every lead into the existing post-job and provider flows.</p>
+              <p>Start with the highest-value trades. Forge keeps the first click simple, then uses service area, category, availability, and project fit to prepare reviewed matches.</p>
             </div>
             <form class="premium-service-search" id="premiumServiceSearchForm">
               <label class="visually-hidden" for="homeServiceSearch">Search any Forge service</label>
@@ -177,11 +214,11 @@
             </div>
           </article>
           <article>
-              <span class="split-label">I provide services</span>
-              <h2>Build a clear worker profile.</h2>
-              <p>List your service area, experience, availability, and proof signals so Forge can prepare relevant local opportunities for review.</p>
+              <span class="split-label">I provide construction services</span>
+              <h2>Build a clear contractor profile.</h2>
+              <p>List your U.S. service area, project types, availability, experience, and self-reported license and insurance status for review.</p>
             <div class="hero-actions">
-              <button class="btn blue" type="button" data-nav="signup">Join as Worker</button>
+              <button class="btn blue" type="button" data-nav="signup">Join as Contractor</button>
               <a class="btn ghost" href="/pricing/">Compare Profile Upgrades</a>
               <button class="btn ghost" type="button" data-nav="jobs">Browse Jobs</button>
             </div>
@@ -1360,8 +1397,14 @@
 
             <fieldset class="step-panel" data-step="2">
               <h1>Where is the job?</h1>
-              <label>Location<input id="jobLocation" required value="Medford, OR" /></label>
-              <label>Project address or service area<input id="customerAddress" placeholder="Exact address can stay private until admin review" /></label>
+              <div class="field-row nationwide-location-row">
+                <label>City<input id="jobCity" required autocomplete="address-level2" placeholder="Medford" /></label>
+                <label>State<select id="jobState" required autocomplete="address-level1" aria-label="Job state"></select></label>
+                <label>ZIP code<input id="jobZip" required inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="97501" /></label>
+              </div>
+              <label>County (optional)<input id="jobCounty" autocomplete="address-level3" placeholder="Jackson County" /></label>
+              <label>Project address or service area<input id="customerAddress" placeholder="Keep the exact address private until an authorized handoff" /></label>
+              <label>Property / project type<select id="jobPropertyType"><option>Single-family home</option><option>Multi-family property</option><option>Apartment / condo</option><option>Commercial property</option><option>Industrial property</option><option>Land / sitework</option><option>Public / nonprofit facility</option><option>Other</option></select></label>
               <label>Job Type<select id="jobType"><option>One-time Job</option><option>Recurring Service</option><option>Emergency Request</option><option>Bid Walk Needed</option><option>Quote Only</option><option>Maintenance Plan</option></select></label>
               <label>When do you need this done?<select id="jobUrgency"><option>ASAP</option><option>This week</option><option>Flexible</option></select></label>
               <div class="field-row">
@@ -1376,9 +1419,9 @@
 
             <fieldset class="step-panel" data-step="3">
               <h1>Your contact information</h1>
-              <label>Full Name<input id="customerName" required value="John Smith" /></label>
-              <label>Phone Number<input id="customerPhone" required value="(541) 555-1234" /></label>
-              <label>Email Address<input id="customerEmail" required type="email" value="john.smith@email.com" /></label>
+              <label>Full Name<input id="customerName" required autocomplete="name" placeholder="Your name" /></label>
+              <label>Phone Number<input id="customerPhone" required autocomplete="tel" placeholder="Your phone number" /></label>
+              <label>Email Address<input id="customerEmail" required type="email" autocomplete="email" placeholder="you@example.com" /></label>
               <label>Preferred Contact<select id="customerPreferredContact"><option>Phone</option><option>Text</option><option>Email</option><option>Forge Message</option></select></label>
               <label>Providers to invite first<textarea id="jobInviteProviders" placeholder="Optional: names, trades, or emails of providers to invite first"></textarea></label>
               <p class="trust-note"><strong>Early access note:</strong> Forge will use this contact info to follow up about this job by text, phone, or email. No payment is collected in this MVP.</p>
@@ -4003,18 +4046,18 @@
           <figure class="signup-photo"><picture><source srcset="./assets/forge-hero-v133.avif" type="image/avif" /><img src="./assets/forge-hero.png" width="1717" height="916" alt="Worker ready for local jobs" loading="lazy" decoding="async" /></picture></figure>
           <form class="signup-form" id="workerSignupForm">
             <button class="back-link" type="button" data-nav="home">← Home</button>
-            <h1>Join Forge as a Worker</h1>
-            <p class="muted">Build a profile as a local worker, crew, or business and bid on jobs.</p>
-            <label>Full Name<input id="workerName" required value="Mike Jones" /></label>
-            <label>Trade / Skills<input id="workerTrade" required value="Handyman" /></label>
+            <h1>Join Forge as a Contractor</h1>
+            <p class="muted">Build a nationwide-ready profile as an individual, company, crew, general contractor, project manager, or specialty trade. Information supplied is never labeled verified until Forge review evidence exists.</p>
+            <label>Full Name<input id="workerName" required autocomplete="name" placeholder="Your name" /></label>
+            <label>Trade / Skills<input id="workerTrade" required placeholder="General contracting, remodeling, electrical..." /></label>
             <label>Service vertical<select id="workerServiceVertical"></select></label>
             <label>Profile Type<select id="workerProfileType"><option>Individual Worker</option><option>Company / Crew</option><option>Licensed Trade Business</option><option>Supplier / Partner</option></select></label>
             <div class="field-row">
               <label>Company / Public Profile Name<input id="workerCompanyName" placeholder="Optional business or crew name" /></label>
               <label>Profile Slug<input id="workerProfileSlug" placeholder="rogue-valley-electric" /></label>
             </div>
-            <label>Logo or profile image<input id="workerLogo" type="file" accept="image/*" /></label>
-            <label>Cover image or portfolio photos<input id="workerCover" type="file" accept="image/*" multiple /></label>
+            <label>Logo or profile image link<input id="workerLogo" type="url" inputmode="url" placeholder="https://... (optional public link)" /></label>
+            <label>Portfolio gallery link<input id="workerCover" type="url" inputmode="url" placeholder="https://... (optional public link)" /></label>
             <label>Trade categories<select id="workerTradeCategories" multiple size="6"></select></label>
             <label>Business size classification<select id="workerBusinessSize" required></select></label>
             <section class="provider-growth-tools northstar-provider-question">
@@ -4028,12 +4071,36 @@
                 <button class="btn ghost small" type="button" data-nav="northstar">Get Help with My Website, Google, Ads, and Follow-Up</button>
               </div>
             </section>
-            <label>Phone Number<input id="workerPhone" required value="(541) 555-9876" /></label>
-            <label>Email Address<input id="workerEmail" required type="email" value="mike.jones@email.com" /></label>
+            <label>Phone Number<input id="workerPhone" required autocomplete="tel" placeholder="Your phone number" /></label>
+            <label>Email Address<input id="workerEmail" required type="email" autocomplete="email" placeholder="you@example.com" /></label>
             <div class="field-row">
               <label>Experience<select id="workerExperience"><option>5+ years</option><option>2-4 years</option><option>New</option></select></label>
-              <label>Service Area<select id="workerArea"><option>Medford, OR</option><option>Central Point, OR</option><option>Ashland, OR</option></select></label>
+              <label>Years of experience<input id="workerYearsExperience" type="number" min="0" max="80" inputmode="numeric" value="0" /></label>
             </div>
+            <div class="field-row nationwide-location-row">
+              <label>Primary city<input id="workerCity" required autocomplete="address-level2" placeholder="Los Angeles" /></label>
+              <label>State<select id="workerState" required autocomplete="address-level1" aria-label="Contractor state"></select></label>
+              <label>ZIP code<input id="workerZip" required inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="90012" /></label>
+            </div>
+            <div class="field-row">
+              <label>Service radius (miles)<input id="workerServiceRadius" required type="number" min="1" max="500" inputmode="numeric" value="25" /></label>
+              <label>Travel availability<select id="workerTravelAvailability"><option>Within stated service area</option><option>Available statewide after review</option><option>Available in multiple states after review</option><option>Remote services only</option></select></label>
+            </div>
+            <label>Primary service area<input id="workerPrimaryServiceArea" required placeholder="Los Angeles County" /></label>
+            <label>Additional service areas<input id="workerAdditionalServiceAreas" placeholder="Pasadena, Long Beach, Orange County" /></label>
+            <div class="field-row">
+              <label>License number (when applicable)<input id="workerLicenseNumber" autocomplete="off" placeholder="Number only; do not upload identity documents" /></label>
+              <label>Issuing state<select id="workerLicenseState" aria-label="License issuing state"><option value="">Not supplied / not applicable</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>License status (self-reported)<select id="workerLicenseStatus"><option>Not supplied</option><option>Current, self-reported</option><option>Expired, self-reported</option><option>Not required for stated work</option><option>Unsure / needs review</option></select></label>
+              <label>Insurance status (self-reported)<select id="workerInsuranceStatus"><option>Not supplied</option><option>Current, self-reported</option><option>Needs renewal</option><option>Not applicable / unsure</option></select></label>
+            </div>
+            <div class="field-row">
+              <label>Crew size<input id="workerCrewSize" type="number" min="1" max="500" inputmode="numeric" value="1" /></label>
+              <label>Typical project size<input id="workerTypicalProjectSize" placeholder="$5,000-$100,000 or estimate after review" /></label>
+            </div>
+            <label>Portfolio website or public work link<input id="workerPortfolioLink" type="url" inputmode="url" placeholder="https://... (no raw documents)" /></label>
             <div class="field-row">
               <label>Pricing Type<select id="workerPricingType"><option>Estimate After Review</option><option>Hourly</option><option>Fixed Bid</option><option>Starting At</option><option>Emergency Rate</option><option>Recurring Plan</option></select></label>
               <label>Minimum Job Size<input id="workerMinimumJobSize" placeholder="$250 minimum, bid walk required..." /></label>
@@ -4072,7 +4139,7 @@
                 </article>
               </div>
             </section>
-            <p class="trust-note"><strong>Profile status:</strong> Basic profile ready for Forge verification review before live job matching. <strong>Worker follow-up:</strong> Forge will use this contact info to follow up about early worker opportunities by text, phone, or email.</p>
+            <p class="trust-note"><strong>Profile status:</strong> Information supplied. License and insurance details remain self-reported until reviewed. <strong>Contractor follow-up:</strong> Forge will use this contact info only with your consent about compatible opportunities and review steps.</p>
             <label class="check-row"><input id="workerFollowUpConsent" required type="checkbox" /> I agree Forge may contact me by text, phone, or email about early worker opportunities.</label>
             <label class="check-row"><input id="workerTerms" required type="checkbox" /> I agree to Forge's Early Access Terms & Privacy.</label>
             <button class="link-button" type="button" data-nav="legal">Read Early Access Terms & Privacy</button>
@@ -5021,6 +5088,7 @@
     <script src="./csv-utils.js?v=133"></script>
     <script src="./lead-outbox.js?v=133"></script>
     <script src="./backup-recovery.js?v=133"></script>
+    <script src="./nationwide-market.js?v=133"></script>
     <script src="./app.js?v=133"></script>
   </body>
 </html>

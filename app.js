@@ -2,6 +2,7 @@ const STORAGE_KEY = "forge.wireframe.mvp.v1";
 const PUBLIC_LINK_VERSION = "133";
 const PUBLIC_LINK_LABEL = `v${PUBLIC_LINK_VERSION}`;
 const LOCAL_OPERATOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+const forgeNationwideMarket = globalThis.ForgeNationwide;
 
 function operatorDemoAllowed() {
   return location.protocol === "file:" || LOCAL_OPERATOR_HOSTS.has(location.hostname);
@@ -5239,7 +5240,21 @@ function renderWorkerProfile() {
   setFieldValue("#workerPhone", worker.phone);
   setFieldValue("#workerEmail", worker.email);
   setFieldValue("#workerExperience", worker.experience);
-  setFieldValue("#workerArea", worker.area);
+  setFieldValue("#workerCity", worker.city || worker.locationCity);
+  setFieldValue("#workerState", worker.state || worker.locationState);
+  setFieldValue("#workerZip", worker.zip || worker.locationZip);
+  setFieldValue("#workerServiceRadius", worker.serviceRadiusMiles);
+  setFieldValue("#workerPrimaryServiceArea", worker.primaryServiceArea || worker.area);
+  setFieldValue("#workerAdditionalServiceAreas", Array.isArray(worker.additionalServiceAreas) ? worker.additionalServiceAreas.join(", ") : worker.additionalServiceAreas);
+  setFieldValue("#workerTravelAvailability", worker.travelAvailability);
+  setFieldValue("#workerLicenseNumber", worker.licenseNumber);
+  setFieldValue("#workerLicenseState", worker.licenseState);
+  setFieldValue("#workerLicenseStatus", worker.licenseStatus);
+  setFieldValue("#workerInsuranceStatus", worker.insuranceStatus);
+  setFieldValue("#workerYearsExperience", worker.yearsExperience);
+  setFieldValue("#workerCrewSize", worker.crewSize);
+  setFieldValue("#workerTypicalProjectSize", worker.typicalProjectSize);
+  setFieldValue("#workerPortfolioLink", worker.portfolioLink);
   setFieldValue("#workerServiceVertical", worker.serviceVertical);
   setSelectedValues("#workerTradeCategories", worker.tradeCategories || worker.providerCategories || [worker.trade]);
 }
@@ -6445,6 +6460,18 @@ function fieldSelectedValues(selector) {
 }
 
 function renderSelects() {
+  const stateOptions = forgeNationwideMarket?.US_STATES?.map((state) => [state.code, `${state.name} (${state.code})`]) || [];
+  fillSelect("#jobState", [["", "Choose state"], ...stateOptions]);
+  fillSelect("#workerState", [["", "Choose state"], ...stateOptions]);
+  fillSelect("#workerLicenseState", [["", "Not supplied / not applicable"], ...stateOptions]);
+  const requestedMarket = new URLSearchParams(location.search);
+  setFieldValue("#jobCity", requestedMarket.get("city"));
+  setFieldValue("#jobState", requestedMarket.get("state"));
+  setFieldValue("#jobZip", requestedMarket.get("zip"));
+  setFieldValue("#workerCity", requestedMarket.get("city"));
+  setFieldValue("#workerState", requestedMarket.get("state"));
+  setFieldValue("#workerZip", requestedMarket.get("zip"));
+  setFieldValue("#workerPrimaryServiceArea", requestedMarket.get("market"));
   fillSelect("#jobCategory", ["", ...categories], "Select a category");
   fillSelect("#listingCategory", ["All Categories", ...categories]);
   fillSelect("#workerServiceVertical", [["", "General Forge worker"], ...serviceVerticals.map((vertical) => [vertical.id, vertical.title])]);
@@ -15667,10 +15694,22 @@ function postJobFromForm() {
   const title = document.querySelector("#jobTitle").value.trim();
   const selectedCategory = document.querySelector("#jobCategory").value;
   const vertical = serviceVerticalForCategory(selectedCategory);
+  let nationwideLocation;
+  try {
+    nationwideLocation = forgeNationwideMarket.normalizeLocation({
+      city: fieldValue("#jobCity"),
+      state: fieldValue("#jobState"),
+      zip: fieldValue("#jobZip"),
+      county: fieldValue("#jobCounty")
+    });
+  } catch (error) {
+    showToast(error.message || "Choose a valid U.S. job location.");
+    return;
+  }
   const validation = forgeTradeCategorySchema.validateJob({
     title,
     category: selectedCategory,
-    location: document.querySelector("#jobLocation").value.trim(),
+    location: nationwideLocation.label,
     customer: document.querySelector("#customerName").value.trim()
   });
   if (!validation.ok) {
@@ -15689,8 +15728,15 @@ function postJobFromForm() {
     serviceVerticalTitle: vertical?.title || "",
     serviceDetails,
     servicePhotoSummary: photoSummary,
-    location: document.querySelector("#jobLocation").value.trim(),
+    location: nationwideLocation.label,
+    city: nationwideLocation.city,
+    state: nationwideLocation.state,
+    zip: nationwideLocation.zip,
+    county: nationwideLocation.county,
+    marketSlug: nationwideLocation.marketSlug,
+    marketStatus: nationwideLocation.marketStatus,
     customerAddress: fieldValue("#customerAddress"),
+    propertyType: fieldValue("#jobPropertyType") || "Other",
     jobType: fieldValue("#jobType") || "One-time Job",
     urgency: document.querySelector("#jobUrgency").value,
     preferredDate: fieldValue("#jobPreferredDate"),
@@ -18450,9 +18496,43 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
   ].filter((category) => forgeTradeCategorySchema.acceptsCategory(category)));
   const profileType = fieldValue("#workerProfileType") || "Individual Worker";
   const companyName = fieldValue("#workerCompanyName") || profileDetails.businessName || "";
-  const logoSummary = selectedFileSummary("#workerLogo", "image");
-  const coverSummary = selectedFileSummary("#workerCover", "portfolio image");
-  const verificationState = profileType === "Individual Worker" ? "Identity Pending" : "Business Verification Pending";
+  const logoSummary = fieldValue("#workerLogo") || "No public logo link supplied";
+  const coverSummary = fieldValue("#workerCover") || "No public portfolio gallery supplied";
+  let nationwideProfile;
+  try {
+    nationwideProfile = forgeNationwideMarket.normalizeContractor({
+      profileType,
+      displayName: companyName || document.querySelector("#workerName").value.trim(),
+      legalBusinessName: companyName,
+      contactMethod: "Forge Message",
+      city: fieldValue("#workerCity"),
+      state: fieldValue("#workerState"),
+      zip: fieldValue("#workerZip"),
+      serviceRadiusMiles: Number(fieldValue("#workerServiceRadius")),
+      primaryServiceArea: fieldValue("#workerPrimaryServiceArea"),
+      additionalServiceAreas: fieldValue("#workerAdditionalServiceAreas"),
+      travelAvailability: fieldValue("#workerTravelAvailability"),
+      remoteAvailability: fieldValue("#workerTravelAvailability") === "Remote services only" ? "Remote" : "On-site",
+      services: selectedTradeCategories.length ? selectedTradeCategories : [document.querySelector("#workerTrade").value.trim()],
+      projectTypes: [fieldValue("#workerProfileType"), fieldValue("#workerTrade")],
+      residentialCommercial: "Residential and commercial",
+      licenseNumber: fieldValue("#workerLicenseNumber"),
+      licenseState: fieldValue("#workerLicenseState"),
+      selfReportedLicenseStatus: fieldValue("#workerLicenseStatus"),
+      selfReportedInsuranceStatus: fieldValue("#workerInsuranceStatus"),
+      yearsExperience: Number(fieldValue("#workerYearsExperience")),
+      crewSize: Number(fieldValue("#workerCrewSize")),
+      typicalProjectSize: fieldValue("#workerTypicalProjectSize"),
+      availability: fieldValue("#workerOperatingHours") || "Availability supplied during follow-up",
+      portfolioLink: fieldValue("#workerPortfolioLink"),
+      consent: fieldChecked("#workerFollowUpConsent"),
+      privacyAcknowledged: fieldChecked("#workerTerms")
+    });
+  } catch (error) {
+    showToast(error.message || "Review the contractor service area fields.");
+    return;
+  }
+  const verificationState = nationwideProfile.trustState;
   const providerValidation = forgeTradeCategorySchema.validateProvider({
     name: document.querySelector("#workerName").value.trim(),
     phone: document.querySelector("#workerPhone").value.trim(),
@@ -18471,8 +18551,17 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     phone: document.querySelector("#workerPhone").value.trim(),
     email: document.querySelector("#workerEmail").value.trim(),
     experience: document.querySelector("#workerExperience").value,
-    area: profileDetails.serviceArea || document.querySelector("#workerArea").value,
-    serviceArea: profileDetails.serviceArea || document.querySelector("#workerArea").value,
+    area: nationwideProfile.primaryServiceArea,
+    serviceArea: nationwideProfile.primaryServiceArea,
+    primaryServiceArea: nationwideProfile.primaryServiceArea,
+    additionalServiceAreas: [...nationwideProfile.additionalServiceAreas],
+    city: nationwideProfile.location.city,
+    state: nationwideProfile.location.state,
+    zip: nationwideProfile.location.zip,
+    marketSlug: nationwideProfile.location.marketSlug,
+    marketStatus: nationwideProfile.location.marketStatus,
+    serviceRadiusMiles: nationwideProfile.serviceRadiusMiles,
+    travelAvailability: nationwideProfile.travelAvailability,
     profileType,
     businessName: companyName,
     profileSlug: fieldValue("#workerProfileSlug"),
@@ -18483,19 +18572,27 @@ document.querySelector("#workerSignupForm").addEventListener("submit", (event) =
     availability: profileDetails.availability || fieldValue("#workerOperatingHours"),
     operatingHours: fieldValue("#workerOperatingHours"),
     emergencyAvailability: fieldValue("#workerEmergencyAvailability"),
-    licenseStatus: profileDetails.licenseStatus || "",
-    insuranceStatus: profileDetails.insuranceStatus || "",
+    licenseNumber: nationwideProfile.licenseNumber,
+    licenseState: nationwideProfile.licenseState,
+    licenseStatus: nationwideProfile.selfReportedLicenseStatus,
+    insuranceStatus: nationwideProfile.selfReportedInsuranceStatus,
     licenseNotes: fieldValue("#workerCertifications"),
     insuranceNotes: fieldValue("#workerInsuranceNotes"),
     certifications: fieldValue("#workerCertifications"),
     minimumJobSize: fieldValue("#workerMinimumJobSize"),
     pricingType: fieldValue("#workerPricingType") || "Estimate After Review",
     portfolioSummary: fieldValue("#workerPortfolioSummary"),
+    portfolioLink: nationwideProfile.portfolioLink,
+    yearsExperience: nationwideProfile.yearsExperience,
+    crewSize: nationwideProfile.crewSize,
+    typicalProjectSize: nationwideProfile.typicalProjectSize,
     teamMembers: fieldValue("#workerTeamMembers"),
     equipment: fieldValue("#workerEquipment"),
     warrantyPolicy: fieldValue("#workerWarranty"),
     paymentMethods: fieldValue("#workerPaymentMethods"),
     verificationState,
+    trustState: verificationState,
+    verificationClaimAllowed: false,
     serviceVertical: selectedVertical?.id || "",
     serviceVerticalTitle: selectedVertical?.title || "",
     providerCategory: selectedVertical?.id || selectedTradeCategories[0] || "",

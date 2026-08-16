@@ -4,11 +4,11 @@ This is the canonical retained product map for the current Forge release. It rec
 
 ## Product and presentation truth
 
-- Forge begins as a local-services marketplace for Medford and Southern Oregon: customers post work and workers or businesses find opportunities.
+- Forge accepts customer project requests and contractor interest across all 50 states and Washington, D.C. Marketplace development is focused first in Medford, Los Angeles, and New York; neither nationwide intake nor focus-market status implies confirmed coverage.
 - The public experience must feel welcoming, calm, spacious, and easy to scan. White is the primary background. Dark color is limited to contained accents such as the footer; orange and blue are restrained action and trust colors.
 - The homepage is an orientation layer, not a catalog dump. It foregrounds customer, worker, and business paths; explains the basic process; and places the broader ecosystem behind focused hubs and an expandable network index.
 - All retained product lanes stay implemented and routable even when they are not individually expanded on the homepage.
-- Forge is a controlled local-first beta. Public lead delivery, authentication, payments, verification, dispatch, regulated partner referrals, and other managed operations may be described only at their actual readiness level.
+- Forge is a controlled local-first beta with nationwide-ready intake. Public lead delivery, authentication, payments, verification, dispatch, regulated partner referrals, and other managed operations may be described only at their actual readiness level.
 - A browser save is not a delivery. Only a valid versioned server/provider receipt may display `delivered`.
 - No real customer data, private partner data, credentials, financial secrets, or live money movement belongs in this MVP or its verification fixtures.
 
@@ -16,9 +16,9 @@ This is the canonical retained product map for the current Forge release. It rec
 
 | Lane | Current status | Public role and route | Non-negotiable boundary |
 |---|---|---|---|
-| Core marketplace | Controlled local-first beta | Home, `/request-help`, `/post-job`, `/worker-signup`, `/marketplace`, `/customer-dashboard` | Job/worker lead delivery fails closed without an approved durable destination. No verified-provider, payment, dispatch, insurance, or background-check claim. |
+| Core marketplace | Controlled local-first beta with nationwide intake | Home, `/request-help`, `/post-job`, `/worker-signup`, `/contractors`, `/marketplace`, `/customer-dashboard`, and three focus-market pages | Job/contractor lead delivery fails closed without an approved durable destination. Coverage is case by case. No verified-provider, payment, dispatch, insurance, or background-check claim. |
 | Customer journey | Implemented local prototype | Post a job, review local status, quotes, messages, next-step receipts | Local records and demo roles are not production accounts or guaranteed fulfillment. |
-| Worker and company journey | Implemented local prototype | Join Forge, profiles, opportunity discovery, bids/quotes, proof ledger | Green/Silver/Gold and dispatch labels are triage signals, not guarantees. |
+| Contractor, worker, and company journey | Implemented nationwide-ready prototype | Join Forge, profiles, service radius, opportunity discovery, bids/quotes, revisions, cancellation/dispute, proof ledger | Supplied license and insurance facts remain self-reported. Green/Silver/Gold and dispatch labels are triage signals, not guarantees. |
 | Business support | Implemented as a hub | `/business`, NorthStar, Building, Capital Desk | Present growth options clearly without implying active regulated partnerships. |
 | NorthStar Creative Co. | Implemented lead-capture lane | `/northstar-creative` | Separate from normal job requests; requires approved backend, service terms, credential handling, and fulfillment operations before broad launch. |
 | Capital Desk / future Flex referral | Local-interest capture implemented; Flex relationship remains draft/inactive | /forge/capital, /forge/flex, /partners/flex | Forge is not a bank, lender, broker, underwriter, credit decision maker, or Flex employee/official partner. Referral requires relationship, public-display, logo, agreement, data-sharing, language, operator, legal, explicit-consent, official-HTTPS-link, server-destination, and versioned-receipt gates together. Never collect credentials, SSNs, bank/card/account details, credit reports, or financial documents. |
@@ -45,6 +45,7 @@ This is the canonical retained product map for the current Forge release. It rec
 - Older statements implying a request was “received,” “submitted,” or sent externally after a browser save are superseded by the verified receipt contract. Local preservation, retryable failure, rejected correction, unavailable delivery, and verified delivery must be distinct.
 - Older Flex copy that sounds like an active referral channel, uses a placeholder referral URL, or names setup work before written approvals is superseded. Flex is a retained future financing partner concept only.
 - Older broad-launch language is superseded by controlled-beta language until durable public delivery, production operator authentication, legal/privacy, monitoring, retention, incident response, and operational ownership all pass.
+- Older Medford-only positioning and Oregon-default intake are superseded. Medford, Los Angeles, and New York are focus markets; all other U.S. locations remain nationwide intake with coverage explicitly unconfirmed until a compatible contractor is reviewed.
 - Older instructions to activate a particular storage vendor are not current scope. Forge remains provider-neutral and fail-closed today.
 
 ## Release fences

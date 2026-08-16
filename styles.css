@@ -16171,6 +16171,125 @@ th {
   }
 }
 
+/* Nationwide contractor expansion: one calm, reusable market system. */
+.nationwide-market-panel {
+  width: min(var(--content-wide), calc(100% - 40px));
+  margin: var(--space-8) auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: clamp(28px, 5vw, 64px);
+}
+
+.nationwide-market-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+.nationwide-market-heading > div {
+  max-width: 760px;
+}
+
+.nationwide-market-heading h2 {
+  margin: 8px 0 14px;
+  color: var(--forge-blue);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.nationwide-market-heading p,
+.nationwide-market-grid p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.nationwide-market-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.nationwide-market-grid article {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+  min-height: 270px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  padding: 24px;
+}
+
+.nationwide-market-grid article > span {
+  color: var(--forge-orange);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.nationwide-market-grid h3 {
+  margin: 0;
+  color: var(--forge-blue);
+  font-size: 1.15rem;
+}
+
+.nationwide-market-grid a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  margin-top: auto;
+  color: var(--forge-blue);
+  font-weight: 850;
+}
+
+.nationwide-intake-card {
+  border-color: color-mix(in srgb, var(--forge-orange) 44%, var(--border)) !important;
+  background: #fffaf5 !important;
+}
+
+.nationwide-intake-card > div {
+  display: grid;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.nationwide-location-row {
+  grid-template-columns: minmax(0, 1.35fr) minmax(150px, .8fr) minmax(130px, .7fr);
+}
+
+@media (max-width: 1080px) {
+  .nationwide-market-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .nationwide-market-panel {
+    width: min(100% - 24px, var(--content-wide));
+    padding: 28px 18px;
+  }
+
+  .nationwide-market-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nationwide-market-grid,
+  .nationwide-location-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nationwide-market-grid article {
+    min-height: 0;
+  }
+}
+
 /* Welcoming public experience: white canvas, calm hierarchy, progressive depth. */
 
 body,

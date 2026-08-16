@@ -4,6 +4,8 @@ Track pending build, documentation, legal, operations, deployment, and business 
 
 ## Pending
 
+- Confirm a compatible contractor and operational owner in each focus market before describing any ZIP, category, response window, or project type as covered.
+- Add production authentication, private contractor evidence storage, reviewer assignment, expiration/recheck policy, and audit evidence before using `Forge reviewed` on real profiles.
 - Public job/worker delivery remains fail-closed until an approved durable endpoint exists and a synthetic preview receipt is verified end to end.
 - Capital Desk delivery remains fail-closed until written Flex relationship, public-display, logo-use, referral-agreement, data-sharing, official-language, operator, legal, consent, official-link, server-destination, and receipt gates all pass.
 - Keep /admin, /capture, /reports, /monetization-admin, and every nested path unavailable in production until production-grade operator authentication, authorization, audit, and recovery are approved.
@@ -38,4 +40,5 @@ Track pending build, documentation, legal, operations, deployment, and business 
 ## Completed
 
 - Created the initial permanent project knowledge system.
+- v133 nationwide slice: added all-state customer/contractor intake, precise location and service-area data, Medford/Los Angeles/New York focus-market pages, honest trust states, compatible matching, recoverable quote/revision/cancel/dispute transitions, and automated UI/domain coverage.
 - v133: classified every route, hardened cache/update/offline behavior, added release validation and AVIF media, eliminated opaque lead delivery, secured exports, tightened Capital and Trust Ledger semantics, expanded protected-route coverage, and added executable release fences.

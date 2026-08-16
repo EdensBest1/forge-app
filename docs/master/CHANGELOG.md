@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-15 - v133 nationwide marketplace and contractor completion slice
+
+- Expanded customer and contractor intake to all 50 states and Washington, D.C., while naming Medford, Los Angeles, and New York as focus markets without claiming guaranteed coverage.
+- Added full public contractor and city-market pages with a welcoming, spacious, primarily white visual system, clear customer/contractor actions, city-specific categories, responsive layouts, and honest FAQ/trust copy.
+- Added state, ZIP, service-radius, travel, project-fit, capacity, experience, portfolio-link, and self-reported license/insurance fields without raw credential uploads or Oregon defaults.
+- Added a provider-neutral nationwide domain module for location normalization, compatibility matching, exact trust states, versioned/idempotent job transitions, reload recovery, quote/revision/review, cancellation, and dispute behavior.
+- Added executable nationwide domain and UI contracts covering 50 states plus D.C., the three focus markets, role and trust language, responsive public routes, false-proof prevention, and payment/dispatch hard-off behavior.
+- Preserved all prior product lanes, the 41-lead recovery backup, fail-closed delivery, protected operator routes, inactive Flex gates, and draft/unmerged release workflow.
+
 ## 2026-08-15 - v133 deep product, route, cache, privacy, and release hardening
 
 - Added one machine-readable registry for every public route, alias, lane, audience, primary action, canonical destination, and release status, plus exhaustive filesystem coverage.

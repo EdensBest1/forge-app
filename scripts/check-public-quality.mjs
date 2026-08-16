@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 
-const [html, styles, app, worker, routeLoader] = await Promise.all([
+const [html, styles, app, worker, routeLoader, nationwide] = await Promise.all([
   readFile("index.html", "utf8"),
   readFile("styles.css", "utf8"),
   readFile("app.js", "utf8"),
   readFile("service-worker.js", "utf8"),
-  readFile("route-loader.js", "utf8")
+  readFile("route-loader.js", "utf8"),
+  readFile("nationwide-market.js", "utf8")
 ]);
 
 for (const token of [
@@ -27,7 +28,7 @@ assert.match(styles, /\.manufacturing-screen\s+\.section-title\s*{[\s\S]{0,120}f
 const hero = html.match(/<section class="home-hero">([\s\S]*?)<\/section>/)?.[1] || "";
 const visibleHeroActions = [...hero.matchAll(/<button class="btn (?!ghost)([^"]*)"[^>]*>([^<]+)<\/button>/g)];
 assert.equal(visibleHeroActions.length, 2, "the homepage hero must expose exactly two primary actions");
-assert.deepEqual(visibleHeroActions.map((match) => match[2].trim()), ["Post a Job", "Join as a Worker"]);
+assert.deepEqual(visibleHeroActions.map((match) => match[2].trim()), ["Post a Job", "Join as a Contractor"]);
 
 for (const legacyClass of [
   "marketplace-entry-panel", "vertical-showroom-panel", "browse-all-services-panel", "job-trust-panel",
@@ -36,7 +37,16 @@ for (const legacyClass of [
   "service-verticals-panel", "timeline", "demo-script"
 ]) assert.match(styles, new RegExp(`${legacyClass}[\\s\\S]{0,700}display:\\s*none\\s*!important`), `${legacyClass} must remain out of the public homepage flow`);
 
-assert.match(html, /Built for Medford and Southern Oregon/);
+assert.match(html, /Nationwide intake/);
+assert.match(html, /focused marketplace development in Medford, Los Angeles, and New York/i);
+assert.match(html, /id="nationwide-market-title"/);
+assert.match(html, /\/markets\/medford-or\//);
+assert.match(html, /\/markets\/los-angeles-ca\//);
+assert.match(html, /\/markets\/new-york-ny\//);
+assert.match(html, /nationwide-market\.js\?v=133/);
+assert.match(nationwide, /US_STATES/);
+assert.match(nationwide, /Nationwide intake · coverage not yet confirmed/);
+assert.match(nationwide, /verificationClaimAllowed:\s*false/);
 assert.match(html, /No payments collected in this early-access release/);
 assert.match(html, /Flex referral is not active/);
 assert.match(html, /name="forge-release" content="v133"/);

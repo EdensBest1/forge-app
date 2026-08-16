@@ -5,6 +5,7 @@ const html = await readFile("index.html", "utf8");
 const app = await readFile("app.js", "utf8");
 const outbox = await readFile("lead-outbox.js", "utf8");
 const csvUtils = await readFile("csv-utils.js", "utf8");
+const nationwide = await readFile("nationwide-market.js", "utf8");
 const serviceWorker = await readFile("service-worker.js", "utf8");
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
 
@@ -23,6 +24,7 @@ const staticChecks = [
   ["backup recovery runtime", html.includes("backup-recovery.js?v=133") && serviceWorker.includes("backup-recovery.js")],
   ["lead outbox runtime", html.includes("lead-outbox.js?v=133") && serviceWorker.includes("lead-outbox.js") && outbox.includes("forge.lead-outbox.v1")],
   ["safe csv runtime", html.includes("csv-utils.js?v=133") && serviceWorker.includes("csv-utils.js") && csvUtils.includes("neutralizeFormula")],
+  ["nationwide market runtime", html.includes("nationwide-market.js?v=133") && serviceWorker.includes("nationwide-market.js") && nationwide.includes("Nationwide intake · coverage not yet confirmed")],
   ["honest delivery status", html.includes("Know what is saved here and what actually reached Forge") && app.includes("renderLeadOutbox")],
   ["staged backup recovery review", html.includes("Local recovery dry run") && html.includes('data-action="confirm-backup-import"') && app.includes("showBackupRecoveryPreview")],
   ["service worker version", serviceWorker.includes('FORGE_RELEASE = "133"')],
@@ -30,6 +32,10 @@ const staticChecks = [
   ["request help alias", manifest.entrypoints.requestHelp === "/request-help?v=133"],
   ["post job alias", manifest.entrypoints.postJobAlias === "/post-job?v=133"],
   ["worker signup alias", manifest.entrypoints.workerSignupAlias === "/worker-signup?v=133"],
+  ["contractor hub entrypoint", manifest.entrypoints.contractors === "/contractors?v=133"],
+  ["Medford market entrypoint", manifest.entrypoints.medfordMarket === "/markets/medford-or?v=133"],
+  ["Los Angeles market entrypoint", manifest.entrypoints.losAngelesMarket === "/markets/los-angeles-ca?v=133"],
+  ["New York market entrypoint", manifest.entrypoints.newYorkMarket === "/markets/new-york-ny?v=133"],
   ["business help alias", manifest.entrypoints.businessHelp === "/business?v=133"],
   ["autos entrypoint", manifest.entrypoints.autos === "/auto?v=133"],
   ["road rescue entrypoint", manifest.entrypoints.roadRescue === "/road-rescue?v=133"],
@@ -61,7 +67,7 @@ const staticChecks = [
   ["admin trade pathways entrypoint", manifest.entrypoints.adminTradePathways === "/admin/trade-pathways?v=133"],
   ["homebuilding entrypoint", manifest.entrypoints.homebuilding === "/homebuilding?v=133"],
   ["build tracker entrypoint", manifest.entrypoints.homebuildingTracker === "/homebuilding/tracker?v=133"],
-  ["package check script includes v133 contracts", ["check:routes", "check:cache", "check:public-quality", "check:exports", "check:copy-truth", "check:release-fences", "check:accessibility"].every((name) => packageJson.scripts?.check?.includes(name))],
+  ["package check script includes v133 contracts", ["check:routes", "check:cache", "check:public-quality", "check:exports", "check:copy-truth", "check:release-fences", "check:accessibility", "check:nationwide"].every((name) => packageJson.scripts?.check?.includes(name))],
   ["human gates listed", manifest.remainingHumanGates.length >= 7]
 ];
 

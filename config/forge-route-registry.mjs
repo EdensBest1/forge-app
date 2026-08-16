@@ -25,6 +25,10 @@ addRoute("/", "Core marketplace", "Customers, workers, and local businesses", "C
 addRoute("/forge", "Core marketplace", "Customers, workers, and local businesses", "Explore Forge services");
 addRoute("/request-help", "Customer marketplace", "Customers", "Post a local request");
 addAlias("/post-job", "/request-help", "Customer marketplace", "Customers", "Post a local request");
+addRoute("/contractors", "Contractor marketplace", "General contractors, crews, specialty trades, and individual workers", "Create a nationwide contractor profile");
+addRoute("/markets/medford-or", "Priority market", "Medford and Southern Oregon customers and contractors", "Post a Medford project or join as a contractor");
+addRoute("/markets/los-angeles-ca", "Priority market", "Los Angeles customers and contractors", "Post a Los Angeles project or join as a contractor");
+addRoute("/markets/new-york-ny", "Priority market", "New York City customers and contractors", "Post a New York project or join as a contractor");
 addRoute("/marketplace", "Customer marketplace", "Customers", "Browse local opportunities and providers");
 addRoute("/customer-dashboard", "Customer marketplace", "Returning customers", "Review locally saved job status");
 addRoute("/worker-signup", "Worker marketplace", "Individual workers", "Create a worker profile");

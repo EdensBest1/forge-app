@@ -6,7 +6,10 @@ The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-
 
 ## Forge Blue-Collar Marketplace
 
-- Planned/active direction: local services marketplace starting in Medford/Southern Oregon.
+- Implemented direction: nationwide-ready customer and contractor intake across all 50 states and Washington, D.C., with focused marketplace development in Medford, Los Angeles, and New York.
+- Dedicated public routes exist at `/contractors`, `/markets/medford-or`, `/markets/los-angeles-ca`, and `/markets/new-york-ny` with truthful, city-specific scope and no fake supply, demand, review, revenue, or response metrics.
+- Customer and contractor forms capture city, state, ZIP, service radius, project types, capacity, and self-reported license/insurance status without defaulting the country to Oregon or collecting raw credentials.
+- Compatibility logic covers category, city/state, named service area, radius/remote availability, and review state; compatibility never means verified, awarded, dispatched, or paid.
 - Customers should be able to discover and request local providers. Provider-entered information is not verified until a documented human review is complete.
 - Providers should be able to apply to offer services.
 - Future work should reuse existing Forge components, routes, tables, and business logic.
@@ -22,7 +25,7 @@ The canonical reconciled product and safety map is `FORGE_PRODUCT_TRUTH_2026-08-
 - Implemented / Live in UI for admin-auth readiness: Admin now includes an Admin Auth Drill to verify production auth, protected operator routes, stranger access, recovery, audit, export, backup, and webhook safeguards.
 - Implemented / Live in UI for launch decision clarity: Launch Status now includes a Public Launch Go / No-Go Receipt that says controlled demos are allowed while broad public launch remains blocked until proof gates pass.
 - Implemented / Live in UI for honest public lead recovery: job and worker submissions enter a shared local outbox before delivery, keep stable request IDs across bounded manual retries, and show a verified server receipt only after the versioned receipt contract passes validation. Delivery Status supports export and explicit-confirmation removal while preserving the original local lead.
-- Still local/static MVP only: production auth, approved durable persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch.
+- Still local/static MVP only: production auth, approved durable persistence, payment processing, live dispatch, background checks, verified-provider claims, contracts, insurance verification, notifications, and support workflows remain required before broad launch or marketing as a fully available marketplace.
 
 ## Forge Capital Desk / future Flex referral
 

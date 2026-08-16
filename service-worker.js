@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   `/csv-utils.js?v=${FORGE_RELEASE}`,
   `/lead-outbox.js?v=${FORGE_RELEASE}`,
   `/backup-recovery.js?v=${FORGE_RELEASE}`,
+  `/nationwide-market.js?v=${FORGE_RELEASE}`,
   `/route-loader.js?v=${FORGE_RELEASE}`,
   "/manifest.webmanifest",
   "/assets/forge-icon.svg",

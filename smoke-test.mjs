@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
 
 const requiredHtml = [
-  "Post the job.",
+  "Post the project.",
+  "Find the right crew.",
   "I need workers",
   "I need work",
   "Forge Confirmation",
@@ -195,7 +196,7 @@ const requiredHtml = [
   "Mike Jones",
   "One-minute worker proof",
   "Review Jobs",
-  "Join Forge as a Worker",
+  "Join Forge as a Contractor",
   "Forge Admin",
   "Forge Messages",
   "Active conversations",
@@ -275,7 +276,7 @@ const requiredHtml = [
   "Copy Close Ask",
   "Follow-up consent",
   "No payment is collected in this MVP.",
-  "Worker follow-up",
+  "Contractor follow-up",
   "First worker path",
   "What happens after you join?",
   "workerFollowUpConsent",
