@@ -2,6 +2,10 @@ import { agentRegistry } from "../../nexus/orchestrator.mjs";
 import { configurationHealth } from "../../nexus/security-watch.mjs";
 import { storageStatus } from "../../nexus/state-store.mjs";
 
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
 type VercelRequest = {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
