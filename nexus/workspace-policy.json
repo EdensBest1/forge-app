@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "default_tenant": "edens-best-internal",
+  "workspace_types": ["internal-business", "northstar-client", "sandbox"],
+  "required_context_fields": ["tenant_id", "workspace_id"],
+  "tenant_isolation": {
+    "deny_cross_tenant_reads": true,
+    "deny_cross_tenant_writes": true,
+    "deny_shared_memory_across_tenants": true,
+    "deny_shared_credentials_across_tenants": true,
+    "tenant_scoped_audit_log": true,
+    "tenant_scoped_vector_memory": true,
+    "tenant_scoped_files": true,
+    "tenant_scoped_tasks": true,
+    "tenant_scoped_agent_runs": true
+  },
+  "client_defaults": {
+    "external_side_effects": "approval_required_unless_explicitly_entitled",
+    "bulk_messaging": "approval_required",
+    "money_movement": "never_autonomous",
+    "contract_acceptance": "never_autonomous",
+    "credential_changes": "never_autonomous",
+    "data_export": "approval_required",
+    "retention_days": 365,
+    "max_concurrent_agents": 6,
+    "max_external_messages_per_hour": 10
+  },
+  "security": {
+    "encryption_at_rest_required": true,
+    "encryption_in_transit_required": true,
+    "application_payload_encryption_supported": true,
+    "secrets_in_code_forbidden": true,
+    "audit_every_task": true,
+    "security_preflight_every_task": true,
+    "security_watch_hourly": true,
+    "incident_escalation": true
+  }
+}
