@@ -12,7 +12,10 @@
     "check:monetization": "node scripts/check-monetization-engine.mjs",
     "check:product-paths": "node scripts/check-product-paths-regression.mjs",
     "check:fencing": "node scripts/check-fencing-iron-gates-coverage.mjs",
+    "check:nexus": "node nexus/smoke-test.mjs",
+    "nexus:status": "node nexus/orchestrator.mjs",
+    "nexus:tick": "node nexus/orchestrator.mjs --tick",
     "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
-    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing"
+    "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing && npm run check:nexus"
   }
 }
