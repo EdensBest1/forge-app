@@ -13,3 +13,6 @@ private_crm_exports/
 *.private.csv
 *.private.json
 *.private.xlsx
+.nexus-runtime/
+.nexus-runtime-*.json
+.nexus-security-*.json
