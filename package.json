@@ -29,6 +29,7 @@
     "nexus:registry": "node nexus/orchestrator.mjs --registry",
     "nexus:tick": "node nexus/orchestrator.mjs --tick",
     "nexus:security": "node nexus/security-watch.mjs",
+    "nexus:revenue": "node nexus/revenue-autopilot.mjs",
     "nexus:test": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs",
     "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
     "check": "npm run check:syntax && npm run check:smoke && npm run check:security && npm run check:admin-boundary && npm run check:lead-outbox && npm run check:durable-leads && npm run check:capital-desk && npm run check:release && npm run check:monetization && npm run check:product-paths && npm run check:fencing && npm run check:routes && npm run check:cache && npm run check:public-quality && npm run check:exports && npm run check:copy-truth && npm run check:release-fences && npm run check:accessibility && npm run check:nationwide && npm run check:nexus"
