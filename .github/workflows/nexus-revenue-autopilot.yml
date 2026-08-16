@@ -1,0 +1,41 @@
+name: Nexus Revenue Autopilot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  revenue-autopilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Nexus
+        run: npm run nexus:test
+      - name: Execute revenue autopilot
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_STATE_STORE_URL: ${{ secrets.NEXUS_STATE_STORE_URL }}
+          NEXUS_STATE_STORE_TOKEN: ${{ secrets.NEXUS_STATE_STORE_TOKEN }}
+          NEXUS_DATA_ENCRYPTION_KEY: ${{ secrets.NEXUS_DATA_ENCRYPTION_KEY }}
+        run: node nexus/revenue-autopilot.mjs
+      - name: Verify execution
+        run: node -e "const x=require('./.nexus-runtime/revenue-autopilot.json'); if(!x.executed) throw new Error('No revenue autopilot tasks executed'); if(x.security_blocked) console.log('Security correctly blocked '+x.security_blocked+' task(s)'); console.log('Revenue Autopilot executed '+x.executed+'/'+x.tasks+' tasks');"
+      - name: Retain redacted operating evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-revenue-${{ github.run_id }}
+          path: |
+            .nexus-runtime/revenue-autopilot.json
+            .nexus-runtime/audit.ndjson
+          if-no-files-found: warn
+          retention-days: 30
