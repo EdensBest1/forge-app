@@ -5954,7 +5954,7 @@ textarea:focus {
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(5, 8, 7, 0.92) 0%, rgba(5, 8, 7, 0.72) 42%, rgba(5, 8, 7, 0.2) 100%),
-    url("./assets/forge-auto-services-hero.png") center / cover;
+    url("./assets/forge-auto-services-hero-v133.avif") center / cover;
   color: white;
 }
 
@@ -6445,7 +6445,7 @@ textarea:focus {
   padding: 72px 32px 42px;
   background:
     linear-gradient(90deg, rgba(13, 58, 48, 0.96), rgba(25, 89, 70, 0.86)),
-    url("./assets/forge-hero.png") center / cover;
+    url("./assets/forge-hero-v133.avif") center / cover;
   color: white;
 }
 
@@ -6976,7 +6976,7 @@ textarea:focus {
   padding: 72px 32px 34px;
   background:
     linear-gradient(90deg, rgba(6, 18, 15, 0.96), rgba(5, 55, 47, 0.88)),
-    url("./assets/forge-homebuilding-hero.png") center / cover;
+    url("./assets/forge-homebuilding-hero-v133.avif") center / cover;
   color: white;
 }
 
@@ -7264,7 +7264,7 @@ textarea:focus {
   padding: 72px 32px 34px;
   background:
     linear-gradient(90deg, rgba(8, 19, 16, 0.95), rgba(25, 73, 68, 0.86)),
-    url("./assets/forge-homebuilding-hero.png") center / cover;
+    url("./assets/forge-homebuilding-hero-v133.avif") center / cover;
   color: white;
 }
 
@@ -7762,14 +7762,14 @@ textarea:focus {
   color: white;
   background:
     linear-gradient(180deg, rgba(5, 8, 7, 0.12), rgba(5, 8, 7, 0.88)),
-    url("./assets/forge-homebuilding-hero.png") center / cover;
+    url("./assets/forge-homebuilding-hero-v133.avif") center / cover;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
 }
 
 .homebuilding-image-block.after {
   background:
     linear-gradient(180deg, rgba(5, 55, 47, 0.08), rgba(5, 8, 7, 0.84)),
-    url("./assets/forge-homebuilding-hero.png") 70% center / cover;
+    url("./assets/forge-homebuilding-hero-v133.avif") 70% center / cover;
 }
 
 .homebuilding-image-block span {
@@ -8514,13 +8514,13 @@ textarea:focus {
 .academy-hero {
   background:
     linear-gradient(90deg, rgba(0, 61, 165, 0.95), rgba(0, 61, 165, 0.78) 48%, rgba(245, 111, 0, 0.84)),
-    url("./assets/forge-hero.png") center / cover;
+    url("./assets/forge-hero-v133.avif") center / cover;
 }
 
 .admitly-hero {
   background:
     linear-gradient(90deg, rgba(8, 18, 38, 0.94), rgba(0, 61, 165, 0.76) 58%, rgba(255, 255, 255, 0.28)),
-    url("./assets/forge-homebuilding-hero.png") center / cover;
+    url("./assets/forge-homebuilding-hero-v133.avif") center / cover;
 }
 
 .academy-hero > div,
@@ -13379,7 +13379,7 @@ td {
   .road-rescue-hero {
     background:
       linear-gradient(180deg, rgba(5, 8, 7, 0.9) 0%, rgba(5, 8, 7, 0.72) 54%, rgba(5, 8, 7, 0.88) 100%),
-      url("./assets/forge-auto-services-hero.png") center / cover;
+      url("./assets/forge-auto-services-hero-v133.avif") center / cover;
   }
 
   .auto-sell-card {
@@ -15507,7 +15507,7 @@ th {
   background:
     linear-gradient(118deg, rgba(4, 22, 45, 0.98), rgba(6, 49, 98, 0.88)),
     repeating-linear-gradient(135deg, rgba(199, 163, 77, 0.18) 0 1px, transparent 1px 28px),
-    url("./assets/forge-hero.png") center / cover;
+    url("./assets/forge-hero-v133.avif") center / cover;
 }
 
 .northstar-hero-copy h1 {
