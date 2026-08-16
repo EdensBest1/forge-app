@@ -1,0 +1,53 @@
+name: Nexus Agent Tick
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'nexus/**'
+      - '.github/workflows/nexus-agent-tick.yml'
+      - 'package.json'
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  nexus-tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Nexus workforce
+        run: node nexus/smoke-test.mjs
+
+      - name: Run scheduler tick
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_DAILY_UTC_HOUR: '13'
+          NEXUS_TASK_TIMEOUT_MS: '120000'
+        run: node nexus/orchestrator.mjs --tick > .nexus-runtime-tick.json
+
+      - name: Verify scheduler produced executed work
+        run: |
+          node -e "const x=require('./.nexus-runtime-tick.json'); if(!x.results?.length) throw new Error('No due agents executed'); if(x.results.some(r=>r.result?.status!=='executed' && !String(r.result?.status||'').startsWith('blocked_'))) throw new Error('Unexpected Nexus result'); console.log('Nexus zero-cost scheduler executed',x.results.length,'agent checks');"
+
+      - name: Retain redacted Nexus audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-audit-${{ github.run_id }}
+          path: |
+            .nexus-runtime/audit.ndjson
+            .nexus-runtime-tick.json
+          if-no-files-found: warn
+          retention-days: 30

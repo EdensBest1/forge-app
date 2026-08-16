@@ -1,0 +1,62 @@
+{
+  "version": "1.1.0",
+  "default_action": "deny_external_side_effect_unless_explicitly_allowed",
+  "autonomy": {
+    "A0": {
+      "internal_read": true,
+      "internal_write": false,
+      "external_read": true,
+      "external_write": false
+    },
+    "A1": {
+      "internal_read": true,
+      "internal_write": true,
+      "external_read": true,
+      "external_write": "approval_required"
+    },
+    "A2": {
+      "internal_read": true,
+      "internal_write": true,
+      "external_read": true,
+      "external_write": "allowed_only_when_no_hard_gate_and_within_limits"
+    }
+  },
+  "hard_gates": [
+    "money_movement",
+    "contract_signature_or_acceptance",
+    "legal_advice_or_filing",
+    "tax_filing",
+    "regulated_cannabis_transfer_sale_or_compliance_submission",
+    "employment_offer_termination_or_compensation_change",
+    "bulk_external_messaging",
+    "credential_or_permission_change",
+    "production_deployment_or_destructive_infrastructure_change",
+    "deletion_of_system_of_record_data",
+    "cross_tenant_data_access",
+    "client_data_export",
+    "secret_material_access",
+    "security_control_disable"
+  ],
+  "limits": {
+    "max_external_messages_per_agent_per_hour": 10,
+    "max_crm_updates_per_agent_per_hour": 250,
+    "max_automatic_retry_count": 2,
+    "max_task_runtime_seconds": 120,
+    "max_concurrent_agents": 8,
+    "max_client_concurrent_agents": 6,
+    "max_security_watch_age_minutes": 65
+  },
+  "required_audit_fields": [
+    "task_id",
+    "agent_id",
+    "timestamp",
+    "tenant_id",
+    "workspace_id",
+    "business",
+    "action",
+    "risk_tags",
+    "decision",
+    "reason",
+    "result_ref"
+  ]
+}
