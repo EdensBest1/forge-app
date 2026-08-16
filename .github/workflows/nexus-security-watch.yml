@@ -41,7 +41,8 @@ jobs:
           NEXUS_STATE_STORE_TOKEN: ${{ secrets.NEXUS_STATE_STORE_TOKEN }}
           NEXUS_DATA_ENCRYPTION_KEY: ${{ secrets.NEXUS_DATA_ENCRYPTION_KEY }}
           NEXUS_TASK_TIMEOUT_MS: '120000'
-        run: node nexus/orchestrator.mjs --task='{"preferred_agent_id":"NX-053","business":"nexus","department":"security","tenant_id":"edens-best-internal","workspace_id":"nexus-security","workspace_type":"internal-business","objective":"Run the hourly security watch: verify agent behavior, tenant isolation, audit health, integration health, policy drift, and unresolved incidents. Escalate critical findings. Do not disable safeguards.","action":"security_watch","external_side_effect":false,"requested_by":"github-actions-security-watch"}' > .nexus-security-tick.json
+        run: |
+          node nexus/orchestrator.mjs --task='{"preferred_agent_id":"NX-053","business":"nexus","department":"security","tenant_id":"edens-best-internal","workspace_id":"nexus-security","workspace_type":"internal-business","objective":"Run the hourly security watch: verify agent behavior, tenant isolation, audit health, integration health, policy drift, and unresolved incidents. Escalate critical findings. Do not disable safeguards.","action":"security_watch","external_side_effect":false,"requested_by":"github-actions-security-watch"}' > .nexus-security-tick.json
 
       - name: Verify security agent executed
         run: |
