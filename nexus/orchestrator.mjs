@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import { appendAudit, storageStatus } from './state-store.mjs';
 import { securityPreflight } from './security-watch.mjs';
+import { runEmbedded } from './embedded-runner.mjs';
 
 const ROOT = new URL('./', import.meta.url);
 const coreManifest = JSON.parse(await fs.readFile(new URL('agents.json', ROOT), 'utf8'));
@@ -102,10 +103,12 @@ export function authorize(agent, task) {
 async function callRunner(agent, task) {
   const url = process.env.NEXUS_AGENT_RUNNER_URL;
   if (!url) {
+    const body = await runEmbedded({ system: manifest.system, agent, task, policy });
     return {
-      mode: 'dry_run',
-      status: 'ready_not_executed',
-      message: 'Set NEXUS_AGENT_RUNNER_URL to a model/tool runner endpoint to execute agent reasoning and tool calls.',
+      mode: 'embedded_zero_cost',
+      status: 'executed',
+      body,
+      message: 'Executed with the built-in deterministic Nexus runner. Connect a model/tool runner later for richer reasoning and third-party tool use.',
     };
   }
 
@@ -157,11 +160,24 @@ function auditRecord(agent, task, auth, result, security = null) {
   };
 }
 
+async function appendLocalAudit(audit) {
+  const dir = new URL('../.nexus-runtime/', ROOT);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.appendFile(new URL('audit.ndjson', dir), `${JSON.stringify(audit)}\n`, { encoding: 'utf8', mode: 0o600 });
+}
+
 async function persistAudit(task, audit) {
-  if (!storageStatus().configured || !task.tenant_id || !task.workspace_id) return { persisted: false, reason: 'state_store_unconfigured' };
+  if (!storageStatus().configured || !task.tenant_id || !task.workspace_id) {
+    try {
+      await appendLocalAudit(audit);
+      return { persisted: true, mode: 'local_redacted_audit', durable: false };
+    } catch (error) {
+      return { persisted: false, reason: String(error?.message || error) };
+    }
+  }
   try {
     await appendAudit(task, audit);
-    return { persisted: true };
+    return { persisted: true, mode: 'durable_state_store', durable: true };
   } catch (error) {
     return { persisted: false, reason: String(error?.message || error) };
   }
@@ -256,6 +272,7 @@ async function main() {
     agent_count: manifest.agents.length,
     enabled: manifest.agents.filter((a) => a.status === 'enabled').length,
     storage: storageStatus(),
+    zero_cost_runner: !process.env.NEXUS_AGENT_RUNNER_URL,
     usage: [
       'node nexus/orchestrator.mjs --tick',
       'node nexus/orchestrator.mjs --registry',
