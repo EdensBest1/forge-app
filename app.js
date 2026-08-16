@@ -7358,14 +7358,24 @@ function renderManufacturingPage() {
   const suppliers = state.manufacturingSuppliers || [];
   const rfqs = state.manufacturingRfqs || [];
   const supplierLeads = state.manufacturingSupplierLeads || [];
-  stats.innerHTML = statCards([
-    ["RFQs", rfqs.length],
-    ["Demo Suppliers", suppliers.length],
-    ["Supplier Leads", supplierLeads.length],
-    ["Supplier Types", manufacturingSupplierTypes.length],
-    ["Documents", manufacturingDocumentTemplates.length],
-    ["Open Pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
-  ]);
+  const privateManufacturingView = canRenderPrivateOperatorData();
+  stats.innerHTML = statCards(privateManufacturingView
+    ? [
+        ["RFQs", rfqs.length],
+        ["Supplier profiles", suppliers.length],
+        ["Supplier leads", supplierLeads.length],
+        ["Supplier types", manufacturingSupplierTypes.length],
+        ["Documents", manufacturingDocumentTemplates.length],
+        ["Open pipeline", rfqs.filter((lead) => !["Completed", "Closed Won", "Closed Lost"].includes(lead.status)).length]
+      ]
+    : [
+        ["Product paths", productPaths.length],
+        ["Supplier types", manufacturingSupplierTypes.length],
+        ["Public matching", "Code first"],
+        ["Identity release", "Manual review"],
+        ["Documents", "Draft only"],
+        ["Payments", "Off"]
+      ]);
 
   const activeProductPath = productPathBySlug(state.activeProductPathSlug);
   productGrid.innerHTML = productPaths.map((path) => `
@@ -7389,26 +7399,38 @@ function renderManufacturingPage() {
   `).join("");
 
   const filteredSuppliers = filteredManufacturingSuppliers(activeFlags);
-  directory.innerHTML = filteredSuppliers.map((supplier) => `
-    <article class="manufacturing-supplier-card">
-      <div>
-        <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
-        <h3>${escapeHtml(supplier.companyName)}</h3>
-        <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
-        <p>${escapeHtml(supplier.capabilities)}</p>
-        <div class="service-category-mini">
-          ${(supplier.productCategories || []).slice(0, 5).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-          ${(supplier.dosageForms || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-          ${(supplier.certifications || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+  const directoryFilters = directory.closest(".manufacturing-directory")?.querySelector(".manufacturing-filters");
+  directoryFilters?.classList.toggle("hidden", !privateManufacturingView);
+  flags.classList.toggle("hidden", !privateManufacturingView);
+  directory.innerHTML = privateManufacturingView
+    ? filteredSuppliers.map((supplier) => `
+      <article class="manufacturing-supplier-card">
+        <div>
+          <span class="split-label">${escapeHtml(supplier.status)} · ${escapeHtml(supplier.verifiedByForge || "Placeholder only")}</span>
+          <h3>${escapeHtml(supplier.companyName)}</h3>
+          <p>${escapeHtml(supplier.supplierType)} · ${escapeHtml(supplier.location)} · ${escapeHtml(supplier.minimumOrderQuantity)}</p>
+          <p>${escapeHtml(supplier.capabilities)}</p>
+          <div class="service-category-mini">
+            ${(supplier.productCategories || []).slice(0, 5).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            ${(supplier.dosageForms || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            ${(supplier.certifications || []).slice(0, 4).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          </div>
         </div>
-      </div>
-      <div class="lead-actions">
-        ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
-        <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+        <div class="lead-actions">
+          ${contactLinks(manufacturingSupplierPhone(supplier), manufacturingSupplierEmail(supplier), manufacturingSupplierText(supplier))}
+          <button class="btn ghost small" type="button" data-action="copy-manufacturing-supplier" data-manufacturing-supplier-id="${escapeHtml(supplier.id)}">Copy Supplier</button>
+          <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
+        </div>
+      </article>
+    `).join("") || `<article class="manufacturing-supplier-card"><h3>No suppliers match these filters.</h3><p class="muted">Clear filters or create the first supplier profile.</p></article>`
+    : `<article class="manufacturing-supplier-card">
+        <div>
+          <span class="split-label">Public identity boundary</span>
+          <h3>Supplier identities and contact details stay private.</h3>
+          <p>Choose a Product Path to compare three anonymous supplier codes. Forge reviews fit, documentation, compliance, quote math, and release approval before identifying a supplier.</p>
+        </div>
         <button class="btn orange small" type="button" data-action="focus-manufacturing-rfq">Request Quote</button>
-      </div>
-    </article>
-  `).join("") || `<article class="manufacturing-supplier-card"><h3>No suppliers match these filters.</h3><p class="muted">Clear filters or create the first supplier profile.</p></article>`;
+      </article>`;
 
   eden.innerHTML = manufacturingEcosystemItems.map((item) => `<article><strong>${escapeHtml(item)}</strong></article>`).join("");
   docs.innerHTML = manufacturingDocumentTemplates.map((title) => `
@@ -7424,20 +7446,24 @@ function renderManufacturingPage() {
       <span>${escapeHtml(status)}</span>
     </article>
   `).join("");
-  rfqList.innerHTML = rfqs.slice(0, 5).map((lead) => `
-    <article>
-      <div>
-        <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm)}</span>
-        <strong>${escapeHtml(lead.brandName || "Unnamed manufacturing project")}</strong>
-        <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.locationPreference)}</p>
-      </div>
-      <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
-    </article>
-  `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`;
+  rfqList.innerHTML = privateManufacturingView
+    ? rfqs.slice(0, 5).map((lead) => `
+      <article>
+        <div>
+          <span class="split-label">${escapeHtml(lead.status)} · ${escapeHtml(lead.dosageForm)}</span>
+          <strong>${escapeHtml(lead.brandName || "Unnamed manufacturing project")}</strong>
+          <p>${escapeHtml(lead.productType)} · ${escapeHtml(lead.targetQuantity)} · ${escapeHtml(lead.locationPreference)}</p>
+        </div>
+        <button class="btn ghost small" type="button" data-action="copy-manufacturing-rfq" data-manufacturing-rfq-id="${escapeHtml(lead.id)}">Copy RFQ</button>
+      </article>
+    `).join("") || `<article><p class="muted">No manufacturing RFQs yet.</p></article>`
+    : "";
 
-  supplierLeadList.innerHTML = supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`;
-  supplierLeadDetail.innerHTML = manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId);
-  outreachTemplate.textContent = MANUFACTURING_OUTREACH_TEMPLATE;
+  supplierLeadList.innerHTML = privateManufacturingView
+    ? supplierLeads.slice(0, 12).map((lead) => manufacturingSupplierLeadCard(lead)).join("") || `<article><p class="muted">No supplier leads yet. Add one manually or import a lawful CSV.</p></article>`
+    : "";
+  supplierLeadDetail.innerHTML = privateManufacturingView ? manufacturingSupplierLeadDetail(state.activeManufacturingSupplierLeadId) : "";
+  outreachTemplate.textContent = privateManufacturingView ? MANUFACTURING_OUTREACH_TEMPLATE : "";
 }
 
 function productPathDetailHtml(path) {

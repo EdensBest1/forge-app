@@ -2014,9 +2014,9 @@
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Supplier discovery</span>
-                  <h2>Search Forge demo suppliers and future verified profiles.</h2>
+                  <h2>Explore supplier paths without exposing private identities.</h2>
                 </div>
-                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue">Copy Manufacturing Queue</button>
+                <button class="btn ghost small" type="button" data-action="copy-manufacturing-queue" data-operator-only>Copy Manufacturing Queue</button>
               </div>
               <div class="manufacturing-filters">
                 <label class="visually-hidden" for="manufacturingProductFilter">Filter suppliers by product category</label>
@@ -2035,7 +2035,7 @@
               <div class="manufacturing-filter-flags" id="manufacturingFilterFlags"></div>
               <div class="manufacturing-directory-grid" id="manufacturingSupplierDirectory"></div>
             </section>
-            <section class="manufacturing-directory" id="manufacturingLeadSourceCrm">
+            <section class="manufacturing-directory" id="manufacturingLeadSourceCrm" data-operator-only>
               <div class="section-title compact">
                 <div>
                   <span class="split-label">Lead-source CRM</span>
@@ -2083,7 +2083,7 @@
                 </div>
               </div>
               <div class="manufacturing-status-grid" id="manufacturingStatusGrid"></div>
-              <div class="manufacturing-rfq-list" id="manufacturingRfqList"></div>
+              <div class="manufacturing-rfq-list" id="manufacturingRfqList" data-operator-only></div>
             </section>
             <section class="manufacturing-compliance">
               <span class="split-label">Compliance notice</span>
