@@ -24,6 +24,9 @@ jobs:
       - name: Verify Nexus
         run: npm run nexus:test
 
+      - name: Generate outreach drafts and CRM queue
+        run: npm run nexus:forge-enterprise:outreach
+
       - name: Run 60-agent Forge enterprise campaign
         run: npm run nexus:forge-enterprise
 
@@ -34,4 +37,6 @@ jobs:
           path: |
             .nexus-runtime/forge-enterprise-launch.json
             .nexus-runtime/forge-enterprise-outreach-queue.json
+            .nexus-runtime/forge-enterprise-email-drafts.json
+            .nexus-runtime/forge-enterprise-outreach-queue.csv
           retention-days: 14
