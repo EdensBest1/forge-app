@@ -1,0 +1,61 @@
+account_id,company,segment,geography,priority,stage,agent_pod,website,contact_url,public_email,public_phone,data_status
+ENT-001,Flex (flex.one),Fintech referral partnership,United States,P0,Ready for approval,Flex Partnership,https://www.flex.one,https://www.flex.one/contact,support@flex.one,(833) 353-9267,Public contact verified
+ENT-002,Flex Ltd.,Advanced manufacturing and critical infrastructure,Global and US,P0,Ready for contact form,Manufacturing and Infrastructure,https://flex.com,https://flex.com/contact-us,,,Public contact route verified
+ENT-003,Electrical Power Products (EP2),Electrical power manufacturing,Des Moines IA and national,P0,Ready for call or contact form,Manufacturing and Infrastructure,https://ep2.com,https://ep2.com/contact-us/,,(515) 262-8161,Public phone and address verified
+ENT-004,JetCool,Data center liquid cooling,Massachusetts and national,P0,Ready for approval,Manufacturing and Infrastructure,https://jetcool.com,https://jetcool.com/contact/,hello@jetcool.com,978-449-4600,Public contact verified
+ENT-005,BNBuilders,General contractor,California and West Coast,P0,Ready for approval,Construction,https://www.bnbuilders.com,https://www.bnbuilders.com/offices,brian.dague@bnbuilders.com,310-905-2180,Public professional contact verified
+ENT-006,Morrow-Meadows Corporation,Electrical contractor,California Oregon Washington,P0,Ready for approval,Construction,https://www.morrow-meadows.com,https://www.morrow-meadows.com/locations/,info@morrow-meadows.com,(909) 598-7700,Public contact verified
+ENT-007,Best Contracting Services,Commercial roofing and building envelope,California,P0,Ready for approval,Commercial Roofing,https://bestcontracting.com,https://bestcontracting.com/contact-us/,ops@bestcontracting.com,(310) 328-6969,Public departmental contact verified
+ENT-008,Sunbelt Controls,Building automation and controls,California and Southwest,P0,Ready for call or contact form,Property and Controls,https://sunbeltcontrols.com,https://sunbeltcontrols.com/company/locations/,,(925) 660-3900,Public phone and location route verified
+ENT-009,Pacific Hospitality Group,Hotel ownership and management,Irvine CA and West Coast,P0,Ready for call or contact form,Property Services,https://www.pacifichospitality.com,https://www.pacifichospitality.com/contact-us,,949-861-4700,Public contact verified
+ENT-010,Rosendin,Electrical contractor,United States and California,P0,Research,Construction,https://www.rosendin.com,,,,Contact enrichment required
+ENT-011,DPR Construction,General contractor,United States and California,P0,Research,Construction,https://www.dpr.com,,,,Contact enrichment required
+ENT-012,Turner Construction,General contractor,United States and California,P0,Research,Construction,https://www.turnerconstruction.com,,,,Contact enrichment required
+ENT-013,Hensel Phelps,General contractor,United States and California,P0,Research,Construction,https://www.henselphelps.com,,,,Contact enrichment required
+ENT-014,Skanska USA,Construction and development,United States and California,P0,Research,Construction,https://www.usa.skanska.com,,,,Contact enrichment required
+ENT-015,Clark Construction,General contractor,United States and California,P0,Research,Construction,https://www.clarkconstruction.com,,,,Contact enrichment required
+ENT-016,Swinerton,General contractor,United States and California,P1,Research,Construction,https://swinerton.com,,,,Contact enrichment required
+ENT-017,McCarthy Building Companies,General contractor,United States and California,P1,Research,Construction,https://www.mccarthy.com,,,,Contact enrichment required
+ENT-018,Webcor,General contractor,California,P1,Research,Construction,https://www.webcor.com,,,,Contact enrichment required
+ENT-019,Rudolph and Sletten,General contractor,California,P1,Research,Construction,https://www.rsconstruction.com,,,,Contact enrichment required
+ENT-020,Hathaway Dinwiddie,General contractor,California,P1,Research,Construction,https://www.hathawaydinwiddie.com,,,,Contact enrichment required
+ENT-021,PCL Construction,General contractor,United States and California,P1,Research,Construction,https://www.pcl.com,,,,Contact enrichment required
+ENT-022,Suffolk Construction,General contractor,United States and California,P1,Research,Construction,https://www.suffolk.com,,,,Contact enrichment required
+ENT-023,Gilbane Building Company,General contractor,United States and California,P1,Research,Construction,https://www.gilbaneco.com,,,,Contact enrichment required
+ENT-024,Cupertino Electric,Electrical contractor,United States and California,P1,Research,Construction,https://www.cei.com,,,,Contact enrichment required
+ENT-025,Helix Electric,Electrical contractor,United States and California,P1,Research,Construction,https://www.helixelectric.com,,,,Contact enrichment required
+ENT-026,Bergelectric,Electrical contractor,United States and California,P1,Research,Construction,https://www.bergelectric.com,,,,Contact enrichment required
+ENT-027,ACCO Engineered Systems,Mechanical and HVAC contractor,California and West,P1,Research,Property and Controls,https://www.accoes.com,,,,Contact enrichment required
+ENT-028,Southland Industries,Mechanical and building systems,United States and California,P1,Research,Property and Controls,https://southlandind.com,,,,Contact enrichment required
+ENT-029,EMCOR Group,Mechanical electrical and facilities services,United States,P1,Research,Property and Controls,https://www.emcorgroup.com,,,,Contact enrichment required
+ENT-030,MYR Group,Electrical construction,United States,P1,Research,Construction,https://www.myrgroup.com,,,,Contact enrichment required
+ENT-031,Quanta Services,Infrastructure contracting,United States,P2,Research,Infrastructure,https://www.quantaservices.com,,,,Contact enrichment required
+ENT-032,Baker Electric,Electrical and renewable energy,Southern California,P2,Research,Construction,https://bakerelectricsolar.com,,,,Contact enrichment required
+ENT-033,CBRE,Commercial real estate services,United States and California,P2,Research,Property Services,https://www.cbre.com,,,,Contact enrichment required
+ENT-034,JLL,Commercial real estate services,United States and California,P2,Research,Property Services,https://www.jll.com,,,,Contact enrichment required
+ENT-035,Cushman and Wakefield,Commercial real estate services,United States and California,P2,Research,Property Services,https://www.cushmanwakefield.com,,,,Contact enrichment required
+ENT-036,ABM Industries,Facility services,United States and California,P2,Research,Property Services,https://www.abm.com,,,,Contact enrichment required
+ENT-037,The Irvine Company,Real estate owner and operator,Orange County CA,P2,Research,Property Services,https://www.irvinecompany.com,,,,Contact enrichment required
+ENT-038,LBA Realty,Industrial and commercial real estate,Western United States,P2,Research,Property Services,https://lbarealty.com,,,,Contact enrichment required
+ENT-039,Prologis,Logistics real estate,United States and California,P2,Research,Property Services,https://www.prologis.com,,,,Contact enrichment required
+ENT-040,Rexford Industrial Realty,Industrial real estate,Southern California,P2,Research,Property Services,https://www.rexfordindustrial.com,,,,Contact enrichment required
+ENT-041,Kilroy Realty,Commercial real estate,West Coast,P2,Research,Property Services,https://www.kilroyrealty.com,,,,Contact enrichment required
+ENT-042,Brookfield Properties,Real estate owner and operator,United States and California,P2,Research,Property Services,https://www.brookfieldproperties.com,,,,Contact enrichment required
+ENT-043,Amazon Operations,E-commerce and logistics,United States and California,P2,Research,Logistics,https://www.amazon.com,,,,Contact enrichment required
+ENT-044,UPS,Transportation and logistics,United States and California,P2,Research,Logistics,https://www.ups.com,,,,Contact enrichment required
+ENT-045,FedEx,Transportation and logistics,United States and California,P2,Research,Logistics,https://www.fedex.com,,,,Contact enrichment required
+ENT-046,GXO Logistics,Contract logistics,United States and California,P2,Research,Logistics,https://gxo.com,,,,Contact enrichment required
+ENT-047,DHL Supply Chain,Contract logistics,United States and California,P2,Research,Logistics,https://www.dhl.com,,,,Contact enrichment required
+ENT-048,Ryder,Transportation and logistics,United States and California,P2,Research,Logistics,https://www.ryder.com,,,,Contact enrichment required
+ENT-049,Penske Logistics,Transportation and logistics,United States and California,P2,Research,Logistics,https://www.penskelogistics.com,,,,Contact enrichment required
+ENT-050,XPO,Transportation and logistics,United States and California,P2,Research,Logistics,https://www.xpo.com,,,,Contact enrichment required
+ENT-051,NFI Industries,Logistics and warehousing,United States and California,P2,Research,Logistics,https://www.nfiindustries.com,,,,Contact enrichment required
+ENT-052,Lineage,Cold storage and logistics,United States and California,P2,Research,Logistics,https://www.onelineage.com,,,,Contact enrichment required
+ENT-053,Marriott International,Hospitality,United States and California,P2,Research,Hospitality,https://www.marriott.com,,,,Contact enrichment required
+ENT-054,Hilton,Hospitality,United States and California,P2,Research,Hospitality,https://www.hilton.com,,,,Contact enrichment required
+ENT-055,Hyatt,Hospitality,United States and California,P2,Research,Hospitality,https://www.hyatt.com,,,,Contact enrichment required
+ENT-056,Four Seasons Hotels and Resorts,Luxury hospitality,California and national,P2,Research,Hospitality,https://www.fourseasons.com,,,,Contact enrichment required
+ENT-057,Montage International,Luxury hospitality,Orange County and national,P2,Research,Hospitality,https://www.montageinternational.com,,,,Contact enrichment required
+ENT-058,CentiMark,Commercial roofing,United States and California,P2,Research,Commercial Roofing,https://www.centimark.com,,,,Contact enrichment required
+ENT-059,Tecta America,Commercial roofing,United States and California,P2,Research,Commercial Roofing,https://www.tectaamerica.com,,,,Contact enrichment required
+ENT-060,Sunrun,Residential solar and energy,United States and California,P2,Research,Energy,https://www.sunrun.com,,,,Contact enrichment required
