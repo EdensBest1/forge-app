@@ -1,0 +1,37 @@
+name: Nexus Forge Enterprise Launch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 14 * * 1-5"
+
+permissions:
+  contents: read
+
+jobs:
+  forge-enterprise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify Nexus
+        run: npm run nexus:test
+
+      - name: Run 60-agent Forge enterprise campaign
+        run: npm run nexus:forge-enterprise
+
+      - name: Upload campaign reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-enterprise-launch-${{ github.run_id }}
+          path: |
+            .nexus-runtime/forge-enterprise-launch.json
+            .nexus-runtime/forge-enterprise-outreach-queue.json
+          retention-days: 14
