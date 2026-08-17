@@ -27,10 +27,23 @@ jobs:
       - name: Generate outreach drafts and CRM queue
         run: npm run nexus:forge-enterprise:outreach
 
+      - name: Seed configured enterprise CRM
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run nexus:forge-enterprise:seed
+
       - name: Run 60-agent Forge enterprise campaign
+        env:
+          NEXUS_AGENT_RUNNER_URL: ${{ secrets.NEXUS_AGENT_RUNNER_URL }}
+          NEXUS_AGENT_RUNNER_TOKEN: ${{ secrets.NEXUS_AGENT_RUNNER_TOKEN }}
+          NEXUS_STATE_STORE_URL: ${{ secrets.NEXUS_STATE_STORE_URL }}
+          NEXUS_STATE_STORE_TOKEN: ${{ secrets.NEXUS_STATE_STORE_TOKEN }}
+          NEXUS_DATA_ENCRYPTION_KEY: ${{ secrets.NEXUS_DATA_ENCRYPTION_KEY }}
         run: npm run nexus:forge-enterprise
 
       - name: Upload campaign reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: forge-enterprise-launch-${{ github.run_id }}
@@ -39,4 +52,7 @@ jobs:
             .nexus-runtime/forge-enterprise-outreach-queue.json
             .nexus-runtime/forge-enterprise-email-drafts.json
             .nexus-runtime/forge-enterprise-outreach-queue.csv
+            .nexus-runtime/forge-enterprise-seed-report.json
+            .nexus-runtime/audit.ndjson
+          if-no-files-found: warn
           retention-days: 14
