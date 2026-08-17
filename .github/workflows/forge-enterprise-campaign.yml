@@ -53,4 +53,5 @@ jobs:
           name: forge-enterprise-campaign-${{ github.run_id }}
           path: .nexus-runtime/forge-enterprise-2026-08-*.json
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 30
