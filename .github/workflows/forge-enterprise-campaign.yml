@@ -7,6 +7,17 @@ on:
         description: Maximum concurrent internal agent preparation tasks
         required: false
         default: '8'
+  pull_request:
+    paths:
+      - '.github/workflows/forge-enterprise-campaign.yml'
+      - 'nexus/campaigns/**'
+      - 'nexus/agents.json'
+      - 'nexus/agents-extension.json'
+      - 'nexus/orchestrator.mjs'
+      - 'nexus/README.md'
+      - 'data/forge-enterprise-targets-2026-08.csv'
+      - 'docs/FORGE_60_AGENT_ENTERPRISE_CAMPAIGN.md'
+      - 'docs/FORGE_ENTERPRISE_OUTREACH_EMAILS.md'
 
 permissions:
   contents: read
