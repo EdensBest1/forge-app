@@ -20,6 +20,7 @@
     "nexus:revenue": "node nexus/revenue-autopilot.mjs",
     "nexus:forge-enterprise": "node nexus/forge-enterprise-launch.mjs",
     "nexus:forge-enterprise:outreach": "node nexus/forge-enterprise-outreach.mjs",
+    "nexus:forge-enterprise:seed": "node scripts/seed-forge-enterprise-accounts.mjs",
     "nexus:forge-enterprise:test": "node nexus/forge-enterprise-test.mjs",
     "nexus:test": "node nexus/smoke-test.mjs && node nexus/integration-test.mjs && node nexus/forge-enterprise-test.mjs",
     "demo:monetization:40000": "node scripts/generate-monetization-demo-records.mjs --count=40000",
