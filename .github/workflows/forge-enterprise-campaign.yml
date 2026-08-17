@@ -1,0 +1,57 @@
+name: Forge 60-Agent Enterprise Campaign
+
+on:
+  workflow_dispatch:
+    inputs:
+      concurrency:
+        description: Maximum concurrent internal agent preparation tasks
+        required: false
+        default: '8'
+  pull_request:
+    paths:
+      - '.github/workflows/forge-enterprise-campaign.yml'
+      - 'nexus/campaigns/**'
+      - 'nexus/agents.json'
+      - 'nexus/agents-extension.json'
+      - 'nexus/orchestrator.mjs'
+      - 'nexus/README.md'
+      - 'data/forge-enterprise-targets-2026-08.csv'
+      - 'docs/FORGE_60_AGENT_ENTERPRISE_CAMPAIGN.md'
+      - 'docs/FORGE_ENTERPRISE_OUTREACH_EMAILS.md'
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-enterprise-campaign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout campaign branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run all 60 internal campaign tasks
+        env:
+          NEXUS_TASK_TIMEOUT_MS: '120000'
+        run: node nexus/campaigns/run-forge-enterprise-campaign.mjs --concurrency=${{ inputs.concurrency || '8' }}
+
+      - name: Verify campaign output
+        run: |
+          test -d .nexus-runtime
+          test "$(find .nexus-runtime -maxdepth 1 -name 'forge-enterprise-2026-08-*.json' | wc -l)" -ge 1
+          node -e "const fs=require('fs'); const path=fs.readdirSync('.nexus-runtime').filter(x=>x.startsWith('forge-enterprise-2026-08-')&&x.endsWith('.json')).sort().pop(); const data=JSON.parse(fs.readFileSync('.nexus-runtime/'+path,'utf8')); if(data.summary.agents_requested!==60) throw new Error('Expected 60 agents'); if(data.summary.failed) throw new Error('Campaign preparation failures: '+data.summary.failed); console.log(data.summary);"
+
+      - name: Retain campaign preparation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-enterprise-campaign-${{ github.run_id }}
+          path: .nexus-runtime/forge-enterprise-2026-08-*.json
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 30
