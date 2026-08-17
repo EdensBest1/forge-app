@@ -24,6 +24,7 @@ type EnterpriseLeadInput = {
   consent_to_contact?: boolean;
   referral_source?: string;
   notes?: string;
+  company_fax?: string;
 };
 
 const requiredFields = [
@@ -49,6 +50,10 @@ function json(body: unknown, status = 200) {
 
 function clean(value: unknown, max = 4000) {
   return String(value ?? "").trim().slice(0, max);
+}
+
+function validBusinessEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 320;
 }
 
 function calculateLeadScore(lead: EnterpriseLeadInput) {
@@ -83,6 +88,51 @@ function calculateLeadScore(lead: EnterpriseLeadInput) {
   return Math.min(score, 100);
 }
 
+async function persistToSupabase(payload: Record<string, unknown>) {
+  const baseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!baseUrl || !serviceRoleKey) {
+    return { configured: false, persisted: false };
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/rest/v1/forge_enterprise_leads`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        Prefer: "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      return {
+        configured: true,
+        persisted: false,
+        status: response.status,
+        error: text.slice(0, 300)
+      };
+    }
+    let rows: Array<Record<string, unknown>> = [];
+    try {
+      rows = JSON.parse(text) as Array<Record<string, unknown>>;
+    } catch {}
+    return {
+      configured: true,
+      persisted: true,
+      id: rows[0]?.id || null
+    };
+  } catch (error) {
+    return {
+      configured: true,
+      persisted: false,
+      error: String((error as Error)?.message || error).slice(0, 300)
+    };
+  }
+}
+
 async function postConfiguredWebhooks(payload: Record<string, unknown>) {
   const urls = [
     process.env.FORGE_ENTERPRISE_GHL_WEBHOOK_URL,
@@ -92,18 +142,21 @@ async function postConfiguredWebhooks(payload: Record<string, unknown>) {
   ].filter(Boolean) as string[];
 
   const results = await Promise.allSettled(
-    [...new Set(urls)].map((url) =>
-      fetch(url, {
+    [...new Set(urls)].map(async (url) => {
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      })
-    )
+      });
+      if (!response.ok) throw new Error(`Webhook ${response.status}`);
+      return response.status;
+    })
   );
 
   return {
     configured: urls.length > 0,
     attempted: results.length,
+    succeeded: results.filter((result) => result.status === "fulfilled").length,
     failed: results.filter((result) => result.status === "rejected").length
   };
 }
@@ -114,6 +167,10 @@ export async function POST(request: Request) {
     body = (await request.json()) as EnterpriseLeadInput;
   } catch {
     return json({ error: "Invalid JSON body" }, 400);
+  }
+
+  if (clean(body.company_fax)) {
+    return json({ ok: true, accepted: false }, 202);
   }
 
   const forbiddenKey = Object.keys(body).find((key) => forbiddenFieldPattern.test(key));
@@ -132,11 +189,14 @@ export async function POST(request: Request) {
   });
   if (missing.length) return json({ error: "Missing required fields", missing }, 400);
 
+  const businessEmail = clean(body.business_email, 320).toLowerCase();
+  if (!validBusinessEmail(businessEmail)) return json({ error: "Enter a valid business email" }, 400);
+
   const lead = {
     source: "forge_enterprise_workforce",
     company_name: clean(body.company_name, 200),
     contact_name: clean(body.contact_name, 160),
-    business_email: clean(body.business_email, 320).toLowerCase(),
+    business_email: businessEmail,
     business_phone: clean(body.business_phone, 80),
     company_website: clean(body.company_website, 500),
     city: clean(body.city, 120),
@@ -157,21 +217,51 @@ export async function POST(request: Request) {
     notes: clean(body.notes, 4000),
     lead_score: calculateLeadScore(body),
     status: "new",
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
-  const webhook = await postConfiguredWebhooks(lead);
+  const [persistence, webhook] = await Promise.all([
+    persistToSupabase(lead),
+    postConfiguredWebhooks(lead)
+  ]);
+  const accepted = persistence.persisted || webhook.succeeded > 0;
+
+  if (!accepted) {
+    return json(
+      {
+        ok: false,
+        accepted: false,
+        error: "Forge enterprise intake storage is not currently available.",
+        persistence: {
+          configured: persistence.configured,
+          persisted: persistence.persisted
+        },
+        webhook
+      },
+      503
+    );
+  }
 
   return json(
     {
       ok: true,
+      accepted: true,
       lead: {
-        ...lead,
-        business_email: "[stored in configured CRM/webhook only]"
+        company_name: lead.company_name,
+        contact_name: lead.contact_name,
+        business_email: "[stored securely]",
+        lead_score: lead.lead_score,
+        status: lead.status
+      },
+      persistence: {
+        configured: persistence.configured,
+        persisted: persistence.persisted,
+        id: persistence.id || null
       },
       webhook,
       next:
-        "Review the lead in the authorized CRM, verify scope and procurement requirements, and schedule a human-led discovery call. No worker availability, pricing, or placement is guaranteed by form submission."
+        "Review the lead in the authorized CRM, verify scope and procurement requirements, and schedule a human-led discovery call. No worker availability, pricing, placement, financial approval, or partnership is guaranteed by form submission."
     },
     201
   );
