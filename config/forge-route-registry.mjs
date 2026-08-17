@@ -72,6 +72,7 @@ addRoute("/go/creative", "Campaign handoff", "Customers and local businesses", "
 addRoute("/forge/capital", "Forge Capital Desk", "Local business owners", "Save finance-readiness interest");
 addAlias("/forge/flex", "/forge/capital", "Forge Capital Desk", "Local business owners", "Review inactive Flex readiness", "inactive", "Flex is a draft future-partner concept; no referral destination is active.");
 addAlias("/partners/flex", "/forge/capital", "Forge Capital Desk", "Local business owners", "Review inactive Flex readiness", "inactive", "Flex is a draft future-partner concept; no referral destination is active.");
+addRoute("/financial-readiness", "Financial readiness", "Individuals and business owners", "Review bookkeeping, tax-readiness, and official credit self-help resources", "public", { notes: "Information only. Public financial-document intake and paid credit repair are not offered." });
 addRoute("/forge-payments", "Payments interest", "Local business owners", "Save merchant-services interest");
 addAlias("/merchant-services", "/forge-payments", "Payments interest", "Local business owners", "Save merchant-services interest");
 

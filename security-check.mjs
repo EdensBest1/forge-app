@@ -4,6 +4,8 @@ const textFiles = [
   "index.html",
   "app.js",
   "styles.css",
+  "financial-readiness/index.html",
+  "financial-readiness/financial-readiness.css",
   "service-worker.js",
   "netlify.toml",
   "vercel.json",
@@ -14,6 +16,7 @@ const textFiles = [
 ];
 
 const contents = Object.fromEntries(await Promise.all(textFiles.map(async (file) => [file, await readFile(file, "utf8")])));
+const financialHtml = contents["financial-readiness/index.html"];
 const files = await readdir(".");
 const workflowPath = ".github/workflows/forge-checks.yml";
 const workflowExists = await access(workflowPath).then(() => true, () => false);
@@ -25,6 +28,8 @@ const checks = [
   ["permissions policy disables payment", contents["netlify.toml"].includes("payment=()") && contents["vercel.json"].includes("payment=()")],
   ["admin route guard present", contents["app.js"].includes("Log in as Forge Admin to open operator tools.") && contents["app.js"].includes("expireAdminSession")],
   ["legal page present", contents["index.html"].includes("Early Access Terms & Privacy") && contents["index.html"].includes("Do not enter passwords, payment cards")],
+  ["public financial intake remains closed", financialHtml.includes("Public financial-document intake is not open") && !/<form\b/i.test(financialHtml)],
+  ["credit commercialization remains blocked", financialHtml.includes("Forge does not currently sell or perform credit-repair services")],
   ["no password fields", !/type=\"password\"|type='password'/i.test(contents["index.html"])],
   ["no payment collection inputs", !/<input[^>]+(card|payment|bank|routing|ssn|social-security)/i.test(contents["index.html"])],
   ["supabase rls documented", contents["SUPABASE_SCHEMA.sql"].includes("enable row level security")],

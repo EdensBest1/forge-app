@@ -93,6 +93,14 @@
   ],
   "rewrites": [
     {
+      "source": "/financial-readiness",
+      "destination": "/financial-readiness/index.html"
+    },
+    {
+      "source": "/financial-readiness/",
+      "destination": "/financial-readiness/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
