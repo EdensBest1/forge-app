@@ -32,6 +32,16 @@
     Cache-Control = "no-store"
 
 [[redirects]]
+  from = "/financial-readiness"
+  to = "/financial-readiness/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/financial-readiness/"
+  to = "/financial-readiness/index.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

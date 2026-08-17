@@ -1,0 +1,304 @@
+{
+  "version": "1.1.0",
+  "default_decision": "deny",
+  "runtime_mode": "classification_and_drafting_only",
+  "external_effects_enabled": false,
+  "workforce_count_contract": 60,
+  "security": {
+    "reject_inline_sensitive_payloads": true,
+    "permit_opaque_vault_references": true,
+    "sensitive_field_names": [
+      "ssn",
+      "social_security_number",
+      "ein",
+      "tin",
+      "tax_id",
+      "taxpayer_id",
+      "date_of_birth",
+      "dob",
+      "full_name",
+      "email",
+      "email_address",
+      "phone",
+      "phone_number",
+      "street_address",
+      "mailing_address",
+      "bank_account",
+      "bank_account_number",
+      "routing_number",
+      "card_number",
+      "credit_card_number",
+      "cvv",
+      "pin",
+      "password",
+      "email_password",
+      "app_specific_password",
+      "api_key",
+      "access_token",
+      "refresh_token",
+      "private_key",
+      "credit_report",
+      "tax_return",
+      "w2",
+      "form_w2",
+      "form_1099"
+    ],
+    "sensitive_value_patterns": [
+      "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "\\b\\d{2}-\\d{7}\\b",
+      "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
+      "\\b(?:\\+?1[-. ]?)?\\(?\\d{3}\\)?[-. ]\\d{3}[-. ]\\d{4}\\b",
+      "\\b(?:\\d[ -]*?){13,19}\\b",
+      "(?<!\\d)\\d{9,12}(?!\\d)",
+      "\\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\\d|3[01])[/-](?:19|20)\\d{2}\\b",
+      "\\b(?:19|20)\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])\\b",
+      "\\bBearer\\s+[A-Za-z0-9._~+/-]+=*\\b",
+      "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"
+    ],
+    "allowed_reference_field_suffixes": ["_ref", "_refs"],
+    "allowed_reference_prefixes": ["vault://"],
+    "reference_value_max_length": 512,
+    "max_input_depth": 12,
+    "allowed_nonpublic_scopes": [
+      "personal_self_help",
+      "internal",
+      "protected_draft",
+      "internal_controlled_development"
+    ]
+  },
+  "credit_public_commercialization_gate": {
+    "status": "blocked",
+    "reason_code": "CREDIT_PUBLIC_COMMERCIALIZATION_BLOCKED",
+    "blocked_scopes": [
+      "public",
+      "public_paid_service",
+      "client_service",
+      "white_label",
+      "resale",
+      "production_commercial"
+    ],
+    "blocked_actions": [
+      "launch_credit_service",
+      "commercialize_credit_service",
+      "sell_credit_repair",
+      "enable_public_credit_enrollment"
+    ],
+    "text_patterns": [
+      "\\bpublic(?:ly)?\\s+launch\\b.*\\bcredit(?: repair| improvement)?\\b",
+      "\\b(?:sell|commercialize|resell|white[- ]label)\\b.*\\bcredit(?: repair| improvement)?\\b",
+      "\\b(?:offer|provide|perform|market|advertise)\\b.*\\b(?:paid\\s+)?credit(?: repair| improvement)\\b",
+      "\\bcredit(?: repair| improvement)\\b.*\\b(?:customers?|clients?|consumers?)\\b.*\\b(?:fee|paid|subscription|service)\\b"
+    ],
+    "required_gate_document": "docs/financial-services/CREDIT_SERVICE_LAUNCH_GATES.md"
+  },
+  "financial_public_intake_gate": {
+    "status": "information_only_no_public_intake",
+    "reason_code": "PUBLIC_FINANCIAL_INTAKE_BLOCKED",
+    "blocked_scopes": [
+      "public",
+      "public_paid_service",
+      "client_service",
+      "white_label",
+      "resale",
+      "production_commercial"
+    ],
+    "blocked_actions": [
+      "enable_public_financial_intake",
+      "enroll_public_financial_customer",
+      "submit_public_financial_intake",
+      "collect_public_financial_documents"
+    ],
+    "text_patterns": [
+      "\\b(?:public|customer|client|consumer)\\b.*\\b(?:enroll|intake|submit|upload|collect)\\b.*\\b(?:credit|accounting|tax|financial|document|case)\\b",
+      "\\b(?:enroll|intake|submit|upload|collect)\\b.*\\b(?:credit|accounting|tax|financial|document|case)\\b.*\\b(?:public|customers?|clients?|consumers?)\\b",
+      "\\b(?:gather|receive|request|collect|upload|submit|intake)\\b.*\\b(?:bank statements?|financial records?|tax documents?|credit reports?|documents?)\\b.*\\b(?:consumers?|customers?|clients?|public|website|portal)\\b"
+    ]
+  },
+  "hard_deny_rules": [
+    {
+      "id": "CREDIT_CORRESPONDENCE_TRUSTED_ADAPTER_REQUIRED",
+      "actions": [
+        "draft_evidence_based_dispute",
+        "draft_debt_validation_request",
+        "draft_goodwill_request"
+      ],
+      "text_patterns": [],
+      "required_production_control": "authenticated_vault_and_evidence_binding_adapter"
+    },
+    {
+      "id": "CREDIT_GUARANTEE_OR_COMMERCIAL_OFFER",
+      "actions": ["guarantee_credit_score", "sell_credit_service", "enroll_credit_customer"],
+      "text_patterns": [
+        "\\b(?:guarantee|promise)\\b.*\\b(?:credit score|score increase|points?|deletion|remove)\\b",
+        "\\b(?:charge|bill|sell|enroll|subscription|monthly fee|monthly program)\\b.*\\b(?:credit|score|consumers?|customers?|clients?|households?)\\b",
+        "\\b(?:consumers?|customers?|clients?|households?)\\b.*\\b(?:charge|fee|paid|subscription|monthly|enroll|program)\\b.*\\b(?:credit|score|improv|optimi)"
+      ]
+    },
+    {
+      "id": "CREDIT_FALSE_OR_BLANKET_DISPUTE",
+      "services": ["credit_improvement"],
+      "actions": ["blanket_dispute", "dispute_all_accounts", "bulk_dispute_without_evidence", "false_dispute"],
+      "text_patterns": [
+        "\\b(?:blanket|mass|false|fake)\\s+dispute\\b",
+        "\\bdispute\\s+(?:all|everything|every(?:thing)?|every account)\\b",
+        "\\bchallenge\\s+every\\s+(?:account|tradeline)\\b",
+        "\\b(?:challenge|challenges|dispute|disputes|contest)\\b.*\\b(?:all|every|each|full|complete|entire)\\b.*\\b(?:files?|reports?|accounts?|tradelines?|entries|items?|sets?)\\b",
+        "\\b(?:all|every|each|full|complete|entire)\\b.*\\b(?:files?|reports?|accounts?|tradelines?|entries|items?|sets?)\\b.*\\b(?:without|regardless|irrespective|even if)\\b",
+        "\\b(?:challenge|challenges|dispute|disputes|contest|prepare)\\b.*\\b(?:across|throughout)\\b.*\\b(?:files?|reports?)\\b.*\\b(?:without|no)\\b.*\\b(?:documents?|evidence|proof|support)\\b",
+        "\\b(?:challenge|challenges|dispute|disputes|contest)\\b.*\\b(?:regardless of|irrespective of|even if)\\b.*\\b(?:accuracy|accurate|correct|evidence|proof)\\b"
+      ]
+    },
+    {
+      "id": "CREDIT_CPN_OR_SYNTHETIC_IDENTITY",
+      "services": ["credit_improvement"],
+      "actions": ["create_cpn", "use_cpn", "create_synthetic_identity", "build_synthetic_credit_profile"],
+      "text_patterns": [
+        "\\bCPN\\b",
+        "\\bcredit privacy number\\b",
+        "\\bsynthetic identity\\b",
+        "\\b(?:create|build|buy)\\s+(?:a\\s+)?(?:new|fake|synthetic)\\s+credit (?:identity|profile)\\b"
+      ]
+    },
+    {
+      "id": "CREDIT_FALSE_IDENTITY_THEFT_CLAIM",
+      "services": ["credit_improvement"],
+      "actions": ["file_false_identity_theft_claim", "fabricate_identity_theft", "pretend_identity_theft"],
+      "text_patterns": [
+        "\\b(?:false|fake|fabricated?)\\s+identity theft\\b",
+        "\\bpretend\\b.*\\bidentity theft\\b",
+        "\\bclaim identity theft\\b.*\\b(?:not true|even though|did not happen)\\b"
+      ]
+    },
+    {
+      "id": "CREDIT_ACCURATE_INFORMATION_REMOVAL",
+      "services": ["credit_improvement"],
+      "actions": ["remove_accurate_information", "dispute_accurate_information", "delete_accurate_tradeline"],
+      "text_patterns": [
+        "\\b(?:remove|delete|dispute)\\b.*\\baccurate (?:information|account|tradeline|debt)\\b",
+        "\\bremove\\b.*\\b(?:even though|despite)\\b.*\\baccurate\\b",
+        "\\b(?:challenge|contest|dispute)\\b.*\\b(?:even if|regardless of|irrespective of)\\b.*\\b(?:accurate|accuracy|correct)\\b"
+      ]
+    },
+    {
+      "id": "TAX_AUTONOMOUS_FILING_PAYMENT_OR_REPRESENTATION",
+      "services": ["accounting_tax_readiness"],
+      "actions": [
+        "file_tax_return",
+        "submit_tax_return",
+        "autonomous_tax_filing",
+        "make_tax_payment",
+        "submit_tax_payment",
+        "autonomous_tax_payment",
+        "represent_before_tax_authority",
+        "represent_taxpayer"
+      ],
+      "text_patterns": [
+        "\\b(?:file|submit)\\s+(?:my|the|a)?\\s*(?:tax return|tax filing|taxes)\\b",
+        "\\b(?:pay|submit|make)\\s+(?:my|the|a)?\\s*(?:IRS|state|tax)?\\s*(?:tax )?payment\\b",
+        "\\brepresent\\s+(?:me|the taxpayer|the client)\\s+(?:before|with)\\s+(?:the\\s+)?(?:IRS|tax authority|state)\\b",
+        "\\b(?:autonomously|automatically|without (?:human|professional) review)\\b.*\\b(?:file|submit|pay|represent)\\b"
+      ]
+    }
+  ],
+  "approval_rules": [
+    {
+      "id": "EXTERNAL_COMMUNICATION_APPROVAL",
+      "actions": ["send_external_communication", "email_creditor", "mail_credit_dispute"],
+      "text_patterns": [
+        "\\b(?:send|email|mail)\\b.*\\b(?:creditor|bureau|dispute|letter|message)\\b"
+      ],
+      "handoff": "human_owner_or_authorized_reviewer"
+    },
+    {
+      "id": "ACCOUNT_CONNECTION_APPROVAL",
+      "actions": ["connect_account", "connect_email_account", "connect_financial_account"],
+      "text_patterns": ["\\bconnect\\b.*\\b(?:email|mailbox|bank|financial|credit|account)\\b"],
+      "handoff": "human_owner"
+    },
+    {
+      "id": "PII_SHARING_APPROVAL",
+      "actions": ["share_pii", "share_case_with_professional"],
+      "text_patterns": ["\\bshare\\b.*\\b(?:PII|personal data|case file|tax records|credit records)\\b"],
+      "handoff": "human_owner"
+    },
+    {
+      "id": "SETTLEMENT_APPROVAL",
+      "actions": ["accept_settlement", "negotiate_settlement"],
+      "text_patterns": ["\\b(?:accept|negotiate|agree to)\\b.*\\bsettlement\\b"],
+      "handoff": "human_owner_and_professional_when_required"
+    },
+    {
+      "id": "JOURNAL_POSTING_APPROVAL",
+      "actions": ["post_journal_entry", "reopen_accounting_period"],
+      "text_patterns": [
+        "\\bpost\\b.*\\bjournal entr(?:y|ies)\\b",
+        "\\breopen\\b.*\\baccounting period\\b"
+      ],
+      "handoff": "authorized_bookkeeper_or_owner"
+    },
+    {
+      "id": "TAX_FILING_APPROVAL_AND_PROFESSIONAL_HANDOFF",
+      "actions": ["prepare_tax_filing", "queue_tax_filing_for_professional"],
+      "text_patterns": [
+        "\\bprepare\\b.*\\btax filing\\b.*\\b(?:approval|review|professional)\\b",
+        "\\bqueue\\b.*\\btax filing\\b.*\\bprofessional\\b"
+      ],
+      "handoff": "licensed_tax_professional"
+    }
+  ],
+  "action_requirements": {
+    "draft_evidence_based_dispute": {
+      "required_reference_fields": ["evidence_refs"],
+      "required_true_fields": ["facts_attested"],
+      "missing_reference_reason": "VERIFIED_EVIDENCE_REQUIRED",
+      "missing_attestation_reason": "CUSTOMER_FACT_ATTESTATION_REQUIRED"
+    }
+  },
+  "global_approval_conditions": [
+    "external_side_effect_requested",
+    "external_communication",
+    "account_connection",
+    "pii_sharing",
+    "settlement",
+    "journal_posting",
+    "filing"
+  ],
+  "professional_handoff": {
+    "credit": [
+      "identity_theft",
+      "lawsuit_or_summons",
+      "bankruptcy_or_garnishment",
+      "statute_of_limitations_question",
+      "settlement_negotiation",
+      "suspected_consumer_law_violation"
+    ],
+    "accounting_tax": [
+      "tax_notice_or_audit",
+      "late_payroll_or_sales_tax",
+      "multi_state_activity",
+      "foreign_account_or_income",
+      "entity_election",
+      "amended_return",
+      "uncertain_deduction_or_basis"
+    ]
+  },
+  "audit": {
+    "append_only_sink_required_in_production": true,
+    "router_returns_event_without_persisting": true,
+    "required_fields": [
+      "event_id",
+      "occurred_at",
+      "task_id",
+      "tenant_id",
+      "workspace_id",
+      "service_profile_id",
+      "action",
+      "decision",
+      "reason_codes",
+      "policy_version",
+      "input_hash",
+      "approval_required",
+      "external_effects_executed"
+    ]
+  }
+}

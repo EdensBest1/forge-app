@@ -2,6 +2,8 @@ import { readFile, access } from "node:fs/promises";
 
 const manifest = JSON.parse(await readFile("release-manifest.json", "utf8"));
 const html = await readFile("index.html", "utf8");
+const appJs = await readFile("app.js", "utf8");
+const financialHtml = await readFile("financial-readiness/index.html", "utf8");
 const serviceWorker = await readFile("service-worker.js", "utf8");
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
 
@@ -17,11 +19,15 @@ const staticChecks = [
   ["manifest version", manifest.version === "v106"],
   ["html asset version", html.includes("styles.css?v=106") && html.includes("app.js?v=106")],
   ["service worker version", serviceWorker.includes("forge-mvp-v106")],
+  ["generated public-link version", appJs.includes('const PUBLIC_LINK_VERSION = "106";')],
   ["admin entrypoint", manifest.entrypoints.admin.includes("?v=106&demo=admin#admin")],
   ["request help alias", manifest.entrypoints.requestHelp === "/request-help?v=106"],
   ["post job alias", manifest.entrypoints.postJobAlias === "/post-job?v=106"],
   ["worker signup alias", manifest.entrypoints.workerSignupAlias === "/worker-signup?v=106"],
   ["business help alias", manifest.entrypoints.businessHelp === "/business?v=106"],
+  ["financial readiness entrypoint", manifest.entrypoints.financialReadiness === "/financial-readiness/"],
+  ["financial readiness public boundary", financialHtml.includes("Public financial-document intake is not open") && financialHtml.includes("Forge does not currently sell or perform credit-repair services")],
+  ["financial readiness standalone assets", financialHtml.includes("/financial-readiness/financial-readiness.css?v=1") && !financialHtml.includes("route-loader.js")],
   ["autos entrypoint", manifest.entrypoints.autos === "/auto?v=106"],
   ["road rescue entrypoint", manifest.entrypoints.roadRescue === "/road-rescue?v=106"],
   ["photography entrypoint", manifest.entrypoints.photography === "/photography?v=106"],
