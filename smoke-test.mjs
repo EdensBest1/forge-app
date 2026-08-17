@@ -868,6 +868,8 @@ const requestHelpRoute = await readFile("request-help/index.html", "utf8");
 const postJobRoute = await readFile("post-job/index.html", "utf8");
 const workerSignupRoute = await readFile("worker-signup/index.html", "utf8");
 const businessRoute = await readFile("business/index.html", "utf8");
+const financialReadinessRoute = await readFile("financial-readiness/index.html", "utf8");
+const financialReadinessStyles = await readFile("financial-readiness/financial-readiness.css", "utf8");
 const photographyRoute = await readFile("photography/index.html", "utf8");
 const photographyRequestRoute = await readFile("photography/request/index.html", "utf8");
 const photographyApplyRoute = await readFile("photography/apply/index.html", "utf8");
@@ -1058,6 +1060,7 @@ const missingDeploy = [
   ["public beta deploy runbook", deployRunbook.includes("Forge Public Beta Deploy Runbook") && deployRunbook.includes("Stop Conditions")],
   ["release manifest", releaseManifest.includes("Forge Public Beta Release Candidate") && releaseManifest.includes("\"version\": \"v106\"") && releaseManifest.includes("/request-help?v=106") && releaseManifest.includes("/post-job?v=106") && releaseManifest.includes("/worker-signup?v=106") && releaseManifest.includes("/business?v=106") && releaseManifest.includes("/photography?v=106") && releaseManifest.includes("/photography/request?v=106") && releaseManifest.includes("/photography/apply?v=106") && releaseManifest.includes("/photography-videography?v=106") && releaseManifest.includes("/northstar-creative?v=106") && releaseManifest.includes("/forge/capital?v=106") && releaseManifest.includes("/forge/flex?v=106") && releaseManifest.includes("/partners/flex?v=106") && releaseManifest.includes("/personal-driver?v=106") && releaseManifest.includes("/forge-payments?v=106") && releaseManifest.includes("/local-products?v=106") && releaseManifest.includes("/building?v=106") && releaseManifest.includes("/admin/building-leads?v=106") && releaseManifest.includes("/forge-academy?v=106") && releaseManifest.includes("/trade-pathways?v=106") && releaseManifest.includes("/admin/forge-academy?v=106")],
   ["public alias cached routes", serviceWorker.includes("./request-help/") && serviceWorker.includes("./post-job/") && serviceWorker.includes("./worker-signup/") && serviceWorker.includes("./business/")],
+  ["financial readiness cached route", serviceWorker.includes("./financial-readiness/")],
   ["capital desk cached routes", serviceWorker.includes("./forge/capital/") && serviceWorker.includes("./forge/flex/") && serviceWorker.includes("./partners/flex/")],
   ["new lane cached routes", serviceWorker.includes("./personal-driver/") && serviceWorker.includes("./private-driver/") && serviceWorker.includes("./forge-payments/") && serviceWorker.includes("./merchant-services/") && serviceWorker.includes("./local-products/") && serviceWorker.includes("./makers/")],
   ["building cached routes", serviceWorker.includes("./building/") && serviceWorker.includes("./admin/building-leads/")],
@@ -1075,6 +1078,8 @@ const missingDeploy = [
   ["post job route alias", postJobRoute.includes("Forge Post a Job") && postJobRoute.includes("/route-loader.js")],
   ["worker signup route alias", workerSignupRoute.includes("Forge Worker Signup") && workerSignupRoute.includes("/route-loader.js")],
   ["business help route alias", businessRoute.includes("Forge Business Help") && businessRoute.includes("/route-loader.js")],
+  ["financial readiness route", financialReadinessRoute.includes("Forge Financial Readiness") && financialReadinessRoute.includes("/financial-readiness/financial-readiness.css?v=1") && financialReadinessRoute.includes("Public financial-document intake is not open") && financialReadinessRoute.includes("Forge does not currently sell or perform credit-repair services") && !financialReadinessRoute.includes("/route-loader.js")],
+  ["financial readiness styles", financialReadinessStyles.includes(".service-grid") && financialReadinessStyles.includes(".status-card")],
   ["photography route", photographyRoute.includes("Forge Photography & Videography") && photographyRoute.includes("/route-loader.js")],
   ["photography request route", photographyRequestRoute.includes("Forge Photography & Videography Request") && photographyRequestRoute.includes("/route-loader.js")],
   ["photography apply route", photographyApplyRoute.includes("Forge Photography & Videography Provider Application") && photographyApplyRoute.includes("/route-loader.js")],

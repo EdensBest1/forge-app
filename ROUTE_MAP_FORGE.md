@@ -45,10 +45,12 @@ Framework: static HTML/CSS/JS MVP with hash routes and clean alias shells.
 | `/privacy/` | Privacy | clean public path | local 200 | Alias shell maps to legal screen. |
 | `/terms/` | Terms | clean public path | local 200 | Alias shell maps to legal screen. |
 | `/safety/` | Safety | clean public path | local 200 | Alias shell maps to legal screen. |
+| `/financial-readiness/` | Forge Financial Readiness | standalone public page | local 200 | Controlled-rollout bookkeeping and tax-readiness information plus free official credit self-help resources; no public financial-data intake or paid credit repair. |
 
 ## Public Functionality Notes
 
 - Post a Job, Join as Worker, Browse Services, For Businesses, Safety, and Log In / Admin CTAs are wired through `data-nav`.
 - Existing service categories and clean alias shells are preserved.
 - Clean `/privacy/`, `/terms/`, and `/safety/` paths now route to the existing legal/safety screen.
+- Clean `/financial-readiness/` serves a standalone information page. Public financial-document intake and paid credit-repair activity remain closed until the documented production, security, and regulatory gates are met.
 - Admin controls use public-mode and role-gate classes; direct admin screens remain demo/protected surfaces, not public homepage tools.
