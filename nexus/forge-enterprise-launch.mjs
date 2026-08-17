@@ -22,36 +22,32 @@ function assertCampaignIntegrity(registry, manifest, database) {
   const enabled = registry.filter((agent) => agent.status === 'enabled');
   const ids = new Set(enabled.map((agent) => agent.id));
   const assignmentIds = manifest.assignments.map((assignment) => assignment.agent_id);
-  const uniqueAssignmentIds = new Set(assignmentIds);
   const accountIds = database.accounts.map((account) => account.account_id);
-  const uniqueAccountIds = new Set(accountIds);
-
   const problems = [];
+
   if (enabled.length !== 60) problems.push(`Expected 60 enabled agents; found ${enabled.length}.`);
   if (manifest.assignments.length !== 60) problems.push(`Expected 60 assignments; found ${manifest.assignments.length}.`);
-  if (uniqueAssignmentIds.size !== manifest.assignments.length) problems.push('Duplicate agent assignments detected.');
+  if (new Set(assignmentIds).size !== 60) problems.push('Duplicate agent assignments detected.');
   if (database.accounts.length !== 60) problems.push(`Expected 60 seed accounts; found ${database.accounts.length}.`);
-  if (uniqueAccountIds.size !== database.accounts.length) problems.push('Duplicate enterprise account IDs detected.');
+  if (new Set(accountIds).size !== 60) problems.push('Duplicate enterprise account IDs detected.');
 
   const missingAgents = assignmentIds.filter((id) => !ids.has(id));
-  if (missingAgents.length) problems.push(`Assignments reference missing/disabled agents: ${missingAgents.join(', ')}`);
+  if (missingAgents.length) problems.push(`Assignments reference missing or disabled agents: ${missingAgents.join(', ')}`);
 
-  const missingAssignments = [...ids].filter((id) => !uniqueAssignmentIds.has(id));
+  const missingAssignments = [...ids].filter((id) => !assignmentIds.includes(id));
   if (missingAssignments.length) problems.push(`Enabled agents without assignments: ${missingAssignments.join(', ')}`);
 
-  if (problems.length) {
-    throw new Error(`Forge enterprise campaign integrity check failed:\n- ${problems.join('\n- ')}`);
-  }
+  if (problems.length) throw new Error(`Forge enterprise campaign integrity check failed:\n- ${problems.join('\n- ')}`);
 }
 
-function buildObjective(assignment, account) {
+function buildObjective(agent, account) {
   return [
-    `Forge Enterprise Workforce + App Launch assignment for ${assignment.agent_name}.`,
-    assignment.campaign_objective,
-    `Initial account research responsibility: ${account.company} (${account.segment}; ${account.geography}).`,
+    `Forge Enterprise Workforce + App Launch assignment for ${agent.name}.`,
+    `Use the agent mission and ${agent.department} capability to research, organize, draft, measure, or govern the assigned account.`,
+    `Initial account: ${account.company} (${account.segment}; ${account.geography}).`,
     `Potential demand hypothesis: ${account.potential_workforce_or_service_demand}.`,
     `Pitch angle: ${account.forge_pitch_angle}`,
-    'Use public business information only. Do not infer private emails, personal mobile numbers, current openings, procurement approval, or worker availability.',
+    'Use public business information only. Never infer private contact details, current openings, procurement approval, or worker availability.',
     'Do not send external communications. Prepare evidence-backed database updates, drafts, next actions, and human-approval items only.'
   ].join(' ');
 }
@@ -80,24 +76,25 @@ export async function runForgeEnterpriseLaunch() {
     fs.readFile(assignmentsPath, 'utf8').then(JSON.parse),
     fs.readFile(prospectsPath, 'utf8').then(JSON.parse)
   ]);
-
   const registry = agentRegistry();
   assertCampaignIntegrity(registry, manifest, database);
 
+  const agentsById = new Map(registry.map((agent) => [agent.id, agent]));
   const accountsById = new Map(database.accounts.map((account) => [account.account_id, account]));
   const results = [];
 
   for (const assignment of manifest.assignments) {
+    const agent = agentsById.get(assignment.agent_id);
     const account = accountsById.get(assignment.initial_account_id);
     results.push(await execute({
-      preferred_agent_id: assignment.agent_id,
-      business: assignment.business,
-      department: assignment.department,
+      preferred_agent_id: agent.id,
+      business: agent.business,
+      department: agent.department,
       tenant_id: 'edens-best-internal',
       workspace_id: 'forge-enterprise-launch',
       workspace_type: 'internal-business',
-      capability: assignment.campaign_pod,
-      objective: buildObjective(assignment, account),
+      capability: 'enterprise_workforce_and_app_launch',
+      objective: buildObjective(agent, account),
       action: 'forge_enterprise_campaign',
       external_side_effect: false,
       approved: false,
@@ -110,8 +107,7 @@ export async function runForgeEnterpriseLaunch() {
         geography: account.geography,
         official_source_url: account.official_source_url,
         contact_verification_status: account.contact_verification_status,
-        priority: account.priority,
-        assignment_kpi: assignment.daily_or_weekly_kpi
+        priority: account.priority
       }
     }));
   }
@@ -154,7 +150,6 @@ export async function runForgeEnterpriseLaunch() {
     fs.writeFile('.nexus-runtime/forge-enterprise-launch.json', JSON.stringify(report, null, 2)),
     fs.writeFile('.nexus-runtime/forge-enterprise-outreach-queue.json', JSON.stringify(outreachQueue, null, 2))
   ]);
-
   return report;
 }
 
