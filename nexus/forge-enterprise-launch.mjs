@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises';
 import { execute, agentRegistry } from './orchestrator.mjs';
+import { enterpriseProspectDatabase } from '../data/forge-enterprise-prospects.mjs';
 
 const ROOT = new URL('./', import.meta.url);
 const assignmentsPath = new URL('forge-enterprise-assignments.json', ROOT);
-const prospectsPath = new URL('../data/forge-enterprise-prospects.json', ROOT);
 
 function nowIso() {
   return new Date().toISOString();
@@ -72,10 +72,8 @@ function buildOutreachQueue(database) {
 
 export async function runForgeEnterpriseLaunch() {
   const startedAt = nowIso();
-  const [manifest, database] = await Promise.all([
-    fs.readFile(assignmentsPath, 'utf8').then(JSON.parse),
-    fs.readFile(prospectsPath, 'utf8').then(JSON.parse)
-  ]);
+  const manifest = await fs.readFile(assignmentsPath, 'utf8').then(JSON.parse);
+  const database = enterpriseProspectDatabase;
   const registry = agentRegistry();
   assertCampaignIntegrity(registry, manifest, database);
 
