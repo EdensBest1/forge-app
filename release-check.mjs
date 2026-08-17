@@ -2,6 +2,7 @@ import { readFile, access } from "node:fs/promises";
 
 const manifest = JSON.parse(await readFile("release-manifest.json", "utf8"));
 const html = await readFile("index.html", "utf8");
+const financialHtml = await readFile("financial-readiness/index.html", "utf8");
 const app = await readFile("app.js", "utf8");
 const outbox = await readFile("lead-outbox.js", "utf8");
 const csvUtils = await readFile("csv-utils.js", "utf8");
@@ -37,6 +38,9 @@ const staticChecks = [
   ["Los Angeles market entrypoint", manifest.entrypoints.losAngelesMarket === "/markets/los-angeles-ca?v=133"],
   ["New York market entrypoint", manifest.entrypoints.newYorkMarket === "/markets/new-york-ny?v=133"],
   ["business help alias", manifest.entrypoints.businessHelp === "/business?v=133"],
+  ["financial readiness entrypoint", manifest.entrypoints.financialReadiness === "/financial-readiness/"],
+  ["financial readiness public boundary", financialHtml.includes("Public financial-document intake is not open") && financialHtml.includes("Forge does not currently sell or perform credit-repair services")],
+  ["financial readiness standalone assets", financialHtml.includes("/financial-readiness/financial-readiness.css?v=133") && !financialHtml.includes("route-loader.js")],
   ["autos entrypoint", manifest.entrypoints.autos === "/auto?v=133"],
   ["road rescue entrypoint", manifest.entrypoints.roadRescue === "/road-rescue?v=133"],
   ["photography entrypoint", manifest.entrypoints.photography === "/photography?v=133"],
@@ -67,7 +71,7 @@ const staticChecks = [
   ["admin trade pathways entrypoint", manifest.entrypoints.adminTradePathways === "/admin/trade-pathways?v=133"],
   ["homebuilding entrypoint", manifest.entrypoints.homebuilding === "/homebuilding?v=133"],
   ["build tracker entrypoint", manifest.entrypoints.homebuildingTracker === "/homebuilding/tracker?v=133"],
-  ["package check script includes v133 contracts", ["check:routes", "check:cache", "check:public-quality", "check:exports", "check:copy-truth", "check:release-fences", "check:accessibility", "check:nationwide"].every((name) => packageJson.scripts?.check?.includes(name))],
+  ["package check script includes v133 contracts", ["check:routes", "check:cache", "check:public-quality", "check:exports", "check:copy-truth", "check:release-fences", "check:accessibility", "check:nationwide", "check:nexus"].every((name) => packageJson.scripts?.check?.includes(name)) && packageJson.scripts?.["check:nexus"]?.includes("financial-service-test.mjs")],
   ["human gates listed", manifest.remainingHumanGates.length >= 7]
 ];
 

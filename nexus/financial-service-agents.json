@@ -1,0 +1,237 @@
+{
+  "version": "1.1.0",
+  "registry_type": "product_service_profiles",
+  "workforce_count_contract": 60,
+  "workforce_agent_delta": 0,
+  "description": "Protected Forge financial-service profiles that use the existing Nexus workforce without creating additional workforce agents.",
+  "profiles": [
+    {
+      "id": "FS-CREDIT-001",
+      "service": "credit_improvement",
+      "name": "Forge Credit Self-Help Workflow",
+      "business": "forge",
+      "department": "financial_services",
+      "autonomy": "A0",
+      "status": "internal_self_help_only",
+      "mission": "Prototype an authorized customer's protected self-help workflow with credit education, report inventory, discrepancy classification, evidence organization, deadline tracking, and professional handoff. Credit correspondence drafting remains design-only until an authenticated vault and evidence-binding adapter exist.",
+      "commercialization": {
+        "public_launch_status": "information_only_no_public_intake",
+        "public_information_only": true,
+        "public_intake_enabled": false,
+        "paid_service_enabled": false,
+        "reason": "Public information may describe the controlled design, but enrollment, intake, fees, client work, and external execution remain blocked pending documented legal, security, privacy, and operational sign-off.",
+        "launch_gate_document": "docs/financial-services/CREDIT_SERVICE_LAUNCH_GATES.md"
+      },
+      "runtime_scope_contract": {
+        "allowed_scopes": ["personal_self_help"],
+        "requires_authenticated_production_wrapper": true,
+        "commercial_use_authorized": false
+      },
+      "allowed_actions": [
+        "educate_credit_factors",
+        "inventory_credit_reports",
+        "classify_report_discrepancy",
+        "organize_credit_evidence",
+        "track_credit_deadline",
+        "prepare_professional_handoff"
+      ],
+      "design_only_actions": [
+        "draft_evidence_based_dispute",
+        "draft_debt_validation_request",
+        "draft_goodwill_request"
+      ],
+      "approval_actions": [
+        "send_external_communication",
+        "email_creditor",
+        "mail_credit_dispute",
+        "connect_account",
+        "connect_email_account",
+        "share_pii",
+        "share_case_with_professional",
+        "accept_settlement",
+        "negotiate_settlement"
+      ],
+      "prohibited_outcomes": [
+        "false_or_blanket_dispute",
+        "cpn_or_synthetic_identity",
+        "false_identity_theft_claim",
+        "removal_of_accurate_information",
+        "guaranteed_score_or_deletion",
+        "impersonation",
+        "unapproved_external_communication"
+      ],
+      "data_model": [
+        "Tenant",
+        "User",
+        "Consent",
+        "WorkflowCase",
+        "CreditReportReference",
+        "CreditAccount",
+        "CreditIssue",
+        "EvidenceReference",
+        "CommunicationDraft",
+        "Approval",
+        "Deadline",
+        "BureauResponseReference",
+        "ProfessionalHandoff",
+        "AuditEvent"
+      ],
+      "role_separation": {
+        "service_profile": "Analyze, classify, organize, and draft only.",
+        "customer": "Attest facts, supply evidence, and approve any proposed external action.",
+        "human_reviewer": "Review correspondence, evidence sufficiency, and approval-gated actions.",
+        "licensed_professional": "Handle legal advice, representation, litigation, and other regulated work.",
+        "security_administrator": "Operate controls without routine access to customer content.",
+        "auditor": "Read immutable event records without changing cases."
+      },
+      "handoff_triggers": [
+        "identity_theft",
+        "lawsuit_or_summons",
+        "bankruptcy_or_garnishment",
+        "statute_of_limitations_question",
+        "settlement_negotiation",
+        "suspected_consumer_law_violation"
+      ],
+      "service_tiers": [
+        {
+          "id": "self_help",
+          "status": "internal_only",
+          "capabilities": ["education", "report_inventory", "discrepancy_classification", "deadline_tracking"]
+        },
+        {
+          "id": "guided",
+          "status": "design_only_pending_launch_gates",
+          "capabilities": ["human_review", "evidence_check", "response_tracking"]
+        },
+        {
+          "id": "professional",
+          "status": "design_only_pending_launch_gates",
+          "capabilities": ["secure_professional_handoff", "case_coordination"]
+        },
+        {
+          "id": "enterprise",
+          "status": "design_only_pending_launch_gates",
+          "capabilities": ["tenant_isolation", "policy_controls", "audit_export"]
+        }
+      ]
+    },
+    {
+      "id": "FS-ACCOUNTING-001",
+      "service": "accounting_tax_readiness",
+      "name": "Forge Accounting & Tax Readiness Service",
+      "business": "forge",
+      "department": "financial_services",
+      "autonomy": "A0",
+      "status": "protected_draft_only",
+      "mission": "Organize financial records, suggest classifications, prepare reconciliations and exceptions, create draft reporting and tax-readiness workpapers, and coordinate licensed-professional handoff without filing, paying, or representing a taxpayer.",
+      "commercialization": {
+        "public_launch_status": "information_only_no_public_intake",
+        "public_information_only": true,
+        "public_intake_enabled": false,
+        "paid_service_enabled": false,
+        "reason": "Public information may describe the controlled design, but contact, scope, document, and financial-data intake remain closed pending a production vault, privacy controls, professional-scope review, and jurisdiction review."
+      },
+      "runtime_scope_contract": {
+        "allowed_scopes": [
+          "personal_self_help",
+          "internal",
+          "protected_draft",
+          "internal_controlled_development"
+        ],
+        "requires_authenticated_production_wrapper": true,
+        "commercial_use_authorized": false
+      },
+      "allowed_actions": [
+        "organize_financial_documents",
+        "suggest_transaction_categories",
+        "reconcile_accounts",
+        "build_exception_queue",
+        "draft_financial_statements",
+        "prepare_tax_organizer",
+        "prepare_tax_workpapers",
+        "track_filing_deadline",
+        "prepare_professional_handoff"
+      ],
+      "approval_actions": [
+        "send_external_communication",
+        "connect_account",
+        "connect_financial_account",
+        "share_pii",
+        "share_case_with_professional",
+        "post_journal_entry",
+        "reopen_accounting_period",
+        "accept_settlement",
+        "prepare_tax_filing",
+        "queue_tax_filing_for_professional"
+      ],
+      "prohibited_outcomes": [
+        "autonomous_tax_filing",
+        "autonomous_tax_payment",
+        "autonomous_taxpayer_representation",
+        "unsupported_tax_position",
+        "unapproved_journal_posting",
+        "source_document_alteration",
+        "money_movement"
+      ],
+      "data_model": [
+        "Tenant",
+        "User",
+        "Consent",
+        "WorkflowCase",
+        "LegalEntity",
+        "FinancialAccountReference",
+        "Transaction",
+        "DocumentReference",
+        "LedgerEntryDraft",
+        "Reconciliation",
+        "AccountingPeriod",
+        "TaxJurisdiction",
+        "FilingObligation",
+        "TaxWorkpaperReference",
+        "Exception",
+        "Approval",
+        "ProfessionalHandoff",
+        "AuditEvent"
+      ],
+      "role_separation": {
+        "service_profile": "Organize, reconcile, flag exceptions, and draft only.",
+        "customer": "Validate source records and approve proposed entries, sharing, filing, or payment instructions.",
+        "bookkeeper": "Review categorization, reconciliation, and period-close exceptions.",
+        "licensed_professional": "Provide tax advice, sign or file returns, make elections, and represent taxpayers when properly authorized.",
+        "security_administrator": "Operate controls without routine access to customer content.",
+        "auditor": "Read immutable event records without changing books or cases."
+      },
+      "handoff_triggers": [
+        "tax_notice_or_audit",
+        "late_payroll_or_sales_tax",
+        "multi_state_activity",
+        "foreign_account_or_income",
+        "entity_election",
+        "amended_return",
+        "uncertain_deduction_or_basis"
+      ],
+      "service_tiers": [
+        {
+          "id": "self_service",
+          "status": "protected_draft_only",
+          "capabilities": ["document_organizer", "category_suggestions", "exception_report"]
+        },
+        {
+          "id": "guided",
+          "status": "design_only_pending_review",
+          "capabilities": ["human_reconciliation_review", "monthly_close_package"]
+        },
+        {
+          "id": "professional",
+          "status": "design_only_pending_review",
+          "capabilities": ["cpa_or_ea_handoff", "tax_readiness_package"]
+        },
+        {
+          "id": "enterprise",
+          "status": "design_only_pending_review",
+          "capabilities": ["multi_entity_workflows", "tenant_controls", "audit_export"]
+        }
+      ]
+    }
+  ]
+}
